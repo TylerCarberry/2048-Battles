@@ -207,12 +207,14 @@ public class Game implements java.io.Serializable
 		board.set(from, 0);
 	}
 	
+	/*
 	public void newTurn() {
 		turnNumber++;
 		addRandomPiece();
 		history.push(lastBoard, score);
 		movesRemaining--;
 	}
+	*/
 	
 	/** 
 	 * Stores the starting game time and activates the time limit after
