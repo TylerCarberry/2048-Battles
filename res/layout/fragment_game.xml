@@ -1,0 +1,109 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.app_2048.GameFragment" >
+
+    <TextView
+        android:id="@+id/turn_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Turn"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/score_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Score"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/moves_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/turn_textview"
+        android:layout_below="@+id/turn_textview"
+        android:text="Moves"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/undos_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/moves_textView"
+        android:layout_alignBottom="@+id/moves_textView"
+        android:layout_alignLeft="@+id/score_textview"
+        android:text="Undos"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/shuffle_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/game_textview"
+        android:layout_below="@+id/undos_textview"
+        android:onClick="act"
+        android:text="Shuffle" />
+
+    <Button
+        android:id="@+id/undo_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/shuffle_button"
+        android:layout_alignBottom="@+id/shuffle_button"
+        android:layout_toLeftOf="@+id/shuffle_button"
+        android:onClick="act"
+        android:text="Undo" />
+
+    <TextView
+        android:id="@+id/time_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/moves_textView"
+        android:layout_alignTop="@+id/undo_button"
+        android:text="Time Left" />
+
+    <GridLayout
+        android:id="@+id/grid_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/turn_textview"
+        android:layout_alignParentBottom="true"
+        android:animateLayoutChanges="false"
+        android:columnCount="4"
+        android:rowCount="4"
+        android:rowOrderPreserved="true"
+        android:useDefaultMargins="true" >
+
+    </GridLayout>
+
+    <TextView
+        android:id="@+id/game_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/turn_textview"
+        android:layout_alignTop="@+id/turn_textview"
+        android:text="placeholder"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="40sp"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/test_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/game_textview"
+        android:layout_alignBottom="@+id/game_textview"
+        android:layout_alignRight="@+id/game_textview"
+        android:text="Button" />
+
+</RelativeLayout>
