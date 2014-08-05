@@ -187,6 +187,8 @@ public class Game implements java.io.Serializable
 			}
 		}
 		
+		
+		
 		return distance;
 	}
 	
@@ -784,6 +786,13 @@ public class Game implements java.io.Serializable
 		return score;
 	}
 	
+	public void setScore(int newScore)
+	{
+		score = newScore;
+	}
+	
+	
+	
 	/**
 	 * @return The current turn number of the game
 	 */
@@ -799,6 +808,11 @@ public class Game implements java.io.Serializable
 	{
 		return board;
 	}
+	
+	public void setGrid(Grid newBoard) {
+		board = newBoard;
+	}
+	
 	
 	/**
 	 * Only used in the hideTileValues and speedMode methods to print the game

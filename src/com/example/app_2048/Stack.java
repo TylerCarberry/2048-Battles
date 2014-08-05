@@ -66,6 +66,15 @@ public class Stack implements Cloneable, java.io.Serializable
 	{
 		return stackBoard.getLast();
 	}
+	
+	/**
+	 * @return true if either the board stack or score stack is empty
+	 */
+	public boolean isEmpty() {
+		return stackBoard.isEmpty() || stackScore.isEmpty();
+	}
+	
+	
 	/**
 	 * @return A clone of the stack and all of its elements
 	 */
