@@ -46,6 +46,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private int turnNumber = 1;
 	private static int undosLeft;
 	Stack history;
+	boolean moveInProgress = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -194,6 +195,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 */
 	public void act(int direction) {
 		
+		moveInProgress = true;
+		
 		// Save the game history before each move
 		history.push(game.getGrid().clone(), game.getScore());
 		
@@ -241,8 +244,10 @@ public class GameActivity extends Activity implements OnGestureListener {
 			}
 		}
 		
-		if(translateAnimations.size() == 0)
+		if(translateAnimations.size() == 0) {
+			moveInProgress = false;
 			return;
+		}
 		
 		translateAnimations.get(0).addListener(new AnimatorListener(){
 			
@@ -251,12 +256,16 @@ public class GameActivity extends Activity implements OnGestureListener {
 				turnNumber++;
 				game.addRandomPiece();
 				updateGame();
+				moveInProgress = false;
 			}
 			
 			@Override
 			public void onAnimationStart(Animator animation) { }
 			@Override
-			public void onAnimationCancel(Animator animation) { }
+			public void onAnimationCancel(Animator animation) {
+				Log.d(LOG_TAG, "Animation cancelled");
+				moveInProgress = false;
+			}
 			@Override
 			public void onAnimationRepeat(Animator animation) { }
 		});
@@ -412,19 +421,21 @@ public class GameActivity extends Activity implements OnGestureListener {
     public boolean onFling(MotionEvent event1, MotionEvent event2, 
             float velocityX, float velocityY) {
         
-    	// Horizontal swipe
-        if(Math.abs(velocityX) > Math.abs(velocityY))
-        	if(velocityX > 0)
-        		act(Location.RIGHT);
-        	else
-        		act(Location.LEFT);
-        // Vertical
-        else
-        	if(velocityY > 0)
-        		act(Location.DOWN);
-        	else
-        		act(Location.UP);
-        return true;
+    	if(!moveInProgress) {
+    		// Horizontal swipe
+    		if(Math.abs(velocityX) > Math.abs(velocityY))
+    			if(velocityX > 0)
+    				act(Location.RIGHT);
+    			else
+    				act(Location.LEFT);
+    		// Vertical
+    		else
+    			if(velocityY > 0)
+    				act(Location.DOWN);
+    			else
+    				act(Location.UP);
+    	}
+    	return true;
     }
 
     @Override
