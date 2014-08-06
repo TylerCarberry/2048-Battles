@@ -6,9 +6,12 @@ package com.example.app_2048;
  */
 
 import java.util.LinkedList;
+
+import android.util.Log;
 public class Stack implements Cloneable, java.io.Serializable
 {
 	private static final long serialVersionUID = -7493874171801469542L;
+	final static String LOG_TAG = Stack.class.getSimpleName();
 	
 	LinkedList<Grid> stackBoard;
 	LinkedList<Integer> stackScore;
@@ -84,6 +87,18 @@ public class Stack implements Cloneable, java.io.Serializable
 		
 		for(int i = stackBoard.size() - 1; i >= 0; i--)
 			result.push(stackBoard.get(i), stackScore.get(i));
+		
+		return result;
+	}
+	
+	/**
+	 * Should only be used for debugging purposes
+	 */
+	public String toString() {
+		String result = "";
+		
+		for(int i = 0; i < stackBoard.size(); i++)
+			result += stackBoard.get(i).toString() + stackScore.get(i) + "\n";
 		
 		return result;
 	}

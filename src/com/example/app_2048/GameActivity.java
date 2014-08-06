@@ -44,6 +44,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private GestureDetectorCompat mDetector; 
 	private boolean madeFirstMove = false;
 	private int turnNumber = 1;
+	private static int undosLeft;
 	Stack history;
 	
 	@Override
@@ -95,12 +96,15 @@ public class GameActivity extends Activity implements OnGestureListener {
 	protected void onResume() {
 		
 		updateGame();
+		
+		/*
 		if((!madeFirstMove) && game.getTurns() == 1)
 		{
 			if(game.getTimeLeft() > 0)
 				createCountdownTimer();
 			madeFirstMove = true;
 		}
+		*/
 		
 		super.onResume();
 	}
@@ -158,7 +162,6 @@ public class GameActivity extends Activity implements OnGestureListener {
         			}
         			
         			button.setVisibility(View.VISIBLE);
-        		
         		}
 
         		v.addView(button,gridLayoutParam);
@@ -174,7 +177,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	public void act(View view) {
 		switch(view.getId()) {
 		case R.id.undo_button:
-			if(! history.isEmpty())
+			if((!history.isEmpty()) && undosLeft != 0)
 				undo();
 			break;
 		case R.id.shuffle_button:
@@ -191,13 +194,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 */
 	public void act(int direction) {
 		
-		Log.d(LOG_TAG, "Entering act");
-		
 		// Save the game history before each move
-		
-		Log.d(LOG_TAG, game.getGrid().toString());
-		
-		history.push(game.getGrid(), game.getScore());
+		history.push(game.getGrid().clone(), game.getScore());
 		
 		// Get a list of all tiles
 		List<Location> tiles = game.getGrid().getLocationsInTraverseOrder(direction);
@@ -243,9 +241,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 			}
 		}
 		
-		Log.d(LOG_TAG, game.getGrid().toString());
-			
-		
 		if(translateAnimations.size() == 0)
 			return;
 		
@@ -264,9 +259,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 			public void onAnimationCancel(Animator animation) { }
 			@Override
 			public void onAnimationRepeat(Animator animation) { }
-			
 		});
-		
 		
 		// Move all of the tiles
 		for(ObjectAnimator animation: translateAnimations)
@@ -275,25 +268,17 @@ public class GameActivity extends Activity implements OnGestureListener {
 	}
 	
 	private void undo() {
-		Log.d(LOG_TAG, "Entering undo");
-		
-		
-		Grid g = history.popBoard();
-		g = history.popBoard();
-		Log.d(LOG_TAG, g.toString());
-		game.setGrid(history.popBoard());
-		
-		int score = history.popScore();
-		Log.d(LOG_TAG, "" + score);
-		game.setScore(history.popScore());
-		
-		updateGame();
+		if(undosLeft != 0) {
+			game.setGrid(history.popBoard());
+			game.setScore(history.popScore());
+			turnNumber--;
+
+			if(undosLeft > 0)
+				undosLeft--;
+
+			updateGame();
+		}
 	}
-	
-	public void addTile() {
-		
-	}
-	
 	
 	/**
 	 * Update the text views
@@ -310,7 +295,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		turnTextView.setText("Turn #" + turnNumber);
 		scoreTextView.setText("Score: " + game.getScore());
 		
-		int undosLeft = game.getUndosRemaining();
 		if(undosLeft >= 0)
 			undosTextView.setText("Undos left: " + undosLeft);
 		else
@@ -347,9 +331,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		timeLeftTimer.start();
 		
 	}
-	
-	
-	
 	
 	/**
 	 * Used to update the time left TextView
@@ -405,36 +386,13 @@ public class GameActivity extends Activity implements OnGestureListener {
 				// Converts the id of the game mode selected to a game
 				game = GameModes.newGameFromId(gameMode);
 				
+				undosLeft = game.getUndosRemaining();
+				
 			}
-			else {
+			else
 				Log.d(LOG_TAG, "No intent passed");
-			}
 			
 			return rootView;
-		}
-		
-		public void testAnimation(View view) {
-			// Row 2 column 2 (Start at 0)
-			Button translateButton = (Button) getView().findViewById(2 * 100 + 2);
-			
-			Assert.assertTrue(translateButton != null);
-			
-			ObjectAnimator translateAnimation =
-					ObjectAnimator.ofFloat(translateButton, View.TRANSLATION_X, 200);
-			
-			setupAnimation(translateButton, translateAnimation);
-		}
-
-		private void setupAnimation(View view, final Animator animation) {
-
-			view.setOnClickListener(new View.OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					animation.start();
-				}
-			});
-
 		}
 	}
 
@@ -471,18 +429,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 
     @Override
     public void onLongPress(MotionEvent event) {}
-
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-            float distanceY) {
-        return true;
-    }
-
+            float distanceY) { return true; }
     @Override
     public void onShowPress(MotionEvent event) {}
-
     @Override
-    public boolean onSingleTapUp(MotionEvent event) {
-    	return true;
-    }
+    public boolean onSingleTapUp(MotionEvent event) { return true; }
 }
