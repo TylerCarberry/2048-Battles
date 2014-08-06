@@ -145,7 +145,10 @@ public class GameActivity extends Activity implements OnGestureListener {
         		
         		button = new Button(this);
         		button.setId(row * 100 + col);
-
+        		button.setWidth(50);
+        		button.setHeight(50);
+        		button.setTextSize(30);
+        		
         		tile = game.getGrid().get(new Location(row, col));
         		
         		if(tile == 0)
@@ -167,6 +170,10 @@ public class GameActivity extends Activity implements OnGestureListener {
 
         		v.addView(button,gridLayoutParam);
         		
+        		button = (Button) findViewById(row * 100 + col);
+        		Log.d(LOG_TAG, "Height: " + button.getHeight());
+        		Log.d(LOG_TAG, "Width: " + button.getWidth());
+        		
         	}
         }
 	}
@@ -182,7 +189,12 @@ public class GameActivity extends Activity implements OnGestureListener {
 				undo();
 			break;
 		case R.id.shuffle_button:
+			
+			// Save the game history before each move
+			history.push(game.getGrid().clone(), game.getScore());
+			
 			game.shuffle();
+			
 			break;
 		}
 		
