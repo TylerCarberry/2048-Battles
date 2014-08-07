@@ -46,7 +46,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private int turnNumber = 1;
 	private static int undosLeft;
 	Stack history;
-	boolean moveInProgress = false;
+	boolean animationInProgress = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +127,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 			// Save the game history before each move
 			history.push(game.getGrid().clone(), game.getScore());
 			
-			game.shuffle();
+			shuffleGame();
 			
 			break;
 		}
@@ -141,7 +141,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 */
 	public void act(int direction) {
 		
-		moveInProgress = true;
+		animationInProgress = true;
 		
 		// Save the game history before each move
 		history.push(game.getGrid().clone(), game.getScore());
@@ -191,7 +191,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		}
 		
 		if(translateAnimations.size() == 0) {
-			moveInProgress = false;
+			animationInProgress = false;
 			return;
 		}
 		
@@ -202,7 +202,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 				turnNumber++;
 				game.addRandomPiece();
 				updateGame();
-				moveInProgress = false;
+				animationInProgress = false;
 			}
 			
 			@Override
@@ -210,7 +210,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 			@Override
 			public void onAnimationCancel(Animator animation) {
 				Log.d(LOG_TAG, "Animation cancelled");
-				moveInProgress = false;
+				animationInProgress = false;
 			}
 			@Override
 			public void onAnimationRepeat(Animator animation) { }
@@ -345,6 +345,50 @@ public class GameActivity extends Activity implements OnGestureListener {
 		}
 	}
 
+	/**
+	 * Shuffles the game board and animates the grid
+	 * The grid layout spins 360¡, the tiles are shuffled, then it spins
+	 * back in the opposite direction
+	 */
+	private void shuffleGame() {
+		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
+		
+		// Causes conflicts when the shuffle button is double tapped
+		if(animationInProgress)
+			return;
+		
+		ObjectAnimator rotateAnimation =
+				ObjectAnimator.ofFloat(gridLayout, View.ROTATION, 360);
+		rotateAnimation.setRepeatCount(1);
+		rotateAnimation.setRepeatMode(ValueAnimator.REVERSE);
+		
+		// 300 ms should be fast enough to not notice the tiles changing
+		rotateAnimation.setDuration(300);
+		
+		rotateAnimation.addListener(new AnimatorListener(){
+			@Override
+			public void onAnimationStart(Animator animation) { 
+				animationInProgress = true;
+			}
+			@Override
+			public void onAnimationEnd(Animator animation) { 
+				animationInProgress = false;
+			}
+			@Override
+			public void onAnimationCancel(Animator animation) {
+				Log.d(LOG_TAG, "Shuffle animation cancelled");
+			}
+			@Override
+			public void onAnimationRepeat(Animator animation) {
+				game.shuffle();
+				updateGrid();
+			}
+		});
+		
+		rotateAnimation.start();
+		turnNumber++;
+	}
+	
 	public void createCountdownTimer() {
 		Log.d(LOG_TAG, "create countdown timer");
 
@@ -416,23 +460,21 @@ public class GameActivity extends Activity implements OnGestureListener {
 		}
 	}
 
+	// I actually do not know what this does
+	/*
 	@Override 
     public boolean onTouchEvent(MotionEvent event){ 
         this.mDetector.onTouchEvent(event);
-        // Be sure to call the superclass implementation
         return super.onTouchEvent(event);
     }
-
-    @Override
-    public boolean onDown(MotionEvent event) { 
-        return true;
-    }
-
+    */
+	
+     // When the screen is swiped
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2, 
             float velocityX, float velocityY) {
         
-    	if(!moveInProgress) {
+    	if(!animationInProgress) {
     		// Horizontal swipe
     		if(Math.abs(velocityX) > Math.abs(velocityY))
     			if(velocityX > 0)
@@ -448,7 +490,9 @@ public class GameActivity extends Activity implements OnGestureListener {
     	}
     	return true;
     }
-
+    
+    @Override
+    public boolean onDown(MotionEvent event) { return true; }
     @Override
     public void onLongPress(MotionEvent event) {}
     @Override
