@@ -307,8 +307,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 				button.setId(row * 100 + col);
 				
 				// Doesn't work?
-				button.setWidth(100);
-				button.setHeight(100);
+				// button.setWidth(100);
+				// button.setHeight(100);
 				
 				button.setTextSize(30);
 
@@ -428,7 +428,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 	}
 
 	/**
-	 * A placeholder fragment containing a simple view.
+	 * The only fragment in the activity. Has the game board and the
+	 * game info such as score or turn number
 	 */
 	public static class GameFragment extends Fragment {
 
@@ -441,7 +442,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 			View rootView = inflater.inflate(R.layout.fragment_game, container,
 					false);
 			
-			
 			Intent intent = getActivity().getIntent();
 			
 			if(intent != null) {
@@ -451,7 +451,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 				game = GameModes.newGameFromId(gameMode);
 				
 				undosLeft = game.getUndosRemaining();
-				
 			}
 			else
 				Log.d(LOG_TAG, "No intent passed");
@@ -459,15 +458,12 @@ public class GameActivity extends Activity implements OnGestureListener {
 			return rootView;
 		}
 	}
-
-	// I actually do not know what this does
-	/*
+	
 	@Override 
     public boolean onTouchEvent(MotionEvent event){ 
         this.mDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
-    */
 	
      // When the screen is swiped
     @Override

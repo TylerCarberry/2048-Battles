@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:animateLayoutChanges="false"
-        android:background="@color/Orange"
+        android:background="@color/BurlyWood"
         android:columnCount="4"
         android:rowCount="4"
         android:rowOrderPreserved="true"
