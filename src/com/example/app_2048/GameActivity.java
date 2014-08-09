@@ -254,21 +254,21 @@ public class GameActivity extends Activity implements OnGestureListener {
 		// TextView timeTextView = (TextView) findViewById(R.id.time_textview);
 		
 		// Update the turn number
-		turnTextView.setText("Turn #" + turnNumber);
+		turnTextView.setText(getString(R.string.turn) + " #" + turnNumber);
 		
 		// Update the score
-		scoreTextView.setText("Score: " + game.getScore());
+		scoreTextView.setText(getString(R.string.score) + ": " + game.getScore());
 		
 		// Update the undos left
 		if(undosLeft >= 0)
-			undosTextView.setText("Undos left: " + undosLeft);
+			undosTextView.setText(getString(R.string.undo_remaining) + ": " + undosLeft);
 		else
 			undosTextView.setText("");
 		
 		// Update moves left
 		int movesLeft = game.getMovesRemaining();
 		if(movesLeft >= 0)
-			movesTextView.setText("Moves left: " + movesLeft);
+			movesTextView.setText(getString(R.string.move_remaining) + " :" + movesLeft);
 		else
 			movesTextView.setText("");
 		
@@ -276,7 +276,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		updateGrid();
 		
 		if(game.lost())
-			Toast.makeText(getApplicationContext(), "YOU LOSE", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), getString(R.string.you_lose), Toast.LENGTH_SHORT).show();
 	}
 
 	/**

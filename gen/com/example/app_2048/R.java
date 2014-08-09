@@ -236,11 +236,13 @@ public final class R {
         public static final int auto_random=0x7f09000b;
         public static final int auto_recursive=0x7f09000e;
         public static final int autoplay=0x7f09000a;
+        public static final int fast=0x7f090029;
         public static final int hello_world=0x7f09001b;
         public static final int help=0x7f090009;
         public static final int how_to_play=0x7f090005;
         public static final int intro=0x7f090001;
         public static final int intro_creator_name=0x7f090002;
+        public static final int medium=0x7f090028;
         public static final int mode_corner=0x7f090015;
         public static final int mode_crazy=0x7f090018;
         public static final int mode_custom=0x7f090019;
@@ -252,33 +254,45 @@ public final class R {
         public static final int mode_survival=0x7f090013;
         public static final int mode_x=0x7f090014;
         public static final int mode_zen=0x7f090017;
+        public static final int move_remaining=0x7f090023;
+        public static final int no_animation=0x7f09002a;
         public static final int pause=0x7f090008;
-        public static final int pref_default_display_name=0x7f090022;
-        public static final int pref_description_social_recommendations=0x7f090020;
+        public static final int pref_default_display_name=0x7f090030;
+        public static final int pref_description_social_recommendations=0x7f09002e;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f090024;
+        public static final int pref_header_data_sync=0x7f090032;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f09001e;
+        public static final int pref_header_general=0x7f09002c;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f090027;
-        public static final int pref_ringtone_silent=0x7f09002a;
-        public static final int pref_title_add_friends_to_messages=0x7f090023;
-        public static final int pref_title_display_name=0x7f090021;
-        public static final int pref_title_new_message_notifications=0x7f090028;
-        public static final int pref_title_ringtone=0x7f090029;
-        public static final int pref_title_social_recommendations=0x7f09001f;
-        public static final int pref_title_sync_frequency=0x7f090025;
-        public static final int pref_title_system_sync_settings=0x7f090026;
-        public static final int pref_title_vibrate=0x7f09002b;
+        public static final int pref_header_notifications=0x7f090035;
+        public static final int pref_ringtone_silent=0x7f090038;
+        public static final int pref_title_add_friends_to_messages=0x7f090031;
+        public static final int pref_title_display_name=0x7f09002f;
+        public static final int pref_title_new_message_notifications=0x7f090036;
+        public static final int pref_title_ringtone=0x7f090037;
+        public static final int pref_title_social_recommendations=0x7f09002d;
+        public static final int pref_title_sync_frequency=0x7f090033;
+        public static final int pref_title_system_sync_settings=0x7f090034;
+        public static final int pref_title_vibrate=0x7f090039;
+        public static final int prompt_start_game=0x7f09001d;
         public static final int remove_low=0x7f09001c;
+        public static final int score=0x7f09001f;
+        public static final int shuffle=0x7f090021;
+        public static final int shuffle_remaining=0x7f090025;
+        public static final int slow=0x7f090027;
         public static final int start=0x7f090006;
         public static final int stop=0x7f090007;
+        public static final int time_remaining=0x7f090024;
         public static final int title_activity_game=0x7f09001a;
-        public static final int title_activity_settings=0x7f09001d;
+        public static final int title_activity_settings=0x7f09002b;
+        public static final int turn=0x7f09001e;
+        public static final int undo=0x7f090020;
+        public static final int undo_remaining=0x7f090022;
+        public static final int you_lose=0x7f090026;
     }
     public static final class style {
         /** 

@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="Turn"
+        android:text="@string/turn"
         android:textSize="20sp" />
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="Score"
+        android:text="@string/score"
         android:textSize="20sp" />
 
     <TextView
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/turn_textview"
         android:layout_below="@+id/turn_textview"
-        android:text="Moves"
+        android:text="@string/move_remaining"
         android:textSize="20sp" />
 
     <TextView
@@ -43,7 +43,7 @@
         android:layout_alignBaseline="@+id/moves_textView"
         android:layout_alignBottom="@+id/moves_textView"
         android:layout_alignLeft="@+id/score_textview"
-        android:text="Undos"
+        android:text="@string/undo_remaining"
         android:textSize="20sp" />
 
     <GridLayout
@@ -65,7 +65,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:onClick="act"
-        android:text="Undo" />
+        android:text="@string/undo" />
 
     <TextView
         android:id="@+id/time_textview"
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/moves_textView"
         android:layout_below="@+id/moves_textView"
-        android:text="Time Left" />
+        android:text="@string/time_remaining" />
 
     <Button
         android:id="@+id/shuffle_button"
@@ -82,6 +82,6 @@
         android:layout_alignRight="@+id/undo_button"
         android:layout_below="@+id/undo_button"
         android:onClick="act"
-        android:text="Shuffle" />
+        android:text="@string/shuffle" />
 
 </RelativeLayout>
