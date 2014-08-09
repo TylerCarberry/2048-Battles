@@ -15,7 +15,7 @@ public class Location implements Cloneable, java.io.Serializable
 	public final static int DOWN = 2;
 	public final static int LEFT = 3;
 	
-	int row, col;
+	private int row, col;
 	
 	/**
 	 * Constructor: every location has a row and column

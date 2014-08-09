@@ -44,10 +44,10 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private static Game game;
 	final static String LOG_TAG = GameActivity.class.getSimpleName();
 	private GestureDetectorCompat mDetector; 
-	private boolean madeFirstMove = false;
+	// private boolean madeFirstMove = false;
 	private int turnNumber = 1;
 	private static int undosLeft;
-	Stack history;
+	Stack history= new Stack();
 	boolean animationInProgress = false;
 	
 	@Override
@@ -65,7 +65,6 @@ public class GameActivity extends Activity implements OnGestureListener {
         // GestureDetector.OnGestureListener
         mDetector = new GestureDetectorCompat(this,this);
         
-        history = new Stack();
 	}
 	
 
@@ -105,8 +104,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		super.onResume();
 	}
 	
-	
-	
 	/**
 	 * When a button is pressed to make the game act
 	 * @param view The button that was pressed
@@ -118,16 +115,9 @@ public class GameActivity extends Activity implements OnGestureListener {
 				undo();
 			break;
 		case R.id.shuffle_button:
-			
-			// Save the game history before each move
-			history.push(game.getGrid().clone(), game.getScore());
-			
 			shuffleGame();
-			
 			break;
 		}
-		
-		updateGame();
 	}
 	
 	/**
@@ -138,6 +128,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		animationInProgress = true;
 		
+		if(! game.canMove(direction)) {
+			animationInProgress = false;
+			return;
+		}
+
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		int speed = Integer.valueOf(prefs.getString("speed", "300"));
 		
@@ -199,8 +194,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 			@Override
 			public void onAnimationEnd(Animator animation) {
 				turnNumber++;
-				game.addRandomPiece();
 				updateGame();
+				addTile();
 				animationInProgress = false;
 			}
 			
@@ -219,19 +214,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		for(ObjectAnimator animation: translateAnimations)
 			animation.start();
 		
-	}
-	
-	private void undo() {
-		if(undosLeft != 0) {
-			game.setGrid(history.popBoard());
-			game.setScore(history.popScore());
-			turnNumber--;
-
-			if(undosLeft > 0)
-				undosLeft--;
-
-			updateGame();
-		}
 	}
 	
 	/**
@@ -312,8 +294,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 
 	/**
 	 * Update the game board 
-	 * Precondition: the grid has already been created 
-	 * by calling createGrid()
+	 * Precondition: the grid has already been created by calling createGrid()
 	 */
 	private void updateGrid() {
 		
@@ -358,7 +339,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 
 					button = new Button(this);
 					button.setId(row * 100 + col);
-
 					button.setTextSize(30);
 
 					tile = game.getGrid().get(new Location(row, col));
@@ -373,7 +353,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 					button.setTag(null);
 
 					gridLayout.addView(button,gridLayoutParam);
-					
 				}
 			}
 		}
@@ -392,12 +371,37 @@ public class GameActivity extends Activity implements OnGestureListener {
 		}
 	}
 
+	private void addTile() {
+		
+		Location loc = game.addRandomPiece();
+		int row = loc.getRow();
+		int col = loc.getCol();
+		
+		Button newTile = (Button) findViewById(row * 100 + col);
+		
+		int tile = game.getGrid().get(new Location(row, col));
+		newTile.setText(convertToTileText(tile));
+		
+		// Immediately make the button invisible
+		ObjectAnimator.ofFloat(newTile, View.ALPHA, 0).setDuration(0).start();
+		
+		// Make the button visible. It still cannot be seen
+		newTile.setVisibility(View.VISIBLE);
+		
+		// Fade the button in
+		ObjectAnimator.ofFloat(newTile, View.ALPHA, 1).setDuration(300).start();
+	}
+	
 	/**
 	 * Shuffles the game board and animates the grid
 	 * The grid layout spins 360¡, the tiles are shuffled, then it spins
 	 * back in the opposite direction
 	 */
 	private void shuffleGame() {
+		
+		// Save the game history before each move
+		history.push(game.getGrid().clone(), game.getScore());
+		
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		
 		// Causes conflicts when the shuffle button is double tapped
@@ -434,6 +438,19 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		rotateAnimation.start();
 		turnNumber++;
+	}
+	
+	private void undo() {
+		if(undosLeft != 0) {
+			game.setGrid(history.popBoard());
+			game.setScore(history.popScore());
+			turnNumber--;
+
+			if(undosLeft > 0)
+				undosLeft--;
+
+			updateGame();
+		}
 	}
 	
 	public void createCountdownTimer() {

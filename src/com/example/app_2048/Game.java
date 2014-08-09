@@ -584,7 +584,7 @@ public class Game implements java.io.Serializable
 	 * Ex. If the highest piece is 32 then a 2,4,8, or 16 can appear
 	 * All possible tiles have an equal chance of appearing
 	 */
-	public void addRandomPiece()
+	public Location addRandomPiece()
 	{
 		// See method header for description of dynamicTileSpawning
 		if(dynamicTileSpawning)
@@ -602,15 +602,15 @@ public class Game implements java.io.Serializable
 				possibleTiles.add(t);
 			
 			int tile = possibleTiles.get((int) (Math.random() * possibleTiles.size()));
-			addRandomPiece(tile);
+			return addRandomPiece(tile);
 			
 		}
 		else
 		{	
 			if(Math.random() < CHANCE_OF_2)
-				addRandomPiece(2);
+				return addRandomPiece(2);
 			else
-				addRandomPiece(4);
+				return addRandomPiece(4);
 		}
 	}
 	
@@ -618,7 +618,7 @@ public class Game implements java.io.Serializable
 	 * Adds a specified tile to the board in a random location
 	 * @param tile The number tile to add
 	 */
-	private void addRandomPiece(int tile)
+	private Location addRandomPiece(int tile)
 	{
 		// A list of the empty spaces on the board
 		List<Location> empty = board.getEmptyLocations();
@@ -627,8 +627,11 @@ public class Game implements java.io.Serializable
 		if(! empty.isEmpty())
 		{
 			int randomLoc = (int) (Math.random() * empty.size());
-			board.set(empty.get(randomLoc), tile);
+			Location loc = empty.get(randomLoc);
+			board.set(loc, tile);
+			return loc;
 		}
+		return null;
 	}
 	
 	/**
