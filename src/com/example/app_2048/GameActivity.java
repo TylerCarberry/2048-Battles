@@ -46,7 +46,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private int turnNumber = 1;
 	private static int undosLeft;
 	Stack history;
-	boolean moveInProgress = false;
+	boolean animationInProgress = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -110,66 +110,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		super.onResume();
 	}
 	
-	/**
-	 * Update the tiles
-	 */
-	private void updateGrid() {
-		
-		GridLayout v = (GridLayout) findViewById(R.id.grid_layout);
-		v.setBackgroundColor(color.holo_green_light);
-		
-		v.setRowCount(game.getGrid().getNumRows());
-		v.setColumnCount(game.getGrid().getNumCols());
-		
-		Button button, checkIfExists;
-        Spec specRow, specCol;
-        GridLayout.LayoutParams gridLayoutParam;
-        int tile;
-        
-        for(int row = 0; row < v.getRowCount(); row++) {
-        	for(int col = 0; col < v.getColumnCount(); col++) {
-        		specRow = GridLayout.spec(row, 1); 
-        		specCol = GridLayout.spec(col, 1);
-        		gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
-
-        		
-        		checkIfExists = (Button) findViewById(row * 100 + col);
-        		
-        		// Remove the tile already there if there is one
-        		if(checkIfExists != null)
-        		{
-        			ViewGroup layout = (ViewGroup) checkIfExists.getParent();
-        			if(null!=layout)
-        				layout.removeView(checkIfExists);
-        		}
-        		
-        		button = new Button(this);
-        		button.setId(row * 100 + col);
-
-        		tile = game.getGrid().get(new Location(row, col));
-        		
-        		if(tile == 0)
-        			button.setVisibility(View.INVISIBLE);
-        		else {
-        			switch (tile) {
-        			case -1:
-        				button.setText("XX");
-        				break;
-        			case -2:
-        				button.setText("x");
-        				break;
-        			default:
-        				button.setText("" + tile);
-        			}
-        			
-        			button.setVisibility(View.VISIBLE);
-        		}
-
-        		v.addView(button,gridLayoutParam);
-        		
-        	}
-        }
-	}
+	
 	
 	/**
 	 * When a button is pressed to make the game act
@@ -182,7 +123,12 @@ public class GameActivity extends Activity implements OnGestureListener {
 				undo();
 			break;
 		case R.id.shuffle_button:
-			game.shuffle();
+			
+			// Save the game history before each move
+			history.push(game.getGrid().clone(), game.getScore());
+			
+			shuffleGame();
+			
 			break;
 		}
 		
@@ -195,7 +141,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 */
 	public void act(int direction) {
 		
-		moveInProgress = true;
+		animationInProgress = true;
 		
 		// Save the game history before each move
 		history.push(game.getGrid().clone(), game.getScore());
@@ -245,7 +191,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		}
 		
 		if(translateAnimations.size() == 0) {
-			moveInProgress = false;
+			animationInProgress = false;
 			return;
 		}
 		
@@ -256,7 +202,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 				turnNumber++;
 				game.addRandomPiece();
 				updateGame();
-				moveInProgress = false;
+				animationInProgress = false;
 			}
 			
 			@Override
@@ -264,7 +210,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 			@Override
 			public void onAnimationCancel(Animator animation) {
 				Log.d(LOG_TAG, "Animation cancelled");
-				moveInProgress = false;
+				animationInProgress = false;
 			}
 			@Override
 			public void onAnimationRepeat(Animator animation) { }
@@ -290,59 +236,170 @@ public class GameActivity extends Activity implements OnGestureListener {
 	}
 	
 	/**
-	 * Update the text views
+	 * Update the game information. 
+	 * Turn, Score, Undos Left, and Moves Left
 	 */
 	public void updateGame() {
-		TextView gameTextView = (TextView) findViewById(R.id.game_textview);
 		TextView turnTextView = (TextView) findViewById(R.id.turn_textview);
 		TextView scoreTextView = (TextView) findViewById(R.id.score_textview);
 		TextView undosTextView = (TextView) findViewById(R.id.undos_textview);
 		TextView movesTextView = (TextView) findViewById(R.id.moves_textView);
 		// TextView timeTextView = (TextView) findViewById(R.id.time_textview);
 		
-		gameTextView.setText(game.getGrid().toString());
+		// Update the turn number
 		turnTextView.setText("Turn #" + turnNumber);
+		
+		// Update the score
 		scoreTextView.setText("Score: " + game.getScore());
 		
+		// Update the undos left
 		if(undosLeft >= 0)
 			undosTextView.setText("Undos left: " + undosLeft);
 		else
 			undosTextView.setText("");
-			
+		
+		// Update moves left
 		int movesLeft = game.getMovesRemaining();
 		if(movesLeft >= 0)
 			movesTextView.setText("Moves left: " + movesLeft);
 		else
 			movesTextView.setText("");
 		
-		
-		/*
-		double timeLeft = game.getTimeLeft();
-		if(timeLeft >= 0)
-			timeTextView.setText("Time left: " + timeLeft);
-		else
-			timeTextView.setText("time unlimited");
-		*/
-		
+		// Update the game board
 		updateGrid();
 		
 		if(game.lost())
 			Toast.makeText(getApplicationContext(), "YOU LOSE", Toast.LENGTH_SHORT).show();
 	}
+
+	/**
+	 * Update the game board
+	 */
+	private void updateGrid() {
+		
+		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
+		
+		gridLayout.setRowCount(game.getGrid().getNumRows());
+		gridLayout.setColumnCount(game.getGrid().getNumCols());
+
+		Button button, checkIfExists;
+		Spec specRow, specCol;
+		GridLayout.LayoutParams gridLayoutParam;
+		int tile;
+
+		for(int row = 0; row < gridLayout.getRowCount(); row++) {
+			for(int col = 0; col < gridLayout.getColumnCount(); col++) {
+				specRow = GridLayout.spec(row, 1); 
+				specCol = GridLayout.spec(col, 1);
+				gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
+				
+				checkIfExists = (Button) findViewById(row * 100 + col);
+
+				// Remove the tile already there if there is one
+				if(checkIfExists != null)
+				{
+					ViewGroup layout = (ViewGroup) checkIfExists.getParent();
+					if(null!=layout)
+						layout.removeView(checkIfExists);
+				}
+
+				button = new Button(this);
+				button.setId(row * 100 + col);
+				
+				// Doesn't work?
+				// button.setWidth(100);
+				// button.setHeight(100);
+				
+				button.setTextSize(30);
+
+				tile = game.getGrid().get(new Location(row, col));
+
+				if(tile == 0)
+					button.setVisibility(View.INVISIBLE);
+				else {
+					switch (tile) {
+					case -1:
+						button.setText("XX");
+						break;
+					case -2:
+						button.setText("x");
+						break;
+					default:
+						button.setText("" + tile);
+					}
+					button.setVisibility(View.VISIBLE);
+				}
+
+				gridLayout.addView(button,gridLayoutParam);
+
+				/*
+				button = (Button) findViewById(row * 100 + col);
+				button.setWidth(100);
+				button.setHeight(100);
+				
+				Log.d(LOG_TAG, "Height: " + button.getHeight());
+				Log.d(LOG_TAG, "Width: " + button.getWidth());
+				*/
+				
+			}
+		}
+	}
+
+	/**
+	 * Shuffles the game board and animates the grid
+	 * The grid layout spins 360¡, the tiles are shuffled, then it spins
+	 * back in the opposite direction
+	 */
+	private void shuffleGame() {
+		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
+		
+		// Causes conflicts when the shuffle button is double tapped
+		if(animationInProgress)
+			return;
+		
+		ObjectAnimator rotateAnimation =
+				ObjectAnimator.ofFloat(gridLayout, View.ROTATION, 360);
+		rotateAnimation.setRepeatCount(1);
+		rotateAnimation.setRepeatMode(ValueAnimator.REVERSE);
+		
+		// 300 ms should be fast enough to not notice the tiles changing
+		rotateAnimation.setDuration(300);
+		
+		rotateAnimation.addListener(new AnimatorListener(){
+			@Override
+			public void onAnimationStart(Animator animation) { 
+				animationInProgress = true;
+			}
+			@Override
+			public void onAnimationEnd(Animator animation) { 
+				animationInProgress = false;
+			}
+			@Override
+			public void onAnimationCancel(Animator animation) {
+				Log.d(LOG_TAG, "Shuffle animation cancelled");
+			}
+			@Override
+			public void onAnimationRepeat(Animator animation) {
+				game.shuffle();
+				updateGrid();
+			}
+		});
+		
+		rotateAnimation.start();
+		turnNumber++;
+	}
 	
 	public void createCountdownTimer() {
 		Log.d(LOG_TAG, "create countdown timer");
-		
+
 		TextView timeLeftTextView = (TextView) findViewById(R.id.time_textview);
-		
 		Timer timeLeftTimer = new Timer(timeLeftTextView, (long) game.getTimeLeft() * 1000);
-		
 		timeLeftTimer.start();
-		
 	}
 	
 	/**
 	 * Used to update the time left TextView
+	 * ***** Is currently not used in the game *****
 	 */
 	public class Timer extends CountDownTimer
 	{
@@ -360,20 +417,19 @@ public class GameActivity extends Activity implements OnGestureListener {
 		public void onFinish()
 		{
 			Log.d(LOG_TAG, "finish");
-			
 			timeLeftTextView.setText("Time Up!");
 		}
 
 		public void onTick(long millisUntilFinished) 
 		{
 			Log.d(LOG_TAG, "tick");
-			
 			timeLeftTextView.setText("Time Left : " + millisUntilFinished/1000);
 		}
 	}
 
 	/**
-	 * A placeholder fragment containing a simple view.
+	 * The only fragment in the activity. Has the game board and the
+	 * game info such as score or turn number
 	 */
 	public static class GameFragment extends Fragment {
 
@@ -386,7 +442,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 			View rootView = inflater.inflate(R.layout.fragment_game, container,
 					false);
 			
-			
 			Intent intent = getActivity().getIntent();
 			
 			if(intent != null) {
@@ -396,7 +451,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 				game = GameModes.newGameFromId(gameMode);
 				
 				undosLeft = game.getUndosRemaining();
-				
 			}
 			else
 				Log.d(LOG_TAG, "No intent passed");
@@ -404,24 +458,19 @@ public class GameActivity extends Activity implements OnGestureListener {
 			return rootView;
 		}
 	}
-
+	
 	@Override 
     public boolean onTouchEvent(MotionEvent event){ 
         this.mDetector.onTouchEvent(event);
-        // Be sure to call the superclass implementation
         return super.onTouchEvent(event);
     }
-
-    @Override
-    public boolean onDown(MotionEvent event) { 
-        return true;
-    }
-
+	
+     // When the screen is swiped
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2, 
             float velocityX, float velocityY) {
         
-    	if(!moveInProgress) {
+    	if(!animationInProgress) {
     		// Horizontal swipe
     		if(Math.abs(velocityX) > Math.abs(velocityY))
     			if(velocityX > 0)
@@ -437,7 +486,9 @@ public class GameActivity extends Activity implements OnGestureListener {
     	}
     	return true;
     }
-
+    
+    @Override
+    public boolean onDown(MotionEvent event) { return true; }
     @Override
     public void onLongPress(MotionEvent event) {}
     @Override
