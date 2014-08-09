@@ -99,17 +99,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	@Override
 	protected void onResume() {
-		
+		createGrid();
 		updateGame();
-		
-		/*
-		if((!madeFirstMove) && game.getTurns() == 1)
-		{
-			if(game.getTimeLeft() > 0)
-				createCountdownTimer();
-			madeFirstMove = true;
-		}
-		*/
 		
 		super.onResume();
 	}
@@ -174,6 +165,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 					distance *= -1;
 				
 				Button movedButton = (Button) findViewById(tile.getRow() * 100 + tile.getCol());
+				movedButton.setTag("Moved");
 				
 				// Determine the distance to move in pixels
 				// On my device each column is 145 pixels apart and each row is 110
@@ -278,18 +270,19 @@ public class GameActivity extends Activity implements OnGestureListener {
 		if(game.lost())
 			Toast.makeText(getApplicationContext(), getString(R.string.you_lose), Toast.LENGTH_SHORT).show();
 	}
-
+	
 	/**
-	 * Update the game board
+	 * Create the game board 
+	 * Precondition: the grid does not already exist
 	 */
-	private void updateGrid() {
+	private void createGrid() {
 		
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		
 		gridLayout.setRowCount(game.getGrid().getNumRows());
 		gridLayout.setColumnCount(game.getGrid().getNumCols());
 
-		Button button, checkIfExists;
+		Button button;
 		Spec specRow, specCol;
 		GridLayout.LayoutParams gridLayoutParam;
 		int tile;
@@ -300,22 +293,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 				specCol = GridLayout.spec(col, 1);
 				gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
 				
-				checkIfExists = (Button) findViewById(row * 100 + col);
-
-				// Remove the tile already there if there is one
-				if(checkIfExists != null)
-				{
-					ViewGroup layout = (ViewGroup) checkIfExists.getParent();
-					if(null!=layout)
-						layout.removeView(checkIfExists);
-				}
-
 				button = new Button(this);
 				button.setId(row * 100 + col);
-				
-				// Doesn't work?
-				// button.setWidth(100);
-				// button.setHeight(100);
 				
 				button.setTextSize(30);
 
@@ -323,32 +302,93 @@ public class GameActivity extends Activity implements OnGestureListener {
 
 				if(tile == 0)
 					button.setVisibility(View.INVISIBLE);
-				else {
-					switch (tile) {
-					case -1:
-						button.setText("XX");
-						break;
-					case -2:
-						button.setText("x");
-						break;
-					default:
-						button.setText("" + tile);
-					}
+				else 
 					button.setVisibility(View.VISIBLE);
-				}
-
+				
 				gridLayout.addView(button,gridLayoutParam);
-
-				/*
-				button = (Button) findViewById(row * 100 + col);
-				button.setWidth(100);
-				button.setHeight(100);
-				
-				Log.d(LOG_TAG, "Height: " + button.getHeight());
-				Log.d(LOG_TAG, "Width: " + button.getWidth());
-				*/
-				
 			}
+		}
+	}
+
+	/**
+	 * Update the game board 
+	 * Precondition: the grid has already been created 
+	 * by calling createGrid()
+	 */
+	private void updateGrid() {
+		
+		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
+		
+		gridLayout.setRowCount(game.getGrid().getNumRows());
+		gridLayout.setColumnCount(game.getGrid().getNumCols());
+
+		Button button;
+		Spec specRow, specCol;
+		GridLayout.LayoutParams gridLayoutParam;
+		int tile;
+		String expectedValue, actualValue;
+
+		for(int row = 0; row < gridLayout.getRowCount(); row++) {
+			for(int col = 0; col < gridLayout.getColumnCount(); col++) {
+				specRow = GridLayout.spec(row, 1); 
+				specCol = GridLayout.spec(col, 1);
+				gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
+
+				button = (Button) findViewById(row * 100 + col);
+				tile = game.getGrid().get(new Location(row,col));
+				
+				expectedValue = convertToTileText(tile);
+				actualValue = button.getText().toString();
+				
+				// A tile is given a tag when it changes position
+				if(button.getTag() != null ||
+						// If the value of the button does not match the game
+						(! expectedValue.equals(actualValue))) {
+					
+					/*
+					Log.d(LOG_TAG, row + "," + col);
+					Log.d(LOG_TAG, "Tag: " + button.getTag());
+					Log.d(LOG_TAG, "Is: " + convertToTileText(tile));
+					Log.d(LOG_TAG, "Expected: " + (button.getText().toString()));
+					*/
+					
+					ViewGroup layout = (ViewGroup) button.getParent();
+					if(null!=layout)
+						layout.removeView(button);
+
+					button = new Button(this);
+					button.setId(row * 100 + col);
+
+					button.setTextSize(30);
+
+					tile = game.getGrid().get(new Location(row, col));
+
+					if(tile == 0)
+						button.setVisibility(View.INVISIBLE);
+					else {
+						button.setText(convertToTileText(tile));
+						button.setVisibility(View.VISIBLE);
+					}
+					
+					button.setTag(null);
+
+					gridLayout.addView(button,gridLayoutParam);
+					
+				}
+			}
+		}
+	}
+	
+	private String convertToTileText(int tile) {
+		switch (tile) {
+		case 0:
+			return "";
+		case -1:
+			return "XX";
+		case -2:
+			return "x";
+		default:
+			return "" + tile;
 		}
 	}
 
@@ -456,7 +496,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 				
 				// Converts the id of the game mode selected to a game
 				game = GameModes.newGameFromId(gameMode);
-				
 				undosLeft = game.getUndosRemaining();
 			}
 			else
