@@ -47,6 +47,14 @@
     <string name="fast">Fast</string>
     <string name="no_animation">No Animation</string>
     
+    <string name="save_loc_turn">saved turn</string>
+    <string name="save_loc_score">saved score</string>
+    <string name="save_loc_undo_left">saved undo left</string>
+    <string name="save_loc_move_left">saved move left</string>
+    <string name="save_loc_shuffle_left">saved shuffle left</string>
+    <string name="save_loc_game">saved game</string>
+    
+    
     
     
 </resources>

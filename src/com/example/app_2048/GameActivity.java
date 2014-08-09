@@ -1,5 +1,13 @@
 package com.example.app_2048;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +20,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
@@ -101,7 +110,16 @@ public class GameActivity extends Activity implements OnGestureListener {
 		createGrid();
 		updateGame();
 		
+		loadGame();
+		
 		super.onResume();
+	}
+	
+	@Override
+	protected void onStop() {
+		saveGame();
+		
+		super.onStop();
 	}
 	
 	/**
@@ -117,6 +135,16 @@ public class GameActivity extends Activity implements OnGestureListener {
 		case R.id.shuffle_button:
 			shuffleGame();
 			break;
+			
+		case R.id.save:
+			saveGame();
+			break;
+			
+		case R.id.load:
+			loadGame();
+			break;
+			
+			
 		}
 	}
 	
@@ -452,6 +480,89 @@ public class GameActivity extends Activity implements OnGestureListener {
 			updateGame();
 		}
 	}
+	
+	
+	private void saveGame() {
+		
+		File file = new File(getFilesDir(), "FILENAME");
+
+		// Serialize the game
+		FileOutputStream fop;
+		try {
+			fop = new FileOutputStream(file);
+			ObjectOutputStream output = new ObjectOutputStream(fop);
+
+			// Write the game to the file
+			output.writeObject(game);
+
+			output.close();
+			fop.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private void loadGame() {
+
+		FileInputStream fi;
+		File file = new File(getFilesDir(), "FILENAME");
+
+		try {
+			fi = new FileInputStream(file);
+			ObjectInputStream input = new ObjectInputStream(fi);
+
+			game = (Game) input.readObject();
+
+			fi.close();
+			input.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (StreamCorruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+		updateGame();
+		
+		
+		
+		
+		/*
+		
+		try {
+			System.out.println(Save.loadGame());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		/*
+		
+		SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+		int saved = sharedPref.getInt("saved high score", 100);
+		
+		turnNumber = saved;
+		
+		*/
+	}
+	
 	
 	public void createCountdownTimer() {
 		Log.d(LOG_TAG, "create countdown timer");

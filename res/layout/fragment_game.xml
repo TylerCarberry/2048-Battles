@@ -84,4 +84,23 @@
         android:onClick="act"
         android:text="@string/shuffle" />
 
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/time_textview"
+        android:layout_below="@+id/time_textview"
+        android:onClick="act"
+        android:text="Save" />
+
+    <Button
+        android:id="@+id/load"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button1"
+        android:layout_alignBottom="@+id/button1"
+        android:layout_toRightOf="@+id/button1"
+        android:onClick="act"
+        android:text="Load" />
+
 </RelativeLayout>
