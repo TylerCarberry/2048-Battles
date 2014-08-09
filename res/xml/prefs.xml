@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <EditTextPreference 
+        android:title="Your Name"
+        android:key="name"/>
+    
+    <CheckBoxPreference 
+        android:title="Checkbox"
+        android:defaultValue="true"
+        android:key="checkbox"/>
+    
+    <ListPreference 
+        android:title="Tile Slide Speed"
+        android:key="speed"
+        android:entries="@array/list"
+        android:entryValues="@array/lValues"/>
+    
+
+</PreferenceScreen>
