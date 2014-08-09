@@ -13,6 +13,7 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Build;
+import android.preference.PreferenceManager;
 
 public class GameActivity extends Activity implements OnGestureListener {
 	
@@ -81,7 +83,9 @@ public class GameActivity extends Activity implements OnGestureListener {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if(id == R.id.action_settings) {
+			Intent showSettings = new Intent(this, com.example.app_2048.SettingsActivity.class);
+			startActivity(showSettings);
 			return true;
 		}
 		if (id == R.id.grid_layout) {
@@ -143,6 +147,9 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		animationInProgress = true;
 		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		int speed = Integer.valueOf(prefs.getString("speed", "300"));
+		
 		// Save the game history before each move
 		history.push(game.getGrid().clone(), game.getScore());
 		
@@ -183,7 +190,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 				}
 				
 				// Time in milliseconds to move the tile
-				animation.setDuration(300);
+				animation.setDuration(speed);
 				
 				// Add the new animation to the list
 				translateAnimations.add(animation);
