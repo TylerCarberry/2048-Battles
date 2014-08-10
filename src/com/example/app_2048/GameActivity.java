@@ -479,25 +479,13 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	private void saveGame() {
 		
-		File file = new File(getFilesDir(), "FILENAME");
+		File file = new File(getFilesDir(), getString(R.string.file_current_game));
 
-		// Serialize the game
-		FileOutputStream fop;
 		try {
-			fop = new FileOutputStream(file);
-			ObjectOutputStream output = new ObjectOutputStream(fop);
-
-			// Write the game to the file
-			output.writeObject(game);
-
-			output.close();
-			fop.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Save.saveGame(game, file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Toast.makeText(getApplicationContext(), "Error: Save file not found", Toast.LENGTH_SHORT).show();
 		}
 		
 	}
@@ -506,38 +494,16 @@ public class GameActivity extends Activity implements OnGestureListener {
 
 		Log.d(LOG_TAG, "Entering load game");
 		
-		FileInputStream fi;
-		File file = new File(getFilesDir(), "FILENAME");
-
+		File file = new File(getFilesDir(), getString(R.string.file_current_game));
 		try {
-			fi = new FileInputStream(file);
-			ObjectInputStream input = new ObjectInputStream(fi);
-
-			game = (Game) input.readObject();
-
-			fi.close();
-			input.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (StreamCorruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			game = Save.loadGame(file);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			game = new Game();
+		} catch (IOException e) {
+			game = new Game();
 		}
-
 		
-		Log.d(LOG_TAG, game.toString());
-		
-		Log.d(LOG_TAG, "Calling updategame from load");
 		updateGame();
-		
-		Log.d(LOG_TAG, "Leaving load game");
 	}
 	
 	

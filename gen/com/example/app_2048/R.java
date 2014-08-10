@@ -244,6 +244,8 @@ public final class R {
         public static final int auto_recursive=0x7f09000e;
         public static final int autoplay=0x7f09000a;
         public static final int fast=0x7f090029;
+        public static final int file_best_game=0x7f090033;
+        public static final int file_current_game=0x7f090032;
         public static final int hello_world=0x7f09001b;
         public static final int help=0x7f090009;
         public static final int how_to_play=0x7f090005;
@@ -264,27 +266,27 @@ public final class R {
         public static final int move_remaining=0x7f090023;
         public static final int no_animation=0x7f09002a;
         public static final int pause=0x7f090008;
-        public static final int pref_default_display_name=0x7f090037;
-        public static final int pref_description_social_recommendations=0x7f090035;
+        public static final int pref_default_display_name=0x7f090039;
+        public static final int pref_description_social_recommendations=0x7f090037;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f090039;
+        public static final int pref_header_data_sync=0x7f09003b;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f090033;
+        public static final int pref_header_general=0x7f090035;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f09003c;
-        public static final int pref_ringtone_silent=0x7f09003f;
-        public static final int pref_title_add_friends_to_messages=0x7f090038;
-        public static final int pref_title_display_name=0x7f090036;
-        public static final int pref_title_new_message_notifications=0x7f09003d;
-        public static final int pref_title_ringtone=0x7f09003e;
-        public static final int pref_title_social_recommendations=0x7f090034;
-        public static final int pref_title_sync_frequency=0x7f09003a;
-        public static final int pref_title_system_sync_settings=0x7f09003b;
-        public static final int pref_title_vibrate=0x7f090040;
+        public static final int pref_header_notifications=0x7f09003e;
+        public static final int pref_ringtone_silent=0x7f090041;
+        public static final int pref_title_add_friends_to_messages=0x7f09003a;
+        public static final int pref_title_display_name=0x7f090038;
+        public static final int pref_title_new_message_notifications=0x7f09003f;
+        public static final int pref_title_ringtone=0x7f090040;
+        public static final int pref_title_social_recommendations=0x7f090036;
+        public static final int pref_title_sync_frequency=0x7f09003c;
+        public static final int pref_title_system_sync_settings=0x7f09003d;
+        public static final int pref_title_vibrate=0x7f090042;
         public static final int prompt_start_game=0x7f09001d;
         public static final int remove_low=0x7f09001c;
         public static final int save_loc_game=0x7f090030;
@@ -302,7 +304,7 @@ public final class R {
         public static final int time_remaining=0x7f090024;
         public static final int title_activity_game=0x7f09001a;
         public static final int title_activity_info=0x7f090031;
-        public static final int title_activity_settings=0x7f090032;
+        public static final int title_activity_settings=0x7f090034;
         public static final int turn=0x7f09001e;
         public static final int undo=0x7f090020;
         public static final int undo_remaining=0x7f090022;

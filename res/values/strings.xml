@@ -51,5 +51,8 @@
     <string name="save_loc_shuffle_left">saved shuffle left</string>
     <string name="save_loc_game">saved game</string>
     <string name="title_activity_info">InfoActivity</string>
+    <string name="file_current_game">CURRENT_GAME</string>
+    <string name="file_best_game">BEST_GAME</string>
+    
 
 </resources>

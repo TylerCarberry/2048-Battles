@@ -176,7 +176,13 @@ public class MainActivity extends Activity
 		// custom mode creation.
 		if(gameId != GameModes.LOAD_GAME_ID) {
 			Game game = GameModes.newGameFromId(gameId);
-			saveGame(game);
+			File file = new File(getFilesDir(), getString(R.string.file_current_game));
+			try {
+				Save.saveGame(game, file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		startActivity(new Intent(this, GameActivity.class));
