@@ -7,9 +7,13 @@ package com.example.app_2048;
 
 import java.util.*;
 
+import android.util.Log;
+
 public class Game implements java.io.Serializable
 {
 	private static final long serialVersionUID = 3356339029021499348L;
+	
+	private final static String LOG_TAG = Game.class.getSimpleName();
 	
 	// The main board the game is played on
 	private Grid board;
@@ -209,14 +213,13 @@ public class Game implements java.io.Serializable
 		board.set(from, 0);
 	}
 	
-	/*
 	public void newTurn() {
 		turnNumber++;
-		addRandomPiece();
-		history.push(lastBoard, score);
-		movesRemaining--;
+		//history.push(lastBoard, score);
+
+		if(movesRemaining > 0)
+			movesRemaining--;
 	}
-	*/
 	
 	/** 
 	 * Stores the starting game time and activates the time limit after
@@ -251,7 +254,9 @@ public class Game implements java.io.Serializable
 			// Print the number of undos remaining
 			if(undosRemaining >= 0)
 				System.out.println("Undos remaining: " + undosRemaining);
+			
 		}
+		
 	}
 	
 	/**
@@ -294,6 +299,11 @@ public class Game implements java.io.Serializable
 		
 		turnNumber++;
 	}
+	
+	public void saveGameInHistory() {
+		history.push(board.clone(), score);
+	}
+	
 	
 	/**
 	 * Remove all 2's and 4's from the board

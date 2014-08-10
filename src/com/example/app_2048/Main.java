@@ -538,31 +538,31 @@ public class Main
 	 */
 	private static void loadKeyMap()
 	{
-		try
-		{
-			keyMap = Save.loadKeyMap();
-		} 
-		catch (IOException e)
-		{
-			System.err.println("Can not access file");
-		}
-		catch (ClassNotFoundException e)
-		{
-			System.err.println("Can not read file");
-		}
-		finally
-		{
-			if(keyMap == null)
-			{
-				// Create the default key mapping
-				keyMap = new HashMap<Character, Integer>();
-				
-				keyMap.put('u', Location.UP);
-				keyMap.put('r', Location.RIGHT);
-				keyMap.put('d', Location.DOWN);
-				keyMap.put('l', Location.LEFT);
-			}
-		}
+//		try
+//		{
+//			keyMap = Save.loadKeyMap();
+//		} 
+//		catch (IOException e)
+//		{
+//			System.err.println("Can not access file");
+//		}
+//		catch (ClassNotFoundException e)
+//		{
+//			System.err.println("Can not read file");
+//		}
+//		finally
+//		{
+//			if(keyMap == null)
+//			{
+//				// Create the default key mapping
+//				keyMap = new HashMap<Character, Integer>();
+//				
+//				keyMap.put('u', Location.UP);
+//				keyMap.put('r', Location.RIGHT);
+//				keyMap.put('d', Location.DOWN);
+//				keyMap.put('l', Location.LEFT);
+//			}
+//		}
 	}
 	
 	private static void customizeKeyMap()
@@ -588,15 +588,15 @@ public class Main
 		input = scan.next().charAt(0);
 		keyMap.put(input, Location.LEFT);
 		
-		try
-		{
-			Save.saveKeyMap(keyMap);
-		} 
-		catch (IOException e)
-		{
-			System.err.println("Error: Save file cannot be accesed");
-			e.printStackTrace();
-		}
+//		try
+//		{
+//			Save.saveKeyMap(keyMap);
+//		} 
+//		catch (IOException e)
+//		{
+//			System.err.println("Error: Save file cannot be accessed");
+//			e.printStackTrace();
+//		}
 	}
 	
 	/**

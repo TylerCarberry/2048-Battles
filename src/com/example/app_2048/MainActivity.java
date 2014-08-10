@@ -57,8 +57,6 @@ public class MainActivity extends Activity
 
 			Game game = (Game) input.readObject();
 
-			Log.d(LOG_TAG, game.toString());
-			
 			fi.close();
 			input.close();
 

@@ -56,11 +56,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 	final static String LOG_TAG = GameActivity.class.getSimpleName();
 	private GestureDetectorCompat mDetector; 
 	// private boolean madeFirstMove = false;
-	private int turnNumber = 1;
-	private static int undosLeft;
 	Stack history= new Stack();
 	boolean animationInProgress = false;
-	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +127,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	@Override
 	protected void onStop() {
+		resumingSave = false;
+		
 		saveGame();
 		
 		super.onStop();
@@ -142,7 +141,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	public void act(View view) {
 		switch(view.getId()) {
 		case R.id.undo_button:
-			if((!history.isEmpty()) && undosLeft != 0)
+			if(game.getMovesRemaining() != 0)
 				undo();
 			break;
 		case R.id.shuffle_button:
@@ -150,7 +149,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 			break;
 		case R.id.restart:
 			game = new Game();
-			turnNumber = 0;
 			updateGame();
 			break;
 		}
@@ -173,7 +171,9 @@ public class GameActivity extends Activity implements OnGestureListener {
 		int speed = Integer.valueOf(prefs.getString("speed", "300"));
 		
 		// Save the game history before each move
-		history.push(game.getGrid().clone(), game.getScore());
+		//history.push(game.getGrid().clone(), game.getScore());
+		
+		game.saveGameInHistory();
 		
 		// Get a list of all tiles
 		List<Location> tiles = game.getGrid().getLocationsInTraverseOrder(direction);
@@ -220,16 +220,12 @@ public class GameActivity extends Activity implements OnGestureListener {
 			}
 		}
 		
-		if(translateAnimations.size() == 0) {
-			animationInProgress = false;
-			return;
-		}
-		
 		translateAnimations.get(0).addListener(new AnimatorListener(){
 			
 			@Override
 			public void onAnimationEnd(Animator animation) {
-				turnNumber++;
+				
+				game.newTurn();
 				updateGame();
 				addTile();
 				animationInProgress = false;
@@ -264,12 +260,13 @@ public class GameActivity extends Activity implements OnGestureListener {
 		// TextView timeTextView = (TextView) findViewById(R.id.time_textview);
 		
 		// Update the turn number
-		turnTextView.setText(getString(R.string.turn) + " #" + turnNumber);
+		turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
 		
 		// Update the score
 		scoreTextView.setText(getString(R.string.score) + ": " + game.getScore());
 		
-		// Update the undos left
+		// Update the undos 
+		int undosLeft = game.getUndosRemaining();
 		if(undosLeft >= 0)
 			undosTextView.setText(getString(R.string.undo_remaining) + ": " + undosLeft);
 		else
@@ -440,7 +437,9 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private void shuffleGame() {
 		
 		// Save the game history before each move
-		history.push(game.getGrid().clone(), game.getScore());
+		//history.push(game.getGrid().clone(), game.getScore());
+		
+		game.saveGameInHistory();
 		
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		
@@ -472,23 +471,20 @@ public class GameActivity extends Activity implements OnGestureListener {
 			@Override
 			public void onAnimationRepeat(Animator animation) {
 				game.shuffle();
-				updateGrid();
+				updateGame();
 			}
 		});
 		
 		rotateAnimation.start();
-		turnNumber++;
 	}
 	
 	private void undo() {
-		if(undosLeft != 0) {
-			game.setGrid(history.popBoard());
-			game.setScore(history.popScore());
-			turnNumber--;
-
-			if(undosLeft > 0)
-				undosLeft--;
-
+		if(game.getUndosRemaining() != 0) {
+			//game.setGrid(history.popBoard());
+			//game.setScore(history.popScore());
+			
+			game.undo();
+			
 			updateGame();
 		}
 	}
@@ -627,16 +623,13 @@ public class GameActivity extends Activity implements OnGestureListener {
 				else {
 					resumingSave = false;
 					game = GameModes.newGameFromId(gameMode);
-					undosLeft = game.getUndosRemaining();
 				}
 			}
 			else {
 				game = new Game();
-				undosLeft = game.getUndosRemaining();
 				resumingSave = false;
 				Log.d(LOG_TAG, "No intent passed");
 			}
-				
 			
 			return rootView;
 		}
