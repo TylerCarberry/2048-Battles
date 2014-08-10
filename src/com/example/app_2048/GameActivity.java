@@ -50,12 +50,15 @@ import android.preference.PreferenceManager;
 
 public class GameActivity extends Activity implements OnGestureListener {
 	
+	// The time in milliseconds for the animation
+	public static final long SHUFFLE_SPEED = 300;
+	public static final long NEW_TILE_SPEED = 300;
+	
 	private static boolean boardCreated = false;
 	private static Game game;
 	final static String LOG_TAG = GameActivity.class.getSimpleName();
 	private GestureDetectorCompat mDetector; 
 	// private boolean madeFirstMove = false;
-	//Stack history= new Stack();
 	boolean animationInProgress = false;
 	
 	@Override
@@ -79,7 +82,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.game, menu);
 		return true;
@@ -97,13 +99,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 			updateGame();
 			return true;
 		}
-		
 		if (id == R.id.action_how_to_play) {
 			Intent showInfo = new Intent(this, com.example.app_2048.InfoActivity.class);
 			startActivity(showInfo);
 			return true;
 		}
-		
 		if(id == R.id.action_settings) {
 			Intent showSettings = new Intent(this, com.example.app_2048.SettingsActivity.class);
 			startActivity(showSettings);
@@ -232,7 +232,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		// Move all of the tiles
 		for(ObjectAnimator animation: translateAnimations)
 			animation.start();
-		
 	}
 	
 	/**
@@ -350,13 +349,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 						// If the value of the button does not match the game
 						(! expectedValue.equals(actualValue))) {
 					
-					/*
-					Log.d(LOG_TAG, row + "," + col);
-					Log.d(LOG_TAG, "Tag: " + button.getTag());
-					Log.d(LOG_TAG, "Is: " + convertToTileText(tile));
-					Log.d(LOG_TAG, "Expected: " + (button.getText().toString()));
-					*/
-					
 					ViewGroup layout = (ViewGroup) button.getParent();
 					if(null!=layout)
 						layout.removeView(button);
@@ -413,7 +405,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		newTile.setVisibility(View.VISIBLE);
 		
 		// Fade the button in
-		ObjectAnimator.ofFloat(newTile, View.ALPHA, 1).setDuration(300).start();
+		ObjectAnimator.ofFloat(newTile, View.ALPHA, 1).setDuration(NEW_TILE_SPEED).start();
 	}
 	
 	/**
@@ -440,7 +432,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		rotateAnimation.setRepeatMode(ValueAnimator.REVERSE);
 		
 		// 300 ms should be fast enough to not notice the tiles changing
-		rotateAnimation.setDuration(300);
+		rotateAnimation.setDuration(SHUFFLE_SPEED);
 		
 		rotateAnimation.addListener(new AnimatorListener(){
 			@Override

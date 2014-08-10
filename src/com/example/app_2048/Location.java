@@ -151,6 +151,11 @@ public class Location implements Cloneable, java.io.Serializable
 		}
 	}
 	
+	@Override
+	public boolean equals(Object loc) {
+		return (loc instanceof Location && ((Location) loc).getCol() == col && ((Location) loc).getRow() == row);
+	}
+	
 	/**
 	 * @return The location in the form 2,3
 	 */

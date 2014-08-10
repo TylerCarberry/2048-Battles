@@ -54,10 +54,11 @@ public class Game implements java.io.Serializable
 	// All possible tiles have an equal chance of appearing
 	private boolean dynamicTileSpawning = false;
 	
-	// Probably won't use
-	public ArrayList<Location> newTiles = new ArrayList<Location>();
-	public ArrayList<Location> movedFrom = new ArrayList<Location>();
-	public ArrayList<Location> movedTo = new ArrayList<Location>();
+	// When two tiles combine their location is stored. New tiles will not move to
+	// that location. This prevents tiles from double combining. 
+	// (When 4|4|8|0 is shifted left it will form two 8's instead of a 16)
+	private ArrayList<Location> destinationLocations = new ArrayList<Location>();
+	
 	
 	/**
 	 * Creates a default game with the size 4x4
@@ -179,7 +180,7 @@ public class Game implements java.io.Serializable
 				else
 				{
 					// If they have the same value or if zenMode is enabled, combine
-					if(board.get(from) == board.get(to) || zenMode)
+					if(!destinationLocations.contains(to) && (board.get(from) == board.get(to) || zenMode))
 					{
 						distance++;
 						add(from, to);
@@ -211,6 +212,10 @@ public class Game implements java.io.Serializable
 		score += board.get(to) + board.get(from);
 		board.set(to, board.get(to) + board.get(from));
 		board.set(from, 0);
+		
+		// If two pieces combined into a tile another piece cannot
+		// move there that turn
+		destinationLocations.add(to);
 	}
 	
 	public void newTurn() {
@@ -219,6 +224,9 @@ public class Game implements java.io.Serializable
 
 		if(movesRemaining > 0)
 			movesRemaining--;
+		
+		// Clear the tiles to not combine into
+		destinationLocations.clear();
 	}
 	
 	/** 
