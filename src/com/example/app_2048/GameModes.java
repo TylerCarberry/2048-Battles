@@ -2,6 +2,7 @@ package com.example.app_2048;
 
 public class GameModes
 {
+	public static final int LOAD_GAME_ID = 0;
 	public static final int NORMAL_MODE_ID = 1;
 	public static final int PRACTICE_MODE_ID = 2;
 	public static final int PRO_MODE_ID = 3;
@@ -40,7 +41,6 @@ public class GameModes
 		default:
 			return normalMode();
 		}
-			
 	}
 	
 	

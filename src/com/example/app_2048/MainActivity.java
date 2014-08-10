@@ -1,5 +1,12 @@
 package com.example.app_2048;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.StreamCorruptedException;
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -11,10 +18,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.os.Build;
 
 public class MainActivity extends Activity
 {
+	
+
 	final static String LOG_TAG = MainActivity.class.getSimpleName();
 	
 	// Used in the intent to pass the game mode id to GameActivity
@@ -30,6 +40,45 @@ public class MainActivity extends Activity
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 	}
+	
+	
+	@Override
+	protected void onResume() {
+
+		FileInputStream fi;
+		File file = new File(getFilesDir(), "FILENAME");
+
+		Button continueGame = (Button) findViewById(R.id.continue_game_button);	
+		continueGame.setEnabled(false);
+		
+		try {
+			fi = new FileInputStream(file);
+			ObjectInputStream input = new ObjectInputStream(fi);
+
+			Game game = (Game) input.readObject();
+
+			Log.d(LOG_TAG, game.toString());
+			
+			fi.close();
+			input.close();
+
+			
+			continueGame.setEnabled(true);
+
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (StreamCorruptedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		super.onResume();
+	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,7 +150,10 @@ public class MainActivity extends Activity
 		case R.id.crazy_button:
 			gameId = GameModes.CRAZY_MODE_ID;
 			break;
-
+		case R.id.continue_game_button:
+			gameId = GameModes.LOAD_GAME_ID;
+			break;
+			
 		default:
 			Log.d(LOG_TAG, "Unexpected button pressed");
 			return;

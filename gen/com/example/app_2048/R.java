@@ -191,31 +191,30 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f0c0018;
-        public static final int button1=0x7f0c000b;
+        public static final int action_settings=0x7f0c0017;
         public static final int container=0x7f0c0000;
-        public static final int corner_button=0x7f0c0013;
-        public static final int crazy_button=0x7f0c0017;
+        public static final int continue_game_button=0x7f0c0016;
+        public static final int corner_button=0x7f0c0010;
+        public static final int crazy_button=0x7f0c0014;
         public static final int grid_layout=0x7f0c0005;
-        public static final int intro_textview=0x7f0c000c;
-        public static final int load=0x7f0c000a;
+        public static final int intro_textview=0x7f0c000a;
         public static final int moves_textView=0x7f0c0003;
-        public static final int name_textview=0x7f0c000d;
-        public static final int normal_button=0x7f0c000f;
-        public static final int practice_button=0x7f0c0010;
-        public static final int pro_button=0x7f0c0011;
-        public static final int prompt_select_game=0x7f0c000e;
-        public static final int rush_button=0x7f0c0014;
-        public static final int save=0x7f0c0009;
+        public static final int name_textview=0x7f0c0015;
+        public static final int normal_button=0x7f0c000c;
+        public static final int practice_button=0x7f0c000d;
+        public static final int pro_button=0x7f0c000e;
+        public static final int prompt_select_game=0x7f0c000b;
+        public static final int restart=0x7f0c0009;
+        public static final int rush_button=0x7f0c0011;
         public static final int score_textview=0x7f0c0002;
         public static final int shuffle_button=0x7f0c0008;
-        public static final int survival_button=0x7f0c0015;
+        public static final int survival_button=0x7f0c0012;
         public static final int time_textview=0x7f0c0007;
         public static final int turn_textview=0x7f0c0001;
         public static final int undo_button=0x7f0c0006;
         public static final int undos_textview=0x7f0c0004;
-        public static final int x_button=0x7f0c0012;
-        public static final int zen_button=0x7f0c0016;
+        public static final int x_button=0x7f0c000f;
+        public static final int zen_button=0x7f0c0013;
     }
     public static final class layout {
         public static final int activity_game=0x7f030000;

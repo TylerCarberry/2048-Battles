@@ -17,15 +17,6 @@
         android:text="@string/intro"
         android:textSize="35sp" />
 
-    <TextView
-        android:id="@+id/name_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/intro_textview"
-        android:gravity="center"
-        android:text="@string/intro_creator_name"
-        android:textSize="20sp" />
-
     <GridLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -118,13 +109,33 @@
         android:layout_marginTop="25dp" />
 
     <TextView
+        android:id="@+id/name_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/intro_textview"
+        android:layout_below="@+id/intro_textview"
+        android:gravity="center"
+        android:text="@string/intro_creator_name"
+        android:textSize="20sp" />
+
+    <TextView
         android:id="@+id/prompt_select_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/continue_game_button"
+        android:layout_below="@+id/continue_game_button"
+        android:layout_marginTop="22dp"
+        android:text="Start A New Game"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/continue_game_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/name_textview"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Start A New Game"
-        android:textSize="20sp" />
+        android:layout_marginTop="19dp"
+        android:onClick="createGame"
+        android:text="Continue Saved Game" />
 
 </RelativeLayout>

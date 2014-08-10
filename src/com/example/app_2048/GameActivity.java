@@ -50,6 +50,8 @@ import android.preference.PreferenceManager;
 
 public class GameActivity extends Activity implements OnGestureListener {
 	
+	private static boolean resumingSave = false;
+	private static boolean boardCreated = false;
 	private static Game game;
 	final static String LOG_TAG = GameActivity.class.getSimpleName();
 	private GestureDetectorCompat mDetector; 
@@ -58,6 +60,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private static int undosLeft;
 	Stack history= new Stack();
 	boolean animationInProgress = false;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,8 @@ public class GameActivity extends Activity implements OnGestureListener {
         // application context and an implementation of
         // GestureDetector.OnGestureListener
         mDetector = new GestureDetectorCompat(this,this);
+        
+        boardCreated = false;
         
 	}
 	
@@ -107,10 +112,18 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	@Override
 	protected void onResume() {
-		createGrid();
-		updateGame();
 		
-		loadGame();
+		Log.d(LOG_TAG, "Entering onresume");
+		
+		if(resumingSave)
+			loadGame();
+		else
+			resumingSave = true;
+			
+		Log.d(LOG_TAG, "Created grid");
+		
+		
+		updateGame();
 		
 		super.onResume();
 	}
@@ -135,16 +148,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 		case R.id.shuffle_button:
 			shuffleGame();
 			break;
-			
-		case R.id.save:
-			saveGame();
+		case R.id.restart:
+			game = new Game();
+			turnNumber = 0;
+			updateGame();
 			break;
-			
-		case R.id.load:
-			loadGame();
-			break;
-			
-			
 		}
 	}
 	
@@ -318,13 +326,17 @@ public class GameActivity extends Activity implements OnGestureListener {
 				gridLayout.addView(button,gridLayoutParam);
 			}
 		}
+		
+		boardCreated = true;
 	}
 
 	/**
 	 * Update the game board 
-	 * Precondition: the grid has already been created by calling createGrid()
 	 */
 	private void updateGrid() {
+		
+		if(! boardCreated)
+			createGrid();
 		
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		
@@ -509,6 +521,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	private void loadGame() {
 
+		Log.d(LOG_TAG, "Entering load game");
+		
 		FileInputStream fi;
 		File file = new File(getFilesDir(), "FILENAME");
 
@@ -535,32 +549,12 @@ public class GameActivity extends Activity implements OnGestureListener {
 		}
 
 		
+		Log.d(LOG_TAG, game.toString());
+		
+		Log.d(LOG_TAG, "Calling updategame from load");
 		updateGame();
 		
-		
-		
-		
-		/*
-		
-		try {
-			System.out.println(Save.loadGame());
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		/*
-		
-		SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-		int saved = sharedPref.getInt("saved high score", 100);
-		
-		turnNumber = saved;
-		
-		*/
+		Log.d(LOG_TAG, "Leaving load game");
 	}
 	
 	
@@ -617,17 +611,32 @@ public class GameActivity extends Activity implements OnGestureListener {
 			View rootView = inflater.inflate(R.layout.fragment_game, container,
 					false);
 			
+			Log.d(LOG_TAG, "Entering oncreateview");
+			
+			if(resumingSave)
+				return rootView;
+			
 			Intent intent = getActivity().getIntent();
 			
 			if(intent != null) {
 				int gameMode = intent.getIntExtra(MainActivity.GAME_LOCATION, 1);
-				
+
 				// Converts the id of the game mode selected to a game
-				game = GameModes.newGameFromId(gameMode);
-				undosLeft = game.getUndosRemaining();
+				if(gameMode == GameModes.LOAD_GAME_ID)
+					resumingSave = true;
+				else {
+					resumingSave = false;
+					game = GameModes.newGameFromId(gameMode);
+					undosLeft = game.getUndosRemaining();
+				}
 			}
-			else
+			else {
+				game = new Game();
+				undosLeft = game.getUndosRemaining();
+				resumingSave = false;
 				Log.d(LOG_TAG, "No intent passed");
+			}
+				
 			
 			return rootView;
 		}
