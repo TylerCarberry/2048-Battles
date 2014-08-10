@@ -30,8 +30,7 @@
     <string name="title_activity_game">GameActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="remove_low">Remove Low Tiles</string>
-   	
-   	<string name="prompt_start_game">Start A New Game</string>
+    <string name="prompt_start_game">Start A New Game</string>
     <string name="turn">Turn</string>
     <string name="score">Score</string>
     <string name="undo">Undo</string>
@@ -41,20 +40,16 @@
     <string name="time_remaining">Time Left</string>
     <string name="shuffle_remaining">Shuffles Left</string>
     <string name="you_lose">YOU LOSE</string>
-    
     <string name="slow">Slow</string>
     <string name="medium">Medium</string>
     <string name="fast">Fast</string>
     <string name="no_animation">No Animation</string>
-    
     <string name="save_loc_turn">saved turn</string>
     <string name="save_loc_score">saved score</string>
     <string name="save_loc_undo_left">saved undo left</string>
     <string name="save_loc_move_left">saved move left</string>
     <string name="save_loc_shuffle_left">saved shuffle left</string>
     <string name="save_loc_game">saved game</string>
-    
-    
-    
-    
+    <string name="title_activity_info">InfoActivity</string>
+
 </resources>

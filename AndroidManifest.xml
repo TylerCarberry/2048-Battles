@@ -32,7 +32,13 @@
         </activity>
         <activity
             android:name="com.example.app_2048.SettingsActivity"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_settings"
+            android:parentActivityName="com.example.app_2048.MainActivity" >
+        </activity>
+        <activity
+            android:name="com.example.app_2048.InfoActivity"
+            android:label="@string/title_activity_info"
+            android:parentActivityName="com.example.app_2048.MainActivity" >
         </activity>
     </application>
 

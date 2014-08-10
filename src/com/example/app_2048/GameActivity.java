@@ -91,14 +91,22 @@ public class GameActivity extends Activity implements OnGestureListener {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
+		
+		if (id == R.id.action_remove_low) {
+			game.removeLowTiles();
+			updateGame();
+			return true;
+		}
+		
+		if (id == R.id.action_how_to_play) {
+			Intent showInfo = new Intent(this, com.example.app_2048.InfoActivity.class);
+			startActivity(showInfo);
+			return true;
+		}
+		
 		if(id == R.id.action_settings) {
 			Intent showSettings = new Intent(this, com.example.app_2048.SettingsActivity.class);
 			startActivity(showSettings);
-			return true;
-		}
-		if (id == R.id.grid_layout) {
-			game.removeLowTiles();
-			updateGame();
 			return true;
 		}
 		
