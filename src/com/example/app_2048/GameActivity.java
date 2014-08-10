@@ -95,7 +95,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		int id = item.getItemId();
 		
 		if (id == R.id.action_remove_low) {
-			game.removeLowTiles();
+			removeLowTiles();
 			updateGame();
 			return true;
 		}
@@ -406,6 +406,73 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		// Fade the button in
 		ObjectAnimator.ofFloat(newTile, View.ALPHA, 1).setDuration(NEW_TILE_SPEED).start();
+	}
+	
+	private void removeLowTiles() {
+		animationInProgress = true;
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		
+		// Save the game history before each move
+		game.saveGameInHistory();
+		
+		Grid gameBoard = game.getGrid();
+		
+		// Get a list of all tiles
+		List<Location> tiles = game.getGrid().getFilledLocations();
+		
+		// An list of the fade animations to play
+		ArrayList<ObjectAnimator> alphaAnimations = new ArrayList<ObjectAnimator>();
+		
+		// An list of the buttons to remove
+		ArrayList<Button> toRemoveList = new ArrayList<Button>();
+				
+		
+		
+		// Loop through each tile
+		for(Location tile : tiles) {
+			if(gameBoard.get(tile) == 2 || gameBoard.get(tile) == 4) {
+				
+				Button toRemove = (Button) findViewById(tile.getRow() * 100 + tile.getCol());
+				toRemove.setTag("remove low tiles");
+				toRemoveList.add(toRemove);
+				
+				
+				// Determine the distance to move in pixels
+				// On my device each column is 145 pixels apart and each row is 110
+				// TODO: Change this to support different screen sizes
+				
+				alphaAnimations.add(ObjectAnimator.ofFloat(toRemove, View.ALPHA, 0)
+						.setDuration(NEW_TILE_SPEED));
+				
+			}
+		}
+		
+		alphaAnimations.get(0).addListener(new AnimatorListener(){
+			
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				
+				game.removeLowTiles();
+				game.newTurn();
+				updateGame();
+				animationInProgress = false;
+			}
+			
+			@Override
+			public void onAnimationStart(Animator animation) { }
+			@Override
+			public void onAnimationCancel(Animator animation) {
+				Log.d(LOG_TAG, "Animation cancelled");
+				animationInProgress = false;
+			}
+			@Override
+			public void onAnimationRepeat(Animator animation) { }
+		});
+		
+		// Move all of the tiles
+		for(ObjectAnimator animation: alphaAnimations)
+			animation.start();
 	}
 	
 	/**

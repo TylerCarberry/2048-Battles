@@ -329,6 +329,8 @@ public class Game implements java.io.Serializable
 		// There are always at least 2 pieces on the board
 		while(board.getFilledLocations().size() < 2)
 			addRandomPiece();
+		
+		System.out.println(toString());
 	}
 	
 	/**
