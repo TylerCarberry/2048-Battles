@@ -3,8 +3,10 @@ package com.example.app_2048;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 
 import android.app.Activity;
@@ -43,6 +45,10 @@ public class MainActivity extends Activity
 	
 	
 	@Override
+	/**
+	 * Determine if a saved game exists and either enable or
+	 * disable of the continue game button accordingly
+	 */
 	protected void onResume() {
 
 		FileInputStream fi;
@@ -55,14 +61,14 @@ public class MainActivity extends Activity
 			fi = new FileInputStream(file);
 			ObjectInputStream input = new ObjectInputStream(fi);
 
+			// The value of game is not used but if it is able to be read
+			// without any exceptions than it exists.
 			Game game = (Game) input.readObject();
 
 			fi.close();
 			input.close();
-
 			
 			continueGame.setEnabled(true);
-
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -157,9 +163,44 @@ public class MainActivity extends Activity
 			return;
 		}
 		
-		Intent startGame = new Intent(this, com.example.app_2048.GameActivity.class);
-		startGame.putExtra(GAME_LOCATION, gameId);
+		// Instead of passing the game to GameActivity through an
+		// intent, it is saved to a file. This should allow greater
+		// flexibility in the game that is passed and should allow
+		// custom mode creation.
+		if(gameId != GameModes.LOAD_GAME_ID) {
+			Game game = GameModes.newGameFromId(gameId);
+			saveGame(game);
+		}
+
+		startActivity(new Intent(this, GameActivity.class));
+	}
+	
+	/**
+	 * Save the game to a file. It will later be read by GameActivity
+	 * @param game The game to save
+	 */
+	private void saveGame(Game game) {
 		
-		startActivity(startGame);
+		File file = new File(getFilesDir(), "FILENAME");
+
+		// Serialize the game
+		FileOutputStream fop;
+		try {
+			fop = new FileOutputStream(file);
+			ObjectOutputStream output = new ObjectOutputStream(fop);
+
+			// Write the game to the file
+			output.writeObject(game);
+
+			output.close();
+			fop.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

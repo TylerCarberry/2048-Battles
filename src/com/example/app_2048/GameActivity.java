@@ -50,13 +50,12 @@ import android.preference.PreferenceManager;
 
 public class GameActivity extends Activity implements OnGestureListener {
 	
-	private static boolean resumingSave = false;
 	private static boolean boardCreated = false;
 	private static Game game;
 	final static String LOG_TAG = GameActivity.class.getSimpleName();
 	private GestureDetectorCompat mDetector; 
 	// private boolean madeFirstMove = false;
-	Stack history= new Stack();
+	//Stack history= new Stack();
 	boolean animationInProgress = false;
 	
 	@Override
@@ -75,7 +74,6 @@ public class GameActivity extends Activity implements OnGestureListener {
         mDetector = new GestureDetectorCompat(this,this);
         
         boardCreated = false;
-        
 	}
 	
 
@@ -109,28 +107,14 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	@Override
 	protected void onResume() {
-		
-		Log.d(LOG_TAG, "Entering onresume");
-		
-		if(resumingSave)
-			loadGame();
-		else
-			resumingSave = true;
-			
-		Log.d(LOG_TAG, "Created grid");
-		
-		
+		loadGame();
 		updateGame();
-		
 		super.onResume();
 	}
 	
 	@Override
 	protected void onStop() {
-		resumingSave = false;
-		
 		saveGame();
-		
 		super.onStop();
 	}
 	
@@ -171,8 +155,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		int speed = Integer.valueOf(prefs.getString("speed", "300"));
 		
 		// Save the game history before each move
-		//history.push(game.getGrid().clone(), game.getScore());
-		
 		game.saveGameInHistory();
 		
 		// Get a list of all tiles
@@ -180,9 +162,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		// An list of the move animations to play
 		ArrayList<ObjectAnimator> translateAnimations = new ArrayList<ObjectAnimator>();
-		
-		// The grid that the tiles are on
-		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		
 		// Loop through each tile
 		for(Location tile : tiles) {
@@ -606,30 +585,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_game, container,
 					false);
-			
-			Log.d(LOG_TAG, "Entering oncreateview");
-			
-			if(resumingSave)
-				return rootView;
-			
-			Intent intent = getActivity().getIntent();
-			
-			if(intent != null) {
-				int gameMode = intent.getIntExtra(MainActivity.GAME_LOCATION, 1);
-
-				// Converts the id of the game mode selected to a game
-				if(gameMode == GameModes.LOAD_GAME_ID)
-					resumingSave = true;
-				else {
-					resumingSave = false;
-					game = GameModes.newGameFromId(gameMode);
-				}
-			}
-			else {
-				game = new Game();
-				resumingSave = false;
-				Log.d(LOG_TAG, "No intent passed");
-			}
 			
 			return rootView;
 		}
