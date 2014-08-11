@@ -122,12 +122,20 @@ public class GameActivity extends Activity implements OnGestureListener {
 	protected void onResume() {
 		load();
 		updateGame();
+		if(game.getUndosRemaining() == 0) {
+			Button undoButton = (Button) findViewById(R.id.undo_button);
+			undoButton.setEnabled(false);
+		}
+		
 		super.onResume();
 	}
 	
 	@Override
 	protected void onStop() {
-		save();
+		
+		if(! game.lost())
+			save();
+		
 		super.onStop();
 	}
 	
@@ -146,6 +154,12 @@ public class GameActivity extends Activity implements OnGestureListener {
 			break;
 		case R.id.restart:
 			game = new Game();
+			Button undoButton = (Button) findViewById(R.id.undo_button);
+			Button shuffleButton = (Button) findViewById(R.id.shuffle_button);
+			
+			undoButton.setEnabled(true);
+			shuffleButton.setEnabled(true);
+			
 			updateGame();
 			break;
 		}
@@ -157,13 +171,10 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 */
 	public void act(int direction) {
 		
+		//Log.d(LOG_TAG, "Entering act");
+		
 		animationInProgress = true;
 		
-		if(! game.canMove(direction)) {
-			animationInProgress = false;
-			return;
-		}
-
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		int speed = Integer.valueOf(prefs.getString("speed", "300"));
 		
@@ -212,6 +223,15 @@ public class GameActivity extends Activity implements OnGestureListener {
 			}
 		}
 		
+		if(translateAnimations.isEmpty()) {
+			animationInProgress = false;
+			
+			if(game.lost())
+				lost();
+				
+			return;
+		}
+		
 		translateAnimations.get(0).addListener(new AnimatorListener(){
 			
 			@Override
@@ -244,6 +264,9 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 * Turn, Score, Undos Left, and Moves Left
 	 */
 	public void updateGame() {
+		
+		//Log.d(LOG_TAG, "Entering update game");
+		
 		TextView turnTextView = (TextView) findViewById(R.id.turn_textview);
 		TextView scoreTextView = (TextView) findViewById(R.id.score_textview);
 		TextView undosTextView = (TextView) findViewById(R.id.undos_textview);
@@ -279,6 +302,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 * Precondition: the grid does not already exist
 	 */
 	private void createGrid() {
+		
+		//Log.d(LOG_TAG, "Entering create grid");
 		
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		
@@ -319,6 +344,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 * Update the game board 
 	 */
 	private void updateGrid() {
+		
+		//Log.d(LOG_TAG, "Entering update grid");
 		
 		if(! boardCreated)
 			createGrid();
@@ -375,14 +402,23 @@ public class GameActivity extends Activity implements OnGestureListener {
 			}
 		}
 		
-		Log.d(LOG_TAG, ""+ game.lost());
+		//Log.d(LOG_TAG, ""+ game.lost());
 		if(game.lost()) {
 			lost();
 		}
 	}
 	
 	private void lost() {
+		
+		//Log.d(LOG_TAG, "Entering lost");
+		
 		Toast.makeText(getApplicationContext(), getString(R.string.you_lose), Toast.LENGTH_SHORT).show();
+		
+		Button undoButton = (Button) findViewById(R.id.undo_button);
+		Button shuffleButton = (Button) findViewById(R.id.shuffle_button);
+		
+		undoButton.setEnabled(false);
+		shuffleButton.setEnabled(false);
 		
 		if(game.getScore() > gameStats.highScore) {
 			gameStats.highScore = game.getScore();
@@ -391,6 +427,14 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		if(game.highestPiece() > gameStats.highestTile)
 			gameStats.highestTile = game.highestPiece();
+		
+		Log.d(LOG_TAG, "High Score: "+gameStats.highScore);
+		Log.d(LOG_TAG, "Best Game: \n"+gameStats.bestGame);
+		
+		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+		currentGameFile.delete();
+		
+		
 	}
 	
 	private String convertToTileText(int tile) {
@@ -537,16 +581,21 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		rotateAnimation.start();
 	}
-	
+
 	private void undo() {
-		if(game.getUndosRemaining() != 0) {
+		if(game.getUndosRemaining() == 0) {
+			Button undoButton = (Button) findViewById(R.id.undo_button);
+			undoButton.setEnabled(false);
+		}
+		else
+		{
 			game.undo();
 			gameStats.totalMoves += 1;
 			gameStats.totalUndosUsed += 1;
 			updateGame();
 		}
 	}
-	
+
 	private void save() {
 		
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
