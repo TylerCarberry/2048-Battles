@@ -13,7 +13,7 @@ public class Statistics implements java.io.Serializable {
 	public int highestTile;
 	public Game bestGame;
 	
-	public int lowScore;
+	public int lowScore = -1;
 	public Game worstGame;
 	
 

@@ -403,13 +403,19 @@ public class GameActivity extends Activity implements OnGestureListener {
 		if(game.highestPiece() > gameStats.highestTile)
 			gameStats.highestTile = game.highestPiece();
 		
+		if(gameStats.lowScore < 0 ||
+				game.getScore() < gameStats.lowScore) {
+			gameStats.lowScore = game.getScore();
+			gameStats.worstGame = game;
+		}
+		
 		Log.d(LOG_TAG, "High Score: "+gameStats.highScore);
 		Log.d(LOG_TAG, "Best Game: \n"+gameStats.bestGame);
+		Log.d(LOG_TAG, "Low Score: "+gameStats.lowScore);
+		Log.d(LOG_TAG, "Worst Game: \n"+gameStats.worstGame);
 		
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		currentGameFile.delete();
-		
-		
 	}
 	
 	private String convertToTileText(int tile) {
