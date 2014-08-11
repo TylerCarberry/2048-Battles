@@ -206,7 +206,7 @@ public final class R {
         public static final int practice_button=0x7f0c000d;
         public static final int pro_button=0x7f0c000e;
         public static final int prompt_select_game=0x7f0c000b;
-        public static final int restart=0x7f0c0009;
+        public static final int restart_button=0x7f0c0009;
         public static final int rush_button=0x7f0c0011;
         public static final int score_textview=0x7f0c0002;
         public static final int shuffle_button=0x7f0c0008;

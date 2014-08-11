@@ -62,7 +62,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	boolean animationInProgress = false;
 	
 	// TODO: This will keep track of the active animations and stop
-	// them in OnStop
+	// them in onStop
 	private ArrayList<ObjectAnimator> activeAnimations
 		= new ArrayList<ObjectAnimator>();
 	
@@ -84,6 +84,7 @@ public class GameActivity extends Activity implements OnGestureListener {
         mDetector = new GestureDetectorCompat(this,this);
         
         boardCreated = false;
+        
 	}
 
 	@Override
@@ -137,32 +138,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 			save();
 		
 		super.onStop();
-	}
-	
-	/**
-	 * When a button is pressed to make the game act
-	 * @param view The button that was pressed
-	 */
-	public void act(View view) {
-		switch(view.getId()) {
-		case R.id.undo_button:
-			if(game.getMovesRemaining() != 0)
-				undo();
-			break;
-		case R.id.shuffle_button:
-			shuffleGame();
-			break;
-		case R.id.restart:
-			game = GameModes.newGameFromId(game.getGameModeId());
-			Button undoButton = (Button) findViewById(R.id.undo_button);
-			Button shuffleButton = (Button) findViewById(R.id.shuffle_button);
-			
-			undoButton.setEnabled(game.getUndosRemaining() != 0);
-			shuffleButton.setEnabled(true);
-			
-			updateGame();
-			break;
-		}
 	}
 	
 	/**
@@ -582,7 +557,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		rotateAnimation.start();
 	}
 
-	private void undo() {
+	public void undo() {
 		if(game.getUndosRemaining() == 0) {
 			Button undoButton = (Button) findViewById(R.id.undo_button);
 			undoButton.setEnabled(false);
@@ -594,6 +569,17 @@ public class GameActivity extends Activity implements OnGestureListener {
 			gameStats.totalUndosUsed += 1;
 			updateGame();
 		}
+	}
+	
+	public void restartGame() {
+		game = GameModes.newGameFromId(game.getGameModeId());
+		Button undoButton = (Button) findViewById(R.id.undo_button);
+		Button shuffleButton = (Button) findViewById(R.id.shuffle_button);
+		
+		undoButton.setEnabled(game.getUndosRemaining() != 0);
+		shuffleButton.setEnabled(true);
+		
+		updateGame();
 	}
 
 	private void save() {
@@ -684,6 +670,27 @@ public class GameActivity extends Activity implements OnGestureListener {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_game, container,
 					false);
+			
+			final Button undoButton = (Button) rootView.findViewById(R.id.undo_button);  
+	        undoButton.setOnClickListener(new View.OnClickListener() {
+	            public void onClick(View v) {
+	            	((GameActivity)getActivity()).undo();
+	            }
+	        });
+			
+	        final Button shuffleButton = (Button) rootView.findViewById(R.id.shuffle_button);  
+	        shuffleButton.setOnClickListener(new View.OnClickListener() {
+	            public void onClick(View v) {
+	            	((GameActivity)getActivity()).shuffleGame();
+	            }
+	        });
+			
+	        final Button restartButton = (Button) rootView.findViewById(R.id.restart_button);  
+	        restartButton.setOnClickListener(new View.OnClickListener() {
+	            public void onClick(View v) {
+	            	((GameActivity)getActivity()).restartGame();
+	            }
+	        });
 			
 			return rootView;
 		}
