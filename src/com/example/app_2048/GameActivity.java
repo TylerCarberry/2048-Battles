@@ -86,7 +86,6 @@ public class GameActivity extends Activity implements OnGestureListener {
         mDetector = new GestureDetectorCompat(this,this);
         
         boardCreated = false;
-        
 	}
 
 	@Override
@@ -159,7 +158,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		game.saveGameInHistory();
 		
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
-		
 		
 		// Get a list of all tiles
 		List<Location> tiles = game.getGrid().getLocationsInTraverseOrder(direction);
@@ -384,7 +382,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 					int width = size.x;
 					int height = size.y;
 					
-					Log.d(LOG_TAG, ""+ R.dimen.activity_horizontal_margin);
+					//Log.d(LOG_TAG, ""+ R.dimen.activity_horizontal_margin);
 					
 					int border = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
 					
@@ -433,6 +431,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 		Log.d(LOG_TAG, "Best Game: \n"+gameStats.bestGame);
 		Log.d(LOG_TAG, "Low Score: "+gameStats.lowScore);
 		Log.d(LOG_TAG, "Worst Game: \n"+gameStats.worstGame);
+		
+		save();
 		
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		currentGameFile.delete();
@@ -607,6 +607,20 @@ public class GameActivity extends Activity implements OnGestureListener {
 		shuffleButton.setEnabled(true);
 		
 		updateGame();
+		
+		Statistics gameStats;
+		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+		
+		try {
+			gameStats = (Statistics) Save.load(gameStatsFile);
+			gameStats.totalGamesPlayed += 1;
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		save();
 	}
 
 	private void save() {

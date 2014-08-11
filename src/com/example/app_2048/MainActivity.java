@@ -102,6 +102,12 @@ public class MainActivity extends Activity
 			return true;
 		}
 		
+		if (id == R.id.action_stats) {
+			Intent showInfo = new Intent(this, com.example.app_2048.StatsActivity.class);
+			startActivity(showInfo);
+			return true;
+		}
+		
 		if (id == R.id.action_settings) {
 			Intent showSettings = new Intent(this, com.example.app_2048.SettingsActivity.class);
 			startActivity(showSettings);
@@ -173,11 +179,19 @@ public class MainActivity extends Activity
 		// custom mode creation.
 		if(gameId != GameModes.LOAD_GAME_ID) {
 			Game game = GameModes.newGameFromId(gameId);
+			Statistics gameStats;
 			game.setGameModeId(gameId);
-			File file = new File(getFilesDir(), getString(R.string.file_current_game));
+			File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+			File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+			
 			try {
-				Save.save(game, file);
+				Save.save(game, currentGameFile);
+				gameStats = (Statistics) Save.load(gameStatsFile);
+				gameStats.totalGamesPlayed += 1;
+				Save.save(gameStats, gameStatsFile);
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		}

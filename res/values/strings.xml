@@ -6,6 +6,7 @@
     <string name="intro_creator_name">By Tyler Carberry</string>
     <string name="action_settings">Settings</string>
     <string name="action_how_to_play">How To Play</string>
+    <string name="action_stats">Game Stats</string>
     <string name="how_to_play">Combine similar tiles to reach 2048.</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
@@ -45,15 +46,16 @@
     <string name="medium">Medium</string>
     <string name="fast">Fast</string>
     <string name="no_animation">No Animation</string>
-    <string name="save_loc_turn">saved turn</string>
-    <string name="save_loc_score">saved score</string>
-    <string name="save_loc_undo_left">saved undo left</string>
-    <string name="save_loc_move_left">saved move left</string>
-    <string name="save_loc_shuffle_left">saved shuffle left</string>
-    <string name="save_loc_game">saved game</string>
     <string name="title_activity_info">InfoActivity</string>
     <string name="file_current_game">CURRENT_GAME</string>
     <string name="file_game_stats">GAME_STATS</string>
+    <string name="title_activity_stats">StatsActivity</string>
+	<string name="game_stats">Game Stats</string>
+    <string name="total_games">Total Games</string>
+    <string name="total_undos">Total Undos</string>
+    <string name="total_shuffles">Total Shuffles</string>
+    <string name="total_moves">Total Moves</string>
+    <string name="high_score">High Score</string>
+    <string name="highest_tile">Highest Tile</string>
     
-
 </resources>
