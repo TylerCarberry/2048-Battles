@@ -59,7 +59,7 @@ public class Game implements java.io.Serializable
 	// (When 4|4|8|0 is shifted left it will form two 8's instead of a 16)
 	private ArrayList<Location> destinationLocations = new ArrayList<Location>();
 	
-	private int gameMode;
+	private int gameModeId;
 	
 	/**
 	 * Creates a default game with the size 4x4
@@ -845,12 +845,12 @@ public class Game implements java.io.Serializable
 	 * Use the methods such as cornerMode() or XMode() in addition
 	 * @param mode The game mode. Should use the GameModes class
 	 */
-	public void setGameMode(int mode) {
-		gameMode = mode;
+	public void setGameModeId(int mode) {
+		gameModeId = mode;
 	}
 	
-	public int getGameMode() {
-		return gameMode;
+	public int getGameModeId() {
+		return gameModeId;
 	}
 	
 	/**

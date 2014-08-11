@@ -173,6 +173,7 @@ public class MainActivity extends Activity
 		// custom mode creation.
 		if(gameId != GameModes.LOAD_GAME_ID) {
 			Game game = GameModes.newGameFromId(gameId);
+			game.setGameModeId(gameId);
 			File file = new File(getFilesDir(), getString(R.string.file_current_game));
 			try {
 				Save.save(game, file);

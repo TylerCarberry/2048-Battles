@@ -52,6 +52,7 @@ public class GameModes
 		game.setMoveLimit(-1);
 		game.setUndoLimit(-1);
 		game.setTimeLimit(-1);
+		game.setGameModeId(PRACTICE_MODE_ID);
 
 		return game;
 	}
@@ -65,6 +66,8 @@ public class GameModes
 		game.setMoveLimit(-1);
 		game.setUndoLimit(10);
 		game.setTimeLimit(-1);
+		game.setGameModeId(NORMAL_MODE_ID);
+
 
 		return game;
 	}
@@ -78,6 +81,8 @@ public class GameModes
 		game.setMoveLimit(-1);
 		game.setUndoLimit(0);
 		game.setTimeLimit(-1);
+		game.setGameModeId(PRO_MODE_ID);
+
 
 		return game;
 	}
@@ -88,6 +93,8 @@ public class GameModes
 	{
 		Game game = new Game();
 		game.dynamicTileSpawning(true);
+		game.setGameModeId(RUSH_MODE_ID);
+
 
 		return game;
 	}
@@ -103,6 +110,8 @@ public class GameModes
 		game.setUndoLimit(-1);
 		game.setTimeLimit(30);
 		game.survivalMode();
+		game.setGameModeId(SURVIVAL_MODE_ID);
+
 
 		return game;
 	}
@@ -118,6 +127,8 @@ public class GameModes
 		game.setUndoLimit(10);
 		game.setTimeLimit(-1);
 		game.XMode();
+		game.setGameModeId(X_MODE_ID);
+
 
 		return game;
 	}
@@ -133,6 +144,8 @@ public class GameModes
 		game.setUndoLimit(10);
 		game.setTimeLimit(-1);
 		game.cornerMode();
+		game.setGameModeId(CORNER_MODE_ID);
+
 
 		return game;
 	}
@@ -148,6 +161,8 @@ public class GameModes
 		game.setUndoLimit(-1);
 		game.setTimeLimit(-1);
 		game.speedMode(true);
+		game.setGameModeId(SPEED_MODE_ID);
+
 
 		return game;
 	}
@@ -162,6 +177,8 @@ public class GameModes
 		game.setUndoLimit(-1);
 		game.setTimeLimit(-1);
 		game.zenMode(true);
+		game.setGameModeId(ZEN_MODE_ID);
+
 
 		return game;
 	}
@@ -180,8 +197,8 @@ public class GameModes
 		game.XMode();
 		game.dynamicTileSpawning(true);
 		game.speedMode(true);
-
+		game.setGameModeId(CRAZY_MODE_ID);
+		
 		return game;
 	}
-
 }

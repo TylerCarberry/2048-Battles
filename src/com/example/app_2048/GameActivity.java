@@ -153,11 +153,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 			shuffleGame();
 			break;
 		case R.id.restart:
-			game = new Game();
+			game = GameModes.newGameFromId(game.getGameModeId());
 			Button undoButton = (Button) findViewById(R.id.undo_button);
 			Button shuffleButton = (Button) findViewById(R.id.shuffle_button);
 			
-			undoButton.setEnabled(true);
+			undoButton.setEnabled(game.getUndosRemaining() != 0);
 			shuffleButton.setEnabled(true);
 			
 			updateGame();
