@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
@@ -23,14 +24,14 @@ public class Save
 	 * @param game The game to save
 	 * @throws IOException Save file can not be accessed
 	 */
-	public static void saveGame(Game game, File file) throws IOException
+	public static void save(Serializable object, File file) throws IOException
 	{
 		// Serialize the game
 		FileOutputStream fop = new FileOutputStream(file);
 		ObjectOutputStream output = new ObjectOutputStream(fop);
 		
 		// Write the game to the file
-		output.writeObject(game);
+		output.writeObject(object);
 	
 		output.close();
 		fop.close();
@@ -42,17 +43,17 @@ public class Save
 	 * @throws IOException Save file can not be accessed
 	 * @throws ClassNotFoundException Class of a serialized object cannot be found
 	 */
-	public static Game loadGame(File file) throws IOException, ClassNotFoundException
+	public static Serializable load(File file) throws IOException, ClassNotFoundException
 	{	
 		FileInputStream fi = new FileInputStream(file);
 		ObjectInputStream input = new ObjectInputStream(fi);
 
-		Game game = (Game) input.readObject();
+		Serializable object = (Serializable) input.readObject();
 
 		fi.close();
 		input.close();
 
-		return game;
+		return object;
 	}
 
 	/**

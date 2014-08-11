@@ -244,8 +244,8 @@ public final class R {
         public static final int auto_recursive=0x7f09000e;
         public static final int autoplay=0x7f09000a;
         public static final int fast=0x7f090029;
-        public static final int file_best_game=0x7f090033;
         public static final int file_current_game=0x7f090032;
+        public static final int file_game_stats=0x7f090033;
         public static final int hello_world=0x7f09001b;
         public static final int help=0x7f090009;
         public static final int how_to_play=0x7f090005;

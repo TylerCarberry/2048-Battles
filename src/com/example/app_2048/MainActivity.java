@@ -175,7 +175,7 @@ public class MainActivity extends Activity
 			Game game = GameModes.newGameFromId(gameId);
 			File file = new File(getFilesDir(), getString(R.string.file_current_game));
 			try {
-				Save.saveGame(game, file);
+				Save.save(game, file);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -185,32 +185,4 @@ public class MainActivity extends Activity
 		startActivity(new Intent(this, GameActivity.class));
 	}
 	
-	/**
-	 * Save the game to a file. It will later be read by GameActivity
-	 * @param game The game to save
-	 */
-	private void saveGame(Game game) {
-		
-		File file = new File(getFilesDir(), "FILENAME");
-
-		// Serialize the game
-		FileOutputStream fop;
-		try {
-			fop = new FileOutputStream(file);
-			ObjectOutputStream output = new ObjectOutputStream(fop);
-
-			// Write the game to the file
-			output.writeObject(game);
-
-			output.close();
-			fop.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 }

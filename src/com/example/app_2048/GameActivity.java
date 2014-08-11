@@ -61,6 +61,13 @@ public class GameActivity extends Activity implements OnGestureListener {
 	// private boolean madeFirstMove = false;
 	boolean animationInProgress = false;
 	
+	// TODO: This will keep track of the active animations and stop
+	// them in OnStop
+	private ArrayList<ObjectAnimator> activeAnimations
+		= new ArrayList<ObjectAnimator>();
+	
+	Statistics gameStats = new Statistics();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -78,7 +85,6 @@ public class GameActivity extends Activity implements OnGestureListener {
         
         boardCreated = false;
 	}
-	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -96,7 +102,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		if (id == R.id.action_remove_low) {
 			removeLowTiles();
-			//updateGame();
 			return true;
 		}
 		if (id == R.id.action_how_to_play) {
@@ -115,14 +120,14 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	@Override
 	protected void onResume() {
-		loadGame();
+		load();
 		updateGame();
 		super.onResume();
 	}
 	
 	@Override
 	protected void onStop() {
-		saveGame();
+		save();
 		super.onStop();
 	}
 	
@@ -211,10 +216,10 @@ public class GameActivity extends Activity implements OnGestureListener {
 			
 			@Override
 			public void onAnimationEnd(Animator animation) {
-				
 				game.newTurn();
 				updateGame();
 				addTile();
+				gameStats.totalMoves += 1;
 				animationInProgress = false;
 			}
 			
@@ -268,8 +273,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 		// Update the game board
 		updateGrid();
 		
-		if(game.lost())
-			Toast.makeText(getApplicationContext(), getString(R.string.you_lose), Toast.LENGTH_SHORT).show();
+		if(game.lost()) {
+			lost();
+		}
+		
+		Log.d(LOG_TAG, "total moves: "+gameStats.totalMoves);
 	}
 	
 	/**
@@ -372,6 +380,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 				}
 			}
 		}
+	}
+	
+	private void lost() {
+		Toast.makeText(getApplicationContext(), getString(R.string.you_lose), Toast.LENGTH_SHORT).show();
+		
 	}
 	
 	private String convertToTileText(int tile) {
@@ -526,12 +539,14 @@ public class GameActivity extends Activity implements OnGestureListener {
 	}
 	
 	
-	private void saveGame() {
+	private void save() {
 		
-		File file = new File(getFilesDir(), getString(R.string.file_current_game));
+		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
 
 		try {
-			Save.saveGame(game, file);
+			Save.save(game, currentGameFile);
+			Save.save(gameStats, gameStatsFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 			Toast.makeText(getApplicationContext(), "Error: Save file not found", Toast.LENGTH_SHORT).show();
@@ -539,15 +554,21 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 	}
 	
-	private void loadGame() {
+	private void load() {
 		
-		File file = new File(getFilesDir(), getString(R.string.file_current_game));
+		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+
 		try {
-			game = Save.loadGame(file);
+			game = (Game) Save.load(currentGameFile);
+			gameStats = (Statistics) Save.load(gameStatsFile);
+			
 		} catch (ClassNotFoundException e) {
 			game = new Game();
+			gameStats = new Statistics();
 		} catch (IOException e) {
 			game = new Game();
+			gameStats = new Statistics();
 		}
 		
 		updateGame();
