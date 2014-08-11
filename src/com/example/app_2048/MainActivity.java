@@ -177,7 +177,6 @@ public class MainActivity extends Activity
 			try {
 				Save.save(game, file);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

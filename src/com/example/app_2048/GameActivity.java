@@ -272,12 +272,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		// Update the game board
 		updateGrid();
-		
-		if(game.lost()) {
-			lost();
-		}
-		
-		Log.d(LOG_TAG, "total moves: "+gameStats.totalMoves);
 	}
 	
 	/**
@@ -380,11 +374,23 @@ public class GameActivity extends Activity implements OnGestureListener {
 				}
 			}
 		}
+		
+		Log.d(LOG_TAG, ""+ game.lost());
+		if(game.lost()) {
+			lost();
+		}
 	}
 	
 	private void lost() {
 		Toast.makeText(getApplicationContext(), getString(R.string.you_lose), Toast.LENGTH_SHORT).show();
 		
+		if(game.getScore() > gameStats.highScore) {
+			gameStats.highScore = game.getScore();
+			gameStats.bestGame = game;
+		}
+		
+		if(game.highestPiece() > gameStats.highestTile)
+			gameStats.highestTile = game.highestPiece();
 	}
 	
 	private String convertToTileText(int tile) {
@@ -462,6 +468,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 			public void onAnimationEnd(Animator animation) {
 				game.removeLowTiles();
 				game.newTurn();
+				gameStats.totalMoves += 1;
 				updateGame();
 				animationInProgress = false;
 			}
@@ -490,8 +497,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private void shuffleGame() {
 		
 		// Save the game history before each move
-		//history.push(game.getGrid().clone(), game.getScore());
-		
 		game.saveGameInHistory();
 		
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
@@ -524,6 +529,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 			@Override
 			public void onAnimationRepeat(Animator animation) {
 				game.shuffle();
+				gameStats.totalShufflesUsed += 1;
+				gameStats.totalMoves += 1;
 				updateGame();
 			}
 		});
@@ -534,10 +541,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private void undo() {
 		if(game.getUndosRemaining() != 0) {
 			game.undo();
+			gameStats.totalMoves += 1;
+			gameStats.totalUndosUsed += 1;
 			updateGame();
 		}
 	}
-	
 	
 	private void save() {
 		

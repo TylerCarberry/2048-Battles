@@ -688,9 +688,16 @@ public class Game implements java.io.Serializable
 		if(quitGame || movesRemaining == 0)
 			return true;
 		
-		// If the board is not filled then the game is lost
+		// If the board is not filled then the game is not lost
 		if(!board.getEmptyLocations().isEmpty())
 			return false;
+		
+		
+		/*
+		return ! (canMove(Location.UP) || canMove(Location.DOWN) || 
+				canMove(Location.LEFT) || canMove(Location.RIGHT));
+		
+		*/
 		
 		int current = -1;
 		int next;
