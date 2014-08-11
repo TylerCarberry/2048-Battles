@@ -330,8 +330,6 @@ public class Game implements java.io.Serializable
 		// There are always at least 2 pieces on the board
 		while(board.getFilledLocations().size() < 2)
 			addRandomPiece();
-		
-		System.out.println(toString());
 	}
 	
 	/**
@@ -386,8 +384,6 @@ public class Game implements java.io.Serializable
 					// Round the time to the second decimal place
 					// The number of 0's = number of decimal places
 					timeLeft = (double)Math.round(timeLeft * 10) / 10;
-					
-					
 				}
 				
 				// After the time limit is up, quit the game

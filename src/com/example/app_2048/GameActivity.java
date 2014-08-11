@@ -96,7 +96,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		if (id == R.id.action_remove_low) {
 			removeLowTiles();
-			updateGame();
+			//updateGame();
 			return true;
 		}
 		if (id == R.id.action_how_to_play) {
@@ -409,10 +409,9 @@ public class GameActivity extends Activity implements OnGestureListener {
 	}
 	
 	private void removeLowTiles() {
+		
 		animationInProgress = true;
-		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		
+			
 		// Save the game history before each move
 		game.saveGameInHistory();
 		
@@ -425,34 +424,29 @@ public class GameActivity extends Activity implements OnGestureListener {
 		ArrayList<ObjectAnimator> alphaAnimations = new ArrayList<ObjectAnimator>();
 		
 		// An list of the buttons to remove
-		ArrayList<Button> toRemoveList = new ArrayList<Button>();
-				
-		
+		//ArrayList<Button> toRemoveList = new ArrayList<Button>();
 		
 		// Loop through each tile
 		for(Location tile : tiles) {
 			if(gameBoard.get(tile) == 2 || gameBoard.get(tile) == 4) {
 				
 				Button toRemove = (Button) findViewById(tile.getRow() * 100 + tile.getCol());
+				
+				// Setting a tag causes the tile to update in updateGrid
 				toRemove.setTag("remove low tiles");
-				toRemoveList.add(toRemove);
-				
-				
-				// Determine the distance to move in pixels
-				// On my device each column is 145 pixels apart and each row is 110
-				// TODO: Change this to support different screen sizes
 				
 				alphaAnimations.add(ObjectAnimator.ofFloat(toRemove, View.ALPHA, 0)
 						.setDuration(NEW_TILE_SPEED));
-				
 			}
 		}
+		
+		if(alphaAnimations.isEmpty())
+			return;
 		
 		alphaAnimations.get(0).addListener(new AnimatorListener(){
 			
 			@Override
 			public void onAnimationEnd(Animator animation) {
-				
 				game.removeLowTiles();
 				game.newTurn();
 				updateGame();
@@ -526,11 +520,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	private void undo() {
 		if(game.getUndosRemaining() != 0) {
-			//game.setGrid(history.popBoard());
-			//game.setScore(history.popScore());
-			
 			game.undo();
-			
 			updateGame();
 		}
 	}
