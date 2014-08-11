@@ -11,6 +11,7 @@
     <string name="stop">Stop</string>
     <string name="pause">Pause</string>
     <string name="help">Help</string>
+    <string name="restart">Restart</string>
     <string name="autoplay">Autoplay</string>
     <string name="auto_random">Random</string>
     <string name="auto_corner">Corner</string>

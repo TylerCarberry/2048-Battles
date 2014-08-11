@@ -23,6 +23,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import android.os.CountDownTimer;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
+import android.view.Display;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.LayoutInflater;
@@ -156,6 +158,9 @@ public class GameActivity extends Activity implements OnGestureListener {
 		// Save the game history before each move
 		game.saveGameInHistory();
 		
+		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
+		
+		
 		// Get a list of all tiles
 		List<Location> tiles = game.getGrid().getLocationsInTraverseOrder(direction);
 		
@@ -173,7 +178,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 				if(direction == Location.LEFT || direction == Location.UP)
 					distance *= -1;
 				
-				Button movedButton = (Button) findViewById(tile.getRow() * 100 + tile.getCol());
+				Button movedButton = (Button) gridLayout.findViewById(tile.getRow() * 100 + tile.getCol());
 				movedButton.setTag("Moved");
 				
 				// Determine the distance to move in pixels
@@ -338,11 +343,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 
 		for(int row = 0; row < gridLayout.getRowCount(); row++) {
 			for(int col = 0; col < gridLayout.getColumnCount(); col++) {
-				specRow = GridLayout.spec(row, 1); 
-				specCol = GridLayout.spec(col, 1);
-				gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
-
-				button = (Button) findViewById(row * 100 + col);
+				
+				button = (Button) gridLayout.findViewById(row * 100 + col);
 				tile = game.getGrid().get(new Location(row,col));
 				
 				expectedValue = convertToTileText(tile);
@@ -353,6 +355,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 						// If the value of the button does not match the game
 						(! expectedValue.equals(actualValue))) {
 					
+					specRow = GridLayout.spec(row, 1); 
+					specCol = GridLayout.spec(col, 1);
+					gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
+					
+					// Remove the button
 					ViewGroup layout = (ViewGroup) button.getParent();
 					if(null!=layout)
 						layout.removeView(button);
@@ -371,13 +378,26 @@ public class GameActivity extends Activity implements OnGestureListener {
 					}
 					
 					button.setTag(null);
-
+					Display display = getWindowManager().getDefaultDisplay();
+					Point size = new Point();
+					display.getSize(size);
+					int width = size.x;
+					int height = size.y;
+					
+					Log.d(LOG_TAG, ""+ R.dimen.activity_horizontal_margin);
+					
+					int border = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
+					
+					width -= border * 2;
+					
+					//gridLayoutParam.height = 100;
+					//gridLayoutParam.width = width / 4;
+					
 					gridLayout.addView(button,gridLayoutParam);
 				}
 			}
 		}
 		
-		//Log.d(LOG_TAG, ""+ game.lost());
 		if(game.lost()) {
 			lost();
 		}
@@ -434,12 +454,10 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private void addTile() {
 		
 		Location loc = game.addRandomPiece();
-		int row = loc.getRow();
-		int col = loc.getCol();
 		
-		Button newTile = (Button) findViewById(row * 100 + col);
+		Button newTile = (Button) findViewById(loc.getRow() * 100 + loc.getCol());
 		
-		int tile = game.getGrid().get(new Location(row, col));
+		int tile = game.getGrid().get(loc);
 		newTile.setText(convertToTileText(tile));
 		
 		// Immediately make the button invisible
@@ -470,11 +488,14 @@ public class GameActivity extends Activity implements OnGestureListener {
 		// An list of the buttons to remove
 		//ArrayList<Button> toRemoveList = new ArrayList<Button>();
 		
+		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
+		
+		
 		// Loop through each tile
 		for(Location tile : tiles) {
 			if(gameBoard.get(tile) == 2 || gameBoard.get(tile) == 4) {
 				
-				Button toRemove = (Button) findViewById(tile.getRow() * 100 + tile.getCol());
+				Button toRemove = (Button) gridLayout.findViewById(tile.getRow() * 100 + tile.getCol());
 				
 				// Setting a tag causes the tile to update in updateGrid
 				toRemove.setTag("remove low tiles");

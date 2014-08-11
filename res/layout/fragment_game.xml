@@ -86,6 +86,6 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/shuffle_button"
         android:layout_below="@+id/shuffle_button"
-        android:text="Restart" />
+        android:text="@string/restart" />
 
 </RelativeLayout>
