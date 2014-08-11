@@ -59,6 +59,7 @@ public class Game implements java.io.Serializable
 	// (When 4|4|8|0 is shifted left it will form two 8's instead of a 16)
 	private ArrayList<Location> destinationLocations = new ArrayList<Location>();
 	
+	private int gameMode;
 	
 	/**
 	 * Creates a default game with the size 4x4
@@ -73,7 +74,7 @@ public class Game implements java.io.Serializable
 	 * @param cols The number of columns in the game
 	 */
 	public Game(int rows, int cols)
-	{
+	{	
 		// The main board the game is played on
 		board = new Grid(rows,cols);
 		
@@ -836,6 +837,18 @@ public class Game implements java.io.Serializable
 		board = newBoard;
 	}
 	
+	/**
+	 * Changing this value does not affect the game. It is only for reference.
+	 * Use the methods such as cornerMode() or XMode() in addition
+	 * @param mode The game mode. Should use the GameModes class
+	 */
+	public void setGameMode(int mode) {
+		gameMode = mode;
+	}
+	
+	public int getGameMode() {
+		return gameMode;
+	}
 	
 	/**
 	 * Only used in the hideTileValues and speedMode methods to print the game

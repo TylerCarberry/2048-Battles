@@ -25,8 +25,6 @@ import android.os.Build;
 
 public class MainActivity extends Activity
 {
-	
-
 	final static String LOG_TAG = MainActivity.class.getSimpleName();
 	
 	// Used in the intent to pass the game mode id to GameActivity
@@ -52,7 +50,7 @@ public class MainActivity extends Activity
 	protected void onResume() {
 
 		FileInputStream fi;
-		File file = new File(getFilesDir(), "FILENAME");
+		File file = new File(getFilesDir(), getString(R.string.file_current_game));
 
 		Button continueGame = (Button) findViewById(R.id.continue_game_button);	
 		continueGame.setEnabled(false);
@@ -69,10 +67,9 @@ public class MainActivity extends Activity
 			input.close();
 			
 			continueGame.setEnabled(true);
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (StreamCorruptedException e) {
+		}
+		catch (FileNotFoundException e) {}
+		catch (StreamCorruptedException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();

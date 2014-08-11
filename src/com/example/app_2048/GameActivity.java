@@ -550,8 +550,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 	}
 	
 	private void loadGame() {
-
-		Log.d(LOG_TAG, "Entering load game");
 		
 		File file = new File(getFilesDir(), getString(R.string.file_current_game));
 		try {
