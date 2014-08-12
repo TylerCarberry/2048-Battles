@@ -120,9 +120,9 @@
 
     <TextView
         android:id="@+id/prompt_select_game"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/continue_game_button"
+        android:gravity="center"
         android:layout_below="@+id/continue_game_button"
         android:layout_marginTop="22dp"
         android:text="Start A New Game"

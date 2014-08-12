@@ -66,6 +66,7 @@ public class StatsActivity extends Activity {
 		TextView totalMoves = (TextView) findViewById(R.id.total_moves);
 		TextView highScore = (TextView) findViewById(R.id.high_score);
 		TextView highestTile = (TextView) findViewById(R.id.highest_tile);
+		TextView lowestScore = (TextView) findViewById(R.id.lowest_score);
 		
 		totalGames.setText(getString(R.string.total_games) + ": "
 				+ gameStats.totalGamesPlayed);
@@ -79,7 +80,8 @@ public class StatsActivity extends Activity {
 				+ gameStats.highScore);
 		highestTile.setText(getString(R.string.highest_tile) + ": "
 				+ gameStats.highestTile);
-		
+		lowestScore.setText(getString(R.string.lowest_score) + ": "
+				+ gameStats.lowScore);
 		
 		super.onResume();
 	}

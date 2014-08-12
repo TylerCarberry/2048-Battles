@@ -56,6 +56,7 @@
     <string name="total_shuffles">Total Shuffles</string>
     <string name="total_moves">Total Moves</string>
     <string name="high_score">High Score</string>
+    <string name="lowest_score">Lowest Score</string>
     <string name="highest_tile">Highest Tile</string>
     
 </resources>
