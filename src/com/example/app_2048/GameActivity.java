@@ -608,19 +608,15 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		updateGame();
 		
-		Statistics gameStats;
 		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
 		
 		try {
-			gameStats = (Statistics) Save.load(gameStatsFile);
 			gameStats.totalGamesPlayed += 1;
+			Save.save(gameStats, gameStatsFile);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		}
-		
-		save();
 	}
 
 	private void save() {
@@ -635,7 +631,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 			e.printStackTrace();
 			Toast.makeText(getApplicationContext(), "Error: Save file not found", Toast.LENGTH_SHORT).show();
 		}
-		
 	}
 	
 	private void load() {
