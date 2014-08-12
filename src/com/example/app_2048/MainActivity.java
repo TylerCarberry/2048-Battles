@@ -19,17 +19,20 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.os.Build;
 
 public class MainActivity extends Activity
 {
 	final static String LOG_TAG = MainActivity.class.getSimpleName();
-	
+	private static int gameId = GameModes.LOAD_GAME_ID;
+
 	// Used in the intent to pass the game mode id to GameActivity
 	public final static String GAME_LOCATION = "GAME";
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,11 +40,11 @@ public class MainActivity extends Activity
 
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
+			.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 	}
-	
-	
+
+
 	@Override
 	/**
 	 * Determine if a saved game exists and either enable or
@@ -54,7 +57,7 @@ public class MainActivity extends Activity
 
 		Button continueGame = (Button) findViewById(R.id.continue_game_button);	
 		continueGame.setEnabled(false);
-		
+
 		try {
 			fi = new FileInputStream(file);
 			ObjectInputStream input = new ObjectInputStream(fi);
@@ -65,7 +68,7 @@ public class MainActivity extends Activity
 
 			fi.close();
 			input.close();
-			
+
 			continueGame.setEnabled(true);
 		}
 		catch (FileNotFoundException e) {}
@@ -76,7 +79,38 @@ public class MainActivity extends Activity
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+
+		Button startGame = (Button) findViewById(R.id.start_game_button);
+
+		startGame.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				// Instead of passing the game to GameActivity through an
+				// intent, it is saved to a file. This should allow greater
+				// flexibility in the game that is passed and should allow
+				// custom mode creation.
+				if(gameId != GameModes.LOAD_GAME_ID) {
+					Game game = GameModes.newGameFromId(gameId);
+					Statistics gameStats;
+					game.setGameModeId(gameId);
+					File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+					File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+
+					try {
+						Save.save(game, currentGameFile);
+						gameStats = (Statistics) Save.load(gameStatsFile);
+						gameStats.totalGamesPlayed += 1;
+						Save.save(gameStats, gameStatsFile);
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+
+				startActivity(new Intent(getBaseContext(), GameActivity.class));
+			}
+		});
+
 		super.onResume();
 	}
 
@@ -95,19 +129,19 @@ public class MainActivity extends Activity
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		
+
 		if (id == R.id.action_how_to_play) {
 			Intent showInfo = new Intent(this, com.example.app_2048.InfoActivity.class);
 			startActivity(showInfo);
 			return true;
 		}
-		
+
 		if (id == R.id.action_stats) {
 			Intent showInfo = new Intent(this, com.example.app_2048.StatsActivity.class);
 			startActivity(showInfo);
 			return true;
 		}
-		
+
 		if (id == R.id.action_settings) {
 			Intent showSettings = new Intent(this, com.example.app_2048.SettingsActivity.class);
 			startActivity(showSettings);
@@ -132,10 +166,15 @@ public class MainActivity extends Activity
 			return rootView;
 		}
 	}
-	
+
 	public void createGame(View view) {
-		int gameId = GameModes.NORMAL_MODE_ID;
-		
+
+		TextView gameTitle = (TextView) findViewById(R.id.game_mode_textview);
+		TextView gameDesc = (TextView) findViewById(R.id.game_desc_textview);
+		//Button startGame = (Button) findViewById(R.id.game_mode_textview);
+
+		gameId = GameModes.NORMAL_MODE_ID;
+
 		switch (view.getId()) {
 		case R.id.normal_button:
 			gameId = GameModes.NORMAL_MODE_ID;
@@ -164,15 +203,23 @@ public class MainActivity extends Activity
 		case R.id.crazy_button:
 			gameId = GameModes.CRAZY_MODE_ID;
 			break;
+		case R.id.custom_button:
+			gameId = GameModes.CUSTOM_MODE_ID;
+			break;
 		case R.id.continue_game_button:
 			gameId = GameModes.LOAD_GAME_ID;
 			break;
-			
+
 		default:
 			Log.d(LOG_TAG, "Unexpected button pressed");
 			return;
 		}
-		
+
+		gameTitle.setText(getString(GameModes.getGameTitleById(gameId)));
+		gameDesc.setText(getString(GameModes.getGameDescById(gameId)));
+
+
+		/*
 		// Instead of passing the game to GameActivity through an
 		// intent, it is saved to a file. This should allow greater
 		// flexibility in the game that is passed and should allow
@@ -183,7 +230,7 @@ public class MainActivity extends Activity
 			game.setGameModeId(gameId);
 			File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 			File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
-			
+
 			try {
 				Save.save(game, currentGameFile);
 				gameStats = (Statistics) Save.load(gameStatsFile);
@@ -197,6 +244,7 @@ public class MainActivity extends Activity
 		}
 
 		startActivity(new Intent(this, GameActivity.class));
+
+		 */
 	}
-	
 }

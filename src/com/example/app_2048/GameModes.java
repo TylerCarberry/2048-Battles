@@ -13,8 +13,9 @@ public class GameModes
 	public static final int SPEED_MODE_ID = 8;
 	public static final int ZEN_MODE_ID = 9;
 	public static final int CRAZY_MODE_ID = 10;
-	
-	
+	public static final int CUSTOM_MODE_ID = 11;
+
+
 	public static Game newGameFromId(int id)
 	{
 		switch (id) {
@@ -42,8 +43,70 @@ public class GameModes
 			return normalMode();
 		}
 	}
-	
-	
+
+	public static int getGameTitleById(int id) {
+
+		switch (id) {
+		case NORMAL_MODE_ID:
+			return R.string.mode_normal;
+		case PRACTICE_MODE_ID:
+			return R.string.mode_practice;
+		case PRO_MODE_ID:
+			return R.string.mode_pro;
+		case RUSH_MODE_ID:
+			return R.string.mode_rush;
+		case SURVIVAL_MODE_ID:
+			return R.string.mode_survival;
+		case X_MODE_ID:
+			return R.string.mode_x;
+		case CORNER_MODE_ID:
+			return R.string.mode_corner;
+		case SPEED_MODE_ID:
+			return R.string.mode_speed;
+		case ZEN_MODE_ID:
+			return R.string.mode_zen;
+		case CRAZY_MODE_ID:
+			return R.string.mode_crazy;
+		case CUSTOM_MODE_ID:
+			return R.string.mode_custom;
+		
+		default:
+			return -1;
+		}
+	}
+
+	public static int getGameDescById(int id) {
+
+		switch (id) {
+		case NORMAL_MODE_ID:
+			return R.string.mode_desc_normal;
+		case PRACTICE_MODE_ID:
+			return R.string.mode_desc_practice;
+		case PRO_MODE_ID:
+			return R.string.mode_desc_pro;
+		case RUSH_MODE_ID:
+			return R.string.mode_desc_rush;
+		case SURVIVAL_MODE_ID:
+			return R.string.mode_desc_survival;
+		case X_MODE_ID:
+			return R.string.mode_desc_x;
+		case CORNER_MODE_ID:
+			return R.string.mode_desc_corner;
+		case SPEED_MODE_ID:
+			return R.string.mode_desc_speed;
+		case ZEN_MODE_ID:
+			return R.string.mode_desc_zen;
+		case CRAZY_MODE_ID:
+			return R.string.mode_desc_crazy;
+		case CUSTOM_MODE_ID:
+			return R.string.mode_desc_custom;
+		
+		default:
+			return -1;
+		}
+	}
+
+
 	// Practice Mode
 	// Unlimited everything
 	public static Game practiceMode()
@@ -198,7 +261,7 @@ public class GameModes
 		game.dynamicTileSpawning(true);
 		game.speedMode(true);
 		game.setGameModeId(CRAZY_MODE_ID);
-		
+
 		return game;
 	}
 }

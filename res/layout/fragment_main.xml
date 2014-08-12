@@ -17,89 +17,6 @@
         android:text="@string/intro"
         android:textSize="35sp" />
 
-    <GridLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/prompt_select_game"
-        android:columnCount="1" >
-
-        <Button
-            android:id="@+id/normal_button"
-            android:layout_column="0"
-            android:layout_gravity="left|top"
-            android:layout_row="0"
-            android:text="@string/mode_normal"
-            android:onClick="createGame" />
-
-        <Button
-            android:id="@+id/practice_button"
-            android:layout_column="0"
-            android:layout_gravity="center_horizontal|top"
-            android:layout_row="0"
-            android:text="@string/mode_practice"
-            android:onClick="createGame" />
-
-        <Button
-            android:id="@+id/pro_button"
-            android:layout_column="0"
-            android:layout_gravity="right|top"
-            android:layout_row="0"
-            android:text="@string/mode_pro"
-            android:onClick="createGame" />
-
-        <Button
-            android:id="@+id/x_button"
-            android:layout_column="0"
-            android:layout_gravity="left|center_vertical"
-            android:layout_row="0"
-            android:text="@string/mode_x"
-            android:onClick="createGame" />
-
-        <Button
-            android:id="@+id/corner_button"
-            android:layout_column="0"
-            android:layout_gravity="center"
-            android:layout_row="0"
-            android:text="@string/mode_corner"
-            android:onClick="createGame" />
-
-        <Button
-            android:id="@+id/rush_button"
-            android:layout_column="0"
-            android:layout_gravity="right|center_vertical"
-            android:layout_row="0"
-            android:text="@string/mode_rush"
-            android:onClick="createGame" />
-
-        <Button
-            android:id="@+id/survival_button"
-            android:layout_column="0"
-            android:layout_gravity="left|bottom"
-            android:layout_row="0"
-            android:text="@string/mode_survival"
-            android:onClick="createGame" />
-
-        <Button
-            android:id="@+id/zen_button"
-            android:layout_column="0"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_row="0"
-            android:text="@string/mode_zen"
-            android:onClick="createGame" />
-
-        <Button
-            android:id="@+id/crazy_button"
-            android:layout_column="0"
-            android:layout_gravity="right|bottom"
-            android:layout_row="0"
-            android:text="@string/mode_crazy"
-            android:onClick="createGame" />
-
-    </GridLayout>
-
     <Space
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -118,16 +35,6 @@
         android:text="@string/intro_creator_name"
         android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/prompt_select_game"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_below="@+id/continue_game_button"
-        android:layout_marginTop="22dp"
-        android:text="Start A New Game"
-        android:textSize="20sp" />
-
     <Button
         android:id="@+id/continue_game_button"
         android:layout_width="wrap_content"
@@ -137,5 +44,141 @@
         android:layout_marginTop="19dp"
         android:onClick="createGame"
         android:text="Continue Saved Game" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/prompt_select_game" >
+
+        <ScrollView
+            android:id="@+id/scrollView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="230dp"
+                android:columnCount="1"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/normal_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="createGame"
+                    android:text="@string/mode_normal" />
+
+                <Button
+                    android:id="@+id/practice_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="createGame"
+                    android:text="@string/mode_practice" />
+
+                <Button
+                    android:id="@+id/pro_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="createGame"
+                    android:text="@string/mode_pro" />
+
+                <Button
+                    android:id="@+id/x_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="createGame"
+                    android:text="@string/mode_x" />
+
+                <Button
+                    android:id="@+id/corner_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="createGame"
+                    android:text="@string/mode_corner" />
+
+                <Button
+                    android:id="@+id/rush_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="createGame"
+                    android:text="@string/mode_rush" />
+
+                <Button
+                    android:id="@+id/survival_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="createGame"
+                    android:text="@string/mode_survival" />
+
+                <Button
+                    android:id="@+id/zen_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="createGame"
+                    android:text="@string/mode_zen" />
+
+                <Button
+                    android:id="@+id/crazy_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="createGame"
+                    android:text="@string/mode_crazy" />
+                
+                <Button
+                    android:id="@+id/custom_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="createGame"
+                    android:text="@string/mode_custom" />
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/prompt_select_game"
+        android:layout_toRightOf="@+id/relativeLayout1" >
+
+        <TextView
+            android:id="@+id/game_mode_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Classic Mode"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/game_desc_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/game_mode_textview"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="Insert very long mode descripion here including multiple bullet points"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/start_game_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="Start Game" />
+        
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/prompt_select_game"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/relativeLayout1"
+        android:layout_below="@+id/continue_game_button"
+        android:layout_marginTop="14dp"
+        android:gravity="center"
+        android:text="Start A New Game"
+        android:textSize="20sp" />
 
 </RelativeLayout>
