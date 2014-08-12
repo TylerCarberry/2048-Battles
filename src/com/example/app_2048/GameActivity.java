@@ -490,7 +490,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		
-		
 		// Loop through each tile
 		for(Location tile : tiles) {
 			if(gameBoard.get(tile) == 2 || gameBoard.get(tile) == 4) {
@@ -652,7 +651,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		updateGame();
 	}
-	
 	
 	public void createCountdownTimer() {
 		Log.d(LOG_TAG, "create countdown timer");
