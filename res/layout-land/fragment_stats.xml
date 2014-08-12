@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.app_2048.StatsActivity$PlaceholderFragment" >
+
+    <TextView
+        android:id="@+id/stats_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:text="@string/game_stats" />
+
+     <TextView
+         android:id="@+id/total_games"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_below="@+id/stats_title"
+         android:text="@string/total_games" />
+
+     <TextView
+         android:id="@+id/total_undos"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_below="@+id/total_games"
+         android:text="@string/total_undos" />
+
+     <TextView
+         android:id="@+id/total_shuffles"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_below="@+id/total_undos"
+         android:text="@string/total_shuffles" />
+
+     <TextView
+         android:id="@+id/total_moves"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_below="@+id/total_shuffles"
+         android:text="@string/total_moves" />
+
+     <TextView
+         android:id="@+id/high_score"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_below="@+id/total_moves"
+         android:text="@string/high_score" />
+
+     <TextView
+         android:id="@+id/highest_tile"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_below="@+id/high_score"
+         android:text="@string/highest_tile" />
+
+     <TextView
+         android:id="@+id/lowest_score"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_below="@+id/highest_tile"
+         android:text="@string/lowest_score" />
+    
+</RelativeLayout>

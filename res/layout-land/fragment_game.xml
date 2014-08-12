@@ -10,42 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.app_2048.GameFragment" >
 
-    <TextView
-        android:id="@+id/turn_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/turn"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/score_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="@string/score"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/moves_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/turn_textview"
-        android:layout_below="@+id/turn_textview"
-        android:text="@string/move_remaining"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/undos_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/moves_textView"
-        android:layout_alignBottom="@+id/moves_textView"
-        android:layout_alignLeft="@+id/score_textview"
-        android:text="@string/undo_remaining"
-        android:textSize="20sp" />
-
     <GridLayout
         android:id="@+id/grid_layout"
         android:layout_width="wrap_content"
@@ -87,5 +51,42 @@
         android:layout_alignRight="@+id/shuffle_button"
         android:layout_below="@+id/shuffle_button"
         android:text="@string/restart" />
+
+    <TextView
+        android:id="@+id/score_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/turn_textview"
+        android:layout_below="@+id/turn_textview"
+        android:text="@string/score"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/moves_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/score_textview"
+        android:layout_below="@+id/score_textview"
+        android:text="@string/move_remaining"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/undos_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/time_textview"
+        android:layout_below="@+id/time_textview"
+        android:text="@string/undo_remaining"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/turn_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/undo_button"
+        android:layout_marginRight="68dp"
+        android:layout_toLeftOf="@+id/restart_button"
+        android:text="@string/turn"
+        android:textSize="20sp" />
 
 </RelativeLayout>
