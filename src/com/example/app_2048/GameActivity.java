@@ -19,8 +19,10 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
@@ -62,6 +64,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private GestureDetectorCompat mDetector; 
 	// private boolean madeFirstMove = false;
 	boolean animationInProgress = false;
+	boolean gameLost = false;
 	
 	// TODO: This will keep track of the active animations and stop
 	// them in onStop
@@ -97,13 +100,31 @@ public class GameActivity extends Activity implements OnGestureListener {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		
-		if (id == R.id.action_remove_low) {
-			removeLowTiles();
+
+		if (id == R.id.action_powerups) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Choose powerup")
+			.setItems(R.array.powerups, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					// The 'which' argument contains the index position
+					// of the selected item
+					
+					switch(which) {
+					case 0:
+						shuffleGame();
+					case 1:
+						removeLowTiles();
+					}
+				}
+			});
+			builder.create();
+			builder.show();
+
 			return true;
 		}
 		if (id == R.id.action_how_to_play) {
@@ -405,8 +426,24 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		//Log.d(LOG_TAG, "Entering lost");
 		
-		Toast.makeText(getApplicationContext(), getString(R.string.you_lose), Toast.LENGTH_SHORT).show();
+		if(gameLost)
+			return;
 		
+		gameLost = true;
+		
+		// 1. Instantiate an AlertDialog.Builder with its constructor
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+		// 2. Chain together various setter methods to set the dialog characteristics
+		builder.setMessage("You lost")
+		.setTitle("LOSER");
+
+		// 3. Get the AlertDialog from create()
+		AlertDialog dialog = builder.create();
+
+		dialog.show();
+
+
 		Button undoButton = (Button) findViewById(R.id.undo_button);
 		Button shuffleButton = (Button) findViewById(R.id.shuffle_button);
 		
@@ -605,6 +642,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		undoButton.setEnabled(game.getUndosRemaining() != 0);
 		shuffleButton.setEnabled(true);
 		
+		gameLost = false;
 		updateGame();
 		
 		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));

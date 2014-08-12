@@ -11,10 +11,11 @@ public final class R {
     public static final class array {
         public static final int lValues=0x7f060001;
         public static final int list=0x7f060000;
-        public static final int pref_example_list_titles=0x7f060002;
-        public static final int pref_example_list_values=0x7f060003;
-        public static final int pref_sync_frequency_titles=0x7f060004;
-        public static final int pref_sync_frequency_values=0x7f060005;
+        public static final int powerups=0x7f060002;
+        public static final int pref_example_list_titles=0x7f060003;
+        public static final int pref_example_list_values=0x7f060004;
+        public static final int pref_sync_frequency_titles=0x7f060005;
+        public static final int pref_sync_frequency_values=0x7f060006;
     }
     public static final class attr {
     }
@@ -192,7 +193,7 @@ public final class R {
     }
     public static final class id {
         public static final int action_how_to_play=0x7f0c0026;
-        public static final int action_remove_low=0x7f0c0025;
+        public static final int action_powerups=0x7f0c0025;
         public static final int action_settings=0x7f0c0027;
         public static final int action_stats=0x7f0c0028;
         public static final int container=0x7f0c0000;

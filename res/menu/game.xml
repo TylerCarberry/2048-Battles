@@ -3,10 +3,10 @@
     tools:context="com.example.app_2048.GameActivity" >
     
     <item
-        android:id="@+id/action_remove_low"
+        android:id="@+id/action_powerups"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/remove_low"/>
+        android:title="Power Ups"/>
     
     <item
         android:id="@+id/action_how_to_play"
