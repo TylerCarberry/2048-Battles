@@ -107,7 +107,7 @@ public class MainActivity extends Activity
 					}
 				}
 
-				startActivity(new Intent(getBaseContext(), GameActivity.class));
+				startGameActivity(null);
 			}
 		});
 
@@ -206,10 +206,6 @@ public class MainActivity extends Activity
 		case R.id.custom_button:
 			gameId = GameModes.CUSTOM_MODE_ID;
 			break;
-		case R.id.continue_game_button:
-			gameId = GameModes.LOAD_GAME_ID;
-			break;
-
 		default:
 			Log.d(LOG_TAG, "Unexpected button pressed");
 			return;
@@ -246,5 +242,9 @@ public class MainActivity extends Activity
 		startActivity(new Intent(this, GameActivity.class));
 
 		 */
+	}
+	
+	public void startGameActivity(View view) {
+		startActivity(new Intent(this, GameActivity.class));
 	}
 }

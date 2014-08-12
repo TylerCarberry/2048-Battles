@@ -42,7 +42,7 @@
         android:layout_below="@+id/name_textview"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="19dp"
-        android:onClick="createGame"
+        android:onClick="startGameActivity"
         android:text="Continue Saved Game" />
 
     <RelativeLayout
