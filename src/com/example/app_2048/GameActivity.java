@@ -398,7 +398,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 					// Remove the button
 					ViewGroup layout = (ViewGroup) button.getParent();
 					if(null!=layout) {
-						Log.d(LOG_TAG, "removing button " + row + col);
 						layout.removeView(button);
 					}
 					
@@ -411,31 +410,32 @@ public class GameActivity extends Activity implements OnGestureListener {
 					button.setText(""+tile);
 					
 					setIcon(button, tile);
-					if(tile == 0) {
+					
+					if(tile == 0) 
 						button.setVisibility(View.INVISIBLE);
-						//button.setBackgroundResource(0);
-					}
-					else {
-
-						
+					else
 						button.setVisibility(View.VISIBLE);
-					}
+					
 
 					button.setTag(null);
+					
+					/*
 					Display display = getWindowManager().getDefaultDisplay();
 					Point size = new Point();
 					display.getSize(size);
-					//int width = size.x;
-					//int height = size.y;
 					
-					//Log.d(LOG_TAG, ""+ R.dimen.activity_horizontal_margin);
+					int width = size.x;
+					int height = size.y;
+					
+					Log.d(LOG_TAG, ""+ R.dimen.activity_horizontal_margin);
 					
 					int border = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
 					
-					//width -= border * 2;
+					width -= border * 2;
 					
-					//gridLayoutParam.height = 100;
-					//gridLayoutParam.width = width / 4;
+					gridLayoutParam.height = 100;
+					gridLayoutParam.width = width / 4;
+					*/
 					
 					gridLayout.addView(button,gridLayoutParam);
 				}
@@ -450,10 +450,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private void setIcon(Button button, int tile) {
 		
 		switch(tile) {
-		case 0:
-			//button.setBackground(null);
-			button.setBackgroundDrawable(null);
-			break;
 		case 2:
 			button.setBackgroundResource(R.drawable.tile_2);
 			break;
@@ -515,10 +511,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 		dialog.show();
 		
 		Button undoButton = (Button) findViewById(R.id.undo_button);
-		Button shuffleButton = (Button) findViewById(R.id.shuffle_button);
-		
 		undoButton.setEnabled(false);
-		shuffleButton.setEnabled(false);
+		
 		
 		if(game.getScore() > gameStats.highScore) {
 			gameStats.highScore = game.getScore();
@@ -534,10 +528,12 @@ public class GameActivity extends Activity implements OnGestureListener {
 			gameStats.worstGame = game;
 		}
 		
+		/*
 		Log.d(LOG_TAG, "High Score: "+gameStats.highScore);
 		Log.d(LOG_TAG, "Best Game: \n"+gameStats.bestGame);
 		Log.d(LOG_TAG, "Low Score: "+gameStats.lowScore);
 		Log.d(LOG_TAG, "Worst Game: \n"+gameStats.worstGame);
+		*/
 		
 		save();
 		
@@ -722,21 +718,19 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		game = GameModes.newGameFromId(game.getGameModeId());
 		Button undoButton = (Button) findViewById(R.id.undo_button);
-		Button shuffleButton = (Button) findViewById(R.id.shuffle_button);
 		
 		undoButton.setEnabled(game.getUndosRemaining() != 0);
-		shuffleButton.setEnabled(true);
 		
 		gameLost = false;
 		updateGame();
-		
 	}
 
 	private void save() {
 		
+		/*
 		Log.d(LOG_TAG, "save");
-		
 		Log.d(LOG_TAG, "total games"+gameStats.totalGamesPlayed);
+		*/
 		
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
@@ -752,7 +746,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	private void load() {
 		
-		Log.d(LOG_TAG, "Entering load");
+		//Log.d(LOG_TAG, "Entering load");
 		
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
@@ -831,13 +825,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 	        undoButton.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {
 	            	((GameActivity)getActivity()).undo();
-	            }
-	        });
-			
-	        final Button shuffleButton = (Button) rootView.findViewById(R.id.shuffle_button);  
-	        shuffleButton.setOnClickListener(new View.OnClickListener() {
-	            public void onClick(View v) {
-	            	((GameActivity)getActivity()).shuffleGame();
 	            }
 	        });
 			

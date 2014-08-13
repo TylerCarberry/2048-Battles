@@ -44,14 +44,6 @@
         android:layout_below="@+id/undo_button"
         android:text="@string/shuffle" />
 
-    <Button
-        android:id="@+id/restart_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/shuffle_button"
-        android:layout_below="@+id/shuffle_button"
-        android:text="@string/restart" />
-
     <TextView
         android:id="@+id/score_textview"
         android:layout_width="wrap_content"
@@ -84,8 +76,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/undo_button"
-        android:layout_marginRight="68dp"
-        android:layout_toLeftOf="@+id/restart_button"
+        android:layout_marginRight="67dp"
+        android:layout_toLeftOf="@+id/shuffle_button"
         android:text="@string/turn"
         android:textSize="20sp" />
 

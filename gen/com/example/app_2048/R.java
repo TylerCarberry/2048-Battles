@@ -226,11 +226,11 @@ public final class R {
         public static final int pro_button=0x7f0c0012;
         public static final int prompt_select_game=0x7f0c000b;
         public static final int relativeLayout1=0x7f0c000e;
-        public static final int restart_button=0x7f0c0009;
+        public static final int restart_button=0x7f0c0008;
         public static final int rush_button=0x7f0c0015;
         public static final int score_textview=0x7f0c0002;
         public static final int scrollView1=0x7f0c000f;
-        public static final int shuffle_button=0x7f0c0008;
+        public static final int shuffle_button=0x7f0c0009;
         public static final int start_game_button=0x7f0c001c;
         public static final int stats_title=0x7f0c001d;
         public static final int survival_button=0x7f0c0016;
