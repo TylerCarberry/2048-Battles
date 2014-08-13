@@ -47,6 +47,7 @@ import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridLayout.Spec;
+import android.widget.ImageView;
 import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -215,8 +216,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 				if(direction == Location.LEFT || direction == Location.UP)
 					distance *= -1;
 				
-				Button movedButton = (Button) gridLayout.findViewById(tile.getRow() * 100 + tile.getCol());
-				movedButton.setTag("Moved");
+				ImageView movedTile = (ImageView) gridLayout.findViewById(tile.getRow() * 100 + tile.getCol());
+				movedTile.setTag("Moved");
 				
 				// Determine the distance to move in pixels
 				// On my device each column is 145 pixels apart and each row is 110
@@ -225,11 +226,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 				ObjectAnimator animation;
 				if(direction == Location.LEFT || direction == Location.RIGHT) {
 					distance *= 145;
-					animation = ObjectAnimator.ofFloat(movedButton, View.TRANSLATION_X, distance);
+					animation = ObjectAnimator.ofFloat(movedTile, View.TRANSLATION_X, distance);
 				}
 				else {
 					distance *= 110;
-					animation = ObjectAnimator.ofFloat(movedButton, View.TRANSLATION_Y, distance);
+					animation = ObjectAnimator.ofFloat(movedTile, View.TRANSLATION_Y, distance);
 				}
 				
 				// Time in milliseconds to move the tile
@@ -327,10 +328,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 		gridLayout.setRowCount(game.getGrid().getNumRows());
 		gridLayout.setColumnCount(game.getGrid().getNumCols());
 
-		Button button;
+		//Button button;
+		ImageView tile;
 		Spec specRow, specCol;
 		GridLayout.LayoutParams gridLayoutParam;
-		int tile;
+		int tileValue;
 
 		for(int row = 0; row < gridLayout.getRowCount(); row++) {
 			for(int col = 0; col < gridLayout.getColumnCount(); col++) {
@@ -338,19 +340,21 @@ public class GameActivity extends Activity implements OnGestureListener {
 				specCol = GridLayout.spec(col, 1);
 				gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
 				
-				button = new Button(this);
-				button.setId(row * 100 + col);
+				tile = new ImageView(this);
+				tile.setId(row * 100 + col);
 				
-				button.setTextSize(30);
+				//button = new Button(this);
+				//button.setId(row * 100 + col);
+				//button.setTextSize(30);
 
-				tile = game.getGrid().get(new Location(row, col));
+				tileValue = game.getGrid().get(new Location(row, col));
 
-				if(tile == 0)
-					button.setVisibility(View.INVISIBLE);
+				if(tileValue == 0)
+					tile.setVisibility(View.INVISIBLE);
 				else 
-					button.setVisibility(View.VISIBLE);
+					tile.setVisibility(View.VISIBLE);
 				
-				gridLayout.addView(button,gridLayoutParam);
+				gridLayout.addView(tile,gridLayoutParam);
 			}
 		}
 		
@@ -371,53 +375,63 @@ public class GameActivity extends Activity implements OnGestureListener {
 		gridLayout.setRowCount(game.getGrid().getNumRows());
 		gridLayout.setColumnCount(game.getGrid().getNumCols());
 
-		Button button;
+		//Button button;
+		ImageView tile;
 		Spec specRow, specCol;
 		GridLayout.LayoutParams gridLayoutParam;
-		int tile;
+		int tileValue;
 		String expectedValue, actualValue;
 
 		for(int row = 0; row < gridLayout.getRowCount(); row++) {
 			for(int col = 0; col < gridLayout.getColumnCount(); col++) {
 				
-				button = (Button) gridLayout.findViewById(row * 100 + col);
-				tile = game.getGrid().get(new Location(row,col));
+				//button = (Button) gridLayout.findViewById(row * 100 + col);
+				tile = (ImageView) gridLayout.findViewById(row * 100 + col);
 				
-				expectedValue = convertToTileText(tile);
-				actualValue = button.getText().toString();
+				tileValue = game.getGrid().get(new Location(row,col));
+				
+				
+				
+				expectedValue = convertToTileText(tileValue);
+				//actualValue = button.getText().toString();
+				
+				//actualValue = tile.get
 				
 				// A tile is given a tag when it changes position
-				if(button.getTag() != null ||
+				//if(tile.getTag() != null ||
 						// If the value of the button does not match the game
-						(! expectedValue.equals(actualValue))) {
+					//	(! expectedValue.equals(actualValue))) {
 					
 					specRow = GridLayout.spec(row, 1); 
 					specCol = GridLayout.spec(col, 1);
 					gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
 					
 					// Remove the button
-					ViewGroup layout = (ViewGroup) button.getParent();
+					ViewGroup layout = (ViewGroup) tile.getParent();
 					if(null!=layout) {
-						layout.removeView(button);
+						layout.removeView(tile);
 					}
 					
 
-					button = new Button(this);
-					button.setId(row * 100 + col);
-					button.setTextColor(Color.TRANSPARENT);
-
-					tile = game.getGrid().get(new Location(row, col));
-					button.setText(""+tile);
+					//button = new Button(this);
+					//button.setId(row * 100 + col);
+					//button.setTextColor(Color.TRANSPARENT);
 					
-					setIcon(button, tile);
+					tile = new ImageView(this);
+					tile.setId(row * 100 + col);
 					
-					if(tile == 0) 
-						button.setVisibility(View.INVISIBLE);
+					tileValue = game.getGrid().get(new Location(row, col));
+					//button.setText(""+tile);
+					
+					setIcon(tile, tileValue);
+					
+					if(tileValue == 0) 
+						tile.setVisibility(View.INVISIBLE);
 					else
-						button.setVisibility(View.VISIBLE);
+						tile.setVisibility(View.VISIBLE);
 					
 
-					button.setTag(null);
+					tile.setTag(null);
 					
 					/*
 					Display display = getWindowManager().getDefaultDisplay();
@@ -437,8 +451,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 					gridLayoutParam.width = width / 4;
 					*/
 					
-					gridLayout.addView(button,gridLayoutParam);
-				}
+					gridLayout.addView(tile,gridLayoutParam);
+				
 			}
 		}
 		
@@ -447,53 +461,54 @@ public class GameActivity extends Activity implements OnGestureListener {
 		}
 	}
 
-	private void setIcon(Button button, int tile) {
+	private void setIcon(ImageView tile, int tileValue) {
 
 		if(game.getGameModeId() == GameModes.GHOST_MODE_ID)
-			button.setBackgroundResource(R.drawable.tile_question);
+			tile.setBackgroundResource(R.drawable.tile_question);
 		else {
-			switch(tile) {
+			switch(tileValue) {
 			case -2:
-				button.setBackgroundResource(R.drawable.tile_x);
+				tile.setBackgroundResource(R.drawable.tile_x);
 				break;
 			case -1:
-				button.setBackgroundResource(R.drawable.tile_corner);
+				tile.setBackgroundResource(R.drawable.tile_corner);
 				break;
 			case 2:
-				button.setBackgroundResource(R.drawable.tile_2);
+				tile.setBackgroundResource(R.drawable.tile_2);
 				break;
 			case 4:
-				button.setBackgroundResource(R.drawable.tile_4);
+				tile.setBackgroundResource(R.drawable.tile_4);
 				break;
 			case 8:
-				button.setBackgroundResource(R.drawable.tile_8);
+				tile.setBackgroundResource(R.drawable.tile_8);
 				break;
 			case 16:
-				button.setBackgroundResource(R.drawable.tile_16);
+				tile.setBackgroundResource(R.drawable.tile_16);
 				break;
 			case 32:
-				button.setBackgroundResource(R.drawable.tile_32);
+				tile.setBackgroundResource(R.drawable.tile_32);
 				break;
 			case 64:
-				button.setBackgroundResource(R.drawable.tile_64);
+				tile.setBackgroundResource(R.drawable.tile_64);
 				break;
 			case 128:
-				button.setBackgroundResource(R.drawable.tile_128);
+				tile.setBackgroundResource(R.drawable.tile_128);
 				break;
 			case 256:
-				button.setBackgroundResource(R.drawable.tile_256);
+				tile.setBackgroundResource(R.drawable.tile_256);
 				break;
 			case 512:
-				button.setBackgroundResource(R.drawable.tile_512);
+				tile.setBackgroundResource(R.drawable.tile_512);
 				break;
 			case 1024:
-				button.setBackgroundResource(R.drawable.tile_1024);
+				tile.setBackgroundResource(R.drawable.tile_1024);
 				break;
 			case 2048:
-				button.setBackgroundResource(R.drawable.tile_2048);
+				tile.setBackgroundResource(R.drawable.tile_2048);
 				break;
 			default:
-				button.setText(convertToTileText(tile));
+				tile.setBackgroundResource(R.drawable.tile_2);
+				
 			}
 		}
 	}
@@ -573,7 +588,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		Location loc = game.addRandomPiece();
 		
-		Button newTile = (Button) findViewById(loc.getRow() * 100 + loc.getCol());
+		ImageView newTile = (ImageView) findViewById(loc.getRow() * 100 + loc.getCol());
 		
 		setIcon(newTile, game.getGrid().get(loc));
 		
@@ -611,7 +626,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		for(Location tile : tiles) {
 			if(gameBoard.get(tile) == 2 || gameBoard.get(tile) == 4) {
 				
-				Button toRemove = (Button) gridLayout.findViewById(tile.getRow() * 100 + tile.getCol());
+				ImageView toRemove = (ImageView) gridLayout.findViewById(tile.getRow() * 100 + tile.getCol());
 				
 				// Setting a tag causes the tile to update in updateGrid
 				toRemove.setTag("remove low tiles");
