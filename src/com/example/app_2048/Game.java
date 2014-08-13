@@ -319,17 +319,30 @@ public class Game implements java.io.Serializable
 	 */
 	public void removeLowTiles()
 	{
-		for(int row = 0; row < board.getNumRows(); row++)
-			for(int col = 0; col < board.getNumCols(); col++)
-			{
-				int tile = board.get(new Location(row,col));
-				if(tile <= 4 && tile > 0)
-					board.set(new Location(row,col), 0);
-			}
+		List<Location> filledTiles = board.getFilledLocations();
+		
+		// Remove all low tiles (2 and 4) from the board
+		for(Location tile : filledTiles) {
+			int tileValue = board.get(tile);
+				if(tileValue <= 4 && tileValue > 0)
+					board.set(tile, 0);
+		}
+		
+		// Don't count the immovable tiles in corner mode
+		// towards the number of tiles on the board
+		int moveableTiles = 0;
+		filledTiles = board.getFilledLocations();
+		for(Location tile : filledTiles) {
+			int tileValue = board.get(tile);
+				if(tileValue != -1)
+					moveableTiles++;
+		}
 		
 		// There are always at least 2 pieces on the board
-		while(board.getFilledLocations().size() < 2)
+		while(moveableTiles < 2) {
 			addRandomPiece();
+			moveableTiles++;
+		}
 	}
 	
 	/**
@@ -699,7 +712,7 @@ public class Game implements java.io.Serializable
 		
 		*/
 		
-		int current = -1;
+		int current = -5;
 		int next;
 		
 		// Check if two of the same number are next to each
@@ -714,7 +727,7 @@ public class Game implements java.io.Serializable
 				if(current == next)
 					return false;
 			}
-			current = -1;
+			current = -5;
 		}
 		
 		// Check if two of the same number are next to each
@@ -729,7 +742,7 @@ public class Game implements java.io.Serializable
 				if(current == next)
 					return false;
 			}
-			current = -1;
+			current = -5;
 		}
 		return true;
 	}
