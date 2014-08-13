@@ -11,6 +11,7 @@
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="pause">Pause</string>
+    <string name="cancel">Cancel</string>
     <string name="help">Help</string>
     <string name="restart">Restart</string>
     <string name="autoplay">Autoplay</string>
@@ -30,6 +31,7 @@
     <string name="mode_ghost">Ghost</string>
     <string name="mode_crazy">Crazy</string>
     <string name="mode_custom">Custom</string>
+    <string name="try_again">Try Again</string>
     
     <string name="mode_desc_normal">10 Undos</string>
     <string name="mode_desc_practice">Unlimited Undos</string>

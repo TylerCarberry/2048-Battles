@@ -122,6 +122,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 					switch(which) {
 					case 0:
 						shuffleGame();
+						break;
 					case 1:
 						removeLowTiles();
 					}
@@ -192,7 +193,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		animationInProgress = true;
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		int speed = Integer.valueOf(prefs.getString("speed", "300"));
+		int speed = Integer.valueOf(prefs.getString("speed", "200"));
 		
 		// Save the game history before each move
 		game.saveGameInHistory();
@@ -526,13 +527,20 @@ public class GameActivity extends Activity implements OnGestureListener {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
 		// 2. Chain together various setter methods to set the dialog characteristics
-		builder.setMessage("You lost")
-		.setTitle("LOSER");
-
-		// 3. Get the AlertDialog from create()
-		AlertDialog dialog = builder.create();
-
-		dialog.show();
+		builder.setTitle("You Lost");
+		// Add the buttons
+		builder.setPositiveButton(R.string.try_again, new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		               restartGame();
+		           }
+		       });
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		               // User cancelled the dialog
+		           }
+		       });
+		
+		String message = "";
 		
 		Button undoButton = (Button) findViewById(R.id.undo_button);
 		undoButton.setEnabled(false);
@@ -541,16 +549,28 @@ public class GameActivity extends Activity implements OnGestureListener {
 		if(game.getScore() > gameStats.highScore) {
 			gameStats.highScore = game.getScore();
 			gameStats.bestGame = game;
+			message += "New High Score! " + game.getScore();
 		}
 		
-		if(game.highestPiece() > gameStats.highestTile)
+		if(game.highestPiece() > gameStats.highestTile) {
 			gameStats.highestTile = game.highestPiece();
+			
+			if(! message.equals(""))
+				message += "\n"; 
+			message += "New Highest Tile! " + game.highestPiece();
+		}
 		
 		if(gameStats.lowScore < 0 ||
 				game.getScore() < gameStats.lowScore) {
 			gameStats.lowScore = game.getScore();
 			gameStats.worstGame = game;
+			
+			if(message.equals(""))
+				message += "New Lowest Score! " + game.getScore();
 		}
+		
+		if(message.equals(""))
+			message += "Final Score: " + game.getScore();
 		
 		/*
 		Log.d(LOG_TAG, "High Score: "+gameStats.highScore);
@@ -559,8 +579,20 @@ public class GameActivity extends Activity implements OnGestureListener {
 		Log.d(LOG_TAG, "Worst Game: \n"+gameStats.worstGame);
 		*/
 		
-		save();
+		builder.setMessage(message);
 		
+		
+		
+
+		// 3. Get the AlertDialog from create()
+		AlertDialog dialog = builder.create();
+		dialog.setCanceledOnTouchOutside(false);
+
+		dialog.show();
+
+
+		save();
+
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		currentGameFile.delete();
 	}
