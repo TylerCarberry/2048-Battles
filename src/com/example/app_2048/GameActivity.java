@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -367,7 +368,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 			createGrid();
 		
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
-		
 		gridLayout.setRowCount(game.getGrid().getNumRows());
 		gridLayout.setColumnCount(game.getGrid().getNumCols());
 
@@ -397,35 +397,42 @@ public class GameActivity extends Activity implements OnGestureListener {
 					
 					// Remove the button
 					ViewGroup layout = (ViewGroup) button.getParent();
-					if(null!=layout)
+					if(null!=layout) {
+						Log.d(LOG_TAG, "removing button " + row + col);
 						layout.removeView(button);
+					}
+					
 
 					button = new Button(this);
 					button.setId(row * 100 + col);
-					button.setTextSize(30);
+					button.setTextColor(Color.TRANSPARENT);
 
 					tile = game.getGrid().get(new Location(row, col));
-
-					if(tile == 0)
+					button.setText(""+tile);
+					
+					setIcon(button, tile);
+					if(tile == 0) {
 						button.setVisibility(View.INVISIBLE);
+						//button.setBackgroundResource(0);
+					}
 					else {
+
 						
-						setIcon(button, tile);
 						button.setVisibility(View.VISIBLE);
 					}
-					
+
 					button.setTag(null);
 					Display display = getWindowManager().getDefaultDisplay();
 					Point size = new Point();
 					display.getSize(size);
-					int width = size.x;
-					int height = size.y;
+					//int width = size.x;
+					//int height = size.y;
 					
 					//Log.d(LOG_TAG, ""+ R.dimen.activity_horizontal_margin);
 					
 					int border = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
 					
-					width -= border * 2;
+					//width -= border * 2;
 					
 					//gridLayoutParam.height = 100;
 					//gridLayoutParam.width = width / 4;
@@ -443,6 +450,10 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private void setIcon(Button button, int tile) {
 		
 		switch(tile) {
+		case 0:
+			//button.setBackground(null);
+			button.setBackgroundDrawable(null);
+			break;
 		case 2:
 			button.setBackgroundResource(R.drawable.tile_2);
 			break;
@@ -476,7 +487,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		case 2048:
 			button.setBackgroundResource(R.drawable.tile_2048);
 			break;
-			
 		default:
 			button.setText(convertToTileText(tile));
 			
