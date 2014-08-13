@@ -66,12 +66,15 @@ public class GameActivity extends Activity implements OnGestureListener {
 	boolean animationInProgress = false;
 	boolean gameLost = false;
 	
+	
+	private static int foo;
+	
 	// TODO: This will keep track of the active animations and stop
 	// them in onStop
 	private ArrayList<ObjectAnimator> activeAnimations
 		= new ArrayList<ObjectAnimator>();
 	
-	Statistics gameStats = new Statistics();
+	private static Statistics gameStats;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -143,7 +146,19 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	@Override
 	protected void onResume() {
-		load();
+		Log.d(LOG_TAG, "resume " + game);
+		
+		
+		//if(game == null) {
+			//Log.d(LOG_TAG, "game is null");
+			
+			load();
+		//}
+		
+		
+		
+		Log.d(LOG_TAG, ""+ gameStats.totalGamesPlayed);
+		
 		updateGame();
 		if(game.getUndosRemaining() == 0) {
 			Button undoButton = (Button) findViewById(R.id.undo_button);
@@ -155,6 +170,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	@Override
 	protected void onStop() {
+		
+		foo = 77;
 		
 		if(! game.lost())
 			save();
@@ -635,6 +652,16 @@ public class GameActivity extends Activity implements OnGestureListener {
 	}
 	
 	public void restartGame() {
+		gameStats.totalGamesPlayed += 1;
+		
+		if(game.highestPiece() > gameStats.highestTile)
+			gameStats.highestTile = game.highestPiece();
+		
+		if(game.getScore() > gameStats.highScore) {
+			gameStats.highScore = game.getScore();
+			gameStats.bestGame = game;
+		}
+		
 		game = GameModes.newGameFromId(game.getGameModeId());
 		Button undoButton = (Button) findViewById(R.id.undo_button);
 		Button shuffleButton = (Button) findViewById(R.id.shuffle_button);
@@ -645,18 +672,13 @@ public class GameActivity extends Activity implements OnGestureListener {
 		gameLost = false;
 		updateGame();
 		
-		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
-		
-		try {
-			gameStats.totalGamesPlayed += 1;
-			Save.save(gameStats, gameStatsFile);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void save() {
+		
+		Log.d(LOG_TAG, "save");
+		
+		Log.d(LOG_TAG, "total games"+gameStats.totalGamesPlayed);
 		
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
@@ -672,6 +694,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	private void load() {
 		
+		Log.d(LOG_TAG, "Entering load");
+		
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
 
@@ -680,9 +704,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 			gameStats = (Statistics) Save.load(gameStatsFile);
 			
 		} catch (ClassNotFoundException e) {
+			Log.w(LOG_TAG, "Class not found exception in load");
 			game = new Game();
 			gameStats = new Statistics();
 		} catch (IOException e) {
+			Log.w(LOG_TAG, "IO Exception in load");
 			game = new Game();
 			gameStats = new Statistics();
 		}

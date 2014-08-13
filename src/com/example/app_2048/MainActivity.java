@@ -28,10 +28,10 @@ import android.os.Build;
 public class MainActivity extends Activity
 {
 	final static String LOG_TAG = MainActivity.class.getSimpleName();
-	private static int gameId = GameModes.LOAD_GAME_ID;
+	private static int gameId = GameModes.NORMAL_MODE_ID;
 
 	// Used in the intent to pass the game mode id to GameActivity
-	public final static String GAME_LOCATION = "GAME";
+	//public final static String GAME_LOCATION = "GAME";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +84,8 @@ public class MainActivity extends Activity
 
 		startGame.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				Log.d(LOG_TAG, "On click");
+				
 				// Instead of passing the game to GameActivity through an
 				// intent, it is saved to a file. This should allow greater
 				// flexibility in the game that is passed and should allow
@@ -96,15 +98,23 @@ public class MainActivity extends Activity
 					File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
 
 					try {
+						Log.d(LOG_TAG, "saving in main");
+						Log.d(LOG_TAG, ""+game);
+						
 						Save.save(game, currentGameFile);
+						/*
 						gameStats = (Statistics) Save.load(gameStatsFile);
 						gameStats.totalGamesPlayed += 1;
 						Save.save(gameStats, gameStatsFile);
+						*/
 					} catch (IOException e) {
 						e.printStackTrace();
-					} catch (ClassNotFoundException e) {
+					} 
+					
+					/*catch (ClassNotFoundException e) {
 						e.printStackTrace();
 					}
+					*/
 				}
 
 				startGameActivity(null);
@@ -213,6 +223,8 @@ public class MainActivity extends Activity
 
 		gameTitle.setText(getString(GameModes.getGameTitleById(gameId)));
 		gameDesc.setText(getString(GameModes.getGameDescById(gameId)));
+		
+		Log.d(LOG_TAG, ""+gameId);
 
 
 		/*
@@ -245,6 +257,10 @@ public class MainActivity extends Activity
 	}
 	
 	public void startGameActivity(View view) {
+		Log.d(LOG_TAG, "In startGameActivity");
+		
+		Log.d(LOG_TAG, "gameId:" + gameId);
+		
 		startActivity(new Intent(this, GameActivity.class));
 	}
 }
