@@ -210,6 +210,9 @@ public class MainActivity extends Activity
 		case R.id.zen_button:
 			gameId = GameModes.ZEN_MODE_ID;
 			break;
+		case R.id.ghost_button:
+			gameId = GameModes.GHOST_MODE_ID;
+			break;
 		case R.id.crazy_button:
 			gameId = GameModes.CRAZY_MODE_ID;
 			break;

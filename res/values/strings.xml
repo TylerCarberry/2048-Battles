@@ -27,6 +27,7 @@
     <string name="mode_corner">Corner</string>
     <string name="mode_speed">Speed</string>
     <string name="mode_zen">Zen</string>
+    <string name="mode_ghost">Ghost</string>
     <string name="mode_crazy">Crazy</string>
     <string name="mode_custom">Custom</string>
     
@@ -40,6 +41,8 @@
     <string name="mode_desc_speed">Limited moves and time **Coming Soon**</string>
     <string name="mode_desc_zen">All tiles combine. Impossible to lose</string>
     <string name="mode_desc_crazy">A 5x5 grid with every other mode enabled</string>
+    <string name="mode_desc_ghost">All tiles appear as ?</string>
+    
     <string name="mode_desc_custom">Change everything about the game **Coming Soon**</string>
     
     <string name="title_activity_game">GameActivity</string>

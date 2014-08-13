@@ -12,8 +12,9 @@ public class GameModes
 	public static final int CORNER_MODE_ID = 7;
 	public static final int SPEED_MODE_ID = 8;
 	public static final int ZEN_MODE_ID = 9;
-	public static final int CRAZY_MODE_ID = 10;
-	public static final int CUSTOM_MODE_ID = 11;
+	public static final int GHOST_MODE_ID = 10;
+	public static final int CRAZY_MODE_ID = 11;
+	public static final int CUSTOM_MODE_ID = 12;
 
 
 	public static Game newGameFromId(int id)
@@ -37,6 +38,8 @@ public class GameModes
 			return speedMode();
 		case ZEN_MODE_ID:
 			return zenMode();
+		case GHOST_MODE_ID:
+			return ghostMode();
 		case CRAZY_MODE_ID:
 			return crazyMode();
 		default:
@@ -65,6 +68,8 @@ public class GameModes
 			return R.string.mode_speed;
 		case ZEN_MODE_ID:
 			return R.string.mode_zen;
+		case GHOST_MODE_ID:
+			return R.string.mode_ghost;
 		case CRAZY_MODE_ID:
 			return R.string.mode_crazy;
 		case CUSTOM_MODE_ID:
@@ -96,6 +101,8 @@ public class GameModes
 			return R.string.mode_desc_speed;
 		case ZEN_MODE_ID:
 			return R.string.mode_desc_zen;
+		case GHOST_MODE_ID:
+			return R.string.mode_desc_ghost;
 		case CRAZY_MODE_ID:
 			return R.string.mode_desc_crazy;
 		case CUSTOM_MODE_ID:
@@ -261,6 +268,18 @@ public class GameModes
 		game.dynamicTileSpawning(true);
 		game.speedMode(true);
 		game.setGameModeId(CRAZY_MODE_ID);
+
+		return game;
+	}
+	
+	// Ghost Mode
+	// All tiles appear as ?
+	public static Game ghostMode()
+	{
+		Game game = new Game();
+		game.setMoveLimit(-1);
+		game.setUndoLimit(-1);
+		game.setGameModeId(GHOST_MODE_ID);
 
 		return game;
 	}

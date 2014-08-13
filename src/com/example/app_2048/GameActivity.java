@@ -446,52 +446,55 @@ public class GameActivity extends Activity implements OnGestureListener {
 			lost();
 		}
 	}
-	
+
 	private void setIcon(Button button, int tile) {
-		
-		switch(tile) {
-		case -2:
-			button.setBackgroundResource(R.drawable.tile_x);
-			break;
-		case -1:
-			button.setBackgroundResource(R.drawable.tile_corner);
-			break;
-		case 2:
-			button.setBackgroundResource(R.drawable.tile_2);
-			break;
-		case 4:
-			button.setBackgroundResource(R.drawable.tile_4);
-			break;
-		case 8:
-			button.setBackgroundResource(R.drawable.tile_8);
-			break;
-		case 16:
-			button.setBackgroundResource(R.drawable.tile_16);
-			break;
-		case 32:
-			button.setBackgroundResource(R.drawable.tile_32);
-			break;
-		case 64:
-			button.setBackgroundResource(R.drawable.tile_64);
-			break;
-		case 128:
-			button.setBackgroundResource(R.drawable.tile_128);
-			break;
-		case 256:
-			button.setBackgroundResource(R.drawable.tile_256);
-			break;
-		case 512:
-			button.setBackgroundResource(R.drawable.tile_512);
-			break;
-		case 1024:
-			button.setBackgroundResource(R.drawable.tile_1024);
-			break;
-		case 2048:
-			button.setBackgroundResource(R.drawable.tile_2048);
-			break;
-		default:
-			button.setText(convertToTileText(tile));
-			
+
+		if(game.getGameModeId() == GameModes.GHOST_MODE_ID)
+			button.setBackgroundResource(R.drawable.tile_question);
+		else {
+			switch(tile) {
+			case -2:
+				button.setBackgroundResource(R.drawable.tile_x);
+				break;
+			case -1:
+				button.setBackgroundResource(R.drawable.tile_corner);
+				break;
+			case 2:
+				button.setBackgroundResource(R.drawable.tile_2);
+				break;
+			case 4:
+				button.setBackgroundResource(R.drawable.tile_4);
+				break;
+			case 8:
+				button.setBackgroundResource(R.drawable.tile_8);
+				break;
+			case 16:
+				button.setBackgroundResource(R.drawable.tile_16);
+				break;
+			case 32:
+				button.setBackgroundResource(R.drawable.tile_32);
+				break;
+			case 64:
+				button.setBackgroundResource(R.drawable.tile_64);
+				break;
+			case 128:
+				button.setBackgroundResource(R.drawable.tile_128);
+				break;
+			case 256:
+				button.setBackgroundResource(R.drawable.tile_256);
+				break;
+			case 512:
+				button.setBackgroundResource(R.drawable.tile_512);
+				break;
+			case 1024:
+				button.setBackgroundResource(R.drawable.tile_1024);
+				break;
+			case 2048:
+				button.setBackgroundResource(R.drawable.tile_2048);
+				break;
+			default:
+				button.setText(convertToTileText(tile));
+			}
 		}
 	}
 	

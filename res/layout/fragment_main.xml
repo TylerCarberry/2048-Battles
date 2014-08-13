@@ -118,6 +118,13 @@
                     android:onClick="createGame"
                     android:text="@string/mode_zen" />
 
+                 <Button
+                    android:id="@+id/ghost_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="createGame"
+                    android:text="@string/mode_ghost" />
+                
                 <Button
                     android:id="@+id/crazy_button"
                     android:layout_width="wrap_content"
