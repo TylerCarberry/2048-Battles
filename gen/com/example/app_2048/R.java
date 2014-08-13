@@ -190,6 +190,17 @@ public final class R {
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
+        public static final int tile_1024=0x7f020001;
+        public static final int tile_128=0x7f020002;
+        public static final int tile_16=0x7f020003;
+        public static final int tile_2=0x7f020004;
+        public static final int tile_2048=0x7f020005;
+        public static final int tile_256=0x7f020006;
+        public static final int tile_32=0x7f020007;
+        public static final int tile_4=0x7f020008;
+        public static final int tile_512=0x7f020009;
+        public static final int tile_64=0x7f02000a;
+        public static final int tile_8=0x7f02000b;
     }
     public static final class id {
         public static final int action_how_to_play=0x7f0c0026;

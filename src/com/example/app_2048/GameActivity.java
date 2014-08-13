@@ -409,7 +409,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 					if(tile == 0)
 						button.setVisibility(View.INVISIBLE);
 					else {
-						button.setText(convertToTileText(tile));
+						
+						setIcon(button, tile);
 						button.setVisibility(View.VISIBLE);
 					}
 					
@@ -439,6 +440,49 @@ public class GameActivity extends Activity implements OnGestureListener {
 		}
 	}
 	
+	private void setIcon(Button button, int tile) {
+		
+		switch(tile) {
+		case 2:
+			button.setBackgroundResource(R.drawable.tile_2);
+			break;
+		case 4:
+			button.setBackgroundResource(R.drawable.tile_4);
+			break;
+		case 8:
+			button.setBackgroundResource(R.drawable.tile_8);
+			break;
+		case 16:
+			button.setBackgroundResource(R.drawable.tile_16);
+			break;
+		case 32:
+			button.setBackgroundResource(R.drawable.tile_32);
+			break;
+		case 64:
+			button.setBackgroundResource(R.drawable.tile_64);
+			break;
+		case 128:
+			button.setBackgroundResource(R.drawable.tile_128);
+			break;
+		case 256:
+			button.setBackgroundResource(R.drawable.tile_256);
+			break;
+		case 512:
+			button.setBackgroundResource(R.drawable.tile_512);
+			break;
+		case 1024:
+			button.setBackgroundResource(R.drawable.tile_1024);
+			break;
+		case 2048:
+			button.setBackgroundResource(R.drawable.tile_2048);
+			break;
+			
+		default:
+			button.setText(convertToTileText(tile));
+			
+		}
+	}
+	
 	private void lost() {
 		
 		//Log.d(LOG_TAG, "Entering lost");
@@ -459,8 +503,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		AlertDialog dialog = builder.create();
 
 		dialog.show();
-
-
+		
 		Button undoButton = (Button) findViewById(R.id.undo_button);
 		Button shuffleButton = (Button) findViewById(R.id.shuffle_button);
 		
@@ -492,6 +535,12 @@ public class GameActivity extends Activity implements OnGestureListener {
 		currentGameFile.delete();
 	}
 	
+	/**
+	 * This method will not be used for much longer as I switch to
+	 * icons instead of text
+	 * @param tile
+	 * @return
+	 */
 	private String convertToTileText(int tile) {
 		switch (tile) {
 		case 0:
@@ -511,8 +560,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		Button newTile = (Button) findViewById(loc.getRow() * 100 + loc.getCol());
 		
-		int tile = game.getGrid().get(loc);
-		newTile.setText(convertToTileText(tile));
+		setIcon(newTile, game.getGrid().get(loc));
 		
 		// Immediately make the button invisible
 		ObjectAnimator.ofFloat(newTile, View.ALPHA, 0).setDuration(0).start();
