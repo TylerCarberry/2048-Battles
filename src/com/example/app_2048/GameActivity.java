@@ -450,6 +450,12 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private void setIcon(Button button, int tile) {
 		
 		switch(tile) {
+		case -2:
+			button.setBackgroundResource(R.drawable.tile_x);
+			break;
+		case -1:
+			button.setBackgroundResource(R.drawable.tile_corner);
+			break;
 		case 2:
 			button.setBackgroundResource(R.drawable.tile_2);
 			break;
@@ -768,6 +774,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		updateGame();
 	}
 	
+	/*
 	public void createCountdownTimer() {
 		Log.d(LOG_TAG, "create countdown timer");
 
@@ -780,6 +787,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 * Used to update the time left TextView
 	 * ***** Is currently not used in the game *****
 	 */
+	
+	/*
 	public class Timer extends CountDownTimer
 	{
 		private TextView timeLeftTextView;
@@ -805,6 +814,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 			timeLeftTextView.setText("Time Left : " + millisUntilFinished/1000);
 		}
 	}
+	*/
 
 	/**
 	 * The only fragment in the activity. Has the game board and the
