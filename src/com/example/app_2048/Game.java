@@ -59,6 +59,10 @@ public class Game implements java.io.Serializable
 	// (When 4|4|8|0 is shifted left it will form two 8's instead of a 16)
 	private ArrayList<Location> destinationLocations = new ArrayList<Location>();
 	
+	
+	private static int iceDirection = -1;
+	private static int iceDuration = -1;
+	
 	private int gameModeId;
 	
 	/**
@@ -228,6 +232,9 @@ public class Game implements java.io.Serializable
 		
 		// Clear the tiles to not combine into
 		destinationLocations.clear();
+		
+		if(iceDuration > 0)
+			iceDuration--;
 	}
 	
 	/** 
@@ -564,6 +571,33 @@ public class Game implements java.io.Serializable
 		}
 	}
 	
+	public void ice() {
+		double randomDirection = Math.random();
+		if(randomDirection < .5)
+			if(randomDirection < .25)
+				iceDirection = Location.UP;
+			else
+				iceDirection = Location.DOWN;
+		else
+			if(randomDirection < .75)
+				iceDirection = Location.LEFT;
+			else
+				iceDirection = Location.RIGHT;
+					
+		// Between 1 and 5 moves
+		iceDuration = (int) (Math.random() * 4 + 1);
+	}
+	
+	public int getIceDirection() {
+		return iceDirection;
+	}
+	
+	public int getIceDuration() {
+		return iceDuration;
+	}
+	
+	
+	
 	/**
 	 *  Limit the number of undos
 	 * -1 = unlimited
@@ -701,16 +735,16 @@ public class Game implements java.io.Serializable
 		if(quitGame || movesRemaining == 0)
 			return true;
 		
+		
+		if(iceDuration > 0)
+			return canMove(Location.UP) || canMove(Location.DOWN) ||
+					canMove(Location.LEFT) || canMove(Location.RIGHT); 
+		
+		
 		// If the board is not filled then the game is not lost
 		if(!board.getEmptyLocations().isEmpty())
 			return false;
 		
-		
-		/*
-		return ! (canMove(Location.UP) || canMove(Location.DOWN) || 
-				canMove(Location.LEFT) || canMove(Location.RIGHT));
-		
-		*/
 		
 		int current = -5;
 		int next;
@@ -813,6 +847,9 @@ public class Game implements java.io.Serializable
 	 */
 	public boolean canMove(int direction)
 	{
+		if(iceDuration > 0 && iceDirection == direction)
+			return false;
+		
 		Game nextMove = clone();
 		nextMove.act(direction);
 		return !(nextMove.equals(this));
@@ -830,8 +867,6 @@ public class Game implements java.io.Serializable
 	{
 		score = newScore;
 	}
-	
-	
 	
 	/**
 	 * @return The current turn number of the game

@@ -157,6 +157,26 @@ public class Location implements Cloneable, java.io.Serializable
 	}
 	
 	/**
+	 * 
+	 * @param direction The direction to check
+	 * @return The string representation of the direction
+	 */
+	public static String directionToString(int direction) {
+		switch(direction) {
+		case UP:
+			return "up";
+		case RIGHT:
+			return "right";
+		case DOWN:
+			return "down";
+		case LEFT:
+			return "left";
+		default:
+			return null;
+		}
+	}
+	
+	/**
 	 * @return The location in the form 2,3
 	 */
 	public String toString()

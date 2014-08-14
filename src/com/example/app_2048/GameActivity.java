@@ -69,8 +69,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 	boolean gameLost = false;
 	
 	
-	private static int foo;
-	
 	// TODO: This will keep track of the active animations and stop
 	// them in onStop
 	private ArrayList<ObjectAnimator> activeAnimations
@@ -151,18 +149,14 @@ public class GameActivity extends Activity implements OnGestureListener {
 	protected void onResume() {
 		Log.d(LOG_TAG, "resume " + game);
 		
+		load();
 		
-		//if(game == null) {
-			//Log.d(LOG_TAG, "game is null");
-			
-			load();
-		//}
-		
-		
+		Log.d(LOG_TAG, "game " + game);
 		
 		Log.d(LOG_TAG, ""+ gameStats.totalGamesPlayed);
 		
-		updateGame();
+		//updateGame();
+		
 		if(game.getUndosRemaining() == 0) {
 			Button undoButton = (Button) findViewById(R.id.undo_button);
 			undoButton.setEnabled(false);
@@ -173,8 +167,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	@Override
 	protected void onStop() {
-		
-		foo = 77;
 		
 		if(! game.lost())
 			save();
@@ -189,6 +181,9 @@ public class GameActivity extends Activity implements OnGestureListener {
 	public void act(int direction) {
 		
 		//Log.d(LOG_TAG, "Entering act");
+		
+		if(game.getIceDuration() > 0 && game.getIceDirection() == direction)
+			return;
 		
 		animationInProgress = true;
 		
@@ -260,6 +255,13 @@ public class GameActivity extends Activity implements OnGestureListener {
 				addTile();
 				gameStats.totalMoves += 1;
 				animationInProgress = false;
+				
+				if(game.getIceDuration() > 0)
+				Toast.makeText(getApplicationContext(),
+					"FROZEN!	Cannot move " +
+					Location.directionToString(game.getIceDirection()) +
+					" for " + game.getIceDuration() + " turns",
+					Toast.LENGTH_SHORT).show();
 			}
 			
 			@Override
@@ -284,7 +286,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 */
 	public void updateGame() {
 		
-		//Log.d(LOG_TAG, "Entering update game");
+		Log.d(LOG_TAG, "Entering update game");
 		
 		TextView turnTextView = (TextView) findViewById(R.id.turn_textview);
 		TextView scoreTextView = (TextView) findViewById(R.id.score_textview);
@@ -314,6 +316,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		// Update the game board
 		updateGrid();
+		
+		//Log.d(LOG_TAG, "leaving update game");
 	}
 	
 	/**
@@ -329,7 +333,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		gridLayout.setRowCount(game.getGrid().getNumRows());
 		gridLayout.setColumnCount(game.getGrid().getNumCols());
 
-		//Button button;
 		ImageView tile;
 		Spec specRow, specCol;
 		GridLayout.LayoutParams gridLayoutParam;
@@ -344,11 +347,9 @@ public class GameActivity extends Activity implements OnGestureListener {
 				tile = new ImageView(this);
 				tile.setId(row * 100 + col);
 				
-				//button = new Button(this);
-				//button.setId(row * 100 + col);
-				//button.setTextSize(30);
-
 				tileValue = game.getGrid().get(new Location(row, col));
+				
+				//tile.setTag(tileValue);
 
 				if(tileValue == 0)
 					tile.setVisibility(View.INVISIBLE);
@@ -375,91 +376,62 @@ public class GameActivity extends Activity implements OnGestureListener {
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		gridLayout.setRowCount(game.getGrid().getNumRows());
 		gridLayout.setColumnCount(game.getGrid().getNumCols());
-
+		
 		//Button button;
 		ImageView tile;
 		Spec specRow, specCol;
 		GridLayout.LayoutParams gridLayoutParam;
 		int tileValue;
-		String expectedValue, actualValue;
+		int expectedValue, actualValue;
 
 		for(int row = 0; row < gridLayout.getRowCount(); row++) {
 			for(int col = 0; col < gridLayout.getColumnCount(); col++) {
-				
-				//button = (Button) gridLayout.findViewById(row * 100 + col);
+
 				tile = (ImageView) gridLayout.findViewById(row * 100 + col);
+
+				expectedValue = game.getGrid().get(new Location(row,col));
 				
-				tileValue = game.getGrid().get(new Location(row,col));
-				
-				
-				
-				expectedValue = convertToTileText(tileValue);
-				//actualValue = button.getText().toString();
-				
-				//actualValue = tile.get
-				
-				// A tile is given a tag when it changes position
-				//if(tile.getTag() != null ||
-						// If the value of the button does not match the game
-					//	(! expectedValue.equals(actualValue))) {
+				// A tiles's tag is its value
+				try {
+					actualValue = Integer.parseInt(tile.getTag().toString());
+				}
+				catch(Exception e) {
+					actualValue = -10;
+				}
+
+				if(expectedValue != actualValue) {
 					
 					specRow = GridLayout.spec(row, 1); 
 					specCol = GridLayout.spec(col, 1);
 					gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
-					
+
 					// Remove the button
 					ViewGroup layout = (ViewGroup) tile.getParent();
 					if(null!=layout) {
 						layout.removeView(tile);
 					}
-					
 
-					//button = new Button(this);
-					//button.setId(row * 100 + col);
-					//button.setTextColor(Color.TRANSPARENT);
-					
 					tile = new ImageView(this);
 					tile.setId(row * 100 + col);
-					
+
 					tileValue = game.getGrid().get(new Location(row, col));
-					//button.setText(""+tile);
-					
+					tile.setTag(tileValue);
 					setIcon(tile, tileValue);
-					
+
 					if(tileValue == 0) 
 						tile.setVisibility(View.INVISIBLE);
 					else
 						tile.setVisibility(View.VISIBLE);
-					
 
-					tile.setTag(null);
-					
-					/*
-					Display display = getWindowManager().getDefaultDisplay();
-					Point size = new Point();
-					display.getSize(size);
-					
-					int width = size.x;
-					int height = size.y;
-					
-					Log.d(LOG_TAG, ""+ R.dimen.activity_horizontal_margin);
-					
-					int border = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
-					
-					width -= border * 2;
-					
-					gridLayoutParam.height = 100;
-					gridLayoutParam.width = width / 4;
-					*/
-					
 					gridLayout.addView(tile,gridLayoutParam);
-				
+				}
 			}
+			
+			if(game.lost())
+				lost();
 		}
 		
-		if(game.lost()) {
-			lost();
-		}
+		//Log.d(LOG_TAG, "leaving update grid");
 	}
 
 	private void setIcon(ImageView tile, int tileValue) {
@@ -622,7 +594,9 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		ImageView newTile = (ImageView) findViewById(loc.getRow() * 100 + loc.getCol());
 		
-		setIcon(newTile, game.getGrid().get(loc));
+		int tileValue = game.getGrid().get(loc);
+		newTile.setTag(tileValue);
+		setIcon(newTile, tileValue);
 		
 		// Immediately make the button invisible
 		ObjectAnimator.ofFloat(newTile, View.ALPHA, 0).setDuration(0).start();
@@ -661,7 +635,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 				ImageView toRemove = (ImageView) gridLayout.findViewById(tile.getRow() * 100 + tile.getCol());
 				
 				// Setting a tag causes the tile to update in updateGrid
-				toRemove.setTag("remove low tiles");
+				toRemove.setTag(0);
 				
 				alphaAnimations.add(ObjectAnimator.ofFloat(toRemove, View.ALPHA, 0)
 						.setDuration(NEW_TILE_SPEED));
@@ -746,7 +720,22 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		rotateAnimation.start();
 	}
-
+	
+	
+	public void ice() {
+		if(game.getIceDuration() <= 0)
+			game.ice();
+		
+		int iceDuration = game.getIceDuration();
+		int iceDirection = game.getIceDirection();
+		
+		Toast.makeText(getApplicationContext(),
+				"FROZEN!	Cannot move " +
+				Location.directionToString(game.getIceDirection()) +
+				" for " + game.getIceDuration() + " turns",
+				Toast.LENGTH_SHORT).show();
+	}
+	
 	public void undo() {
 		if(game.getUndosRemaining() == 0) {
 			Button undoButton = (Button) findViewById(R.id.undo_button);
@@ -802,7 +791,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	private void load() {
 		
-		//Log.d(LOG_TAG, "Entering load");
+		Log.d(LOG_TAG, "Entering load");
 		
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
@@ -892,6 +881,13 @@ public class GameActivity extends Activity implements OnGestureListener {
 	        restartButton.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {
 	            	((GameActivity)getActivity()).restartGame();
+	            }
+	        });
+	        
+	        final Button iceButton = (Button) rootView.findViewById(R.id.ice);  
+	        iceButton.setOnClickListener(new View.OnClickListener() {
+	            public void onClick(View v) {
+	            	((GameActivity)getActivity()).ice();
 	            }
 	        });
 			
