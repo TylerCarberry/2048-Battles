@@ -63,17 +63,19 @@ public class GameActivity extends Activity implements OnGestureListener {
 	private static boolean boardCreated = false;
 	private static Game game;
 	final static String LOG_TAG = GameActivity.class.getSimpleName();
+	
+	// Used to detect swipes and move the board
 	private GestureDetectorCompat mDetector; 
-	// private boolean madeFirstMove = false;
+	
 	boolean animationInProgress = false;
 	boolean gameLost = false;
-	
 	
 	// TODO: This will keep track of the active animations and stop
 	// them in onStop
 	private ArrayList<ObjectAnimator> activeAnimations
 		= new ArrayList<ObjectAnimator>();
 	
+	// Stores info about the game such as high score
 	private static Statistics gameStats;
 	
 	@Override
@@ -109,6 +111,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 
+		// When the powerups menu button is pressed show a dialog to choose between
+		// shuffle game and remove low tiles
 		if (id == R.id.action_powerups) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle("Choose powerup")
@@ -116,7 +120,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 				public void onClick(DialogInterface dialog, int which) {
 					// The 'which' argument contains the index position
 					// of the selected item
-					
 					switch(which) {
 					case 0:
 						shuffleGame();
@@ -126,16 +129,18 @@ public class GameActivity extends Activity implements OnGestureListener {
 					}
 				}
 			});
-			builder.create();
-			builder.show();
+			builder.create().show();
 
 			return true;
 		}
+		
+		// When the how to play menu item is pressed switch to InfoActivity
 		if (id == R.id.action_how_to_play) {
 			Intent showInfo = new Intent(this, com.example.app_2048.InfoActivity.class);
 			startActivity(showInfo);
 			return true;
 		}
+		// When the settings menu item is pressed switch to SettingsActivity
 		if(id == R.id.action_settings) {
 			Intent showSettings = new Intent(this, com.example.app_2048.SettingsActivity.class);
 			startActivity(showSettings);
@@ -147,27 +152,19 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	@Override
 	protected void onResume() {
-		Log.d(LOG_TAG, "resume " + game);
-		
+		// Load the saved file containing the game. This also updates the screen.
 		load();
 		
-		Log.d(LOG_TAG, "game " + game);
-		
-		Log.d(LOG_TAG, ""+ gameStats.totalGamesPlayed);
-		
-		//updateGame();
-		
-		if(game.getUndosRemaining() == 0) {
-			Button undoButton = (Button) findViewById(R.id.undo_button);
-			undoButton.setEnabled(false);
-		}
+		// Disable the undo button if there are no undos remaining
+		Button undoButton = ((Button) findViewById(R.id.undo_button));
+		undoButton.setEnabled(game.getUndosRemaining() != 0);
 		
 		super.onResume();
 	}
 	
 	@Override
 	protected void onStop() {
-		
+		// Only save a game that is still in progress
 		if(! game.lost())
 			save();
 		
@@ -179,14 +176,13 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 * @param direction Should use the static variables in Location class
 	 */
 	public void act(int direction) {
-		
-		//Log.d(LOG_TAG, "Entering act");
-		
+		// If the ice attack is active in that direction do not move
 		if(game.getIceDuration() > 0 && game.getIceDirection() == direction)
 			return;
 		
 		animationInProgress = true;
 		
+		// Load the speed to move the tiles from the settings
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		int speed = Integer.valueOf(prefs.getString("speed", "200"));
 		
@@ -213,7 +209,10 @@ public class GameActivity extends Activity implements OnGestureListener {
 					distance *= -1;
 				
 				ImageView movedTile = (ImageView) gridLayout.findViewById(tile.getRow() * 100 + tile.getCol());
-				movedTile.setTag("Moved");
+				
+				// The tag is changed to a value different than its actual value
+				// which causes it to be updated in updateGrid
+				movedTile.setTag(-10);
 				
 				// Determine the distance to move in pixels
 				// On my device each column is 145 pixels apart and each row is 110
@@ -240,6 +239,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		if(translateAnimations.isEmpty()) {
 			animationInProgress = false;
 			
+			// Unnecessary code?
 			if(game.lost())
 				lost();
 				
@@ -247,8 +247,9 @@ public class GameActivity extends Activity implements OnGestureListener {
 		}
 		
 		translateAnimations.get(0).addListener(new AnimatorListener(){
-			
 			@Override
+			// When the animation is over increment the turn number, update the game, 
+			// and add a new tile
 			public void onAnimationEnd(Animator animation) {
 				game.newTurn();
 				updateGame();
@@ -286,13 +287,12 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 */
 	public void updateGame() {
 		
-		Log.d(LOG_TAG, "Entering update game");
+		//Log.d(LOG_TAG, "Entering update game");
 		
 		TextView turnTextView = (TextView) findViewById(R.id.turn_textview);
 		TextView scoreTextView = (TextView) findViewById(R.id.score_textview);
 		TextView undosTextView = (TextView) findViewById(R.id.undos_textview);
 		TextView movesTextView = (TextView) findViewById(R.id.moves_textView);
-		// TextView timeTextView = (TextView) findViewById(R.id.time_textview);
 		
 		// Update the turn number
 		turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
@@ -316,8 +316,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		// Update the game board
 		updateGrid();
-		
-		//Log.d(LOG_TAG, "leaving update game");
 	}
 	
 	/**
@@ -326,10 +324,10 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 */
 	private void createGrid() {
 		
-		//Log.d(LOG_TAG, "Entering create grid");
-		
+		// The grid that all tiles are on
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		
+		// Set the number of rows and columns in the game
 		gridLayout.setRowCount(game.getGrid().getNumRows());
 		gridLayout.setColumnCount(game.getGrid().getNumCols());
 
@@ -338,6 +336,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		GridLayout.LayoutParams gridLayoutParam;
 		int tileValue;
 
+		// Create an ImageView for every tile on the board
 		for(int row = 0; row < gridLayout.getRowCount(); row++) {
 			for(int col = 0; col < gridLayout.getColumnCount(); col++) {
 				specRow = GridLayout.spec(row, 1); 
@@ -349,8 +348,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 				
 				tileValue = game.getGrid().get(new Location(row, col));
 				
-				//tile.setTag(tileValue);
-
 				if(tileValue == 0)
 					tile.setVisibility(View.INVISIBLE);
 				else 
@@ -368,8 +365,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 */
 	private void updateGrid() {
 		
-		//Log.d(LOG_TAG, "Entering update grid");
-		
 		if(! boardCreated)
 			createGrid();
 		
@@ -377,7 +372,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		gridLayout.setRowCount(game.getGrid().getNumRows());
 		gridLayout.setColumnCount(game.getGrid().getNumCols());
 		
-		//Button button;
 		ImageView tile;
 		Spec specRow, specCol;
 		GridLayout.LayoutParams gridLayoutParam;
@@ -396,6 +390,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 					actualValue = Integer.parseInt(tile.getTag().toString());
 				}
 				catch(Exception e) {
+					// Update the tile just in case
 					actualValue = -10;
 				}
 
@@ -405,15 +400,16 @@ public class GameActivity extends Activity implements OnGestureListener {
 					specCol = GridLayout.spec(col, 1);
 					gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
 
-					// Remove the button
+					// Remove the tile
 					ViewGroup layout = (ViewGroup) tile.getParent();
 					if(null!=layout) {
 						layout.removeView(tile);
 					}
 
+					// Create a new tile to insert back into the board
 					tile = new ImageView(this);
 					tile.setId(row * 100 + col);
-
+					
 					tileValue = game.getGrid().get(new Location(row, col));
 					tile.setTag(tileValue);
 					setIcon(tile, tileValue);
@@ -423,6 +419,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 					else
 						tile.setVisibility(View.VISIBLE);
 
+					// Insert the new tile into the board
 					gridLayout.addView(tile,gridLayoutParam);
 				}
 			}
@@ -430,10 +427,13 @@ public class GameActivity extends Activity implements OnGestureListener {
 			if(game.lost())
 				lost();
 		}
-		
-		//Log.d(LOG_TAG, "leaving update grid");
 	}
 
+	/**
+	 * Update the tile's icon to match its value
+	 * @param tile The ImageView to change
+	 * @param tileValue The numerical value of the tile
+	 */
 	private void setIcon(ImageView tile, int tileValue) {
 
 		if(game.getGameModeId() == GameModes.GHOST_MODE_ID)
@@ -479,30 +479,29 @@ public class GameActivity extends Activity implements OnGestureListener {
 			case 2048:
 				tile.setBackgroundResource(R.drawable.tile_2048);
 				break;
+			// If I did not create an image for the tile,
+			// default to a question mark
 			default:
-				tile.setBackgroundResource(R.drawable.tile_2);
-				
+				tile.setBackgroundResource(R.drawable.tile_question);
 			}
 		}
 	}
 	
 	private void lost() {
 		
-		//Log.d(LOG_TAG, "Entering lost");
-		
+		// Prevent the notification from appearing multiple times
 		if(gameLost)
 			return;
 		
 		gameLost = true;
 		
+		// This is the only place where total games played is incremented.
 		gameStats.totalGamesPlayed++;
 		
-		// 1. Instantiate an AlertDialog.Builder with its constructor
+		// Create a new lose dialog
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-		// 2. Chain together various setter methods to set the dialog characteristics
 		builder.setTitle("You Lost");
-		// Add the buttons
+		// Two buttons appear, try again and cancel
 		builder.setPositiveButton(R.string.try_again, new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		               restartGame();
@@ -519,13 +518,14 @@ public class GameActivity extends Activity implements OnGestureListener {
 		Button undoButton = (Button) findViewById(R.id.undo_button);
 		undoButton.setEnabled(false);
 		
-		
+		// Notify if there is a new high score
 		if(game.getScore() > gameStats.highScore) {
 			gameStats.highScore = game.getScore();
 			gameStats.bestGame = game;
 			message += "New High Score! " + game.getScore();
 		}
 		
+		// Notify if there is a new highest tile
 		if(game.highestPiece() > gameStats.highestTile) {
 			gameStats.highestTile = game.highestPiece();
 			
@@ -534,6 +534,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 			message += "New Highest Tile! " + game.highestPiece();
 		}
 		
+		// Only notify if there is a new low score if there are no other records.
 		if(gameStats.lowScore < 0 ||
 				game.getScore() < gameStats.lowScore) {
 			gameStats.lowScore = game.getScore();
@@ -543,35 +544,33 @@ public class GameActivity extends Activity implements OnGestureListener {
 				message += "New Lowest Score! " + game.getScore();
 		}
 		
+		// If there are no records then just show the score
 		if(message.equals(""))
 			message += "Final Score: " + game.getScore();
 		
-		/*
-		Log.d(LOG_TAG, "High Score: "+gameStats.highScore);
-		Log.d(LOG_TAG, "Best Game: \n"+gameStats.bestGame);
-		Log.d(LOG_TAG, "Low Score: "+gameStats.lowScore);
-		Log.d(LOG_TAG, "Worst Game: \n"+gameStats.worstGame);
-		*/
-		
 		builder.setMessage(message);
 		
-		// 3. Get the AlertDialog from create()
+		
 		AlertDialog dialog = builder.create();
+		
+		// You must click on one of the buttons in order to dismiss the dialog
 		dialog.setCanceledOnTouchOutside(false);
 
+		// Show the dialog
 		dialog.show();
 		
 		save();
 
+		// Delete the current save file. The user can no longer continue this game.
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		currentGameFile.delete();
 	}
 	
 	/**
-	 * This method will not be used for much longer as I switch to
-	 * icons instead of text
-	 * @param tile
-	 * @return
+	 * This method is no longer used because I switched
+	 * to ImageViews instead of buttons
+	 * @param tile The number representation of the tile
+	 * @return The string representation of the tile
 	 */
 	private String convertToTileText(int tile) {
 		switch (tile) {
@@ -586,26 +585,35 @@ public class GameActivity extends Activity implements OnGestureListener {
 		}
 	}
 
+	/**
+	 * Add a new tile to the board
+	 */
 	private void addTile() {
 		
+		// Add a new tile to the game object
 		Location loc = game.addRandomPiece();
 		
+		// Find the tile to make appear
 		ImageView newTile = (ImageView) findViewById(loc.getRow() * 100 + loc.getCol());
 		
+		// Immediately set the alpha of the tile to 0
+		ObjectAnimator.ofFloat(newTile, View.ALPHA, 0).setDuration(0).start();
+		
+		// Update the new tile's tag and icon
 		int tileValue = game.getGrid().get(loc);
 		newTile.setTag(tileValue);
 		setIcon(newTile, tileValue);
 		
-		// Immediately make the button invisible
-		ObjectAnimator.ofFloat(newTile, View.ALPHA, 0).setDuration(0).start();
-		
-		// Make the button visible. It still cannot be seen
+		// Make the tile visible. It still cannot be seen because the alpha is 0
 		newTile.setVisibility(View.VISIBLE);
 		
-		// Fade the button in
+		// Fade the tile in
 		ObjectAnimator.ofFloat(newTile, View.ALPHA, 1).setDuration(NEW_TILE_SPEED).start();
 	}
 	
+	/**
+	 * Remove all 2's and 4's from the game with a fade out animation
+	 */
 	private void removeLowTiles() {
 		
 		animationInProgress = true;
@@ -613,6 +621,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		// Save the game history before each move
 		game.saveGameInHistory();
 		
+		// The grid where all of the tiles are in
 		Grid gameBoard = game.getGrid();
 		
 		// Get a list of all tiles
@@ -620,9 +629,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		// An list of the fade animations to play
 		ArrayList<ObjectAnimator> alphaAnimations = new ArrayList<ObjectAnimator>();
-		
-		// An list of the buttons to remove
-		//ArrayList<Button> toRemoveList = new ArrayList<Button>();
 		
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		
@@ -632,17 +638,23 @@ public class GameActivity extends Activity implements OnGestureListener {
 				
 				ImageView toRemove = (ImageView) gridLayout.findViewById(tile.getRow() * 100 + tile.getCol());
 				
-				// Setting a tag causes the tile to update in updateGrid
+				// Set the tag to the new value
 				toRemove.setTag(0);
 				
+				// Create a new animation of the tile fading away and
+				// add it to the list
 				alphaAnimations.add(ObjectAnimator.ofFloat(toRemove, View.ALPHA, 0)
 						.setDuration(NEW_TILE_SPEED));
 			}
 		}
 		
-		if(alphaAnimations.isEmpty())
+		if(alphaAnimations.isEmpty()) {
+			animationInProgress = false;
 			return;
+			
+		}
 		
+		// Assume that all animations finish at the same time
 		alphaAnimations.get(0).addListener(new AnimatorListener(){
 			
 			@Override
@@ -665,7 +677,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 			public void onAnimationRepeat(Animator animation) { }
 		});
 		
-		// Move all of the tiles
+		// Remove all of the tiles
 		for(ObjectAnimator animation: alphaAnimations)
 			animation.start();
 	}
@@ -719,14 +731,15 @@ public class GameActivity extends Activity implements OnGestureListener {
 		rotateAnimation.start();
 	}
 	
-	
+	/**
+	 * Freezes the game (can not move in a direction for a random amount of turns)
+	 */
 	public void ice() {
+		// This attack cannot be stacked
 		if(game.getIceDuration() <= 0)
 			game.ice();
 		
-		int iceDuration = game.getIceDuration();
-		int iceDirection = game.getIceDirection();
-		
+		// Create a new toast to diplay the attack
 		Toast.makeText(getApplicationContext(),
 				"FROZEN!	Cannot move " +
 				Location.directionToString(game.getIceDirection()) +
@@ -734,10 +747,13 @@ public class GameActivity extends Activity implements OnGestureListener {
 				Toast.LENGTH_SHORT).show();
 	}
 	
+	/**
+	 * Undo the game. Currently does not have any animations because it
+	 * would be difficult to track every tile separately
+	 */
 	public void undo() {
 		if(game.getUndosRemaining() == 0) {
-			Button undoButton = (Button) findViewById(R.id.undo_button);
-			undoButton.setEnabled(false);
+			((Button) findViewById(R.id.undo_button)).setEnabled(false);
 		}
 		else
 		{
@@ -748,7 +764,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 		}
 	}
 	
+	/**
+	 * Restart the game.
+	 */
 	public void restartGame() {
+		// Save any new records
 		if(game.highestPiece() > gameStats.highestTile)
 			gameStats.highestTile = game.highestPiece();
 		
@@ -758,20 +778,19 @@ public class GameActivity extends Activity implements OnGestureListener {
 		}
 		
 		game = GameModes.newGameFromId(game.getGameModeId());
+
+		// Set the undo button to be enabled or disabled
 		Button undoButton = (Button) findViewById(R.id.undo_button);
-		
 		undoButton.setEnabled(game.getUndosRemaining() != 0);
 		
 		gameLost = false;
 		updateGame();
 	}
 
+	/**
+	 * Save the game and game stats to a file
+	 */
 	private void save() {
-		
-		/*
-		Log.d(LOG_TAG, "save");
-		Log.d(LOG_TAG, "total games"+gameStats.totalGamesPlayed);
-		*/
 		
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
@@ -781,13 +800,15 @@ public class GameActivity extends Activity implements OnGestureListener {
 			Save.save(gameStats, gameStatsFile);
 		} catch (IOException e) {
 			e.printStackTrace();
+			// Notify the user of the error through a toast
 			Toast.makeText(getApplicationContext(), "Error: Save file not found", Toast.LENGTH_SHORT).show();
 		}
 	}
 	
+	/**
+	 * Load the game from a file and update the game
+	 */
 	private void load() {
-		
-		Log.d(LOG_TAG, "Entering load");
 		
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
@@ -897,11 +918,14 @@ public class GameActivity extends Activity implements OnGestureListener {
         return super.onTouchEvent(event);
     }
 	
-     // When the screen is swiped
+    /**
+     * When the screen is swiped move the board
+     */
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2, 
             float velocityX, float velocityY) {
         
+    	// If there is currently an animation in progress ignore the swipe
     	if(!animationInProgress) {
     		// Horizontal swipe
     		if(Math.abs(velocityX) > Math.abs(velocityY))

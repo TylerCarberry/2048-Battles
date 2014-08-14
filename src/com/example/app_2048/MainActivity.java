@@ -28,10 +28,9 @@ import android.os.Build;
 public class MainActivity extends Activity
 {
 	final static String LOG_TAG = MainActivity.class.getSimpleName();
+	
+	// Stores the mode that is currently selected
 	private static int gameId = GameModes.NORMAL_MODE_ID;
-
-	// Used in the intent to pass the game mode id to GameActivity
-	//public final static String GAME_LOCATION = "GAME";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +42,7 @@ public class MainActivity extends Activity
 			.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 	}
-
-
+	
 	@Override
 	/**
 	 * Determine if a saved game exists and either enable or
@@ -71,6 +69,8 @@ public class MainActivity extends Activity
 
 			continueGame.setEnabled(true);
 		}
+		// If an exception is caught then the game does not exist
+		// and the continue game button remains disabled
 		catch (FileNotFoundException e) {}
 		catch (StreamCorruptedException e) {
 			e.printStackTrace();
@@ -80,54 +80,42 @@ public class MainActivity extends Activity
 			e.printStackTrace();
 		}
 
+		// When the start game button is pressed
 		Button startGame = (Button) findViewById(R.id.start_game_button);
-
 		startGame.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				Log.d(LOG_TAG, "On click");
-				
-				// Instead of passing the game to GameActivity through an
-				// intent, it is saved to a file. This should allow greater
-				// flexibility in the game that is passed and should allow
-				// custom mode creation.
+				// Instead of passing the game to GameActivity through an intent,
+				// it is saved to a file. This should allow greater flexibility in
+				// the game that is passed and should allow custom mode creation.
 				if(gameId != GameModes.LOAD_GAME_ID) {
 					Game game = GameModes.newGameFromId(gameId);
-					Statistics gameStats;
 					game.setGameModeId(gameId);
 					File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
-					File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
-
 					try {
-						Log.d(LOG_TAG, "saving in main");
-						Log.d(LOG_TAG, ""+game);
-						
 						Save.save(game, currentGameFile);
-						/*
-						gameStats = (Statistics) Save.load(gameStatsFile);
-						gameStats.totalGamesPlayed += 1;
-						Save.save(gameStats, gameStatsFile);
-						*/
-					} catch (IOException e) {
+					}
+					catch (IOException e) {
 						e.printStackTrace();
 					} 
-					
-					/*catch (ClassNotFoundException e) {
-						e.printStackTrace();
-					}
-					*/
 				}
-
-				startGameActivity(null);
+				// Switch to the game activity
+				startGameActivity();
+			}
+		});
+		
+		// When the continue game button is pressed switch to the game activity
+		// without saving over the saved file
+		continueGame.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				startGameActivity();
 			}
 		});
 
 		super.onResume();
 	}
 
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
@@ -161,7 +149,7 @@ public class MainActivity extends Activity
 	}
 
 	/**
-	 * A placeholder fragment containing a simple view.
+	 * Currently the only fragment in the activity.
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
@@ -177,13 +165,15 @@ public class MainActivity extends Activity
 		}
 	}
 
+	/**
+	 *  When a button is pressed to change the game mode update the
+	 *  title, description, and gameId
+	 * @param view The button that was pressed
+	 */
 	public void createGame(View view) {
 
 		TextView gameTitle = (TextView) findViewById(R.id.game_mode_textview);
 		TextView gameDesc = (TextView) findViewById(R.id.game_desc_textview);
-		//Button startGame = (Button) findViewById(R.id.game_mode_textview);
-
-		gameId = GameModes.NORMAL_MODE_ID;
 
 		switch (view.getId()) {
 		case R.id.normal_button:
@@ -221,49 +211,20 @@ public class MainActivity extends Activity
 			break;
 		default:
 			Log.d(LOG_TAG, "Unexpected button pressed");
+			// Default to normal mode
+			gameId = GameModes.NORMAL_MODE_ID;
 			return;
 		}
 
+		// Update the game title and description
 		gameTitle.setText(getString(GameModes.getGameTitleById(gameId)));
 		gameDesc.setText(getString(GameModes.getGameDescById(gameId)));
-		
-		Log.d(LOG_TAG, ""+gameId);
-
-
-		/*
-		// Instead of passing the game to GameActivity through an
-		// intent, it is saved to a file. This should allow greater
-		// flexibility in the game that is passed and should allow
-		// custom mode creation.
-		if(gameId != GameModes.LOAD_GAME_ID) {
-			Game game = GameModes.newGameFromId(gameId);
-			Statistics gameStats;
-			game.setGameModeId(gameId);
-			File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
-			File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
-
-			try {
-				Save.save(game, currentGameFile);
-				gameStats = (Statistics) Save.load(gameStatsFile);
-				gameStats.totalGamesPlayed += 1;
-				Save.save(gameStats, gameStatsFile);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-
-		startActivity(new Intent(this, GameActivity.class));
-
-		 */
 	}
 	
-	public void startGameActivity(View view) {
-		Log.d(LOG_TAG, "In startGameActivity");
-		
-		Log.d(LOG_TAG, "gameId:" + gameId);
-		
+	/**
+	 * Switches to the game activity
+	 */
+	public void startGameActivity() {
 		startActivity(new Intent(this, GameActivity.class));
 	}
 }

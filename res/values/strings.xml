@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">2048</string>
     <string name="intro">Welcome to 2048!</string>
     <string name="intro_creator_name">By Tyler Carberry</string>
@@ -41,10 +40,9 @@
     <string name="mode_desc_x">X tile cannot be combined</string>
     <string name="mode_desc_corner">Immovable tiles in the corner</string>
     <string name="mode_desc_speed">Limited moves and time **Coming Soon**</string>
-    <string name="mode_desc_zen">All tiles combine. Impossible to lose</string>
+    <string name="mode_desc_zen">All tiles combine. Impossible to lose. **Coming Soon**</string>
     <string name="mode_desc_crazy">A 5x5 grid with every other mode enabled</string>
     <string name="mode_desc_ghost">All tiles appear as ?</string>
-    
     <string name="mode_desc_custom">Change everything about the game **Coming Soon**</string>
     
     <string name="title_activity_game">GameActivity</string>

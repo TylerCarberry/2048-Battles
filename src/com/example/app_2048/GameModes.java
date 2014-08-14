@@ -15,8 +15,7 @@ public class GameModes
 	public static final int GHOST_MODE_ID = 10;
 	public static final int CRAZY_MODE_ID = 11;
 	public static final int CUSTOM_MODE_ID = 12;
-
-
+	
 	public static Game newGameFromId(int id)
 	{
 		switch (id) {
