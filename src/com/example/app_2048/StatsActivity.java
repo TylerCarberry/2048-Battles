@@ -6,6 +6,7 @@ import java.io.IOException;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,7 +43,9 @@ public class StatsActivity extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if(id == R.id.action_settings) {
+			Intent showSettings = new Intent(this, com.example.app_2048.SettingsActivity.class);
+			startActivity(showSettings);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

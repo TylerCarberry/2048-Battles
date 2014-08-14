@@ -495,6 +495,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		gameLost = true;
 		
+		gameStats.totalGamesPlayed++;
+		
 		// 1. Instantiate an AlertDialog.Builder with its constructor
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -553,16 +555,12 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		builder.setMessage(message);
 		
-		
-		
-
 		// 3. Get the AlertDialog from create()
 		AlertDialog dialog = builder.create();
 		dialog.setCanceledOnTouchOutside(false);
 
 		dialog.show();
-
-
+		
 		save();
 
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
@@ -751,8 +749,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 	}
 	
 	public void restartGame() {
-		gameStats.totalGamesPlayed += 1;
-		
 		if(game.highestPiece() > gameStats.highestTile)
 			gameStats.highestTile = game.highestPiece();
 		

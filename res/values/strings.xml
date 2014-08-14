@@ -69,7 +69,7 @@
     <string name="file_game_stats">GAME_STATS</string>
     <string name="title_activity_stats">StatsActivity</string>
 	<string name="game_stats">Game Stats</string>
-    <string name="total_games">Total Games</string>
+    <string name="total_games">Total Games Lost</string>
     <string name="total_undos">Total Undos</string>
     <string name="total_shuffles">Total Shuffles</string>
     <string name="total_moves">Total Moves</string>
