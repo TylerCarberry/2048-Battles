@@ -35,6 +35,14 @@
         android:layout_alignRight="@+id/undo_button"
         android:layout_below="@+id/undo_button"
         android:text="@string/restart" />
+    
+    <Button
+        android:id="@+id/ice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/restart_button"
+        android:layout_below="@+id/restart_button"
+        android:text="Ice" />
 
     <TextView
         android:id="@+id/score_textview"

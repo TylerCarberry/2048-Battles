@@ -86,8 +86,13 @@ public class GameActivity extends Activity implements OnGestureListener {
 	// Stores info about the game such as high score
 	private static Statistics gameStats;
 	
+	private static int verticalTileDistance = 0;
+	private static int horizontalTileDistance = 0;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
 		
@@ -102,6 +107,7 @@ public class GameActivity extends Activity implements OnGestureListener {
         mDetector = new GestureDetectorCompat(this,this);
         
         boardCreated = false;
+        
 	}
 
 	@Override
@@ -160,6 +166,9 @@ public class GameActivity extends Activity implements OnGestureListener {
 	
 	@Override
 	protected void onResume() {
+		
+		boardCreated = false;
+		
 		// Load the saved file containing the game. This also updates the screen.
 		load();
 		
@@ -189,6 +198,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 			return;
 		
 		animationInProgress = true;
+		
+		calculateDistances();
 		
 		// Load the speed to move the tiles from the settings
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -228,11 +239,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 				
 				ObjectAnimator animation;
 				if(direction == Location.LEFT || direction == Location.RIGHT) {
-					distance *= 145;
+					distance *= horizontalTileDistance;
 					animation = ObjectAnimator.ofFloat(movedTile, View.TRANSLATION_X, distance);
 				}
 				else {
-					distance *= 110;
+					distance *= verticalTileDistance;
 					animation = ObjectAnimator.ofFloat(movedTile, View.TRANSLATION_Y, distance);
 				}
 				
@@ -295,8 +306,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 */
 	public void updateGame() {
 		
-		//Log.d(LOG_TAG, "Entering update game");
-		
 		TextView turnTextView = (TextView) findViewById(R.id.turn_textview);
 		TextView scoreTextView = (TextView) findViewById(R.id.score_textview);
 		TextView undosTextView = (TextView) findViewById(R.id.undos_textview);
@@ -353,6 +362,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 				
 				tile = new ImageView(this);
 				tile.setId(row * 100 + col);
+				setIcon(tile, 2);
 				
 				tileValue = game.getGrid().get(new Location(row, col));
 				
@@ -367,14 +377,21 @@ public class GameActivity extends Activity implements OnGestureListener {
 		
 		boardCreated = true;
 	}
+	
+	private void calculateDistances() {
+		GridLayout grid = (GridLayout) findViewById(R.id.grid_layout);
+		verticalTileDistance = grid.getHeight() / 4;
+		horizontalTileDistance = grid.getWidth() / 4;
+	}
 
 	/**
 	 * Update the game board 
 	 */
 	private void updateGrid() {
 		
-		if(! boardCreated)
+		if(! boardCreated) {
 			createGrid();
+		}
 		
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		gridLayout.setRowCount(game.getGrid().getNumRows());
@@ -743,6 +760,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 	 * Freezes the game (can not move in a direction for a random amount of turns)
 	 */
 	public void ice() {
+		
 		// This attack cannot be stacked
 		if(game.getIceDuration() <= 0)
 			game.ice();
@@ -824,7 +842,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 		try {
 			game = (Game) Save.load(currentGameFile);
 			gameStats = (Statistics) Save.load(gameStatsFile);
-			
 		} catch (ClassNotFoundException e) {
 			Log.w(LOG_TAG, "Class not found exception in load");
 			game = new Game();
@@ -835,7 +852,8 @@ public class GameActivity extends Activity implements OnGestureListener {
 			gameStats = new Statistics();
 		}
 		
-		updateGame();
+		createGrid();
+		//updateGame();
 	}
 	
 	/*
@@ -892,6 +910,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
+			
 			View rootView = inflater.inflate(R.layout.fragment_game, container,
 					false);
 			
@@ -910,13 +929,14 @@ public class GameActivity extends Activity implements OnGestureListener {
 	        });
 	        
 	        final Button iceButton = (Button) rootView.findViewById(R.id.ice);  
+	        
 	        iceButton.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {
 	            	((GameActivity)getActivity()).ice();
 	            }
 	        });
 			
-			return rootView;
+	        return rootView;
 		}
 	}
 	
