@@ -78,17 +78,17 @@ public class GameActivity extends Activity implements OnGestureListener {
 	boolean animationInProgress = false;
 	boolean gameLost = false;
 	
-	// TODO: This will keep track of the active animations and stop
-	// them in onStop
+	// This keeps track of the active animations and
+	// stops them in onStop
 	private ArrayList<ObjectAnimator> activeAnimations
 		= new ArrayList<ObjectAnimator>();
 	
 	// Stores info about the game such as high score
 	private static Statistics gameStats;
 	
+	// The distance in pixels between tiles
 	private static int verticalTileDistance = 0;
 	private static int horizontalTileDistance = 0;
-	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +107,6 @@ public class GameActivity extends Activity implements OnGestureListener {
         mDetector = new GestureDetectorCompat(this,this);
         
         boardCreated = false;
-        
 	}
 
 	@Override
@@ -184,6 +183,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 		// Only save a game that is still in progress
 		if(! game.lost())
 			save();
+		
+		for(ObjectAnimator animation : activeAnimations)
+			animation.end();
+		
+		animationInProgress = false;
 		
 		super.onStop();
 	}
@@ -271,6 +275,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 				updateGame();
 				addTile();
 				gameStats.totalMoves += 1;
+				activeAnimations.clear();
 				animationInProgress = false;
 				
 				if(game.getIceDuration() > 0)
@@ -293,8 +298,10 @@ public class GameActivity extends Activity implements OnGestureListener {
 		});
 		
 		// Move all of the tiles
-		for(ObjectAnimator animation: translateAnimations)
+		for(ObjectAnimator animation: translateAnimations) {
 			animation.start();
+			activeAnimations.add(animation);
+		}
 	}
 	
 	/**
@@ -629,7 +636,31 @@ public class GameActivity extends Activity implements OnGestureListener {
 		newTile.setVisibility(View.VISIBLE);
 		
 		// Fade the tile in
-		ObjectAnimator.ofFloat(newTile, View.ALPHA, 1).setDuration(NEW_TILE_SPEED).start();
+		
+		ObjectAnimator alphaAnimation = ObjectAnimator.ofFloat(newTile, View.ALPHA, 1)
+				.setDuration(NEW_TILE_SPEED);
+		
+		// Assume that all animations finish at the same time
+		alphaAnimation.addListener(new AnimatorListener(){
+
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				activeAnimations.clear();
+			}
+
+			@Override
+			public void onAnimationStart(Animator animation) { }
+			@Override
+			public void onAnimationCancel(Animator animation) {
+				Log.d(LOG_TAG, "Animation cancelled");
+				activeAnimations.clear();
+			}
+			@Override
+			public void onAnimationRepeat(Animator animation) { }
+		});
+		
+		activeAnimations.add(alphaAnimation);
+		alphaAnimation.start();
 	}
 	
 	/**
@@ -684,6 +715,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 				game.newTurn();
 				gameStats.totalMoves += 1;
 				updateGame();
+				activeAnimations.clear();
 				animationInProgress = false;
 			}
 			
@@ -692,6 +724,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 			@Override
 			public void onAnimationCancel(Animator animation) {
 				Log.d(LOG_TAG, "Animation cancelled");
+				activeAnimations.clear();
 				animationInProgress = false;
 			}
 			@Override
@@ -699,8 +732,11 @@ public class GameActivity extends Activity implements OnGestureListener {
 		});
 		
 		// Remove all of the tiles
-		for(ObjectAnimator animation: alphaAnimations)
+		for(ObjectAnimator animation: alphaAnimations) {
+			activeAnimations.add(animation);
 			animation.start();
+		}
+			
 	}
 	
 	/**
@@ -734,11 +770,14 @@ public class GameActivity extends Activity implements OnGestureListener {
 			}
 			@Override
 			public void onAnimationEnd(Animator animation) { 
+				activeAnimations.clear();
 				animationInProgress = false;
 			}
 			@Override
 			public void onAnimationCancel(Animator animation) {
 				Log.d(LOG_TAG, "Shuffle animation cancelled");
+				activeAnimations.clear();
+				animationInProgress = false;
 			}
 			@Override
 			public void onAnimationRepeat(Animator animation) {
@@ -749,6 +788,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 			}
 		});
 		
+		activeAnimations.add(rotateAnimation);
 		rotateAnimation.start();
 	}
 	
