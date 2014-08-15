@@ -234,9 +234,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 				movedTile.setTag(-10);
 				
 				// Determine the distance to move in pixels
-				// On my device each column is 145 pixels apart and each row is 110
-				// TODO: Change this to support different screen sizes
-				
 				ObjectAnimator animation;
 				if(direction == Location.LEFT || direction == Location.RIGHT) {
 					distance *= horizontalTileDistance;
@@ -362,7 +359,6 @@ public class GameActivity extends Activity implements OnGestureListener {
 				
 				tile = new ImageView(this);
 				tile.setId(row * 100 + col);
-				setIcon(tile, 2);
 				
 				tileValue = game.getGrid().get(new Location(row, col));
 				
@@ -852,8 +848,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 			gameStats = new Statistics();
 		}
 		
-		createGrid();
-		//updateGame();
+		updateGame();
 	}
 	
 	/*
