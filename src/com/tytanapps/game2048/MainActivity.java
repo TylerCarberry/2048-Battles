@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 
+import com.google.example.games.basegameutils.BaseGameActivity;
 import com.tytanapps.game2048.R;
 import com.tytanapps.game2048.R.id;
 import com.tytanapps.game2048.R.layout;
@@ -31,7 +32,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.os.Build;
 
-public class MainActivity extends Activity
+public class MainActivity extends BaseGameActivity implements View.OnClickListener
 {
 	final static String LOG_TAG = MainActivity.class.getSimpleName();
 	
@@ -47,6 +48,9 @@ public class MainActivity extends Activity
 			getFragmentManager().beginTransaction()
 			.add(R.id.container, new PlaceholderFragment()).commit();
 		}
+		
+		//findViewById(R.id.sign_in_button).setOnClickListener(this);
+	    //findViewById(R.id.sign_out_button).setOnClickListener(this);
 	}
 	
 	@Override
@@ -167,6 +171,7 @@ public class MainActivity extends Activity
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
+			
 			return rootView;
 		}
 	}
@@ -232,5 +237,37 @@ public class MainActivity extends Activity
 	 */
 	public void startGameActivity() {
 		startActivity(new Intent(this, GameActivity.class));
+	}
+
+	@Override
+	public void onSignInFailed() {
+	    // Sign in has failed. So show the user the sign-in button.
+	    findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+	    findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+	}
+
+	@Override
+	public void onSignInSucceeded() {
+	    // show sign-out button, hide the sign-in button
+	    findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+	    findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
+
+	    // (your code here: update UI, enable functionality that depends on sign in, etc)
+	}
+
+	@Override
+	public void onClick(View view) {
+	    if (view.getId() == R.id.sign_in_button) {
+	        // start the asynchronous sign in flow
+	        beginUserInitiatedSignIn();
+	    }
+	    else if (view.getId() == R.id.sign_out_button) {
+	        // sign out.
+	        signOut();
+
+	        // show sign-in button, hide the sign-out button
+	        findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+	        findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+	    }
 	}
 }

@@ -17,6 +17,20 @@
         android:text="@string/intro"
         android:textSize="35sp" />
 
+    <!-- sign-in button -->
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- sign-out button -->
+    <Button
+        android:id="@+id/sign_out_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Out"
+        android:visibility="gone" />
+
     <Space
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
