@@ -297,14 +297,14 @@ int id lowest_score 0x7f09003a
 int id match_parent 0x7f09000c
 int id monochrome 0x7f090013
 int id moves_textView 0x7f090017
-int id name_textview 0x7f090021
+int id name_textview 0x7f090020
 int id none 0x7f090000
 int id normal 0x7f090001
 int id normal_button 0x7f090025
 int id practice_button 0x7f090026
 int id pro_button 0x7f090027
 int id production 0x7f090007
-int id prompt_select_game 0x7f090020
+int id prompt_select_game 0x7f090021
 int id relativeLayout1 0x7f090023
 int id restart_button 0x7f09001b
 int id rush_button 0x7f09002a

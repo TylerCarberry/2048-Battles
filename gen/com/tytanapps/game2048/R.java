@@ -616,14 +616,14 @@ containing a value of this type.
         public static final int match_parent=0x7f09000c;
         public static final int monochrome=0x7f090013;
         public static final int moves_textView=0x7f090017;
-        public static final int name_textview=0x7f090021;
+        public static final int name_textview=0x7f090020;
         public static final int none=0x7f090000;
         public static final int normal=0x7f090001;
         public static final int normal_button=0x7f090025;
         public static final int practice_button=0x7f090026;
         public static final int pro_button=0x7f090027;
         public static final int production=0x7f090007;
-        public static final int prompt_select_game=0x7f090020;
+        public static final int prompt_select_game=0x7f090021;
         public static final int relativeLayout1=0x7f090023;
         public static final int restart_button=0x7f09001b;
         public static final int rush_button=0x7f09002a;

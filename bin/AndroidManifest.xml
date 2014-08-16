@@ -58,5 +58,6 @@
                 android:value="com.tytanapps.game2048.MainActivity" />
         </activity>
     </application>
+    <uses-permission android:name="android.permission.INTERNET" /> 
 
 </manifest>

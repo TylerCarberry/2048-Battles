@@ -244,6 +244,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	    // Sign in has failed. So show the user the sign-in button.
 	    findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
 	    findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+	    
+	    Log.d(LOG_TAG, "login failed");
 	}
 
 	@Override
@@ -262,7 +264,10 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	        beginUserInitiatedSignIn();
 	    }
 	    else if (view.getId() == R.id.sign_out_button) {
-	        // sign out.
+	        
+	    	Log.d(LOG_TAG, "clicked sign out");
+	    	
+	    	// sign out.
 	        signOut();
 
 	        // show sign-in button, hide the sign-out button

@@ -21,13 +21,18 @@
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/intro_textview" />
 
     <!-- sign-out button -->
     <Button
         android:id="@+id/sign_out_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/intro_textview"
+        android:onClick="onClick"
         android:text="Sign Out"
         android:visibility="gone" />
 
@@ -41,11 +46,10 @@
 
     <TextView
         android:id="@+id/name_textview"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/intro_textview"
         android:layout_below="@+id/intro_textview"
-        android:gravity="center"
         android:text="@string/intro_creator_name"
         android:textSize="20sp" />
 
