@@ -109,7 +109,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         // GestureDetector.OnGestureListener
         mDetector = new GestureDetectorCompat(this,this);
         
-        boardCreated = false;
 	}
 
 	@Override
@@ -174,6 +173,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	@Override
 	protected void onResume() {
 		
+		// If GameActivity is loaded for the first time the grid is created. If user returns to
+		// this activity after switching to another activity, the grid is still recreated because
+		// there is a chance that android killed this activity in the background
 		boardCreated = false;
 		
 		// Load the saved file containing the game. This also updates the screen.
@@ -312,10 +314,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			activeAnimations.add(animation);
 		}
 		
-		Log.d(LOG_TAG, ""+highestTile);
-		Log.d(LOG_TAG, ""+game.highestPiece());
-		Log.d(LOG_TAG, ""+game.getGameModeId());
-		
 		if(game.highestPiece() > highestTile && game.getGameModeId() == GameModes.NORMAL_MODE_ID)
 			if(game.highestPiece() == 128)
 				unlockAchievement128Tile();
@@ -357,8 +355,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	}
 	
 	/**
-	 * Create the game board 
-	 * Precondition: the grid does not already exist
+	 * Create the game board
 	 */
 	private void createGrid() {
 		
@@ -369,7 +366,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		gridLayout.setRowCount(game.getGrid().getNumRows());
 		gridLayout.setColumnCount(game.getGrid().getNumCols());
 
+		// The new tile to insert
 		ImageView tile;
+		// Used to check if the tile already exists
+		ImageView existingTile;
 		Spec specRow, specCol;
 		GridLayout.LayoutParams gridLayoutParam;
 		int tileValue;
@@ -381,11 +381,18 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				specCol = GridLayout.spec(col, 1);
 				gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
 				
+				// Check if that tile already exists
+				existingTile = (ImageView) findViewById(row * 100 + col);
+
+				// Remove the existing tile if there is one
+				if(existingTile!=null) {
+					((ViewGroup) existingTile.getParent()).removeView(existingTile);
+				}
+
 				tile = new ImageView(this);
 				tile.setId(row * 100 + col);
 				
 				tileValue = game.getGrid().get(new Location(row, col));
-				
 				if(tileValue == 0)
 					tile.setVisibility(View.INVISIBLE);
 				else 
@@ -394,10 +401,12 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				gridLayout.addView(tile,gridLayoutParam);
 			}
 		}
-		
 		boardCreated = true;
 	}
 	
+	/**
+	 * Calculate the distances that tiles should move when the game is swiped
+	 */
 	private void calculateDistances() {
 		GridLayout grid = (GridLayout) findViewById(R.id.grid_layout);
 		verticalTileDistance = grid.getHeight() / 4;
