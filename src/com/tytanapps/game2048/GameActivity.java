@@ -11,6 +11,9 @@ import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.Player;
+import com.google.example.games.basegameutils.BaseGameActivity;
 import com.tytanapps.game2048.R;
 import com.tytanapps.game2048.R.array;
 import com.tytanapps.game2048.R.drawable;
@@ -62,7 +65,7 @@ import android.widget.Toast;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
-public class GameActivity extends Activity implements OnGestureListener {
+public class GameActivity extends BaseGameActivity implements OnGestureListener {
 	
 	// The time in milliseconds for the animation
 	public static final long SHUFFLE_SPEED = 300;
@@ -159,7 +162,12 @@ public class GameActivity extends Activity implements OnGestureListener {
 			startActivity(showSettings);
 			return true;
 		}
-		
+		// When the achievements pressed
+		if(id == R.id.action_achievements) {
+			startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 1);
+			return true;
+		}
+
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -204,6 +212,7 @@ public class GameActivity extends Activity implements OnGestureListener {
 		animationInProgress = true;
 		
 		calculateDistances();
+		int highestTile = game.highestPiece();
 		
 		// Load the speed to move the tiles from the settings
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -302,6 +311,14 @@ public class GameActivity extends Activity implements OnGestureListener {
 			animation.start();
 			activeAnimations.add(animation);
 		}
+		
+		Log.d(LOG_TAG, ""+highestTile);
+		Log.d(LOG_TAG, ""+game.highestPiece());
+		Log.d(LOG_TAG, ""+game.getGameModeId());
+		
+		if(game.highestPiece() > highestTile && game.getGameModeId() == GameModes.NORMAL_MODE_ID)
+			if(game.highestPiece() == 128)
+				unlockAchievement128Tile();
 	}
 	
 	/**
@@ -891,47 +908,17 @@ public class GameActivity extends Activity implements OnGestureListener {
 		updateGame();
 	}
 	
-	/*
-	public void createCountdownTimer() {
-		Log.d(LOG_TAG, "create countdown timer");
-
-		TextView timeLeftTextView = (TextView) findViewById(R.id.time_textview);
-		Timer timeLeftTimer = new Timer(timeLeftTextView, (long) game.getTimeLeft() * 1000);
-		timeLeftTimer.start();
-	}
-	
-	/**
-	 * Used to update the time left TextView
-	 * ***** Is currently not used in the game *****
-	 */
-	
-	/*
-	public class Timer extends CountDownTimer
-	{
-		private TextView timeLeftTextView;
-		public final static int COUNT_DOWN_INTERVAL = 1000;
+	// TESTING
+	private void unlockAchievement128Tile() {
 		
-		public Timer(TextView textview, long millisInFuture) 
-		{
-			super(millisInFuture, COUNT_DOWN_INTERVAL);
-			timeLeftTextView = textview;
-			
-			Log.d(LOG_TAG, "constructor");
-		}
-
-		public void onFinish()
-		{
-			Log.d(LOG_TAG, "finish");
-			timeLeftTextView.setText("Time Up!");
-		}
-
-		public void onTick(long millisUntilFinished) 
-		{
-			Log.d(LOG_TAG, "tick");
-			timeLeftTextView.setText("Time Left : " + millisUntilFinished/1000);
+		Log.d(LOG_TAG, "unlocking achievement 128 tile");
+		
+		if(getApiClient().isConnected()) {
+            Games.Achievements.unlock(getApiClient(), 
+            		getString(R.string.tile_128_achievement));
+            Log.d(LOG_TAG, "successfully unlocked achievement 128 tile");
 		}
 	}
-	*/
 
 	/**
 	 * The only fragment in the activity. Has the game board and the
@@ -1017,4 +1004,10 @@ public class GameActivity extends Activity implements OnGestureListener {
     public void onShowPress(MotionEvent event) {}
     @Override
     public boolean onSingleTapUp(MotionEvent event) { return true; }
+
+    // Google+ sign in
+	@Override
+	public void onSignInFailed() {}
+	@Override
+	public void onSignInSucceeded() {}
 }

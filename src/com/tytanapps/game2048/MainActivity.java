@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 
+import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.tytanapps.game2048.R;
 import com.tytanapps.game2048.R.id;
@@ -120,7 +121,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 				startGameActivity();
 			}
 		});
-
+		
 		super.onResume();
 	}
 
