@@ -171,7 +171,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	}
 	
 	@Override
-	protected void onResume() {
+	protected void onStart() {
+		
+		Log.d(LOG_TAG, "on start");
 		
 		// If GameActivity is loaded for the first time the grid is created. If user returns to
 		// this activity after switching to another activity, the grid is still recreated because
@@ -185,11 +187,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		Button undoButton = ((Button) findViewById(R.id.undo_button));
 		undoButton.setEnabled(game.getUndosRemaining() != 0);
 		
-		super.onResume();
+		super.onStart();
 	}
 	
 	@Override
 	protected void onStop() {
+		
+		Log.d(LOG_TAG, "on stop");
+		
 		// Only save a game that is still in progress
 		if(! game.lost())
 			save();
@@ -315,8 +320,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		}
 		
 		if(game.highestPiece() > highestTile && game.getGameModeId() == GameModes.NORMAL_MODE_ID)
-			if(game.highestPiece() == 128)
-				unlockAchievement128Tile();
+			if(game.highestPiece() >= 128)
+				unlockAchievementNewHighestTile(game.highestPiece());
 	}
 	
 	/**
@@ -918,14 +923,30 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	}
 	
 	// TESTING
-	private void unlockAchievement128Tile() {
+	private void unlockAchievementNewHighestTile(int tile) {
 		
-		Log.d(LOG_TAG, "unlocking achievement 128 tile");
+		Log.d(LOG_TAG, "unlocking achievement " + tile + " tile");
 		
 		if(getApiClient().isConnected()) {
-            Games.Achievements.unlock(getApiClient(), 
-            		getString(R.string.tile_128_achievement));
-            Log.d(LOG_TAG, "successfully unlocked achievement 128 tile");
+			Log.d(LOG_TAG, "successfully unlocked achievement 128 tile");
+			switch(tile) {
+			case 128:
+				Games.Achievements.unlock(getApiClient(), getString(R.string.tile_128_achievement));
+				break;
+			case 256:
+				Games.Achievements.unlock(getApiClient(), getString(R.string.tile_256_achievement));
+				break;
+			case 512:
+				Games.Achievements.unlock(getApiClient(), getString(R.string.tile_512_achievement));
+				break;
+			case 1024:
+				Games.Achievements.unlock(getApiClient(), getString(R.string.tile_1024_achievement));
+				break;
+			case 2048:
+				Games.Achievements.unlock(getApiClient(), getString(R.string.tile_2048_achievement));
+				break;
+				
+			}
 		}
 	}
 

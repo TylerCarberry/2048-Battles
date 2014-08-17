@@ -3,5 +3,9 @@
 
     <string name="app_id">CENSORED</string>
     <string name="tile_128_achievement">CENSORED</string>
-
+    <string name="tile_256_achievement">CENSORED</string>
+    <string name="tile_512_achievement">CENSORED</string>
+    <string name="tile_1024_achievement">CENSORED</string>
+    <string name="tile_2048_achievement">CENSORED</string>
+    
 </resources>
