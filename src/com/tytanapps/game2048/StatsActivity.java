@@ -92,6 +92,7 @@ public class StatsActivity extends Activity {
 		lowestScore.setText(getString(R.string.lowest_score) + ": "
 				+ gameStats.lowScore);
 		
+		
 		super.onResume();
 	}
 

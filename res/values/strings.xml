@@ -8,6 +8,7 @@
     <string name="action_stats">Game Stats</string>
     <string name="action_powerups">Powerups</string>
     <string name="action_achievements">Achievements</string>
+    <string name="action_leaderboards">Leaderboards</string>
     <string name="how_to_play">Combine similar tiles to reach 2048.</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>

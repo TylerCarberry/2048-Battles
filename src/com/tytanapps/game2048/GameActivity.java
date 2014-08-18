@@ -13,6 +13,8 @@ import java.util.List;
 
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
+import com.google.android.gms.games.event.Events;
+import com.google.android.gms.games.quest.Quests;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.tytanapps.game2048.R;
 import com.tytanapps.game2048.R.array;
@@ -32,6 +34,8 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.backup.BackupManager;
+import android.app.backup.RestoreObserver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,6 +59,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.inputmethod.InputMethodSession.EventCallback;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridLayout.Spec;
@@ -166,6 +171,18 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 1);
 			return true;
 		}
+		if(id == R.id.action_leaderboards){
+		    startActivityForResult(Games.Leaderboards.getLeaderboardIntent(
+		        getApiClient(), getString(R.string.leaderboard_classic_mode)), 
+		        2);
+		}
+		/*
+		// When the achievements pressed
+		if(id == R.id.action_quests) {
+			showQuests();
+			return true;
+		}
+		*/
 
 		return super.onOptionsItemSelected(item);
 	}
@@ -223,6 +240,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		// Load the speed to move the tiles from the settings
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+				
 		int speed = Integer.valueOf(prefs.getString("speed", "200"));
 		
 		// Save the game history before each move
@@ -275,7 +293,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		if(translateAnimations.isEmpty()) {
 			animationInProgress = false;
 			
-			// Unnecessary code?
 			if(game.lost())
 				lost();
 				
@@ -572,44 +589,21 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		           }
 		       });
 		
-		String message = "";
+		// Update the leaderboard
+		if(getApiClient().isConnected()){
+            Games.Leaderboards.submitScore(getApiClient(), 
+                    getString(R.string.leaderboard_classic_mode), 
+                    game.getScore());
+        }
 		
+		// You cannot undo a game once you lose
 		Button undoButton = (Button) findViewById(R.id.undo_button);
 		undoButton.setEnabled(false);
 		
-		// Notify if there is a new high score
-		if(game.getScore() > gameStats.highScore) {
-			gameStats.highScore = game.getScore();
-			gameStats.bestGame = game;
-			message += "New High Score! " + game.getScore();
-		}
-		
-		// Notify if there is a new highest tile
-		if(game.highestPiece() > gameStats.highestTile) {
-			gameStats.highestTile = game.highestPiece();
-			
-			if(! message.equals(""))
-				message += "\n"; 
-			message += "New Highest Tile! " + game.highestPiece();
-		}
-		
-		// Only notify if there is a new low score if there are no other records.
-		if(gameStats.lowScore < 0 ||
-				game.getScore() < gameStats.lowScore) {
-			gameStats.lowScore = game.getScore();
-			gameStats.worstGame = game;
-			
-			if(message.equals(""))
-				message += "New Lowest Score! " + game.getScore();
-		}
-		
-		// If there are no records then just show the score
-		if(message.equals(""))
-			message += "Final Score: " + game.getScore();
-		
+		// Create the message to show the player
+		String message = "";
+		message = createLoseMessage(game, gameStats);
 		builder.setMessage(message);
-		
-		
 		AlertDialog dialog = builder.create();
 		
 		// You must click on one of the buttons in order to dismiss the dialog
@@ -619,12 +613,59 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		dialog.show();
 		
 		save();
-
+		
 		// Delete the current save file. The user can no longer continue this game.
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		currentGameFile.delete();
+		
+		// eventId is taken from the developer console
+	    String newGameEventId = getString(R.string.event_lose_game);
+
+	    // increment the event counter
+	    Games.Events.increment(this.getApiClient(), newGameEventId, 1);
+	    
 	}
 	
+	/** Create the message that is shown to the user after they lose.
+	 * 
+	 * @param myGame The game that was currently played
+	 * @param myGameStats The game stats of the game
+	 * @return The message to display
+	 */
+	private String createLoseMessage(Game myGame, Statistics myGameStats) {
+		String message = "";
+		// Notify if there is a new high score
+		if(myGame.getScore() > myGameStats.highScore) {
+			myGameStats.highScore = myGame.getScore();
+			myGameStats.bestGame = myGame;
+			message += "New High Score! " + myGame.getScore();
+		}
+
+		// Notify if there is a new highest tile
+		if(myGame.highestPiece() > myGameStats.highestTile) {
+			myGameStats.highestTile = myGame.highestPiece();
+
+			if(! message.equals(""))
+				message += "\n"; 
+			message += "New Highest Tile! " + myGame.highestPiece();
+		}
+
+		// Only notify if there is a new low score if there are no other records.
+		if(myGameStats.lowScore < 0 ||
+				myGame.getScore() < myGameStats.lowScore) {
+			myGameStats.lowScore = myGame.getScore();
+			myGameStats.worstGame = myGame;
+
+			if(message.equals(""))
+				message += "New Lowest Score! " + myGame.getScore();
+		}
+
+		// If there are no records then just show the score
+		if(message.equals(""))
+			message += "Final Score: " + myGame.getScore();
+		return message;
+	}
+
 	/**
 	 * This method is no longer used because I switched
 	 * to ImageViews instead of buttons
@@ -828,6 +869,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	public void ice() {
 		
+		/*
 		// This attack cannot be stacked
 		if(game.getIceDuration() <= 0)
 			game.ice();
@@ -838,6 +880,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				Location.directionToString(game.getIceDirection()) +
 				" for " + game.getIceDuration() + " turns",
 				Toast.LENGTH_SHORT).show();
+				*/
+		
+		requestRestore();
+		
 	}
 	
 	/**
@@ -896,8 +942,52 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			// Notify the user of the error through a toast
 			Toast.makeText(getApplicationContext(), "Error: Save file not found", Toast.LENGTH_SHORT).show();
 		}
+		
+		requestBackup();
 	}
 	
+	public void requestBackup() {
+
+		SharedPreferences settings = getSharedPreferences("hi", 0);
+		
+		Log.d(LOG_TAG, "in request backup");
+
+		BackupManager bm = new BackupManager(this);
+		bm.dataChanged();
+		
+		Log.d(LOG_TAG, "leaving request backup");
+	}
+	
+	public void requestRestore()
+	{
+		BackupManager bm = new BackupManager(this);
+		bm.requestRestore(
+				new RestoreObserver() {
+					@Override
+					public void restoreStarting(int numPackages) {
+						Log.d(LOG_TAG, "Restore from cloud starting.");
+						Log.d(LOG_TAG, ""+gameStats.totalMoves);
+						
+						super.restoreStarting(numPackages);
+					}
+					
+					@Override
+					public void onUpdate(int nowBeingRestored, String currentPackage) {
+						Log.d(LOG_TAG, "Restoring "+currentPackage);
+						super.onUpdate(nowBeingRestored, currentPackage);
+					}
+					
+					@Override
+					public void restoreFinished(int error) {
+						Log.d(LOG_TAG, "Restore from cloud finished.");
+						
+						super.restoreFinished(error);
+						Log.d(LOG_TAG, ""+gameStats.totalMoves);
+						
+					}
+				});
+	}
+
 	/**
 	 * Load the game from a file and update the game
 	 */
@@ -922,7 +1012,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		updateGame();
 	}
 	
-	// TESTING
+	/**
+	 * Unlock an achievement when a new highest tile is reached 
+	 * @param tile The new highest tile
+	 */
 	private void unlockAchievementNewHighestTile(int tile) {
 		
 		Log.d(LOG_TAG, "unlocking achievement " + tile + " tile");
@@ -949,6 +1042,29 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			}
 		}
 	}
+	
+	/**
+	 * Shows the active quests
+	 */
+	/*
+	public void showQuests()
+	{
+		// EventCallback is a subclass of ResultCallback; use this to handle the
+		// query results
+		EventCallback ec = new EventCallback();
+
+		// Load all events tracked for your game
+		com.google.android.gms.common.api.PendingResult<Events.LoadEventsResult>
+		        pr = Games.Events.load(this.getApiClient(), true);
+		pr.setResultCallback(ec);
+		
+		
+		
+		Intent questsIntent = Games.Quests.getQuestsIntent(this.getApiClient(),
+	            Quests.SELECT_ALL_QUESTS);
+	    startActivityForResult(questsIntent, 0);
+	}
+	*/
 
 	/**
 	 * The only fragment in the activity. Has the game board and the

@@ -15,6 +15,7 @@ import java.util.Scanner;
 
 public class Save
 {
+	// NOT USED
 	public static final String SAVEGAMELOCATION = "savegame.txt";
 	public static final String HIGHSCORELOCATION = "highscore.txt";
 	public static final String KEYMAPLOCATION = "keymap.txt";
