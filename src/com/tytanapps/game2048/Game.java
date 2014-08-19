@@ -40,6 +40,7 @@ public class Game implements java.io.Serializable
 	// Limited number of moves or undos, -1 = unlimited
 	private int movesRemaining = -1;
 	private int undosRemaining  = -1;
+	private int powerupsRemaining  = -1;
 	
 	// The time limit in seconds before the game automatically quits
 	// The timer starts immediately after the first move
@@ -58,7 +59,6 @@ public class Game implements java.io.Serializable
 	// that location. This prevents tiles from double combining. 
 	// (When 4|4|8|0 is shifted left it will form two 8's instead of a 16)
 	private ArrayList<Location> destinationLocations = new ArrayList<Location>();
-	
 	
 	private static int iceDirection = -1;
 	private static int iceDuration = -1;
@@ -197,8 +197,6 @@ public class Game implements java.io.Serializable
 			}
 		}
 		
-		
-		
 		return distance;
 	}
 	
@@ -266,13 +264,7 @@ public class Game implements java.io.Serializable
 			// Use up one of the undos allowed
 			if(undosRemaining > 0)
 				undosRemaining--;
-			
-			// Print the number of undos remaining
-			if(undosRemaining >= 0)
-				System.out.println("Undos remaining: " + undosRemaining);
-			
 		}
-		
 	}
 	
 	/**
@@ -636,6 +628,36 @@ public class Game implements java.io.Serializable
 	public int getMovesRemaining()
 	{
 		return movesRemaining;
+	}
+	
+	/**
+	 *  Limit the number of powerups
+	 * -1 = unlimited
+	 * @param limit The new limit of powerups
+	 * This overrides the previous limit, does not add to it
+	 */
+	public void setPowerupLimit(int limit)
+	{
+		powerupsRemaining = limit;
+	}
+	
+	/**
+	 * @return The number of powerups left
+	 * -1 = unlimited
+	 */
+	public int getPowerupsRemaining()
+	{
+		return powerupsRemaining;
+	}
+	
+	/**
+	 * Decrement the number of powerups remaining 
+	 * @return The new amount remaining.
+	 */
+	public int decrementPowerupsRemaining() {
+		if(powerupsRemaining > 0)
+			powerupsRemaining--;
+		return powerupsRemaining;
 	}
 	
 	/**

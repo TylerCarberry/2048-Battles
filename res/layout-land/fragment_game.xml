@@ -35,14 +35,6 @@
         android:layout_alignRight="@+id/undo_button"
         android:layout_below="@+id/undo_button"
         android:text="@string/restart" />
-    
-    <Button
-        android:id="@+id/ice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/restart_button"
-        android:layout_below="@+id/restart_button"
-        android:text="Ice" />
 
     <TextView
         android:id="@+id/score_textview"
@@ -79,6 +71,15 @@
         android:layout_marginRight="91dp"
         android:layout_toLeftOf="@+id/restart_button"
         android:text="@string/turn"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/powerups_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/undos_textview"
+        android:layout_below="@+id/undos_textview"
+        android:text="@string/powerups_remaining"
         android:textSize="20sp" />
 
 </RelativeLayout>

@@ -99,6 +99,13 @@
                     android:layout_height="wrap_content"
                     android:onClick="createGame"
                     android:text="@string/mode_pro" />
+                
+                <Button
+                    android:id="@+id/arcade_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="createGame"
+                    android:text="@string/mode_arcade" />
 
                 <Button
                     android:id="@+id/x_button"

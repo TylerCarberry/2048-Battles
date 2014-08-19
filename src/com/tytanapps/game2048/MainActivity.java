@@ -183,7 +183,9 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	 * @param view The button that was pressed
 	 */
 	public void createGame(View view) {
-
+		
+		Log.d(LOG_TAG, "create game");
+		
 		TextView gameTitle = (TextView) findViewById(R.id.game_mode_textview);
 		TextView gameDesc = (TextView) findViewById(R.id.game_desc_textview);
 
@@ -196,6 +198,9 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 			break;
 		case R.id.pro_button:
 			gameId = GameModes.PRO_MODE_ID;
+			break;
+		case R.id.arcade_button:
+			gameId = GameModes.ARCADE_MODE_ID;
 			break;
 		case R.id.x_button:
 			gameId = GameModes.X_MODE_ID;
@@ -237,6 +242,9 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	 * Switches to the game activity
 	 */
 	public void startGameActivity() {
+		
+		Log.d(LOG_TAG, "start game activity");
+		
 		startActivity(new Intent(this, GameActivity.class));
 	}
 

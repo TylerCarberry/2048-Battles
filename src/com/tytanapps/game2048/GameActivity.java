@@ -134,23 +134,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// When the powerups menu button is pressed show a dialog to choose between
 		// shuffle game and remove low tiles
 		if (id == R.id.action_powerups) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Choose powerup")
-			.setItems(R.array.powerups, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					// The 'which' argument contains the index position
-					// of the selected item
-					switch(which) {
-					case 0:
-						shuffleGame();
-						break;
-					case 1:
-						removeLowTiles();
-					}
-				}
-			});
-			builder.create().show();
-
+			showPowerupDialog();
 			return true;
 		}
 		
@@ -186,7 +170,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	protected void onStart() {
 		
@@ -351,6 +335,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		TextView scoreTextView = (TextView) findViewById(R.id.score_textview);
 		TextView undosTextView = (TextView) findViewById(R.id.undos_textview);
 		TextView movesTextView = (TextView) findViewById(R.id.moves_textView);
+		TextView powerupsTextView = (TextView) findViewById(R.id.powerups_textview);
 		
 		// Update the turn number
 		turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
@@ -358,20 +343,27 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Update the score
 		scoreTextView.setText(getString(R.string.score) + ": " + game.getScore());
 		
-		// Update the undos 
+		// Update the undos left
 		int undosLeft = game.getUndosRemaining();
 		if(undosLeft >= 0)
 			undosTextView.setText(getString(R.string.undo_remaining) + ": " + undosLeft);
 		else
-			undosTextView.setText("");
+			undosTextView.setVisibility(View.INVISIBLE);
 		
 		// Update moves left
 		int movesLeft = game.getMovesRemaining();
 		if(movesLeft >= 0)
-			movesTextView.setText(getString(R.string.move_remaining) + " :" + movesLeft);
+			movesTextView.setText(getString(R.string.move_remaining) + ": " + movesLeft);
 		else
-			movesTextView.setText("");
+			movesTextView.setVisibility(View.INVISIBLE);
 		
+		// Update powerups left
+		int powerupsLeft = game.getPowerupsRemaining();
+		if(powerupsLeft >= 0)
+			powerupsTextView.setText(getString(R.string.powerups_remaining) + ": " + powerupsLeft);
+		else
+			powerupsTextView.setVisibility(View.INVISIBLE);
+
 		// Update the game board
 		updateGrid();
 	}
@@ -665,10 +657,43 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			message += "Final Score: " + myGame.getScore();
 		return message;
 	}
+	
+	private void showPowerupDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+		if(game.lost()) {
+			builder.setTitle("Cannot use powerup")
+			.setMessage("You cannot use powerups after you lose");
+		}
+		else
+			if(game.getPowerupsRemaining() != 0) {
+				builder.setTitle("Choose powerup")
+				.setItems(R.array.powerups, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						// The 'which' argument contains the index position
+						// of the selected item
+						switch(which) {
+						case 0:
+							shuffleGame();
+							break;
+						case 1:
+							removeLowTiles();
+						}
+						game.decrementPowerupsRemaining();
+					}
+				});
+			}
+			else {
+				builder.setTitle("No More Powerups")
+				.setMessage("There are no powerups remaining");
+			}
+		builder.create().show();
+	}
 
 	/**
 	 * This method is no longer used because I switched
-	 * to ImageViews instead of buttons
+	 * to ImageViews instead of buttons. I may need this method 
+	 * later for zen mode.
 	 * @param tile The number representation of the tile
 	 * @return The string representation of the tile
 	 */
@@ -1058,8 +1083,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		        pr = Games.Events.load(this.getApiClient(), true);
 		pr.setResultCallback(ec);
 		
-		
-		
 		Intent questsIntent = Games.Quests.getQuestsIntent(this.getApiClient(),
 	            Quests.SELECT_ALL_QUESTS);
 	    startActivityForResult(questsIntent, 0);
@@ -1096,14 +1119,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	            }
 	        });
 	        
-	        final Button iceButton = (Button) rootView.findViewById(R.id.ice);  
-	        
-	        iceButton.setOnClickListener(new View.OnClickListener() {
-	            public void onClick(View v) {
-	            	((GameActivity)getActivity()).ice();
-	            }
-	        });
-			
 	        return rootView;
 		}
 	}

@@ -9,15 +9,16 @@ public class GameModes
 	public static final int NORMAL_MODE_ID = 1;
 	public static final int PRACTICE_MODE_ID = 2;
 	public static final int PRO_MODE_ID = 3;
-	public static final int RUSH_MODE_ID = 4;
-	public static final int SURVIVAL_MODE_ID = 5;
-	public static final int X_MODE_ID = 6;
-	public static final int CORNER_MODE_ID = 7;
-	public static final int SPEED_MODE_ID = 8;
-	public static final int ZEN_MODE_ID = 9;
-	public static final int GHOST_MODE_ID = 10;
-	public static final int CRAZY_MODE_ID = 11;
-	public static final int CUSTOM_MODE_ID = 12;
+	public static final int ARCADE_MODE_ID = 4;
+	public static final int RUSH_MODE_ID = 5;
+	public static final int SURVIVAL_MODE_ID = 6;
+	public static final int X_MODE_ID = 7;
+	public static final int CORNER_MODE_ID = 8;
+	public static final int SPEED_MODE_ID = 9;
+	public static final int ZEN_MODE_ID = 10;
+	public static final int GHOST_MODE_ID = 11;
+	public static final int CRAZY_MODE_ID = 12;
+	public static final int CUSTOM_MODE_ID = 13;
 	
 	public static Game newGameFromId(int id)
 	{
@@ -28,6 +29,8 @@ public class GameModes
 			return practiceMode();
 		case PRO_MODE_ID:
 			return proMode();
+		case ARCADE_MODE_ID:
+			return arcadeMode();
 		case RUSH_MODE_ID:
 			return rushMode();
 		case SURVIVAL_MODE_ID:
@@ -49,6 +52,11 @@ public class GameModes
 		}
 	}
 
+	/**
+	 * 
+	 * @param id The game mode id
+	 * @return The mode name
+	 */
 	public static int getGameTitleById(int id) {
 
 		switch (id) {
@@ -58,6 +66,8 @@ public class GameModes
 			return R.string.mode_practice;
 		case PRO_MODE_ID:
 			return R.string.mode_pro;
+		case ARCADE_MODE_ID:
+			return R.string.mode_arcade;
 		case RUSH_MODE_ID:
 			return R.string.mode_rush;
 		case SURVIVAL_MODE_ID:
@@ -82,6 +92,11 @@ public class GameModes
 		}
 	}
 
+	/**
+	 * 
+	 * @param id The game mode id
+	 * @return The description of the game mode
+	 */
 	public static int getGameDescById(int id) {
 
 		switch (id) {
@@ -91,6 +106,8 @@ public class GameModes
 			return R.string.mode_desc_practice;
 		case PRO_MODE_ID:
 			return R.string.mode_desc_pro;
+		case ARCADE_MODE_ID:
+			return R.string.mode_desc_arcade;
 		case RUSH_MODE_ID:
 			return R.string.mode_desc_rush;
 		case SURVIVAL_MODE_ID:
@@ -124,6 +141,7 @@ public class GameModes
 		game.setMoveLimit(-1);
 		game.setUndoLimit(-1);
 		game.setTimeLimit(-1);
+		game.setPowerupLimit(-1);
 		game.setGameModeId(PRACTICE_MODE_ID);
 
 		return game;
@@ -137,9 +155,9 @@ public class GameModes
 		Game game = new Game();
 		game.setMoveLimit(-1);
 		game.setUndoLimit(10);
+		game.setPowerupLimit(10);
 		game.setTimeLimit(-1);
 		game.setGameModeId(NORMAL_MODE_ID);
-
 
 		return game;
 	}
@@ -153,8 +171,22 @@ public class GameModes
 		game.setMoveLimit(-1);
 		game.setUndoLimit(0);
 		game.setTimeLimit(-1);
+		game.setPowerupLimit(0);
 		game.setGameModeId(PRO_MODE_ID);
 
+		return game;
+	}
+	// Pro Mode
+	// Unlimited moves and time
+	// No undos
+	public static Game arcadeMode()
+	{
+		Game game = new Game();
+		game.setMoveLimit(-1);
+		game.setUndoLimit(0);
+		game.setTimeLimit(-1);
+		game.setPowerupLimit(0);
+		game.setGameModeId(ARCADE_MODE_ID);
 
 		return game;
 	}
@@ -164,9 +196,9 @@ public class GameModes
 	public static Game rushMode()
 	{
 		Game game = new Game();
+		game.setPowerupLimit(10);
 		game.dynamicTileSpawning(true);
 		game.setGameModeId(RUSH_MODE_ID);
-
 
 		return game;
 	}
@@ -181,9 +213,9 @@ public class GameModes
 		game.setMoveLimit(-1);
 		game.setUndoLimit(-1);
 		game.setTimeLimit(30);
+		game.setPowerupLimit(5);
 		game.survivalMode();
 		game.setGameModeId(SURVIVAL_MODE_ID);
-
 
 		return game;
 	}
@@ -197,10 +229,10 @@ public class GameModes
 		Game game = new Game();
 		game.setMoveLimit(-1);
 		game.setUndoLimit(10);
+		game.setPowerupLimit(10);
 		game.setTimeLimit(-1);
 		game.XMode();
 		game.setGameModeId(X_MODE_ID);
-
 
 		return game;
 	}
@@ -214,10 +246,10 @@ public class GameModes
 		Game game = new Game();
 		game.setMoveLimit(-1);
 		game.setUndoLimit(10);
+		game.setPowerupLimit(10);
 		game.setTimeLimit(-1);
 		game.cornerMode();
 		game.setGameModeId(CORNER_MODE_ID);
-
 
 		return game;
 	}
@@ -231,10 +263,10 @@ public class GameModes
 		Game game = new Game();
 		game.setMoveLimit(-1);
 		game.setUndoLimit(-1);
+		game.setPowerupLimit(10);
 		game.setTimeLimit(-1);
 		game.speedMode(true);
 		game.setGameModeId(SPEED_MODE_ID);
-
 
 		return game;
 	}
@@ -247,10 +279,10 @@ public class GameModes
 		Game game = new Game();
 		game.setMoveLimit(-1);
 		game.setUndoLimit(-1);
+		game.setPowerupLimit(-1);
 		game.setTimeLimit(-1);
 		game.zenMode(true);
 		game.setGameModeId(ZEN_MODE_ID);
-
 
 		return game;
 	}
@@ -263,6 +295,7 @@ public class GameModes
 		Game game = new Game(5,5);
 		game.setMoveLimit(-1);
 		game.setUndoLimit(-1);
+		game.setPowerupLimit(10);
 		game.setTimeLimit(30);
 		game.survivalMode();
 		game.cornerMode();
@@ -281,6 +314,7 @@ public class GameModes
 		Game game = new Game();
 		game.setMoveLimit(-1);
 		game.setUndoLimit(-1);
+		game.setPowerupLimit(10);
 		game.setGameModeId(GHOST_MODE_ID);
 
 		return game;

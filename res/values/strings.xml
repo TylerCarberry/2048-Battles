@@ -28,6 +28,7 @@
     <string name="mode_survival">Survival</string>
     <string name="mode_x">XMode</string>
     <string name="mode_corner">Corner</string>
+    <string name="mode_arcade">Arcade</string>
     <string name="mode_speed">Speed</string>
     <string name="mode_zen">Zen</string>
     <string name="mode_ghost">Ghost</string>
@@ -46,6 +47,7 @@
     <string name="mode_desc_zen">All tiles combine. Impossible to lose. **Coming Soon**</string>
     <string name="mode_desc_crazy">A 5x5 grid with every other mode enabled</string>
     <string name="mode_desc_ghost">All tiles appear as ?</string>
+    <string name="mode_desc_arcade">Every move has a chance of granting a bonus but can also cause an attack **Coming Soon**</string>
     <string name="mode_desc_custom">Change everything about the game **Coming Soon**</string>
     
     <string name="title_activity_game">GameActivity</string>
@@ -59,7 +61,7 @@
     <string name="undo_remaining">Undos Left</string>
     <string name="move_remaining">Moves Left</string>
     <string name="time_remaining">Time Left</string>
-    <string name="shuffle_remaining">Shuffles Left</string>
+    <string name="powerups_remaining">Powerups Left</string>
     <string name="you_lose">YOU LOSE</string>
     <string name="slow">Slow</string>
     <string name="medium">Medium</string>

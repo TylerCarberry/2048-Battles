@@ -27,25 +27,6 @@
         android:text="@string/score"
         android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/moves_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/turn_textview"
-        android:layout_below="@+id/turn_textview"
-        android:text="@string/move_remaining"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/undos_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/moves_textView"
-        android:layout_alignBottom="@+id/moves_textView"
-        android:layout_alignLeft="@+id/score_textview"
-        android:text="@string/undo_remaining"
-        android:textSize="20sp" />
-
     <GridLayout
         android:id="@+id/grid_layout"
         android:layout_width="wrap_content"
@@ -72,12 +53,31 @@
         android:layout_below="@+id/undo_button"
         android:text="@string/restart" />
 
-    <Button
-        android:id="@+id/ice"
+    <TextView
+        android:id="@+id/powerups_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/restart_button"
-        android:layout_below="@+id/restart_button"
-        android:text="Ice" />
+        android:layout_alignLeft="@+id/moves_textView"
+        android:layout_alignTop="@+id/restart_button"
+        android:text="@string/powerups_remaining"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/undos_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/powerups_textview"
+        android:layout_alignLeft="@+id/turn_textview"
+        android:text="@string/undo_remaining"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/moves_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/restart_button"
+        android:layout_alignLeft="@+id/undos_textview"
+        android:text="@string/move_remaining"
+        android:textSize="20sp" />
 
 </RelativeLayout>
