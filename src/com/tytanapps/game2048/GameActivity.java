@@ -56,6 +56,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -1183,6 +1184,25 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	        
 	        return rootView;
 		}
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		switch(keyCode){
+		case KeyEvent.KEYCODE_DPAD_UP:
+			act(Location.UP);
+			return true; 
+		case KeyEvent.KEYCODE_DPAD_LEFT:
+			act(Location.LEFT);
+			return true; 
+		case KeyEvent.KEYCODE_DPAD_RIGHT:
+			act(Location.RIGHT);
+			return true; 
+		case KeyEvent.KEYCODE_DPAD_DOWN:
+			act(Location.DOWN);
+			return true; 
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	@Override 
