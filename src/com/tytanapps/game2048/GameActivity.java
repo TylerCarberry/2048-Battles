@@ -156,9 +156,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			return true;
 		}
 		if(id == R.id.action_leaderboards){
-		    startActivityForResult(Games.Leaderboards.getLeaderboardIntent(
-		        getApiClient(), getString(R.string.leaderboard_classic_mode)), 
-		        2);
+			startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 2);
 		}
 		/*
 		// When the achievements pressed
@@ -423,8 +421,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	private void calculateDistances() {
 		GridLayout grid = (GridLayout) findViewById(R.id.grid_layout);
-		verticalTileDistance = grid.getHeight() / 4;
-		horizontalTileDistance = grid.getWidth() / 4;
+		verticalTileDistance = grid.getHeight() / game.getGrid().getNumRows();
+		horizontalTileDistance = grid.getWidth() / game.getGrid().getNumCols();
 	}
 
 	/**
@@ -581,10 +579,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		           }
 		       });
 		
-		// Update the leaderboard
+		// Update the leaderboards
 		if(getApiClient().isConnected()){
             Games.Leaderboards.submitScore(getApiClient(), 
                     getString(R.string.leaderboard_classic_mode), 
+                    game.getScore());
+            
+            Games.Leaderboards.submitScore(getApiClient(), 
+                    getString(R.string.leaderboard_lowest_score), 
                     game.getScore());
         }
 		
