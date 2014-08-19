@@ -586,12 +586,12 @@ containing a value of this type.
         public static final int tile_x=0x7f02002c;
     }
     public static final class id {
-        public static final int action_achievements=0x7f09003d;
-        public static final int action_how_to_play=0x7f09003f;
-        public static final int action_leaderboards=0x7f09003e;
-        public static final int action_powerups=0x7f09003c;
-        public static final int action_settings=0x7f090040;
-        public static final int action_stats=0x7f090041;
+        public static final int action_achievements=0x7f09003e;
+        public static final int action_how_to_play=0x7f090040;
+        public static final int action_leaderboards=0x7f09003f;
+        public static final int action_powerups=0x7f09003d;
+        public static final int action_settings=0x7f090041;
+        public static final int action_stats=0x7f090042;
         public static final int arcade_button=0x7f090028;
         public static final int book_now=0x7f090010;
         public static final int buyButton=0x7f09000a;
@@ -616,6 +616,7 @@ containing a value of this type.
         public static final int intro_textview=0x7f09001d;
         public static final int lowest_score=0x7f09003b;
         public static final int match_parent=0x7f09000c;
+        public static final int menu_item_share=0x7f09003c;
         public static final int monochrome=0x7f090013;
         public static final int moves_textView=0x7f09001b;
         public static final int name_textview=0x7f090021;
@@ -921,11 +922,13 @@ containing a value of this type.
         public static final int WalletFragmentDefaultStyle=0x7f060004;
     }
     public static final class xml {
-        public static final int pref_data_sync=0x7f040000;
-        public static final int pref_general=0x7f040001;
-        public static final int pref_headers=0x7f040002;
-        public static final int pref_notification=0x7f040003;
-        public static final int prefs=0x7f040004;
+        public static final int app_tracker=0x7f040000;
+        public static final int global_tracker=0x7f040001;
+        public static final int pref_data_sync=0x7f040002;
+        public static final int pref_general=0x7f040003;
+        public static final int pref_headers=0x7f040004;
+        public static final int pref_notification=0x7f040005;
+        public static final int prefs=0x7f040006;
     }
     public static final class styleable {
         /** Attributes that can be used with a AdsAttrs.

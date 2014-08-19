@@ -9,8 +9,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
+import com.tytanapps.game2048.MainApplication.TrackerName;
 import com.tytanapps.game2048.R;
 import com.tytanapps.game2048.R.id;
 import com.tytanapps.game2048.R.layout;
@@ -39,7 +43,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	
 	// Stores the mode that is currently selected
 	private static int gameId = GameModes.NORMAL_MODE_ID;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,8 +54,37 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 			.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		
-		//findViewById(R.id.sign_in_button).setOnClickListener(this);
-	    //findViewById(R.id.sign_out_button).setOnClickListener(this);
+		//Get a Tracker (should auto-report)
+		((MainApplication) getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
+
+		// Get tracker.
+        Tracker t = ((MainApplication) getApplication()).getTracker(
+            TrackerName.APP_TRACKER);
+
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName("Main Activity");
+
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+	}
+	
+	@Override
+	protected void onStart() {
+		
+		// Get an Analytics tracker to report app starts & uncaught exceptions etc.
+		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+
+		super.onStart();
+	}
+	
+	@Override
+	protected void onStop() {
+		
+		// Stop the analytics tracking
+		GoogleAnalytics.getInstance(this).reportActivityStop(this);
+
+		super.onStop();
 	}
 	
 	@Override

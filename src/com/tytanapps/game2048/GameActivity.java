@@ -11,12 +11,16 @@ import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.event.Events;
 import com.google.android.gms.games.quest.Quests;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.tytanapps.game2048.R;
+import com.tytanapps.game2048.MainApplication.TrackerName;
 import com.tytanapps.game2048.R.array;
 import com.tytanapps.game2048.R.drawable;
 import com.tytanapps.game2048.R.id;
@@ -64,6 +68,7 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridLayout.Spec;
 import android.widget.ImageView;
+import android.widget.ShareActionProvider;
 import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -98,6 +103,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	private static int verticalTileDistance = 0;
 	private static int horizontalTileDistance = 0;
 	
+	ShareActionProvider mShareActionProvider;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -112,15 +119,48 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Instantiate the gesture detector with the
         // application context and an implementation of
         // GestureDetector.OnGestureListener
-        mDetector = new GestureDetectorCompat(this,this);
-        
+		mDetector = new GestureDetectorCompat(this,this);
+
+		//Get a Tracker (should auto-report)
+		((MainApplication) getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
+
+		// Get tracker.
+		Tracker t = ((MainApplication) getApplication()).getTracker(TrackerName.APP_TRACKER);
+
+		// Set screen name.
+		// Where path is a String representing the screen name.
+		t.setScreenName("Game Activity");
+
+		// Send a screen view.
+		t.send(new HitBuilders.AppViewBuilder().build());
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.game, menu);
+		
+		// Locate MenuItem with ShareActionProvider
+	    MenuItem item = menu.findItem(R.id.menu_item_share);
+
+	    // Fetch and store ShareActionProvider
+	    mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+	    
+	    Intent sendIntent = new Intent();
+		sendIntent.setAction(Intent.ACTION_SEND);
+		sendIntent.putExtra(Intent.EXTRA_TEXT, "I am playing 2048. My high score is " + gameStats.highScore + ". Try to beat me!");
+		sendIntent.setType("text/plain");
+		
+		setShareIntent(sendIntent);
+	    
 		return true;
+	}
+	
+	// Call to update the share intent
+	private void setShareIntent(Intent shareIntent) {
+	    if (mShareActionProvider != null) {
+	        mShareActionProvider.setShareIntent(shareIntent);
+	    }
 	}
 
 	@Override
@@ -158,6 +198,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		if(id == R.id.action_leaderboards){
 			startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 2);
 		}
+		
 		/*
 		// When the achievements pressed
 		if(id == R.id.action_quests) {
@@ -186,6 +227,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		Button undoButton = ((Button) findViewById(R.id.undo_button));
 		undoButton.setEnabled(game.getUndosRemaining() != 0);
 		
+		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+		
 		super.onStart();
 	}
 	
@@ -202,6 +245,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			animation.end();
 		
 		animationInProgress = false;
+		
+		GoogleAnalytics.getInstance(this).reportActivityStop(this);
+
 		
 		super.onStop();
 	}
@@ -1120,6 +1166,20 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	            	((GameActivity)getActivity()).restartGame();
 	            }
 	        });
+	        
+	        /*
+	        // Get tracker.
+	        Tracker t = ((MainApplication) getActivity().getApplication()).getTracker();
+
+	        // Set screen name.
+	        // Where path is a String representing the screen name.
+	        t.setScreenName("GameActivity");
+
+	        // Send a screen view.
+	        t.send(new HitBuilders.AppViewBuilder().build());
+
+	        t.send(new HitBuilders.ScreenViewBuilder().build());
+	        */
 	        
 	        return rootView;
 		}
