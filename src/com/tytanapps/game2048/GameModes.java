@@ -185,6 +185,7 @@ public class GameModes
 		game.setMoveLimit(-1);
 		game.setUndoLimit(0);
 		game.setTimeLimit(-1);
+		game.setArcadeMode(true);
 		game.setPowerupLimit(0);
 		game.setGameModeId(ARCADE_MODE_ID);
 
@@ -197,7 +198,7 @@ public class GameModes
 	{
 		Game game = new Game();
 		game.setPowerupLimit(10);
-		game.dynamicTileSpawning(true);
+		game.setDynamicTileSpawning(true);
 		game.setGameModeId(RUSH_MODE_ID);
 
 		return game;
@@ -214,7 +215,7 @@ public class GameModes
 		game.setUndoLimit(-1);
 		game.setTimeLimit(30);
 		game.setPowerupLimit(5);
-		game.survivalMode();
+		game.setSurvivalMode();
 		game.setGameModeId(SURVIVAL_MODE_ID);
 
 		return game;
@@ -231,7 +232,7 @@ public class GameModes
 		game.setUndoLimit(10);
 		game.setPowerupLimit(10);
 		game.setTimeLimit(-1);
-		game.XMode();
+		game.setXMode();
 		game.setGameModeId(X_MODE_ID);
 
 		return game;
@@ -265,7 +266,7 @@ public class GameModes
 		game.setUndoLimit(-1);
 		game.setPowerupLimit(10);
 		game.setTimeLimit(-1);
-		game.speedMode(true);
+		game.setSpeedMode(true);
 		game.setGameModeId(SPEED_MODE_ID);
 
 		return game;
@@ -281,7 +282,7 @@ public class GameModes
 		game.setUndoLimit(-1);
 		game.setPowerupLimit(-1);
 		game.setTimeLimit(-1);
-		game.zenMode(true);
+		game.setZenMode(true);
 		game.setGameModeId(ZEN_MODE_ID);
 
 		return game;
@@ -297,11 +298,11 @@ public class GameModes
 		game.setUndoLimit(-1);
 		game.setPowerupLimit(10);
 		game.setTimeLimit(30);
-		game.survivalMode();
+		game.setSurvivalMode();
 		game.cornerMode();
-		game.XMode();
-		game.dynamicTileSpawning(true);
-		game.speedMode(true);
+		game.setXMode();
+		game.setDynamicTileSpawning(true);
+		game.setSpeedMode(true);
 		game.setGameModeId(CRAZY_MODE_ID);
 
 		return game;

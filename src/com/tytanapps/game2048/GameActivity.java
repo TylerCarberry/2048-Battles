@@ -14,8 +14,10 @@ import java.util.List;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
+import com.google.android.gms.games.event.Event;
 import com.google.android.gms.games.event.Events;
 import com.google.android.gms.games.quest.Quests;
 import com.google.example.games.basegameutils.BaseGameActivity;
@@ -89,6 +91,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	// Used to detect swipes and move the board
 	private GestureDetectorCompat mDetector; 
 	
+	String appUrl = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
+	
 	boolean animationInProgress = false;
 	boolean gameLost = false;
 	
@@ -147,19 +151,20 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	    // Fetch and store ShareActionProvider
 	    mShareActionProvider = (ShareActionProvider) item.getActionProvider();
 	    
-	    Intent sendIntent = new Intent();
-		sendIntent.setAction(Intent.ACTION_SEND);
-		sendIntent.putExtra(Intent.EXTRA_TEXT, "I am playing 2048. My high score is " + gameStats.highScore + ". Try to beat me!");
-		sendIntent.setType("text/plain");
-		
-		setShareIntent(sendIntent);
+		createShareIntent();
 	    
 		return true;
 	}
 	
 	// Call to update the share intent
-	private void setShareIntent(Intent shareIntent) {
-	    if (mShareActionProvider != null) {
+	private void createShareIntent() {
+		Intent shareIntent = new Intent();
+		shareIntent.setAction(Intent.ACTION_SEND);
+		shareIntent.putExtra(Intent.EXTRA_TEXT,
+				"I am playing 2048. My high score is " + gameStats.highScore
+				+ ". Try to beat me! " + appUrl);
+		shareIntent.setType("text/plain");
+		if (mShareActionProvider != null) {
 	        mShareActionProvider.setShareIntent(shareIntent);
 	    }
 	}
@@ -194,6 +199,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// When the achievements pressed
 		if(id == R.id.action_achievements) {
 			startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 1);
+			//showQuests();
 			return true;
 		}
 		if(id == R.id.action_leaderboards){
@@ -263,6 +269,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			return;
 		
 		animationInProgress = true;
+		
+		if(game.getArcadeMode() && Math.random() < 0.1)
+			addRandomBonus();
 		
 		calculateDistances();
 		int highestTile = game.highestPiece();
@@ -370,6 +379,27 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				unlockAchievementNewHighestTile(game.highestPiece());
 	}
 	
+	private void addRandomBonus() {
+		double rand = Math.random();
+		String item = null;
+		Log.d(LOG_TAG, ""+rand);
+		if(rand < 0.5) 
+			ice();
+		else {
+			if(rand < 0.75) {
+				game.incrementUndosRemaining();
+				item = "Undo";
+			}
+			else {
+				game.incrementPowerupsRemaining();
+				item = "Powerup";
+			}
+		
+		Toast.makeText(getApplicationContext(),	"Bonus! +1 " + item,
+				Toast.LENGTH_SHORT).show();
+		}
+	}
+	
 	/**
 	 * Update the game information. 
 	 * Turn, Score, Undos Left, and Moves Left
@@ -468,6 +498,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	private void calculateDistances() {
 		GridLayout grid = (GridLayout) findViewById(R.id.grid_layout);
+		
 		verticalTileDistance = grid.getHeight() / game.getGrid().getNumRows();
 		horizontalTileDistance = grid.getWidth() / game.getGrid().getNumCols();
 	}
@@ -558,6 +589,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				break;
 			case -1:
 				tile.setBackgroundResource(R.drawable.tile_corner);
+				break;
+			case 0:
+				tile.setBackgroundResource(R.drawable.tile_blank);
 				break;
 			case 2:
 				tile.setBackgroundResource(R.drawable.tile_2);
@@ -659,13 +693,61 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		currentGameFile.delete();
 		
-		// eventId is taken from the developer console
-	    String newGameEventId = getString(R.string.event_lose_game);
+		submitEvent();
+	}
+	
+	public void showQuests()
+	{
+		int[] foo = new int[1];
+		foo[0] = Games.Quests.SELECT_ACCEPTED;
+	    Intent questsIntent = Games.Quests.getQuestsIntent(getApiClient(), foo);
+	    startActivityForResult(questsIntent, 0);
+	}
+	
+	
+	public void submitEvent()
+	{
+	    // eventId is taken from the developer console
+	    String myEventId = getString(R.string.event_lose_game);
 
 	    // increment the event counter
-	    Games.Events.increment(this.getApiClient(), newGameEventId, 1);
+	    Games.Events.increment(this.getApiClient(), myEventId, 1);
 	    
+	    Log.d(LOG_TAG, "incremented event");
+	    
+	    //callback();
 	}
+	
+	/*
+	public void callback() {
+		// EventCallback is a subclass of ResultCallback; use this to handle the
+		// query results
+		EventCallback ec = new EventCallback();
+
+		// Load all events tracked for your game
+		com.google.android.gms.common.api.PendingResult<Events.LoadEventsResult>
+		        pr = Games.Events.load(this.getApiClient(), true);
+		pr.setResultCallback(ec);
+	}
+	
+	class EventCallback implements ResultCallback
+	{
+	    // Handle the results from the events load call
+	    public void onResult(com.google.android.gms.common.api.Result result) {
+	        Events.LoadEventsResult r = (Events.LoadEventsResult)result;
+	        com.google.android.gms.games.event.EventBuffer eb = r.getEvents();
+
+	        for (int i=0; i < eb.getCount(); i++)
+	        {
+	        	Toast.makeText(getApplicationContext(),
+	    				eb,
+	    				Toast.LENGTH_SHORT).show();
+	        }
+	        eb.close();
+	    }
+	}
+	*/
+	
 	
 	/** Create the message that is shown to the user after they lose.
 	 * 
@@ -943,7 +1025,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	public void ice() {
 		
-		/*
 		// This attack cannot be stacked
 		if(game.getIceDuration() <= 0)
 			game.ice();
@@ -954,10 +1035,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				Location.directionToString(game.getIceDirection()) +
 				" for " + game.getIceDuration() + " turns",
 				Toast.LENGTH_SHORT).show();
-				*/
-		
-		requestRestore();
-		
 	}
 	
 	/**
@@ -1024,12 +1101,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 		SharedPreferences settings = getSharedPreferences("hi", 0);
 		
-		Log.d(LOG_TAG, "in request backup");
-
 		BackupManager bm = new BackupManager(this);
 		bm.dataChanged();
-		
-		Log.d(LOG_TAG, "leaving request backup");
 	}
 	
 	public void requestRestore()

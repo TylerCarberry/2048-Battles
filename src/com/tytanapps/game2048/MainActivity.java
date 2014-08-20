@@ -12,8 +12,10 @@ import java.io.StreamCorruptedException;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
+import com.google.example.games.basegameutils.GameHelper;
 import com.tytanapps.game2048.MainApplication.TrackerName;
 import com.tytanapps.game2048.R;
 import com.tytanapps.game2048.R.id;
@@ -53,18 +55,14 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 			getFragmentManager().beginTransaction()
 			.add(R.id.container, new PlaceholderFragment()).commit();
 		}
-		
-		//Get a Tracker (should auto-report)
-		((MainApplication) getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
 
+	    // Get a Tracker (should auto-report)
+	    ((MainApplication) getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
 		// Get tracker.
         Tracker t = ((MainApplication) getApplication()).getTracker(
             TrackerName.APP_TRACKER);
-
         // Set screen name.
-        // Where path is a String representing the screen name.
         t.setScreenName("Main Activity");
-
         // Send a screen view.
         t.send(new HitBuilders.AppViewBuilder().build());
 	}

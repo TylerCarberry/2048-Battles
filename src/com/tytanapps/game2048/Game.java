@@ -49,6 +49,8 @@ public class Game implements java.io.Serializable
 	private boolean survivalMode = false;
 	private boolean speedMode = false;
 	private boolean zenMode = false;
+	private boolean arcadeMode = false;
+	
 	
 	// If true, any tile less than the max tile can spawn
 	// Ex. If the highest piece is 32 then a 2,4,8, or 16 can appear
@@ -60,8 +62,8 @@ public class Game implements java.io.Serializable
 	// (When 4|4|8|0 is shifted left it will form two 8's instead of a 16)
 	private ArrayList<Location> destinationLocations = new ArrayList<Location>();
 	
-	private static int iceDirection = -1;
-	private static int iceDuration = -1;
+	private int iceDirection = -1;
+	private int iceDuration = -1;
 	
 	private int gameModeId;
 	
@@ -448,7 +450,7 @@ public class Game implements java.io.Serializable
 	/**
 	 * Places an X on the board that can move but not combine 
 	 */
-	public void XMode()
+	public void setXMode()
 	{
 		List<Location> empty = board.getEmptyLocations();
 
@@ -465,7 +467,7 @@ public class Game implements java.io.Serializable
 	/**
 	 *  The game increases the time limit when tiles >= 8 combine
 	 */
-	public void survivalMode()
+	public void setSurvivalMode()
 	{
 		survivalMode = true;
 		
@@ -474,16 +476,20 @@ public class Game implements java.io.Serializable
 			timeLeft = 30;
 	}
 	
-	public void zenMode(boolean enabled)
+	public void setArcadeMode(boolean enabled) {
+		arcadeMode = enabled;
+	}
+	
+	public void setZenMode(boolean enabled)
 	{
 		zenMode = enabled;
-		dynamicTileSpawning(enabled);
+		setDynamicTileSpawning(enabled);
 	}
 	
 	/**
 	 * Higher value tiles appear
 	 */
-	public void dynamicTileSpawning(boolean enabled)
+	public void setDynamicTileSpawning(boolean enabled)
 	{
 		dynamicTileSpawning = enabled;
 	}
@@ -492,7 +498,7 @@ public class Game implements java.io.Serializable
 	 * Add a piece automatically every 2 seconds even if no move was made
 	 * @param enabled Turn speed mode on or off
 	 */
-	public void speedMode(boolean enabled)
+	public void setSpeedMode(boolean enabled)
 	{
 		speedMode = enabled;
 		
@@ -525,6 +531,22 @@ public class Game implements java.io.Serializable
 		}; // end thread
 		
 		T.start();
+	}
+	
+	public boolean getSurvivalMode() {
+		return survivalMode;
+	}
+	
+	public boolean getSpeedMode() {
+		return speedMode;
+	}
+	
+	public boolean getZenMode() {
+		return zenMode;
+	}
+	
+	public boolean getArcadeMode() {
+		return arcadeMode;
 	}
 	
 	/**
@@ -576,8 +598,8 @@ public class Game implements java.io.Serializable
 			else
 				iceDirection = Location.RIGHT;
 					
-		// Between 1 and 5 moves
-		iceDuration = (int) (Math.random() * 4 + 1);
+		// Between 3 and 10 moves
+		iceDuration = (int) (Math.random() * 7 + 3);
 	}
 	
 	public int getIceDirection() {
@@ -605,9 +627,12 @@ public class Game implements java.io.Serializable
 	 * @return The number of undos left
 	 * -1 = unlimited
 	 */
-	public int getUndosRemaining()
-	{
+	public int getUndosRemaining() {
 		return undosRemaining;
+	}
+	
+	public void incrementUndosRemaining() {
+		undosRemaining++;
 	}
 	
 	/**
@@ -658,6 +683,13 @@ public class Game implements java.io.Serializable
 		if(powerupsRemaining > 0)
 			powerupsRemaining--;
 		return powerupsRemaining;
+	}
+	
+	/**
+	 * Increase the amount of powerups remaining by 1
+	 */
+	public void incrementPowerupsRemaining() {
+		powerupsRemaining++;
 	}
 	
 	/**
@@ -757,11 +789,11 @@ public class Game implements java.io.Serializable
 		if(quitGame || movesRemaining == 0)
 			return true;
 		
-		
+		/*
 		if(iceDuration > 0)
 			return canMove(Location.UP) || canMove(Location.DOWN) ||
 					canMove(Location.LEFT) || canMove(Location.RIGHT); 
-		
+		*/
 		
 		// If the board is not filled then the game is not lost
 		if(!board.getEmptyLocations().isEmpty())
@@ -873,6 +905,9 @@ public class Game implements java.io.Serializable
 			return false;
 		
 		Game nextMove = clone();
+		
+		//nextMove.iceDuration = 0;
+		
 		nextMove.act(direction);
 		return !(nextMove.equals(this));
 	}

@@ -10,16 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.app_2048.GameFragment" >
 
-    <GridLayout
-        android:id="@+id/grid_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:animateLayoutChanges="false"
-        android:background="@color/BurlyWood"
-        android:rowOrderPreserved="true"
-        android:useDefaultMargins="true" />
-
     <Button
         android:id="@+id/undo_button"
         android:layout_width="wrap_content"
@@ -77,9 +67,21 @@
         android:id="@+id/powerups_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/undos_textview"
         android:layout_below="@+id/undos_textview"
         android:text="@string/powerups_remaining"
         android:textSize="20sp" />
+
+    <GridLayout
+        android:id="@+id/grid_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginBottom="0dp"
+        android:animateLayoutChanges="false"
+        android:background="@drawable/blank_grid"
+        android:rowOrderPreserved="true"
+        android:useDefaultMargins="true" >
+    </GridLayout>
 
 </RelativeLayout>

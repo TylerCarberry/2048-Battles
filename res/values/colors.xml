@@ -22,6 +22,8 @@
     <color name="Ivory">#FFFFF0</color>
     <color name="LightYellow">#FFFFE0</color>
     <color name="Yellow">#FFFF00</color>
+    <color name="Orange">#FFBB33</color>
+    <color name="Dark_Orange">#FF8800</color>
     <color name="Snow">#FFFAFA</color>
     <color name="FloralWhite">#FFFAF0</color>
     <color name="LemonChiffon">#FFFACD</color>
@@ -38,7 +40,7 @@
     <color name="Gold">#FFD700</color>
     <color name="Pink">#FFC0CB</color>
     <color name="LightPink">#FFB6C1</color>
-    <color name="Orange">#FFA500</color>
+    <color name="Bright_Orange">#FFA500</color>
     <color name="LightSalmon">#FFA07A</color>
     <color name="DarkOrange">#FF8C00</color>
     <color name="Coral">#FF7F50</color>

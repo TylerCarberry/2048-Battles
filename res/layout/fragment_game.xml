@@ -32,8 +32,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:animateLayoutChanges="false"
-        android:background="@color/BurlyWood"
+        android:background="@drawable/blank_grid"
         android:rowOrderPreserved="true"
         android:useDefaultMargins="true" />
 
