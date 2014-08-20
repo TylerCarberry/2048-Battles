@@ -610,8 +610,6 @@ public class Game implements java.io.Serializable
 		return iceDuration;
 	}
 	
-	
-	
 	/**
 	 *  Limit the number of undos
 	 * -1 = unlimited
@@ -789,16 +787,14 @@ public class Game implements java.io.Serializable
 		if(quitGame || movesRemaining == 0)
 			return true;
 		
-		/*
-		if(iceDuration > 0)
-			return canMove(Location.UP) || canMove(Location.DOWN) ||
-					canMove(Location.LEFT) || canMove(Location.RIGHT); 
-		*/
 		
+		if(iceDuration > 0)
+			return ! (canMove(Location.UP) || canMove(Location.DOWN) ||
+					canMove(Location.LEFT) || canMove(Location.RIGHT)); 	
+
 		// If the board is not filled then the game is not lost
 		if(!board.getEmptyLocations().isEmpty())
 			return false;
-		
 		
 		int current = -5;
 		int next;
@@ -906,9 +902,13 @@ public class Game implements java.io.Serializable
 		
 		Game nextMove = clone();
 		
-		//nextMove.iceDuration = 0;
+		// Infinite recursion is caused if the game has 
+		// an ice attack active. The equals method only checks
+		// the grid and score so this will not affect the result
+		nextMove.iceDuration = -1;
 		
 		nextMove.act(direction);
+		
 		return !(nextMove.equals(this));
 	}
 	

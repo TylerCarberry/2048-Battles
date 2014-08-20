@@ -270,9 +270,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		animationInProgress = true;
 		
-		if(game.getArcadeMode() && Math.random() < 0.1)
-			addRandomBonus();
-		
 		calculateDistances();
 		int highestTile = game.highestPiece();
 		
@@ -349,12 +346,17 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				activeAnimations.clear();
 				animationInProgress = false;
 				
+				if(game.getArcadeMode() && Math.random() < 0.1)
+					addRandomBonus();
+				
+				/*
 				if(game.getIceDuration() > 0)
 				Toast.makeText(getApplicationContext(),
 					"FROZEN!	Cannot move " +
 					Location.directionToString(game.getIceDirection()) +
 					" for " + game.getIceDuration() + " turns",
 					Toast.LENGTH_SHORT).show();
+					*/
 			}
 			
 			@Override
@@ -382,8 +384,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	private void addRandomBonus() {
 		double rand = Math.random();
 		String item = null;
-		Log.d(LOG_TAG, ""+rand);
-		if(rand < 0.5) 
+		
+		// 50% change ice attack
+		// 25% +1 undo	25% +1 powerup
+		if(rand < .5 && game.getIceDuration() <= 0) 
 			ice();
 		else {
 			if(rand < 0.75) {
@@ -411,13 +415,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		TextView undosTextView = (TextView) findViewById(R.id.undos_textview);
 		TextView movesTextView = (TextView) findViewById(R.id.moves_textView);
 		TextView powerupsTextView = (TextView) findViewById(R.id.powerups_textview);
+		Button undoButton = (Button) findViewById(R.id.undo_button);
 		
 		// Update the turn number
 		turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
-		
+
 		// Update the score
 		scoreTextView.setText(getString(R.string.score) + ": " + game.getScore());
-		
+
 		// Update the undos left
 		int undosLeft = game.getUndosRemaining();
 		if(undosLeft >= 0)
@@ -425,13 +430,15 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		else
 			undosTextView.setVisibility(View.INVISIBLE);
 		
+		undoButton.setEnabled(undosLeft != 0);
+		
 		// Update moves left
 		int movesLeft = game.getMovesRemaining();
 		if(movesLeft >= 0)
 			movesTextView.setText(getString(R.string.move_remaining) + ": " + movesLeft);
 		else
 			movesTextView.setVisibility(View.INVISIBLE);
-		
+
 		// Update powerups left
 		int powerupsLeft = game.getPowerupsRemaining();
 		if(powerupsLeft >= 0)
@@ -1058,6 +1065,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * Restart the game.
 	 */
 	public void restartGame() {
+		
 		// Save any new records
 		if(game.highestPiece() > gameStats.highestTile)
 			gameStats.highestTile = game.highestPiece();

@@ -284,7 +284,7 @@ public class GameModes
 		game.setTimeLimit(-1);
 		game.setZenMode(true);
 		game.setGameModeId(ZEN_MODE_ID);
-
+		
 		return game;
 	}
 
