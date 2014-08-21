@@ -80,13 +80,18 @@ import android.preference.PreferenceManager;
 
 public class GameActivity extends BaseGameActivity implements OnGestureListener {
 	
+	final static String LOG_TAG = GameActivity.class.getSimpleName();
+	
 	// The time in milliseconds for the animation
 	public static final long SHUFFLE_SPEED = 300;
 	public static final long NEW_TILE_SPEED = 300;
 	
 	private static boolean boardCreated = false;
 	private static Game game;
-	final static String LOG_TAG = GameActivity.class.getSimpleName();
+	
+	// Warns you about making a making a move that may
+	// lose you the game
+	private static boolean genie_enabled = true;
 	
 	// Used to detect swipes and move the board
 	private GestureDetectorCompat mDetector; 
@@ -266,11 +271,28 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * @param direction Should use the static variables in Location class
 	 */
 	public void act(int direction) {
-		// If the ice attack is active in that direction do not move
-		if(game.getIceDuration() > 0 && game.getIceDirection() == direction)
-			return;
+		
+		Log.d(LOG_TAG, "act");
 		
 		animationInProgress = true;
+		
+		// If the ice attack is active in that direction do not move
+		if(game.getIceDuration() > 0 && game.getIceDirection() == direction) {
+			animationInProgress = false;
+			return;
+		}
+		
+		if(genie_enabled && game.causeGameToLose(direction)) {
+			
+			Log.d(LOG_TAG, "in act, shouldn’t move there");
+			
+			genie_enabled = false;
+			animationInProgress = false;
+			
+			warnAboutMove(direction);
+			
+			return;
+		}
 		
 		calculateDistances();
 		int highestTile = game.highestPiece();
@@ -1046,6 +1068,37 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				Location.directionToString(game.getIceDirection()) +
 				" for " + game.getIceDuration() + " turns",
 				Toast.LENGTH_SHORT).show();
+	}
+	
+	/**
+	 * Warn the user about moving in that direction
+	 * @return True if the user decided to move in that direction anyway
+	 */
+	public void warnAboutMove(final int direction) {
+		
+		Log.d(LOG_TAG, "warn about move");
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Are you sure?");
+		builder.setMessage("Moving " + Location.directionToString(direction) + " might cause you to lose");
+		// Two buttons appear, try again and cancel
+		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				game.act(direction); 
+			}
+		});
+		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				
+			}
+		});
+		
+		AlertDialog dialog = builder.create();	
+		
+		// You must click on one of the buttons in order to dismiss the dialog
+		dialog.setCanceledOnTouchOutside(false);
+		
+		dialog.show();
 	}
 	
 	/**

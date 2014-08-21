@@ -585,6 +585,53 @@ public class Game implements java.io.Serializable
 		}
 	}
 	
+	/**
+	 * Check if moving in the given direction might cause the game to lose
+	 * @param direction The direction to check. A static int from Location class
+	 * @return If the game will be lost moving in that direction
+	 */
+	public boolean causeGameToLose(int direction) {
+		
+		Log.d(LOG_TAG, "entering cause game to lose");
+		
+		Log.d(LOG_TAG, toString());
+		
+		if(board.getEmptyLocations().size() > 1) {
+			Log.d(LOG_TAG, "empty > 1 returning false");
+			return false;
+		}
+		
+		
+		Game nextGame;
+		List<Integer> possibleTiles = getPossibleTilesToAdd();
+		
+		for(int tile : possibleTiles) {
+
+			nextGame = clone();
+			Log.d(LOG_TAG, ""+tile);
+			Log.d(LOG_TAG, nextGame.toString());
+			
+			List<Location> locations = board.getLocationsInTraverseOrder(direction);
+			// Move each piece in the direction
+			for(Location loc : locations)
+				nextGame.move(loc, direction);
+
+			nextGame.addRandomPiece(tile);
+			
+			if(nextGame.lost()) {
+				Log.d(LOG_TAG, "possible to lose:"+tile);
+				return true;
+			}
+		}
+		Log.d(LOG_TAG, "will not cause the game to lose");
+		return false;
+	}
+	
+	
+	/**
+	 * You can not move in a random direction for a random
+	 * amount of time (currently between 3 and 10)
+	 */
 	public void ice() {
 		double randomDirection = Math.random();
 		if(randomDirection < .5)
@@ -690,6 +737,31 @@ public class Game implements java.io.Serializable
 		powerupsRemaining++;
 	}
 	
+	
+	/**
+	 * 
+	 * @return A list of the possible tiles to be added to the board
+	 */
+	public List<Integer> getPossibleTilesToAdd() {
+		
+		// All powers of 2 less that the highest tile
+		ArrayList<Integer> possibleTiles = new ArrayList<Integer>();
+		possibleTiles.add(2);
+		possibleTiles.add(4);
+
+		// See addRandomPiece() for description of dynamicTileSpawning
+		if(dynamicTileSpawning)
+		{
+			// The highest tile on the board
+			int highest = highestPiece();
+
+			// Add each possible value to possibleTiles
+			for(int t = 8; t < highest; t *= 2)
+				possibleTiles.add(t);
+		}
+		return possibleTiles;
+	}
+	
 	/**
 	 * Randomly adds a new piece to an empty space
 	 * 90% add 2, 10% add 4
@@ -702,32 +774,9 @@ public class Game implements java.io.Serializable
 	 */
 	public Location addRandomPiece()
 	{
-		// See method header for description of dynamicTileSpawning
-		if(dynamicTileSpawning)
-		{
-			// All powers of 2 less that the highest tile
-			ArrayList<Integer> possibleTiles = new ArrayList<Integer>();
-			possibleTiles.add(2);
-			possibleTiles.add(4);
-			
-			// The highest tile on the board
-			int highest = highestPiece();
-			
-			// Add each possible value to possibleTiles
-			for(int t = 8; t < highest; t *= 2)
-				possibleTiles.add(t);
-			
-			int tile = possibleTiles.get((int) (Math.random() * possibleTiles.size()));
-			return addRandomPiece(tile);
-			
-		}
-		else
-		{	
-			if(Math.random() < CHANCE_OF_2)
-				return addRandomPiece(2);
-			else
-				return addRandomPiece(4);
-		}
+		List<Integer> possibleTiles = getPossibleTilesToAdd();
+		int random = (int) (Math.random() * possibleTiles.size());
+		return addRandomPiece(possibleTiles.get(random));
 	}
 	
 	/**
