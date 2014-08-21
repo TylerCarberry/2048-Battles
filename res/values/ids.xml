@@ -7,8 +7,11 @@
     <string name="tile_512_achievement">CENSORED</string>
     <string name="tile_1024_achievement">CENSORED</string>
     <string name="tile_2048_achievement">CENSORED</string>
+    
+    <!-- Not currently used because I removed leaderboards temporarily -->
     <string name="leaderboard_classic_mode">CENSORED</string>
     <string name="leaderboard_lowest_score">CENSORED</string>
+    
     <string name="event_lose_game">CENSORED</string>
     
 </resources>

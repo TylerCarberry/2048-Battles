@@ -594,6 +594,7 @@ containing a value of this type.
         public static final int action_how_to_play=0x7f090040;
         public static final int action_leaderboards=0x7f09003f;
         public static final int action_powerups=0x7f09003d;
+        public static final int action_quests=0x7f090043;
         public static final int action_settings=0x7f090041;
         public static final int action_stats=0x7f090042;
         public static final int arcade_button=0x7f090028;
@@ -800,6 +801,8 @@ containing a value of this type.
         public static final int how_to_play=0x7f080030;
         public static final int intro=0x7f080028;
         public static final int intro_creator_name=0x7f080029;
+        /**  Not currently used because I removed leaderboards temporarily 
+         */
         public static final int leaderboard_classic_mode=0x7f080024;
         public static final int leaderboard_lowest_score=0x7f080025;
         public static final int lowest_score=0x7f080072;

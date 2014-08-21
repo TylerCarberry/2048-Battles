@@ -275,6 +275,7 @@ int id action_achievements 0x7f09003e
 int id action_how_to_play 0x7f090040
 int id action_leaderboards 0x7f09003f
 int id action_powerups 0x7f09003d
+int id action_quests 0x7f090043
 int id action_settings 0x7f090041
 int id action_stats 0x7f090042
 int id arcade_button 0x7f090028

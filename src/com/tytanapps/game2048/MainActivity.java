@@ -14,6 +14,8 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.quest.Quest;
+import com.google.android.gms.games.quest.QuestUpdateListener;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
 import com.tytanapps.game2048.MainApplication.TrackerName;
@@ -25,6 +27,7 @@ import com.tytanapps.game2048.R.string;
 
 import android.app.Activity;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,9 +40,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.os.Build;
 
-public class MainActivity extends BaseGameActivity implements View.OnClickListener
+public class MainActivity extends BaseGameActivity implements View.OnClickListener, QuestUpdateListener
 {
 	final static String LOG_TAG = MainActivity.class.getSimpleName();
 	
@@ -187,8 +191,57 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 			startActivity(showSettings);
 			return true;
 		}
+		
+		if (id == R.id.action_quests) {
+			showQuests();
+			return true;
+		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	/**
+	 * Display all quests
+	 */
+	public void showQuests()
+	{
+		// In the developer tutorial they use Quests.SELECT_ALL_QUESTS
+		// but that is not valid for me. That may require an update
+		// but for now selecting all possibilities works the same way
+		int[] questParams = new int[8];
+		questParams[0] = Games.Quests.SELECT_ACCEPTED;
+		questParams[1] = Games.Quests.SELECT_COMPLETED;
+		questParams[2] = Games.Quests.SELECT_COMPLETED_UNCLAIMED;
+		questParams[3] = Games.Quests.SELECT_ENDING_SOON;
+		questParams[4] = Games.Quests.SELECT_EXPIRED;
+		questParams[5] = Games.Quests.SELECT_FAILED;
+		questParams[6] = Games.Quests.SELECT_OPEN;
+		questParams[7] = Games.Quests.SELECT_UPCOMING;
+		
+		Intent questsIntent = Games.Quests.getQuestsIntent(getApiClient(), questParams);
+	    
+	    // 0 is an arbitrary integer
+	    startActivityForResult(questsIntent, 0);
+	    
+	}
+	
+	/*
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		Log.d(LOG_TAG, "entering on activity result");
+		
+		if(resultCode == RESULT_OK) {
+			
+			Log.d(LOG_TAG, "entering if");
+			
+			Quest quest = data.getParcelableExtra("EXTRA_QUEST");
+			
+			Log.d(LOG_TAG, quest.toString());
+			
+			if(quest.getState() == Games.Quests.SELECT_COMPLETED_UNCLAIMED)
+				onQuestCompleted(quest);
+		}
+	}
+	*/
 
 	/**
 	 * Currently the only fragment in the activity.
@@ -294,7 +347,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	    findViewById(R.id.sign_in_button).setVisibility(View.GONE);
 	    findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
 
-	    // (your code here: update UI, enable functionality that depends on sign in, etc)
+	    // Start the Quest listener.
+	    Games.Quests.registerQuestUpdateListener(this.getApiClient(), this);
 	}
 
 	@Override
@@ -315,4 +369,29 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	        findViewById(R.id.sign_out_button).setVisibility(View.GONE);
 	    }
 	}
+	
+	@Override
+	public void onQuestCompleted(Quest quest) {
+
+		Log.d(LOG_TAG, "in onQuestCompleted");
+		
+	    // Claim the quest reward.
+	    Games.Quests.claim(this.getApiClient(), quest.getQuestId(),
+	            quest.getCurrentMilestone().getMilestoneId());
+
+	    // Process the RewardData to provision a specific reward.
+	    try {
+	        String reward = new
+	                String(quest.getCurrentMilestone().getCompletionRewardData(),
+	                "UTF-8");
+
+	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        builder.setTitle("Quest Completed");
+	        builder.setMessage("You gained " + reward);
+	        
+	    } catch (Exception e) {
+	    	Log.w(LOG_TAG, e.toString());
+	    }
+	}
+	
 }

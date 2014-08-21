@@ -203,7 +203,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			return true;
 		}
 		if(id == R.id.action_leaderboards){
-			startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 2);
+			
+			callback();
+			//startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 2);
 		}
 		
 		/*
@@ -703,15 +705,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		submitEvent();
 	}
 	
-	public void showQuests()
-	{
-		int[] foo = new int[1];
-		foo[0] = Games.Quests.SELECT_ACCEPTED;
-	    Intent questsIntent = Games.Quests.getQuestsIntent(getApiClient(), foo);
-	    startActivityForResult(questsIntent, 0);
-	}
-	
-	
 	public void submitEvent()
 	{
 	    // eventId is taken from the developer console
@@ -721,11 +714,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	    Games.Events.increment(this.getApiClient(), myEventId, 1);
 	    
 	    Log.d(LOG_TAG, "incremented event");
-	    
-	    //callback();
 	}
 	
-	/*
+	
 	public void callback() {
 		// EventCallback is a subclass of ResultCallback; use this to handle the
 		// query results
@@ -744,17 +735,18 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	        Events.LoadEventsResult r = (Events.LoadEventsResult)result;
 	        com.google.android.gms.games.event.EventBuffer eb = r.getEvents();
 
-	        for (int i=0; i < eb.getCount(); i++)
-	        {
+	        for (int i=0; i < eb.getCount(); i++) {
+	        	Event e = eb.get(i);
+	        	
+	        	Log.d(LOG_TAG, ""+e.toString());
+	        	
 	        	Toast.makeText(getApplicationContext(),
-	    				eb,
+	    				""+e.getValue(),
 	    				Toast.LENGTH_SHORT).show();
 	        }
 	        eb.close();
 	    }
 	}
-	*/
-	
 	
 	/** Create the message that is shown to the user after they lose.
 	 * 
@@ -825,6 +817,18 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				builder.setTitle("No More Powerups")
 				.setMessage("There are no powerups remaining");
 			}
+		builder.create().show();
+	}
+	
+	/**
+	 * Show a warning that the move that is about to be made
+	 * will lose the game
+	 */
+	private void showWarningDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Warning")
+		.setMessage("This move will cause the game to lose."
+				+ "Are you sure you want to move there?");
 		builder.create().show();
 	}
 
