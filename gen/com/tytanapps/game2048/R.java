@@ -692,6 +692,11 @@ containing a value of this type.
         public static final int action_quests=0x7f09002e;
         public static final int action_settings=0x7f090028;
         public static final int action_stats=0x7f09002a;
+        /**  This file is ignored in github 
+ https://help.github.com/articles/ignoring-files 
+ git update-index - -assume-unchanged path/to/file.txt 
+ git update-index - -no-assume-unchanged path/to/file.txt 
+         */
         public static final int app_id=0x7f09001e;
         public static final int app_name=0x7f090025;
         public static final int auto_circle=0x7f090039;

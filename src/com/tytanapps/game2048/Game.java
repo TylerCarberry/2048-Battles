@@ -592,24 +592,16 @@ public class Game implements java.io.Serializable
 	 */
 	public boolean causeGameToLose(int direction) {
 		
-		Log.d(LOG_TAG, "entering cause game to lose");
-		
-		Log.d(LOG_TAG, toString());
-		
-		if(board.getEmptyLocations().size() > 1) {
-			Log.d(LOG_TAG, "empty > 1 returning false");
+		if(board.getEmptyLocations().size() > 1)
 			return false;
-		}
-		
 		
 		Game nextGame;
 		List<Integer> possibleTiles = getPossibleTilesToAdd();
 		
+		// Check for every tile that might appear
 		for(int tile : possibleTiles) {
 
 			nextGame = clone();
-			Log.d(LOG_TAG, ""+tile);
-			Log.d(LOG_TAG, nextGame.toString());
 			
 			List<Location> locations = board.getLocationsInTraverseOrder(direction);
 			// Move each piece in the direction
@@ -618,12 +610,11 @@ public class Game implements java.io.Serializable
 
 			nextGame.addRandomPiece(tile);
 			
-			if(nextGame.lost()) {
-				Log.d(LOG_TAG, "possible to lose:"+tile);
+			// There is a chance that the game might lose
+			if(nextGame.lost())
 				return true;
-			}
 		}
-		Log.d(LOG_TAG, "will not cause the game to lose");
+		// The game can move there without losing
 		return false;
 	}
 	
