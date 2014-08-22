@@ -85,13 +85,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	// The time in milliseconds for the animation
 	public static final long SHUFFLE_SPEED = 300;
 	public static final long NEW_TILE_SPEED = 300;
+	public static final long TILE_SLIDE_SPEED = 300;
 	
 	private static boolean boardCreated = false;
 	private static Game game;
 	
 	// Warns you about making a making a move that may
 	// lose you the game
-	private static boolean genie_enabled = true;
+	private static boolean genie_enabled = false;
 	
 	// Used to detect swipes and move the board
 	private GestureDetectorCompat mDetector; 
@@ -131,7 +132,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         // GestureDetector.OnGestureListener
 		mDetector = new GestureDetectorCompat(this,this);
 
-		//Get a Tracker (should auto-report)
+		// Get a Tracker (should auto-report)
 		((MainApplication) getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
 
 		// Get tracker.
@@ -226,9 +227,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 	@Override
 	protected void onStart() {
-		
-		Log.d(LOG_TAG, "on start");
-		
 		// If GameActivity is loaded for the first time the grid is created. If user returns to
 		// this activity after switching to another activity, the grid is still recreated because
 		// there is a chance that android killed this activity in the background
@@ -236,6 +234,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		// Load the saved file containing the game. This also updates the screen.
 		load();
+		
+		getActionBar().setTitle(GameModes.getGameTitleById(game.getGameModeId())); 
 		
 		// Disable the undo button if there are no undos remaining
 		Button undoButton = ((Button) findViewById(R.id.undo_button));
@@ -248,9 +248,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	
 	@Override
 	protected void onStop() {
-		
-		Log.d(LOG_TAG, "on stop");
-		
 		// Only save a game that is still in progress
 		if(! game.lost())
 			save();
@@ -271,26 +268,17 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * @param direction Should use the static variables in Location class
 	 */
 	public void act(int direction) {
-		
-		Log.d(LOG_TAG, "act");
-		
 		animationInProgress = true;
 		
 		// If the ice attack is active in that direction do not move
-		if(game.getIceDuration() > 0 && game.getIceDirection() == direction) {
+		if((game.getIceDuration() > 0 && game.getIceDirection() == direction) || gameLost) {
 			animationInProgress = false;
 			return;
 		}
 		
 		if(genie_enabled && game.causeGameToLose(direction)) {
-			
-			Log.d(LOG_TAG, "in act, shouldn’t move there");
-			
-			genie_enabled = false;
 			animationInProgress = false;
-			
 			warnAboutMove(direction);
-			
 			return;
 		}
 		
@@ -734,8 +722,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 	    // increment the event counter
 	    Games.Events.increment(this.getApiClient(), myEventId, 1);
-	    
-	    Log.d(LOG_TAG, "incremented event");
 	}
 	
 	
@@ -830,6 +816,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 							break;
 						case 1:
 							removeLowTiles();
+						case 2:
+							genie_enabled = true;
+							
 						}
 						game.decrementPowerupsRemaining();
 					}
@@ -1075,21 +1064,23 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * @return True if the user decided to move in that direction anyway
 	 */
 	public void warnAboutMove(final int direction) {
-		
-		Log.d(LOG_TAG, "warn about move");
-		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Are you sure?");
 		builder.setMessage("Moving " + Location.directionToString(direction) + " might cause you to lose");
-		// Two buttons appear, try again and cancel
+		
+		// Two buttons appear, yes and no
 		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			// If the user clicked yes consume the powerup and move
 			public void onClick(DialogInterface dialog, int id) {
-				game.act(direction); 
+				genie_enabled = false;
+				game.act(direction);
+				updateGame();
 			}
 		});
 		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			// If the user clicked no consume the powerup and don't move
 			public void onClick(DialogInterface dialog, int id) {
-				
+				genie_enabled = false;
 			}
 		});
 		
@@ -1097,7 +1088,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		// You must click on one of the buttons in order to dismiss the dialog
 		dialog.setCanceledOnTouchOutside(false);
-		
 		dialog.show();
 	}
 	
@@ -1233,7 +1223,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		Log.d(LOG_TAG, "unlocking achievement " + tile + " tile");
 		
 		if(getApiClient().isConnected()) {
-			Log.d(LOG_TAG, "successfully unlocked achievement 128 tile");
 			switch(tile) {
 			case 128:
 				Games.Achievements.unlock(getApiClient(), getString(R.string.tile_128_achievement));
@@ -1250,7 +1239,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			case 2048:
 				Games.Achievements.unlock(getApiClient(), getString(R.string.tile_2048_achievement));
 				break;
-				
 			}
 		}
 	}

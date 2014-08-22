@@ -76,13 +76,6 @@
                     android:text="@string/mode_practice" />
 
                 <Button
-                    android:id="@+id/pro_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="createGame"
-                    android:text="@string/mode_pro" />
-                
-                 <Button
                     android:id="@+id/arcade_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

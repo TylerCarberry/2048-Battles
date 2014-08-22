@@ -280,9 +280,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		case R.id.practice_button:
 			gameId = GameModes.PRACTICE_MODE_ID;
 			break;
-		case R.id.pro_button:
-			gameId = GameModes.PRO_MODE_ID;
-			break;
 		case R.id.arcade_button:
 			gameId = GameModes.ARCADE_MODE_ID;
 			break;
@@ -326,9 +323,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	 * Switches to the game activity
 	 */
 	public void startGameActivity() {
-		
-		Log.d(LOG_TAG, "start game activity");
-		
 		startActivity(new Intent(this, GameActivity.class));
 	}
 
@@ -358,9 +352,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	        beginUserInitiatedSignIn();
 	    }
 	    else if (view.getId() == R.id.sign_out_button) {
-	        
-	    	Log.d(LOG_TAG, "clicked sign out");
-	    	
 	    	// sign out.
 	        signOut();
 
