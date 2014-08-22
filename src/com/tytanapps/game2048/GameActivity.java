@@ -67,6 +67,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -104,6 +105,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	String appUrl = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
 	
 	boolean animationInProgress = false;
+	boolean tileSelectInProgress = false;
 	boolean gameLost = false;
 	
 	// This keeps track of the active animations and
@@ -423,8 +425,15 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * Update the game information. 
 	 * Turn, Score, Undos Left, and Moves Left
 	 */
-	public void updateGame() {
+	private void updateGame() {
 		
+		updateTextviews();
+
+		// Update the game board
+		updateGrid();
+	}
+	
+	private void updateTextviews() {
 		TextView turnTextView = (TextView) findViewById(R.id.turn_textview);
 		TextView scoreTextView = (TextView) findViewById(R.id.score_textview);
 		TextView undosTextView = (TextView) findViewById(R.id.undos_textview);
@@ -460,9 +469,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			powerupsTextView.setText(getString(R.string.powerups_remaining) + ": " + powerupsLeft);
 		else
 			powerupsTextView.setVisibility(View.INVISIBLE);
-
-		// Update the game board
-		updateGrid();
 	}
 	
 	/**
@@ -926,32 +932,52 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	private void removeTile() {
 		animationInProgress = true;
-		
+		tileSelectInProgress = true;
+
 		for(int row = 0; row < game.getGrid().getNumRows(); row++) {
 			for(int col = 0; col < game.getGrid().getNumCols(); col++) {
 				ImageView tile = (ImageView) findViewById(row * 100 + col);
 
-				Animation hyperspaceJump = AnimationUtils.loadAnimation(this, R.anim.shake);
-				tile.startAnimation(hyperspaceJump);
+				if(tile.getVisibility() == View.VISIBLE) {
+					Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
+					tile.startAnimation(shake);
 
-				tile.setOnClickListener(new OnClickListener(){
+					tile.setOnClickListener(new OnClickListener(){
 
-					@Override
-					public void onClick(View view) {
-						// Create a new animation of the tile fading away and
-						// add it to the list
-						(ObjectAnimator.ofFloat(view, View.ALPHA, 0)
-								.setDuration(NEW_TILE_SPEED)).start();
-						game.removeTile(new Location(view.getId() / 100, view.getId() % 100));
-						clearTileListeners();
-					}
-				});
+						@Override
+						public void onClick(View view) {
+							if(game.getGrid().get(new Location(
+									view.getId() / 100, view.getId() % 100)) > 0) {
+								
+								// Create a new animation of the tile fading away
+								(ObjectAnimator.ofFloat(view, View.ALPHA, 0)
+										.setDuration(NEW_TILE_SPEED)).start();
+								game.removeTile(new Location(view.getId() / 100, view.getId() % 100));
+								updateTextviews();
+								clearTileListeners();
+							}
+						}
+					});
+				}
 			}
 		}
+
+		View gameActivity = findViewById(R.id.game_activity);
+		gameActivity.setOnTouchListener(new OnTouchListener(){
+
+			@Override
+			public boolean onTouch(View view, MotionEvent event) {
+					clearTileListeners();
+					game.incrementPowerupsRemaining();
+					return true;
+				}
+		});
 	}
 	
 	private void clearTileListeners() {
 		animationInProgress = false;
+		tileSelectInProgress = false;
+		(findViewById(R.id.game_activity)).setOnTouchListener(null);
 		
 		for(int row = 0; row < game.getGrid().getNumRows(); row++) {
 			for(int col = 0; col < game.getGrid().getNumCols(); col++) {
@@ -960,8 +986,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				tile.clearAnimation();
 			}
 		}
-		
-		updateGame();
 	}
 
 	/**
@@ -1418,7 +1442,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
     }
     
     @Override
-    public boolean onDown(MotionEvent event) { return true; }
+    public boolean onDown(MotionEvent event) {
+    	return true;
+    }
     @Override
     public void onLongPress(MotionEvent event) {}
     @Override
