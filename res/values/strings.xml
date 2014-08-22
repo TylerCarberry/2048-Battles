@@ -9,6 +9,7 @@
     <string name="action_powerups">Powerups</string>
     <string name="action_achievements">Achievements</string>
     <string name="action_leaderboards">Leaderboards</string>
+    <string name="action_quests">Quests</string>
     <string name="how_to_play">Combine similar tiles to reach 2048.</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
@@ -53,6 +54,7 @@
     <string name="title_activity_game">GameActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="remove_low">Remove Low Tiles</string>
+    <string name="remove_tile">Remove A Tile</string>
     <string name="prompt_start_game">Start A New Game</string>
     <string name="turn">Turn</string>
     <string name="score">Score</string>

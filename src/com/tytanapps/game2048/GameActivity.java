@@ -34,6 +34,8 @@ import junit.framework.Assert;
 import android.R.color;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -64,8 +66,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodSession.EventCallback;
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -189,7 +193,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			showPowerupDialog();
 			return true;
 		}
-		
 		// When the how to play menu item is pressed switch to InfoActivity
 		if (id == R.id.action_how_to_play) {
 			Intent showInfo = new Intent(this, com.tytanapps.game2048.InfoActivity.class);
@@ -679,6 +682,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		           }
 		       });
 		
+		/*
 		// Update the leaderboards
 		if(getApiClient().isConnected()){
             Games.Leaderboards.submitScore(getApiClient(), 
@@ -689,6 +693,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
                     getString(R.string.leaderboard_lowest_score), 
                     game.getScore());
         }
+        */
 		
 		// You cannot undo a game once you lose
 		Button undoButton = (Button) findViewById(R.id.undo_button);
@@ -815,10 +820,13 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 							shuffleGame();
 							break;
 						case 1:
-							removeLowTiles();
+							removeTile();
+							break;
 						case 2:
+							removeLowTiles();
+							break;
+						case 3:
 							genie_enabled = true;
-							
 						}
 						game.decrementPowerupsRemaining();
 					}
@@ -913,6 +921,49 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		alphaAnimation.start();
 	}
 	
+	/**
+	 * Remove a tile from the board when it is tapped
+	 */
+	private void removeTile() {
+		animationInProgress = true;
+		
+		for(int row = 0; row < game.getGrid().getNumRows(); row++) {
+			for(int col = 0; col < game.getGrid().getNumCols(); col++) {
+				ImageView tile = (ImageView) findViewById(row * 100 + col);
+
+				Animation hyperspaceJump = AnimationUtils.loadAnimation(this, R.anim.shake);
+				tile.startAnimation(hyperspaceJump);
+
+				tile.setOnClickListener(new OnClickListener(){
+
+					@Override
+					public void onClick(View view) {
+						// Create a new animation of the tile fading away and
+						// add it to the list
+						(ObjectAnimator.ofFloat(view, View.ALPHA, 0)
+								.setDuration(NEW_TILE_SPEED)).start();
+						game.removeTile(new Location(view.getId() / 100, view.getId() % 100));
+						clearTileListeners();
+					}
+				});
+			}
+		}
+	}
+	
+	private void clearTileListeners() {
+		animationInProgress = false;
+		
+		for(int row = 0; row < game.getGrid().getNumRows(); row++) {
+			for(int col = 0; col < game.getGrid().getNumCols(); col++) {
+				ImageView tile = (ImageView) findViewById(row * 100 + col);
+				tile.setOnClickListener(null);
+				tile.clearAnimation();
+			}
+		}
+		
+		updateGame();
+	}
+
 	/**
 	 * Remove all 2's and 4's from the game with a fade out animation
 	 */
@@ -1113,6 +1164,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	public void restartGame() {
 		
+		if(animationInProgress)
+			clearTileListeners();
+		
 		// Save any new records
 		if(game.highestPiece() > gameStats.highestTile)
 			gameStats.highestTile = game.highestPiece();
@@ -1149,9 +1203,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			Toast.makeText(getApplicationContext(), "Error: Save file not found", Toast.LENGTH_SHORT).show();
 		}
 		
-		requestBackup();
+		//requestBackup();
 	}
 	
+	/*
 	public void requestBackup() {
 
 		SharedPreferences settings = getSharedPreferences("hi", 0);

@@ -18,7 +18,7 @@
         android:id="@+id/action_quests"
         android:orderInCategory="170"
         android:showAsAction="never"
-        android:title="@string/action_stats"/>
+        android:title="@string/action_quests"/>
     
      <item
         android:id="@+id/action_settings"

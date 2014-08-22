@@ -18,7 +18,8 @@
     
     <string-array name="powerups">
         <item>Shuffle</item>
-        <item>Remove Low Tiles</item>
+        <item>Remove A Tile</item>
+        <item>Remove All Low Tiles</item>
         <item>Genie</item>
     </string-array>
     
