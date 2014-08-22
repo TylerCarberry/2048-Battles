@@ -14,13 +14,16 @@ import java.util.List;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.event.Event;
 import com.google.android.gms.games.event.Events;
 import com.google.android.gms.games.quest.Quests;
 import com.google.example.games.basegameutils.BaseGameActivity;
+import com.google.example.games.basegameutils.GameHelper;
 import com.tytanapps.game2048.R;
 import com.tytanapps.game2048.MainApplication.TrackerName;
 import com.tytanapps.game2048.R.array;
@@ -105,7 +108,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	String appUrl = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
 	
 	boolean animationInProgress = false;
-	boolean tileSelectInProgress = false;
+	//boolean tileSelectInProgress = false;
 	boolean gameLost = false;
 	
 	// This keeps track of the active animations and
@@ -133,21 +136,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 					.add(R.id.container, new GameFragment()).commit();
 		}
 		
-		// Instantiate the gesture detector with the
-        // application context and an implementation of
-        // GestureDetector.OnGestureListener
+		// Start listening for swipes
 		mDetector = new GestureDetectorCompat(this,this);
 
-		// Get a Tracker (should auto-report)
+		// Google Analytics
 		((MainApplication) getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
-
-		// Get tracker.
 		Tracker t = ((MainApplication) getApplication()).getTracker(TrackerName.APP_TRACKER);
-
 		// Set screen name.
-		// Where path is a String representing the screen name.
 		t.setScreenName("Game Activity");
-
 		// Send a screen view.
 		t.send(new HitBuilders.AppViewBuilder().build());
 	}
@@ -725,18 +721,21 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		currentGameFile.delete();
 		
-		submitEvent();
+		submitEvents(game);
 	}
 	
-	public void submitEvent()
+	public void submitEvents(Game myGame)
 	{
-	    // eventId is taken from the developer console
-	    String myEventId = getString(R.string.event_lose_game);
-
-	    // increment the event counter
-	    Games.Events.increment(this.getApiClient(), myEventId, 1);
+		String playedGameId = getString(R.string.event_played_game);
+		String totalMovesId = getString(R.string.event_total_moves);
+		String totalScoreId = getString(R.string.event_total_score);
+	    
+	    // increment the event counters
+		Games.Events.increment(this.getApiClient(), playedGameId, 1);
+		Games.Events.increment(this.getApiClient(), totalMovesId, game.getTurns());
+		Games.Events.increment(this.getApiClient(), totalScoreId, game.getScore());
+	    
 	}
-	
 	
 	public void callback() {
 		// EventCallback is a subclass of ResultCallback; use this to handle the
@@ -851,6 +850,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * Show a warning that the move that is about to be made
 	 * will lose the game
 	 */
+	@SuppressWarnings("unused")
 	private void showWarningDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Warning")
@@ -902,7 +902,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		newTile.setVisibility(View.VISIBLE);
 		
 		// Fade the tile in
-		
 		ObjectAnimator alphaAnimation = ObjectAnimator.ofFloat(newTile, View.ALPHA, 1)
 				.setDuration(NEW_TILE_SPEED);
 		
@@ -934,7 +933,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	private void removeTile() {
 		animationInProgress = true;
-		tileSelectInProgress = true;
+		//tileSelectInProgress = true;
 
 		for(int row = 0; row < game.getGrid().getNumRows(); row++) {
 			for(int col = 0; col < game.getGrid().getNumCols(); col++) {
@@ -959,7 +958,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 							updateTextviews();
 							clearTileListeners();
 						}
-
 					});
 				}
 			}
@@ -979,7 +977,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	
 	private void clearTileListeners() {
 		animationInProgress = false;
-		tileSelectInProgress = false;
 		(findViewById(R.id.game_activity)).setOnTouchListener(null);
 		
 		for(int row = 0; row < game.getGrid().getNumRows(); row++) {

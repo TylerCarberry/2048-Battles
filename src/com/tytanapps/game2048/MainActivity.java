@@ -13,6 +13,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.quest.Quest;
 import com.google.android.gms.games.quest.QuestUpdateListener;
@@ -62,14 +63,15 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
 	    // Get a Tracker (should auto-report)
 	    ((MainApplication) getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
-		// Get tracker.
-        Tracker t = ((MainApplication) getApplication()).getTracker(
-            TrackerName.APP_TRACKER);
-        // Set screen name.
-        t.setScreenName("Main Activity");
-        // Send a screen view.
-        t.send(new HitBuilders.AppViewBuilder().build());
+	    // Get tracker.
+	    Tracker t = ((MainApplication) getApplication()).getTracker(
+	    		TrackerName.APP_TRACKER);
+	    // Set screen name.
+	    t.setScreenName("Main Activity");
+	    // Send a screen view.
+	    t.send(new HitBuilders.AppViewBuilder().build());
 	}
+	
 	
 	@Override
 	protected void onStart() {
@@ -379,6 +381,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	        builder.setTitle("Quest Completed");
 	        builder.setMessage("You gained " + reward);
+	        builder.create().show();
 	        
 	    } catch (Exception e) {
 	    	Log.w(LOG_TAG, e.toString());

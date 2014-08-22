@@ -685,26 +685,26 @@ containing a value of this type.
         public static final int jaracanda=0x7f060000;
     }
     public static final class string {
-        public static final int action_achievements=0x7f09002c;
-        public static final int action_how_to_play=0x7f090029;
-        public static final int action_leaderboards=0x7f09002d;
-        public static final int action_powerups=0x7f09002b;
-        public static final int action_quests=0x7f09002e;
-        public static final int action_settings=0x7f090028;
-        public static final int action_stats=0x7f09002a;
-        /**  This file is ignored in github 
+        public static final int action_achievements=0x7f09002e;
+        public static final int action_how_to_play=0x7f09002b;
+        public static final int action_leaderboards=0x7f09002f;
+        public static final int action_powerups=0x7f09002d;
+        public static final int action_quests=0x7f090030;
+        public static final int action_settings=0x7f09002a;
+        public static final int action_stats=0x7f09002c;
+        /**  ids.xml is ignored in github 
  https://help.github.com/articles/ignoring-files 
- git update-index - -assume-unchanged path/to/file.txt 
- git update-index - -no-assume-unchanged path/to/file.txt 
+ git update-index (dashdash)assume-unchanged path/to/file.txt 
+ git update-index (dashdash)no-assume-unchanged path/to/file.txt 
          */
         public static final int app_id=0x7f09001e;
-        public static final int app_name=0x7f090025;
-        public static final int auto_circle=0x7f090039;
-        public static final int auto_corner=0x7f090038;
-        public static final int auto_random=0x7f090037;
-        public static final int auto_recursive=0x7f09003a;
-        public static final int autoplay=0x7f090036;
-        public static final int cancel=0x7f090033;
+        public static final int app_name=0x7f090027;
+        public static final int auto_circle=0x7f09003b;
+        public static final int auto_corner=0x7f09003a;
+        public static final int auto_random=0x7f090039;
+        public static final int auto_recursive=0x7f09003c;
+        public static final int autoplay=0x7f090038;
+        public static final int cancel=0x7f090035;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
         can enable it [CHAR LIMIT=40] 
@@ -794,107 +794,109 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f090018;
-        public static final int event_lose_game=0x7f090024;
-        public static final int fast=0x7f090066;
-        public static final int file_current_game=0x7f090069;
-        public static final int file_game_stats=0x7f09006a;
-        public static final int game_stats=0x7f09006c;
+        public static final int event_played_game=0x7f090024;
+        public static final int event_total_moves=0x7f090025;
+        public static final int event_total_score=0x7f090026;
+        public static final int fast=0x7f090068;
+        public static final int file_current_game=0x7f09006b;
+        public static final int file_game_stats=0x7f09006c;
+        public static final int game_stats=0x7f09006e;
         public static final int gamehelper_app_misconfigured=0x7f09001b;
         public static final int gamehelper_license_failed=0x7f09001c;
         public static final int gamehelper_sign_in_failed=0x7f09001a;
         public static final int gamehelper_unknown_error=0x7f09001d;
-        public static final int hello_world=0x7f090057;
-        public static final int help=0x7f090034;
-        public static final int high_score=0x7f090071;
-        public static final int highest_tile=0x7f090073;
-        public static final int how_to_play=0x7f09002f;
-        public static final int intro=0x7f090026;
-        public static final int intro_creator_name=0x7f090027;
-        public static final int lowest_score=0x7f090072;
-        public static final int medium=0x7f090065;
-        public static final int mode_arcade=0x7f090042;
-        public static final int mode_corner=0x7f090041;
-        public static final int mode_crazy=0x7f090046;
-        public static final int mode_custom=0x7f090047;
-        public static final int mode_desc_arcade=0x7f090054;
-        public static final int mode_desc_corner=0x7f09004f;
-        public static final int mode_desc_crazy=0x7f090052;
-        public static final int mode_desc_custom=0x7f090055;
-        public static final int mode_desc_ghost=0x7f090053;
-        public static final int mode_desc_normal=0x7f090049;
-        public static final int mode_desc_practice=0x7f09004a;
-        public static final int mode_desc_pro=0x7f09004b;
-        public static final int mode_desc_rush=0x7f09004c;
-        public static final int mode_desc_speed=0x7f090050;
-        public static final int mode_desc_survival=0x7f09004d;
-        public static final int mode_desc_x=0x7f09004e;
-        public static final int mode_desc_zen=0x7f090051;
-        public static final int mode_ghost=0x7f090045;
-        public static final int mode_normal=0x7f09003b;
-        public static final int mode_practice=0x7f09003c;
-        public static final int mode_pro=0x7f09003d;
-        public static final int mode_rush=0x7f09003e;
-        public static final int mode_speed=0x7f090043;
-        public static final int mode_survival=0x7f09003f;
-        public static final int mode_x=0x7f090040;
-        public static final int mode_zen=0x7f090044;
-        public static final int move_remaining=0x7f090060;
-        public static final int no_animation=0x7f090067;
-        public static final int pause=0x7f090032;
-        public static final int powerups_remaining=0x7f090062;
-        public static final int pref_default_display_name=0x7f090079;
-        public static final int pref_description_social_recommendations=0x7f090077;
+        public static final int hello_world=0x7f090059;
+        public static final int help=0x7f090036;
+        public static final int high_score=0x7f090073;
+        public static final int highest_tile=0x7f090075;
+        public static final int how_to_play=0x7f090031;
+        public static final int intro=0x7f090028;
+        public static final int intro_creator_name=0x7f090029;
+        public static final int lowest_score=0x7f090074;
+        public static final int medium=0x7f090067;
+        public static final int mode_arcade=0x7f090044;
+        public static final int mode_corner=0x7f090043;
+        public static final int mode_crazy=0x7f090048;
+        public static final int mode_custom=0x7f090049;
+        public static final int mode_desc_arcade=0x7f090056;
+        public static final int mode_desc_corner=0x7f090051;
+        public static final int mode_desc_crazy=0x7f090054;
+        public static final int mode_desc_custom=0x7f090057;
+        public static final int mode_desc_ghost=0x7f090055;
+        public static final int mode_desc_normal=0x7f09004b;
+        public static final int mode_desc_practice=0x7f09004c;
+        public static final int mode_desc_pro=0x7f09004d;
+        public static final int mode_desc_rush=0x7f09004e;
+        public static final int mode_desc_speed=0x7f090052;
+        public static final int mode_desc_survival=0x7f09004f;
+        public static final int mode_desc_x=0x7f090050;
+        public static final int mode_desc_zen=0x7f090053;
+        public static final int mode_ghost=0x7f090047;
+        public static final int mode_normal=0x7f09003d;
+        public static final int mode_practice=0x7f09003e;
+        public static final int mode_pro=0x7f09003f;
+        public static final int mode_rush=0x7f090040;
+        public static final int mode_speed=0x7f090045;
+        public static final int mode_survival=0x7f090041;
+        public static final int mode_x=0x7f090042;
+        public static final int mode_zen=0x7f090046;
+        public static final int move_remaining=0x7f090062;
+        public static final int no_animation=0x7f090069;
+        public static final int pause=0x7f090034;
+        public static final int powerups_remaining=0x7f090064;
+        public static final int pref_default_display_name=0x7f09007b;
+        public static final int pref_description_social_recommendations=0x7f090079;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f09007b;
+        public static final int pref_header_data_sync=0x7f09007d;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f090075;
+        public static final int pref_header_general=0x7f090077;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f09007e;
-        public static final int pref_ringtone_silent=0x7f090081;
-        public static final int pref_title_add_friends_to_messages=0x7f09007a;
-        public static final int pref_title_display_name=0x7f090078;
-        public static final int pref_title_new_message_notifications=0x7f09007f;
-        public static final int pref_title_ringtone=0x7f090080;
-        public static final int pref_title_social_recommendations=0x7f090076;
-        public static final int pref_title_sync_frequency=0x7f09007c;
-        public static final int pref_title_system_sync_settings=0x7f09007d;
-        public static final int pref_title_vibrate=0x7f090082;
-        public static final int prompt_start_game=0x7f09005a;
-        public static final int remove_low=0x7f090058;
-        public static final int remove_tile=0x7f090059;
-        public static final int restart=0x7f090035;
-        public static final int score=0x7f09005c;
-        public static final int shuffle=0x7f09005e;
-        public static final int slow=0x7f090064;
-        public static final int start=0x7f090030;
-        public static final int stop=0x7f090031;
+        public static final int pref_header_notifications=0x7f090080;
+        public static final int pref_ringtone_silent=0x7f090083;
+        public static final int pref_title_add_friends_to_messages=0x7f09007c;
+        public static final int pref_title_display_name=0x7f09007a;
+        public static final int pref_title_new_message_notifications=0x7f090081;
+        public static final int pref_title_ringtone=0x7f090082;
+        public static final int pref_title_social_recommendations=0x7f090078;
+        public static final int pref_title_sync_frequency=0x7f09007e;
+        public static final int pref_title_system_sync_settings=0x7f09007f;
+        public static final int pref_title_vibrate=0x7f090084;
+        public static final int prompt_start_game=0x7f09005c;
+        public static final int remove_low=0x7f09005a;
+        public static final int remove_tile=0x7f09005b;
+        public static final int restart=0x7f090037;
+        public static final int score=0x7f09005e;
+        public static final int shuffle=0x7f090060;
+        public static final int slow=0x7f090066;
+        public static final int start=0x7f090032;
+        public static final int stop=0x7f090033;
         public static final int tile_1024_achievement=0x7f090022;
         public static final int tile_128_achievement=0x7f09001f;
         public static final int tile_2048_achievement=0x7f090023;
         public static final int tile_256_achievement=0x7f090020;
         public static final int tile_512_achievement=0x7f090021;
-        public static final int time_remaining=0x7f090061;
-        public static final int title_activity_game=0x7f090056;
-        public static final int title_activity_info=0x7f090068;
-        public static final int title_activity_settings=0x7f090074;
-        public static final int title_activity_stats=0x7f09006b;
-        public static final int total_games=0x7f09006d;
-        public static final int total_moves=0x7f090070;
-        public static final int total_shuffles=0x7f09006f;
-        public static final int total_undos=0x7f09006e;
-        public static final int try_again=0x7f090048;
-        public static final int turn=0x7f09005b;
-        public static final int undo=0x7f09005d;
-        public static final int undo_remaining=0x7f09005f;
+        public static final int time_remaining=0x7f090063;
+        public static final int title_activity_game=0x7f090058;
+        public static final int title_activity_info=0x7f09006a;
+        public static final int title_activity_settings=0x7f090076;
+        public static final int title_activity_stats=0x7f09006d;
+        public static final int total_games=0x7f09006f;
+        public static final int total_moves=0x7f090072;
+        public static final int total_shuffles=0x7f090071;
+        public static final int total_undos=0x7f090070;
+        public static final int try_again=0x7f09004a;
+        public static final int turn=0x7f09005d;
+        public static final int undo=0x7f09005f;
+        public static final int undo_remaining=0x7f090061;
         /**  Text on a placeholder buy button when Google Play services is not
          available or up-to-date 
          */
         public static final int wallet_buy_button_place_holder=0x7f090019;
-        public static final int you_lose=0x7f090063;
+        public static final int you_lose=0x7f090065;
     }
     public static final class style {
         /** 
