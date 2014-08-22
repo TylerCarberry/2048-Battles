@@ -15,6 +15,9 @@ public class Game implements java.io.Serializable
 	
 	private final static String LOG_TAG = Game.class.getSimpleName();
 	
+	public static final int X_TILE_VALUE = -2;
+	public static final int CORNER_TILE_VALUE = -1;
+	
 	// The main board the game is played on
 	private Grid board;
 	
@@ -51,7 +54,6 @@ public class Game implements java.io.Serializable
 	private boolean zenMode = false;
 	private boolean arcadeMode = false;
 	
-	
 	// If true, any tile less than the max tile can spawn
 	// Ex. If the highest piece is 32 then a 2,4,8, or 16 can appear
 	// All possible tiles have an equal chance of appearing
@@ -63,7 +65,7 @@ public class Game implements java.io.Serializable
 	private ArrayList<Location> destinationLocations = new ArrayList<Location>();
 	
 	private int iceDirection = -1;
-	private int iceDuration = -1;
+	private int attackDuration = -1;
 	
 	private int gameModeId;
 	
@@ -168,7 +170,7 @@ public class Game implements java.io.Serializable
 		int distance = 0;
 		
 		// Do not move X spaces or 0 spaces
-		if(board.get(from) != -1 && board.get(from) != 0)
+		if(board.get(from) != CORNER_TILE_VALUE && board.get(from) != 0)
 		{	
 			Location to = from.getAdjacent(direction);
 			while(board.isValid(to))
@@ -182,7 +184,7 @@ public class Game implements java.io.Serializable
 					from = to.clone();
 					to = to.getAdjacent(direction);
 				}
-
+				
 				// If the new position has a piece
 				else
 				{
@@ -194,11 +196,9 @@ public class Game implements java.io.Serializable
 					}
 					
 					return distance;
-					
 				}
 			}
 		}
-		
 		return distance;
 	}
 	
@@ -233,8 +233,8 @@ public class Game implements java.io.Serializable
 		// Clear the tiles to not combine into
 		destinationLocations.clear();
 		
-		if(iceDuration > 0)
-			iceDuration--;
+		if(attackDuration > 0)
+			attackDuration--;
 	}
 	
 	/** 
@@ -430,19 +430,19 @@ public class Game implements java.io.Serializable
 	{
 		int previousValue;
 		
-		previousValue = board.set(new Location(0,0), -1);
+		previousValue = board.set(new Location(0,0), CORNER_TILE_VALUE);
 		if(previousValue != 0)
 			addRandomPiece(previousValue);
 			
-		previousValue = board.set(new Location(0,board.getNumCols() - 1), -1);
+		previousValue = board.set(new Location(0,board.getNumCols() - 1), CORNER_TILE_VALUE);
 		if(previousValue != 0)
 			addRandomPiece(previousValue);
 		
-		previousValue = board.set(new Location(board.getNumRows() - 1,0), -1);
+		previousValue = board.set(new Location(board.getNumRows() - 1,0), CORNER_TILE_VALUE);
 		if(previousValue != 0)
 			addRandomPiece(previousValue);
 		
-		previousValue = board.set(new Location(board.getNumRows() - 1 ,board.getNumCols() - 1), -1);
+		previousValue = board.set(new Location(board.getNumRows() - 1 ,board.getNumCols() - 1), CORNER_TILE_VALUE);
 		if(previousValue != 0)
 			addRandomPiece(previousValue);
 	}
@@ -459,7 +459,7 @@ public class Game implements java.io.Serializable
 		else
 		{
 			int randomLoc = (int) (Math.random() * empty.size());
-			board.set(empty.get(randomLoc), -2);
+			board.set(empty.get(randomLoc), X_TILE_VALUE);
 		}
 	}
 
@@ -637,15 +637,37 @@ public class Game implements java.io.Serializable
 				iceDirection = Location.RIGHT;
 					
 		// Between 3 and 10 moves
-		iceDuration = (int) (Math.random() * 7 + 3);
+		attackDuration = (int) (Math.random() * 7 + 3);
 	}
 	
 	public int getIceDirection() {
 		return iceDirection;
 	}
 	
-	public int getIceDuration() {
-		return iceDuration;
+	/**
+	 * Temporarily add an XTile to the board
+	 * @return The location where it was added
+	 */
+	public Location XTileAttack() {
+		
+		// Between 5 and 10 moves
+		attackDuration = (int) (Math.random() * 6 + 5);
+		
+		return addRandomPiece(X_TILE_VALUE);
+	}
+	
+	public Location endXTileAttack() {
+		
+		Location XTile = board.find(X_TILE_VALUE);
+		
+		if(XTile != null)
+			board.set(XTile, 0);
+		
+		return XTile;
+	}
+	
+	public int getAttackDuration() {
+		return attackDuration;
 	}
 	
 	/**
@@ -828,7 +850,7 @@ public class Game implements java.io.Serializable
 			return true;
 		
 		
-		if(iceDuration > 0)
+		if(attackDuration > 0)
 			return ! (canMove(Location.UP) || canMove(Location.DOWN) ||
 					canMove(Location.LEFT) || canMove(Location.RIGHT)); 	
 
@@ -937,7 +959,7 @@ public class Game implements java.io.Serializable
 	 */
 	public boolean canMove(int direction)
 	{
-		if(iceDuration > 0 && iceDirection == direction)
+		if(attackDuration > 0 && iceDirection == direction)
 			return false;
 		
 		Game nextMove = clone();
@@ -945,7 +967,7 @@ public class Game implements java.io.Serializable
 		// Infinite recursion is caused if the game has 
 		// an ice attack active. The equals method only checks
 		// the grid and score so this will not affect the result
-		nextMove.iceDuration = -1;
+		nextMove.attackDuration = -1;
 		
 		nextMove.act(direction);
 		

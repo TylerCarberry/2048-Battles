@@ -251,4 +251,20 @@ public class Grid implements Cloneable, java.io.Serializable
 	{
 		hideTileValues = enabled;
 	}
+
+	/**
+	 * Returns the location of the first tile of the specified value in the grid
+	 * @param tileToFind The value of the tile to look for
+	 * @return The location of the tile
+	 */
+	public Location find(int tileToFind) {
+		
+		List<Location> locations = toList();
+		
+		for(Location loc : locations)
+			if(get(loc) == tileToFind)
+				return loc;
+		
+		return null;
+	}
 }

@@ -101,6 +101,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	// Warns you about making a making a move that may
 	// lose you the game
 	private static boolean genie_enabled = false;
+	private boolean XTileAttackActive = false;
 	
 	// Used to detect swipes and move the board
 	private GestureDetectorCompat mDetector; 
@@ -274,7 +275,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		animationInProgress = true;
 		
 		// If the ice attack is active in that direction do not move
-		if((game.getIceDuration() > 0 && game.getIceDirection() == direction) || gameLost) {
+		if((game.getAttackDuration() > 0 && game.getIceDirection() == direction) || gameLost) {
 			animationInProgress = false;
 			return;
 		}
@@ -354,8 +355,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			// When the animation is over increment the turn number, update the game, 
 			// and add a new tile
 			public void onAnimationEnd(Animator animation) {
-				game.newTurn();
+				
 				updateGame();
+				game.newTurn();
 				addTile();
 				gameStats.totalMoves += 1;
 				activeAnimations.clear();
@@ -363,6 +365,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				
 				if(game.getArcadeMode() && Math.random() < 0.1)
 					addRandomBonus();
+				
+				if(XTileAttackActive && game.getAttackDuration() == 0)
+					endXAttack();
 				
 				/*
 				if(game.getIceDuration() > 0)
@@ -402,8 +407,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		// 50% change ice attack
 		// 25% +1 undo	25% +1 powerup
-		if(rand < .5 && game.getIceDuration() <= 0) 
-			ice();
+		if(rand < .5 && game.getAttackDuration() <= 0)
+			if(rand < .25) 
+				ice();
+			else
+				XTileAttack();
 		else {
 			if(rand < 0.75) {
 				game.incrementUndosRemaining();
@@ -1122,18 +1130,73 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	public void ice() {
 		
+		Log.d(LOG_TAG, "entering ice");
+		
 		// This attack cannot be stacked
-		if(game.getIceDuration() <= 0)
+		if(game.getAttackDuration() <= 0)
 			game.ice();
 		
 		// Create a new toast to diplay the attack
 		Toast.makeText(getApplicationContext(),
 				"FROZEN!	Cannot move " +
 				Location.directionToString(game.getIceDirection()) +
-				" for " + game.getIceDuration() + " turns",
+				" for " + game.getAttackDuration() + " turns",
 				Toast.LENGTH_SHORT).show();
 	}
 	
+	/**
+	 * Temporarily adds an X tile to the game for a limited amount of time
+	 */
+	private void XTileAttack() {
+		
+		Log.d(LOG_TAG, "entering xtileattack");
+		
+		// This attack cannot be stacked
+		if(game.getAttackDuration() <= 0) {
+			game.XTileAttack();
+			XTileAttackActive = true;
+			updateGrid();
+		}
+
+		// Create a new toast to diplay the attack
+		Toast.makeText(getApplicationContext(),
+				"XTile Attack for " + game.getAttackDuration() + " turns",
+						Toast.LENGTH_SHORT).show();
+	}
+	
+	private void endXAttack() {
+		
+		Log.d(LOG_TAG, "entering endxtileattack");
+		
+		XTileAttackActive = false;
+		
+		Location XTile = game.endXTileAttack();
+		
+		if(XTile != null) {
+			ImageView tile = (ImageView) findViewById(XTile.getRow() * 100 + XTile.getCol());
+			
+			// Create and start an animation of the tile fading away
+			ObjectAnimator fade = ObjectAnimator.ofFloat(tile, View.ALPHA, 0)
+					.setDuration(NEW_TILE_SPEED);
+			fade.addListener(new AnimatorListener() {
+
+				@Override
+				public void onAnimationCancel(Animator arg0) {}
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					//updateGame();
+				}
+				@Override
+				public void onAnimationRepeat(Animator animation) {}
+				@Override
+				public void onAnimationStart(Animator animation) {}
+			});
+			
+			fade.start();
+		}
+		
+	}
+
 	/**
 	 * Warn the user about moving in that direction
 	 * @return True if the user decided to move in that direction anyway
