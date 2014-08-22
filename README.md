@@ -1,8 +1,5 @@
-2048 for Android By Tyler Carberry
-
-=====
-
-My version of 2048 based off the orginal 2048 by Gabriele Cirulli.
+2048 for Android By Tyler Carberry  
+My version of 2048 based off the orginal 2048 by Gabriele Cirulli.  
 [Download the latest version](https://github.com/tytan34/2048-for-Android/blob/master/bin/App_2048.apk?raw=true)
 
 ### Different Modes
