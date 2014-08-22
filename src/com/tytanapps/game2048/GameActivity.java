@@ -125,6 +125,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
+		Log.d(LOG_TAG, "entering on create");
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
 		
@@ -150,10 +152,15 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 		// Send a screen view.
 		t.send(new HitBuilders.AppViewBuilder().build());
+		
+		Log.d(LOG_TAG, "leaving on create");
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		
+		Log.d(LOG_TAG, "entering on create options menu");
+		
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.game, menu);
 		
@@ -165,6 +172,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	    
 		createShareIntent();
 	    
+		Log.d(LOG_TAG, "leaving on create options menu");
+		
 		return true;
 	}
 	
@@ -232,6 +241,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 	@Override
 	protected void onStart() {
+		
+		Log.d(LOG_TAG, "entering on start");
+		
 		// If GameActivity is loaded for the first time the grid is created. If user returns to
 		// this activity after switching to another activity, the grid is still recreated because
 		// there is a chance that android killed this activity in the background
@@ -240,15 +252,26 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Load the saved file containing the game. This also updates the screen.
 		load();
 		
-		getActionBar().setTitle(GameModes.getGameTitleById(game.getGameModeId())); 
+		Log.d(LOG_TAG, "on start 2");
+		
+		//getActionBar().setTitle(GameModes.getGameTitleById(game.getGameModeId())); 
+		
+		Log.d(LOG_TAG, "on start 3");
 		
 		// Disable the undo button if there are no undos remaining
 		Button undoButton = ((Button) findViewById(R.id.undo_button));
 		undoButton.setEnabled(game.getUndosRemaining() != 0);
 		
+		Log.d(LOG_TAG, "on start 4");
+		
 		GoogleAnalytics.getInstance(this).reportActivityStart(this);
 		
+		Log.d(LOG_TAG, "on start 5");
+		
 		super.onStart();
+		
+		Log.d(LOG_TAG, "leaving on start");
+		
 	}
 	
 	@Override
@@ -1274,11 +1297,18 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	private void load() {
 		
+		Log.d(LOG_TAG, "entering load");
+		
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+		
+		Log.d(LOG_TAG, "load 2");
+		
 		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
 
 		try {
 			game = (Game) Save.load(currentGameFile);
+			
+			Log.d(LOG_TAG, "load 3");
 			gameStats = (Statistics) Save.load(gameStatsFile);
 		} catch (ClassNotFoundException e) {
 			Log.w(LOG_TAG, "Class not found exception in load");
@@ -1286,11 +1316,15 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			gameStats = new Statistics();
 		} catch (IOException e) {
 			Log.w(LOG_TAG, "IO Exception in load");
+			Log.w(LOG_TAG, e.toString());
 			game = new Game();
 			gameStats = new Statistics();
 		}
 		
 		updateGame();
+		
+		Log.d(LOG_TAG, "leaving load");
+		
 	}
 	
 	/**
