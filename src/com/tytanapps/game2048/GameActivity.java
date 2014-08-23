@@ -53,6 +53,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
@@ -372,6 +374,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				if(ghostAttackActive && game.getAttackDuration() == 0)
 					endGhostAttack();
 				
+				
+				
 				/*
 				if(game.getIceDuration() > 0)
 				Toast.makeText(getApplicationContext(),
@@ -435,10 +439,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 	private void ghostAttack() {
 
-		Log.d(LOG_TAG, "ghost attack");
-
 		game.ghostAttack();
-		ghostAttackActive = true;
 		
 		List<Location> tileLocs = game.getGrid().getFilledLocations();
 		int tileValue;
@@ -446,12 +447,22 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		for(Location loc : tileLocs) {
 			tileValue = game.getGrid().get(loc);
 			tile = findTileByLocation(loc);
-			setIcon(tile, tileValue);
+			
+			Drawable[] layers = new Drawable[2];
+			// The current icon
+			layers[0] = getResources().getDrawable(getIcon(tileValue));
+			// No icon found, default to question mark
+			layers[1] = getResources().getDrawable(getIcon(-10));
+			TransitionDrawable transition = new TransitionDrawable(layers);
+			tile.setImageDrawable(transition);
+			transition.startTransition((int) NEW_TILE_SPEED);
 		}
+		
+		ghostAttackActive = true;
+		
 	}
 	private void endGhostAttack() {
 
-		Log.d(LOG_TAG, "ghost attack");
 		ghostAttackActive = false;
 		
 		List<Location> tileLocs = game.getGrid().getFilledLocations();
@@ -460,7 +471,16 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		for(Location loc : tileLocs) {
 			tileValue = game.getGrid().get(loc);
 			tile = findTileByLocation(loc);
-			setIcon(tile, tileValue);
+			
+			Drawable[] layers = new Drawable[2];
+			// The ghost icon
+			layers[0] = getResources().getDrawable(getIcon(-10));
+			// The tile icon
+			layers[1] = getResources().getDrawable(getIcon(tileValue));
+			TransitionDrawable transition = new TransitionDrawable(layers);
+			tile.setImageDrawable(transition);
+			transition.startTransition((int) NEW_TILE_SPEED);
+			
 		}
 	}
 
@@ -643,64 +663,54 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				lost();
 		}
 	}
+	
+	private void setIcon(ImageView tile, int tileValue) {
+		tile.setBackgroundResource(getIcon(tileValue));
+	}
 
 	/**
 	 * Update the tile's icon to match its value
 	 * @param tile The ImageView to change
 	 * @param tileValue The numerical value of the tile
 	 */
-	private void setIcon(ImageView tile, int tileValue) {
+	private int getIcon(int tileValue) {
 
 		if(game.getGameModeId() == GameModes.GHOST_MODE_ID || ghostAttackActive)
-			tile.setBackgroundResource(R.drawable.tile_question);
+			return R.drawable.tile_question;
 		else {
 			switch(tileValue) {
 			case -2:
-				tile.setBackgroundResource(R.drawable.tile_x);
-				break;
+				return R.drawable.tile_x;
 			case -1:
-				tile.setBackgroundResource(R.drawable.tile_corner);
-				break;
+				return R.drawable.tile_corner;
 			case 0:
-				tile.setBackgroundResource(R.drawable.tile_blank);
-				break;
+				return R.drawable.tile_blank;
 			case 2:
-				tile.setBackgroundResource(R.drawable.tile_2);
-				break;
+				return R.drawable.tile_2;
 			case 4:
-				tile.setBackgroundResource(R.drawable.tile_4);
-				break;
+				return R.drawable.tile_4;
 			case 8:
-				tile.setBackgroundResource(R.drawable.tile_8);
-				break;
+				return R.drawable.tile_8;
 			case 16:
-				tile.setBackgroundResource(R.drawable.tile_16);
-				break;
+				return R.drawable.tile_16;
 			case 32:
-				tile.setBackgroundResource(R.drawable.tile_32);
-				break;
+				return R.drawable.tile_32;
 			case 64:
-				tile.setBackgroundResource(R.drawable.tile_64);
-				break;
+				return R.drawable.tile_64;
 			case 128:
-				tile.setBackgroundResource(R.drawable.tile_128);
-				break;
+				return R.drawable.tile_128;
 			case 256:
-				tile.setBackgroundResource(R.drawable.tile_256);
-				break;
+				return R.drawable.tile_256;
 			case 512:
-				tile.setBackgroundResource(R.drawable.tile_512);
-				break;
+				return R.drawable.tile_512;
 			case 1024:
-				tile.setBackgroundResource(R.drawable.tile_1024);
-				break;
+				return R.drawable.tile_1024;
 			case 2048:
-				tile.setBackgroundResource(R.drawable.tile_2048);
-				break;
+				return R.drawable.tile_2048;
 			// If I did not create an image for the tile,
 			// default to a question mark
 			default:
-				tile.setBackgroundResource(R.drawable.tile_question);
+				return R.drawable.tile_question;
 			}
 		}
 	}
