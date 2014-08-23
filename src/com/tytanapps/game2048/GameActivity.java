@@ -102,6 +102,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	// lose you the game
 	private static boolean genie_enabled = false;
 	private boolean XTileAttackActive = false;
+	private boolean ghostAttackActive = false;
 	
 	// Used to detect swipes and move the board
 	private GestureDetectorCompat mDetector; 
@@ -109,7 +110,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	String appUrl = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
 	
 	boolean animationInProgress = false;
-	//boolean tileSelectInProgress = false;
 	boolean gameLost = false;
 	
 	// This keeps track of the active animations and
@@ -369,6 +369,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				if(XTileAttackActive && game.getAttackDuration() == 0)
 					endXAttack();
 				
+				if(ghostAttackActive && game.getAttackDuration() == 0)
+					endGhostAttack();
+				
 				/*
 				if(game.getIceDuration() > 0)
 				Toast.makeText(getApplicationContext(),
@@ -405,13 +408,16 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		double rand = Math.random();
 		String item = null;
 		
-		// 50% change ice attack
-		// 25% +1 undo	25% +1 powerup
+		// 16% ice attack, 17% ghost attack, 17% XTile attack
+		// 25% +1 undo,	25% +1 powerup
 		if(rand < .5 && game.getAttackDuration() <= 0)
-			if(rand < .25) 
+			if(rand < .16) 
 				ice();
 			else
-				XTileAttack();
+				if(rand < .33) 
+					ghostAttack();
+				else
+					XTileAttack();
 		else {
 			if(rand < 0.75) {
 				game.incrementUndosRemaining();
@@ -426,7 +432,38 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				Toast.LENGTH_SHORT).show();
 		}
 	}
-	
+
+	private void ghostAttack() {
+
+		Log.d(LOG_TAG, "ghost attack");
+
+		game.ghostAttack();
+		ghostAttackActive = true;
+		
+		List<Location> tileLocs = game.getGrid().getFilledLocations();
+		int tileValue;
+		ImageView tile;
+		for(Location loc : tileLocs) {
+			tileValue = game.getGrid().get(loc);
+			tile = findTileByLocation(loc);
+			setIcon(tile, tileValue);
+		}
+	}
+	private void endGhostAttack() {
+
+		Log.d(LOG_TAG, "ghost attack");
+		ghostAttackActive = false;
+		
+		List<Location> tileLocs = game.getGrid().getFilledLocations();
+		int tileValue;
+		ImageView tile;
+		for(Location loc : tileLocs) {
+			tileValue = game.getGrid().get(loc);
+			tile = findTileByLocation(loc);
+			setIcon(tile, tileValue);
+		}
+	}
+
 	/**
 	 * Update the game information. 
 	 * Turn, Score, Undos Left, and Moves Left
@@ -614,7 +651,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	private void setIcon(ImageView tile, int tileValue) {
 
-		if(game.getGameModeId() == GameModes.GHOST_MODE_ID)
+		if(game.getGameModeId() == GameModes.GHOST_MODE_ID || ghostAttackActive)
 			tile.setBackgroundResource(R.drawable.tile_question);
 		else {
 			switch(tileValue) {
@@ -1338,7 +1375,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	private void load() {
 		
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
-		
 		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
 
 		try {
@@ -1385,6 +1421,20 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				break;
 			}
 		}
+	}
+	
+	private List<ImageView> getListOfAllTiles() {
+		List<ImageView> tiles = new ArrayList<ImageView>();
+		List<Location> locs = game.getGrid().toList();
+		
+		for(Location loc : locs)
+			tiles.add(findTileByLocation(loc));
+		
+		return tiles;
+	}
+	
+	private ImageView findTileByLocation(Location loc) {
+		return (ImageView) findViewById(loc.getRow() * 100 + loc.getCol());
 	}
 	
 	/**

@@ -666,6 +666,16 @@ public class Game implements java.io.Serializable
 		return XTile;
 	}
 	
+	/**
+	 * Temporarily add an XTile to the board
+	 * @return The location where it was added
+	 */
+	public void ghostAttack() {
+		
+		// Between 5 and 10 moves
+		attackDuration = (int) (Math.random() * 6 + 5);
+	}
+	
 	public int getAttackDuration() {
 		return attackDuration;
 	}
