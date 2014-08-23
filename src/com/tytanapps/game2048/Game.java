@@ -119,7 +119,6 @@ public class Game implements java.io.Serializable
 		survivalMode = toClone.survivalMode;
 		speedMode = toClone.speedMode;
 		zenMode = toClone.zenMode;
-		
 	}
 	
 	/**

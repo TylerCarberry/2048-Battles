@@ -100,6 +100,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	private static boolean boardCreated = false;
 	private static Game game;
 	
+	GridLayout gridLayout;
+	
 	// Warns you about making a making a move that may
 	// lose you the game
 	private static boolean genie_enabled = false;
@@ -237,6 +239,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// there is a chance that android killed this activity in the background
 		boardCreated = false;
 		
+		gridLayout = (GridLayout) findViewById(R.id.grid_layout);
+		
 		// Load the saved file containing the game. This also updates the screen.
 		load();
 		
@@ -258,6 +262,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		if(! game.lost())
 			save();
 		
+		// Stop all active animations. If this is not done the game will crash
 		for(ObjectAnimator animation : activeAnimations)
 			animation.end();
 		
@@ -265,7 +270,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		GoogleAnalytics.getInstance(this).reportActivityStop(this);
 
-		
 		super.onStop();
 	}
 	
@@ -299,8 +303,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Save the game history before each move
 		game.saveGameInHistory();
 		
-		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
-		
 		// Get a list of all tiles
 		List<Location> tiles = game.getGrid().getLocationsInTraverseOrder(direction);
 		
@@ -318,7 +320,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				if(direction == Location.LEFT || direction == Location.UP)
 					distance *= -1;
 				
-				ImageView movedTile = (ImageView) gridLayout.findViewById(tile.getRow() * 100 + tile.getCol());
+				ImageView movedTile = findTileByLocation(tile);
 				
 				// The tag is changed to a value different than its actual value
 				// which causes it to be updated in updateGrid
@@ -554,33 +556,31 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		GridLayout.LayoutParams gridLayoutParam;
 		int tileValue;
 
-		// Create an ImageView for every tile on the board
-		for(int row = 0; row < gridLayout.getRowCount(); row++) {
-			for(int col = 0; col < gridLayout.getColumnCount(); col++) {
-				specRow = GridLayout.spec(row, 1); 
-				specCol = GridLayout.spec(col, 1);
-				gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
-				
-				// Check if that tile already exists
-				existingTile = (ImageView) findViewById(row * 100 + col);
+		List<Location> tileLocations = game.getGrid().toList();
+		for(Location tileLoc : tileLocations) {
+			specRow = GridLayout.spec(tileLoc.getRow(), 1); 
+			specCol = GridLayout.spec(tileLoc.getCol(), 1);
+			gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
+			
+			// Check if that tile already exists
+			existingTile = findTileByLocation(tileLoc);
 
-				// Remove the existing tile if there is one
-				if(existingTile!=null) {
-					((ViewGroup) existingTile.getParent()).removeView(existingTile);
-				}
+			// Remove the existing tile if there is one
+			if(existingTile!=null)
+				((ViewGroup) existingTile.getParent()).removeView(existingTile);
 
-				tile = new ImageView(this);
-				tile.setId(row * 100 + col);
-				
-				tileValue = game.getGrid().get(new Location(row, col));
-				if(tileValue == 0)
-					tile.setVisibility(View.INVISIBLE);
-				else 
-					tile.setVisibility(View.VISIBLE);
-				
-				gridLayout.addView(tile,gridLayoutParam);
-			}
+			tile = new ImageView(this);
+			tile.setId(getTileIdByLocation(tileLoc));
+			
+			tileValue = game.getGrid().get(tileLoc);
+			if(tileValue == 0)
+				tile.setVisibility(View.INVISIBLE);
+			else 
+				tile.setVisibility(View.VISIBLE);
+			
+			gridLayout.addView(tile,gridLayoutParam);
 		}
+		
 		boardCreated = true;
 	}
 	
@@ -599,9 +599,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	private void updateGrid() {
 		
-		if(! boardCreated) {
+		if(! boardCreated)
 			createGrid();
-		}
 		
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		gridLayout.setRowCount(game.getGrid().getNumRows());
@@ -610,58 +609,53 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		ImageView tile;
 		Spec specRow, specCol;
 		GridLayout.LayoutParams gridLayoutParam;
-		int tileValue;
 		int expectedValue, actualValue;
+		
+		List<Location> tileLocations = game.getGrid().toList();
 
-		for(int row = 0; row < gridLayout.getRowCount(); row++) {
-			for(int col = 0; col < gridLayout.getColumnCount(); col++) {
+		for(Location tileLoc : tileLocations) {
+			tile = findTileByLocation(tileLoc);
+			expectedValue = game.getGrid().get(tileLoc);
 
-				tile = (ImageView) gridLayout.findViewById(row * 100 + col);
-
-				expectedValue = game.getGrid().get(new Location(row,col));
-				
-				// A tiles's tag is its value
-				try {
-					actualValue = Integer.parseInt(tile.getTag().toString());
-				}
-				catch(Exception e) {
-					// Update the tile just in case
-					actualValue = -10;
-				}
-
-				if(expectedValue != actualValue) {
-					
-					specRow = GridLayout.spec(row, 1); 
-					specCol = GridLayout.spec(col, 1);
-					gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
-
-					// Remove the tile
-					ViewGroup layout = (ViewGroup) tile.getParent();
-					if(null!=layout) {
-						layout.removeView(tile);
-					}
-
-					// Create a new tile to insert back into the board
-					tile = new ImageView(this);
-					tile.setId(row * 100 + col);
-					
-					tileValue = game.getGrid().get(new Location(row, col));
-					tile.setTag(tileValue);
-					setIcon(tile, tileValue);
-
-					if(tileValue == 0) 
-						tile.setVisibility(View.INVISIBLE);
-					else
-						tile.setVisibility(View.VISIBLE);
-
-					// Insert the new tile into the board
-					gridLayout.addView(tile,gridLayoutParam);
-				}
+			// A tiles's tag is its value
+			try {
+				actualValue = Integer.parseInt(tile.getTag().toString());
 			}
-			
-			if(game.lost())
-				lost();
+			catch(Exception e) {
+				// Update the tile just in case
+				actualValue = -10;
+			}
+
+			if(expectedValue != actualValue) {
+
+				specRow = GridLayout.spec(tileLoc.getRow(), 1); 
+				specCol = GridLayout.spec(tileLoc.getCol(), 1);
+				gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
+
+				// Remove the tile
+				ViewGroup layout = (ViewGroup) tile.getParent();
+				if(null!=layout)
+					layout.removeView(tile);
+
+				// Create a new tile to insert back into the board
+				tile = new ImageView(this);
+				tile.setId(getTileIdByLocation(tileLoc));
+
+				tile.setTag(expectedValue);
+				setIcon(tile, expectedValue);
+
+				if(expectedValue == 0) 
+					tile.setVisibility(View.INVISIBLE);
+				else
+					tile.setVisibility(View.VISIBLE);
+
+				// Insert the new tile into the board
+				gridLayout.addView(tile,gridLayoutParam);
+			}
 		}
+		
+		if(game.lost())
+			lost();
 	}
 	
 	private void setIcon(ImageView tile, int tileValue) {
@@ -789,7 +783,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		Games.Events.increment(this.getApiClient(), playedGameId, 1);
 		Games.Events.increment(this.getApiClient(), totalMovesId, game.getTurns());
 		Games.Events.increment(this.getApiClient(), totalScoreId, game.getScore());
-	    
 	}
 	
 	public void callback() {
@@ -824,7 +817,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	}
 	
 	/** Create the message that is shown to the user after they lose.
-	 * 
 	 * @param myGame The game that was currently played
 	 * @param myGameStats The game stats of the game
 	 * @return The message to display
@@ -902,19 +894,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	}
 	
 	/**
-	 * Show a warning that the move that is about to be made
-	 * will lose the game
-	 */
-	@SuppressWarnings("unused")
-	private void showWarningDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Warning")
-		.setMessage("This move will cause the game to lose."
-				+ "Are you sure you want to move there?");
-		builder.create().show();
-	}
-
-	/**
 	 * This method is no longer used because I switched
 	 * to ImageViews instead of buttons. I may need this method 
 	 * later for zen mode.
@@ -943,7 +922,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		Location loc = game.addRandomPiece();
 		
 		// Find the tile to make appear
-		ImageView newTile = (ImageView) findViewById(loc.getRow() * 100 + loc.getCol());
+		ImageView newTile = findTileByLocation(loc);
 		
 		// Immediately set the alpha of the tile to 0
 		ObjectAnimator.ofFloat(newTile, View.ALPHA, 0).setDuration(0).start();
@@ -960,19 +939,16 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		ObjectAnimator alphaAnimation = ObjectAnimator.ofFloat(newTile, View.ALPHA, 1)
 				.setDuration(NEW_TILE_SPEED);
 		
-		// Assume that all animations finish at the same time
+		// Keep track of the active animations in case the activity is stopped
 		alphaAnimation.addListener(new AnimatorListener(){
-
 			@Override
 			public void onAnimationEnd(Animator animation) {
 				activeAnimations.clear();
 			}
-
 			@Override
 			public void onAnimationStart(Animator animation) { }
 			@Override
 			public void onAnimationCancel(Animator animation) {
-				Log.d(LOG_TAG, "Animation cancelled");
 				activeAnimations.clear();
 			}
 			@Override
@@ -1062,13 +1038,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// An list of the fade animations to play
 		ArrayList<ObjectAnimator> alphaAnimations = new ArrayList<ObjectAnimator>();
 		
-		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
-		
 		// Loop through each tile
 		for(Location tile : tiles) {
 			if(gameBoard.get(tile) == 2 || gameBoard.get(tile) == 4) {
 				
-				ImageView toRemove = (ImageView) gridLayout.findViewById(tile.getRow() * 100 + tile.getCol());
+				ImageView toRemove = findTileByLocation(tile);
 				
 				// Set the tag to the new value
 				toRemove.setTag(0);
@@ -1083,7 +1057,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		if(alphaAnimations.isEmpty()) {
 			animationInProgress = false;
 			return;
-			
 		}
 		
 		// Assume that all animations finish at the same time
@@ -1116,7 +1089,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			activeAnimations.add(animation);
 			animation.start();
 		}
-			
 	}
 	
 	/**
@@ -1205,7 +1177,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			updateGrid();
 		}
 
-		// Create a new toast to diplay the attack
+		// Create a new toast to display the attack
 		Toast.makeText(getApplicationContext(),
 				"XTile Attack for " + game.getAttackDuration() + " turns",
 						Toast.LENGTH_SHORT).show();
@@ -1213,14 +1185,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	
 	private void endXAttack() {
 		
-		Log.d(LOG_TAG, "entering endxtileattack");
-		
 		XTileAttackActive = false;
+		Location XTileLoc = game.endXTileAttack();
 		
-		Location XTile = game.endXTileAttack();
-		
-		if(XTile != null) {
-			ImageView tile = (ImageView) findViewById(XTile.getRow() * 100 + XTile.getCol());
+		if(XTileLoc != null) {
+			ImageView tile = findTileByLocation(XTileLoc);
 			
 			// Create and start an animation of the tile fading away
 			ObjectAnimator fade = ObjectAnimator.ofFloat(tile, View.ALPHA, 0)
@@ -1241,7 +1210,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			
 			fade.start();
 		}
-		
 	}
 
 	/**
@@ -1443,10 +1411,26 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		return tiles;
 	}
 	
+	/**
+	 * @param loc The location of the tile to find
+	 * @return The ImageView of the tile
+	 */
 	private ImageView findTileByLocation(Location loc) {
-		return (ImageView) findViewById(loc.getRow() * 100 + loc.getCol());
+		// It is more efficient to find a view using its parent than the entire activity
+		if(gridLayout != null)
+			return (ImageView) gridLayout.findViewById(getTileIdByLocation(loc));
+		return (ImageView) findViewById(getTileIdByLocation(loc));
 	}
 	
+	/**
+	 * This method supports grids up to a size of 100x100 before collisions occur
+	 * @param loc The location of the tile to find the id for
+	 * @return The id of the tile
+	 */
+	private int getTileIdByLocation(Location loc) {
+		return loc.getRow() * 100 + loc.getCol();
+	}
+
 	/**
 	 * Shows the active quests
 	 */
@@ -1542,7 +1526,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
     }
 	
     /**
-     * When the screen is swiped move the board
+     * When the screen is swiped, move the board
      */
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2, 
