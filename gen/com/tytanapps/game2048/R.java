@@ -591,6 +591,8 @@ containing a value of this type.
         public static final int tile_corner=0x7f02002c;
         public static final int tile_question=0x7f02002d;
         public static final int tile_x=0x7f02002e;
+        public static final int undo_button=0x7f02002f;
+        public static final int undo_button_gray=0x7f020030;
     }
     public static final class id {
         public static final int action_achievements=0x7f0a003e;

@@ -45,7 +45,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:text="@string/undo" />
+        android:background="@drawable/undo_button"
+        android:maxHeight="36dp"
+        android:maxWidth="36dp"
+        android:minHeight="36dp"
+        android:minWidth="36dp" />
 
     <Button
         android:id="@+id/restart_button"

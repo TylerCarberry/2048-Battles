@@ -272,6 +272,8 @@ int drawable tile_blank 0x7f02002b
 int drawable tile_corner 0x7f02002c
 int drawable tile_question 0x7f02002d
 int drawable tile_x 0x7f02002e
+int drawable undo_button 0x7f02002f
+int drawable undo_button_gray 0x7f020030
 int id action_achievements 0x7f0a003e
 int id action_how_to_play 0x7f0a0040
 int id action_leaderboards 0x7f0a003f

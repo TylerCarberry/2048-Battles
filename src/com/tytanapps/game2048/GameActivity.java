@@ -52,6 +52,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -80,6 +82,7 @@ import android.view.inputmethod.InputMethodSession.EventCallback;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridLayout.Spec;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ShareActionProvider;
 import android.widget.Space;
@@ -250,9 +253,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Disable the undo button if there are no undos remaining
 		Button undoButton = ((Button) findViewById(R.id.undo_button));
 		undoButton.setEnabled(game.getUndosRemaining() != 0);
-		
+
+		if (game.getUndosRemaining() == 0)
+			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
+		else
+			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
+
 		GoogleAnalytics.getInstance(this).reportActivityStart(this);
-		
+
 		super.onStart();	
 	}
 	
@@ -427,6 +435,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		else {
 			if(rand < 0.75) {
 				game.incrementUndosRemaining();
+				Button undoButton = (Button) findViewById(R.id.undo_button);
+				undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
 				item = "Undo";
 			}
 			else {
@@ -1149,8 +1159,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	public void ice() {
 		
-		Log.d(LOG_TAG, "entering ice");
-		
 		// This attack cannot be stacked
 		if(game.getAttackDuration() <= 0)
 			game.ice();
@@ -1167,8 +1175,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * Temporarily adds an X tile to the game for a limited amount of time
 	 */
 	private void XTileAttack() {
-		
-		Log.d(LOG_TAG, "entering xtileattack");
 		
 		// This attack cannot be stacked
 		if(game.getAttackDuration() <= 0) {
@@ -1207,7 +1213,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				@Override
 				public void onAnimationStart(Animator animation) {}
 			});
-			
 			fade.start();
 		}
 	}
@@ -1249,15 +1254,44 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * would be difficult to track every tile separately
 	 */
 	public void undo() {
+		final Button undoButton = (Button) findViewById(R.id.undo_button);
 		if(game.getUndosRemaining() == 0) {
-			((Button) findViewById(R.id.undo_button)).setEnabled(false);
+			undoButton.setEnabled(false);
 		}
 		else
 		{
-			game.undo();
-			gameStats.totalMoves += 1;
-			gameStats.totalUndosUsed += 1;
-			updateGame();
+			if(game.getTurns() > 1) {
+
+				// Reset the rotation to the default orientation
+				undoButton.setRotation(0);
+
+				ObjectAnimator spinAnimation = ObjectAnimator.ofFloat(undoButton, View.ROTATION, -350);
+
+				if(game.getUndosRemaining() == 1) {
+					spinAnimation.addListener(new AnimatorListener() {
+
+						@Override
+						public void onAnimationCancel(Animator animation) {
+							undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
+						}
+						@Override
+						public void onAnimationEnd(Animator animation) {
+							undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
+						}
+						@Override
+						public void onAnimationRepeat(Animator animation) {}
+						@Override
+						public void onAnimationStart(Animator animation) {}
+					});
+				}
+
+				spinAnimation.start();
+
+				game.undo();
+				gameStats.totalMoves += 1;
+				gameStats.totalUndosUsed += 1;
+				updateGame();
+			}
 		}
 	}
 	
@@ -1282,8 +1316,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 		// Set the undo button to be enabled or disabled
 		Button undoButton = (Button) findViewById(R.id.undo_button);
-		undoButton.setEnabled(game.getUndosRemaining() != 0);
-		
+		if (game.getUndosRemaining() == 0)
+			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
+		else
+			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
+
 		gameLost = false;
 		updateGame();
 	}
