@@ -193,12 +193,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 
-		// When the powerups menu button is pressed show a dialog to choose between
-		// shuffle game and remove low tiles
-		if (id == R.id.action_powerups) {
-			showPowerupDialog();
-			return true;
-		}
 		// When the how to play menu item is pressed switch to InfoActivity
 		if (id == R.id.action_how_to_play) {
 			Intent showInfo = new Intent(this, com.tytanapps.game2048.InfoActivity.class);
@@ -253,11 +247,26 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Disable the undo button if there are no undos remaining
 		Button undoButton = ((Button) findViewById(R.id.undo_button));
 		undoButton.setEnabled(game.getUndosRemaining() != 0);
-
 		if (game.getUndosRemaining() == 0)
 			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
 		else
 			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
+
+		Button powerupButton = ((Button) findViewById(R.id.powerup_button));
+		powerupButton.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					v.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_selected));
+					showPowerupDialog();
+				}
+				else if (event.getAction() == MotionEvent.ACTION_UP) {
+					v.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
+				}
+				return true;
+			}
+		});
 
 		GoogleAnalytics.getInstance(this).reportActivityStart(this);
 
