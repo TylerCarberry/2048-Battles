@@ -232,8 +232,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Load the saved file containing the game. This also updates the screen.
 		load();
 		
-		// Causes an error
-		//getActionBar().setTitle(GameModes.getGameTitleById(game.getGameModeId())); 
+		// Show the game mode in the menu bar
+		int gameTitleId = GameModes.getGameTitleById(game.getGameModeId()); 
+		if(gameTitleId != -1)
+			getActionBar().setTitle(gameTitleId);
 		
 		// Disable the undo button if there are no undos remaining
 		Button undoButton = ((Button) findViewById(R.id.undo_button));
