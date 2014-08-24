@@ -251,8 +251,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
 		else
 			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
-
+		
 		Button powerupButton = ((Button) findViewById(R.id.powerup_button));
+		powerupButton.setEnabled(game.getPowerupsRemaining() != 0);
+		
+		if(game.getPowerupsRemaining() == 0) {
+			powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_disabled));
+		}
+		
 		powerupButton.setOnTouchListener(new OnTouchListener() {
 
 			@Override
@@ -446,10 +452,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				game.incrementUndosRemaining();
 				Button undoButton = (Button) findViewById(R.id.undo_button);
 				undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
+				undoButton.setEnabled(true);
 				item = "Undo";
 			}
 			else {
 				game.incrementPowerupsRemaining();
+				Button powerupButton = (Button) findViewById(R.id.powerup_button);
+				powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
+				powerupButton.setEnabled(true);
 				item = "Powerup";
 			}
 		
@@ -524,6 +534,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		TextView movesTextView = (TextView) findViewById(R.id.moves_textView);
 		TextView powerupsTextView = (TextView) findViewById(R.id.powerups_textview);
 		Button undoButton = (Button) findViewById(R.id.undo_button);
+		Button powerupButton = (Button) findViewById(R.id.powerup_button);
 		
 		// Update the turn number
 		turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
@@ -533,13 +544,17 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 		// Update the undos left
 		int undosLeft = game.getUndosRemaining();
-		if(undosLeft >= 0)
-			undosTextView.setText(getString(R.string.undo_remaining) + ": " + undosLeft);
-		else
+		if(undosLeft == 0) {
 			undosTextView.setVisibility(View.INVISIBLE);
-		
+			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
+		}
+		else {
+			undosTextView.setVisibility(View.VISIBLE);
+			undosTextView.setText(""+undosLeft);
+			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
+		}
 		undoButton.setEnabled(undosLeft != 0);
-		
+
 		// Update moves left
 		int movesLeft = game.getMovesRemaining();
 		if(movesLeft >= 0)
@@ -547,14 +562,20 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		else
 			movesTextView.setVisibility(View.INVISIBLE);
 
-		// Update powerups left
+		// Update the powerups left
 		int powerupsLeft = game.getPowerupsRemaining();
-		if(powerupsLeft >= 0)
-			powerupsTextView.setText(getString(R.string.powerups_remaining) + ": " + powerupsLeft);
-		else
+		if(powerupsLeft == 0) {
 			powerupsTextView.setVisibility(View.INVISIBLE);
+			powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_disabled));
+		}
+		else {
+			powerupsTextView.setVisibility(View.VISIBLE);
+			powerupsTextView.setText(""+powerupsLeft);
+			powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
+		}
+		powerupButton.setEnabled(powerupsLeft != 0);
 	}
-	
+
 	/**
 	 * Create the game board
 	 */
@@ -877,6 +898,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	private void showPowerupDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+		final Button powerupButton = (Button) findViewById(R.id.powerup_button);
+		
 		if(game.lost()) {
 			builder.setTitle("Cannot use powerup")
 			.setMessage("You cannot use powerups after you lose");
@@ -886,6 +909,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				builder.setTitle("Choose powerup")
 				.setItems(R.array.powerups, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
+						
+						Log.d(LOG_TAG, "on click");
+						
 						// The 'which' argument contains the index position
 						// of the selected item
 						switch(which) {
@@ -983,8 +1009,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	private void removeTile() {
 		animationInProgress = true;
-		//tileSelectInProgress = true;
-
+		
 		for(int row = 0; row < game.getGrid().getNumRows(); row++) {
 			for(int col = 0; col < game.getGrid().getNumCols(); col++) {
 				ImageView tile = (ImageView) findViewById(row * 100 + col);
@@ -1020,6 +1045,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			public boolean onTouch(View view, MotionEvent event) {
 					clearTileListeners();
 					game.incrementPowerupsRemaining();
+					Button powerupButton = (Button) findViewById(R.id.powerup_button);
+					powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
+					powerupButton.setEnabled(true);
 					return true;
 				}
 		});
@@ -1308,6 +1336,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * Restart the game.
 	 */
 	public void restartGame() {
+		
+		Log.d(LOG_TAG, "restart game");
 		
 		if(animationInProgress)
 			clearTileListeners();
