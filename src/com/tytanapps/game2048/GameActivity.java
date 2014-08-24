@@ -211,20 +211,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			//showQuests();
 			return true;
 		}
-		if(id == R.id.action_leaderboards){
-			
+		if(id == R.id.action_leaderboards) {
 			callback();
-			//startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 2);
-		}
-		
-		/*
-		// When the achievements pressed
-		if(id == R.id.action_quests) {
-			showQuests();
 			return true;
 		}
-		*/
-
+		
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -544,9 +535,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 		// Update the undos left
 		int undosLeft = game.getUndosRemaining();
-		if(undosLeft == 0) {
+		if(undosLeft <= 0) {
 			undosTextView.setVisibility(View.INVISIBLE);
-			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
+			if(undosLeft == 0)
+				undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
 		}
 		else {
 			undosTextView.setVisibility(View.VISIBLE);
@@ -564,9 +556,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 		// Update the powerups left
 		int powerupsLeft = game.getPowerupsRemaining();
-		if(powerupsLeft == 0) {
+		if(powerupsLeft <= 0) {
 			powerupsTextView.setVisibility(View.INVISIBLE);
-			powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_disabled));
+			if(powerupsLeft == 0)
+				powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_disabled));
 		}
 		else {
 			powerupsTextView.setVisibility(View.VISIBLE);
@@ -917,17 +910,23 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 						switch(which) {
 						case 0:
 							shuffleGame();
+							game.decrementPowerupsRemaining();
 							break;
 						case 1:
+							// The number of powerups is decremented in removeTile
+							// after a tile has been selected
 							removeTile();
 							break;
 						case 2:
 							removeLowTiles();
+							game.decrementPowerupsRemaining();
 							break;
 						case 3:
 							genie_enabled = true;
+							game.decrementPowerupsRemaining();
+							updateTextviews();
+							break;
 						}
-						game.decrementPowerupsRemaining();
 					}
 				});
 			}
@@ -1030,6 +1029,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 							(ObjectAnimator.ofFloat(view, View.ALPHA, 0)
 									.setDuration(NEW_TILE_SPEED)).start();
 							game.removeTile(new Location(view.getId() / 100, view.getId() % 100));
+							game.decrementPowerupsRemaining();
 							updateTextviews();
 							clearTileListeners();
 						}
@@ -1044,7 +1044,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			@Override
 			public boolean onTouch(View view, MotionEvent event) {
 					clearTileListeners();
-					game.incrementPowerupsRemaining();
 					Button powerupButton = (Button) findViewById(R.id.powerup_button);
 					powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
 					powerupButton.setEnabled(true);

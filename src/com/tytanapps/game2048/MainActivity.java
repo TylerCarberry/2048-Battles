@@ -72,7 +72,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	    t.send(new HitBuilders.AppViewBuilder().build());
 	}
 	
-	
 	@Override
 	protected void onStart() {
 		
