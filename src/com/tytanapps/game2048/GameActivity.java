@@ -808,16 +808,22 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		submitEvents(game);
 	}
 	
+	/**
+	 * Update the events on google play games with the game information
+	 * @param myGame The game to get the data from
+	 */
 	public void submitEvents(Game myGame)
 	{
-		String playedGameId = getString(R.string.event_played_game);
-		String totalMovesId = getString(R.string.event_total_moves);
-		String totalScoreId = getString(R.string.event_total_score);
-	    
-	    // increment the event counters
-		Games.Events.increment(this.getApiClient(), playedGameId, 1);
-		Games.Events.increment(this.getApiClient(), totalMovesId, game.getTurns());
-		Games.Events.increment(this.getApiClient(), totalScoreId, game.getScore());
+		if(getApiClient().isConnected()) {
+			String playedGameId = getString(R.string.event_played_game);
+			String totalMovesId = getString(R.string.event_total_moves);
+			String totalScoreId = getString(R.string.event_total_score);
+
+			// Increment the event counters
+			Games.Events.increment(this.getApiClient(), playedGameId, 1);
+			Games.Events.increment(this.getApiClient(), totalMovesId, game.getTurns());
+			Games.Events.increment(this.getApiClient(), totalScoreId, game.getScore());
+		}
 	}
 	
 	public void callback() {

@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    android:id="@+id/game_activity"
     android:background="@color/AntiqueWhite"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -11,77 +12,91 @@
     tools:context="com.example.app_2048.GameFragment" >
 
     <Button
-        android:id="@+id/undo_button"
+        android:id="@+id/restart_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:text="@string/undo" />
-
-    <Button
-        android:id="@+id/restart_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/undo_button"
-        android:layout_below="@+id/undo_button"
         android:text="@string/restart" />
-
-    <TextView
-        android:id="@+id/score_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/turn_textview"
-        android:layout_below="@+id/turn_textview"
-        android:text="@string/score"
-        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/moves_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/score_textview"
-        android:layout_below="@+id/score_textview"
+        android:layout_above="@+id/grid_layout"
+        android:layout_alignParentRight="true"
         android:text="@string/move_remaining"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/undos_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/moves_textView"
-        android:layout_below="@+id/moves_textView"
-        android:text="@string/undo_remaining"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/turn_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/undo_button"
-        android:layout_marginRight="91dp"
-        android:layout_toLeftOf="@+id/restart_button"
-        android:text="@string/turn"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/powerups_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/undos_textview"
-        android:text="@string/powerups_remaining"
         android:textSize="20sp" />
 
     <GridLayout
         android:id="@+id/grid_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
-        android:layout_marginBottom="0dp"
         android:animateLayoutChanges="false"
         android:background="@drawable/blank_grid"
         android:rowOrderPreserved="true"
         android:useDefaultMargins="true" >
     </GridLayout>
+
+    <TextView
+        android:id="@+id/turn_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/score_textview"
+        android:layout_alignTop="@+id/grid_layout"
+        android:text="@string/turn"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/score_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/undo_button"
+        android:layout_marginLeft="39dp"
+        android:layout_toRightOf="@+id/grid_layout"
+        android:text="@string/score"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/undos_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/undo_button"
+        android:layout_alignBottom="@+id/undo_button"
+        android:layout_alignRight="@+id/restart_button"
+        android:text="1"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/undo_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/restart_button"
+        android:layout_toLeftOf="@+id/undos_textview"
+        android:background="@drawable/undo_button"
+        android:maxHeight="36dp"
+        android:maxWidth="36dp"
+        android:minHeight="36dp"
+        android:minWidth="36dp" />
+
+    <Button
+        android:id="@+id/powerup_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/undo_button"
+        android:layout_below="@+id/undos_textview"
+        android:background="@drawable/powerup_button" />
+
+    <TextView
+        android:id="@+id/powerups_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/powerup_button"
+        android:layout_alignBottom="@+id/powerup_button"
+        android:layout_alignLeft="@+id/undos_textview"
+        android:text="2"
+        android:textSize="20sp" />
 
 </RelativeLayout>

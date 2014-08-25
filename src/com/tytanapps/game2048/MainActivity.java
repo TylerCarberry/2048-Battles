@@ -328,10 +328,21 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	}
 
 	@Override
+	/**
+	 *  Sign in has failed. Show the user the sign-in button.
+	 */
 	public void onSignInFailed() {
-	    // Sign in has failed. So show the user the sign-in button.
-	    findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-	    findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+	    
+		// The sign in button is not a normal button, so cast to a view instead
+		View signInButton = (View) findViewById(R.id.sign_in_button);
+	    
+		// If the user has switched views before the sign in failed then the buttons
+		// are null and this will cause an error
+		if(signInButton != null)
+	    	signInButton.setVisibility(View.VISIBLE);
+	    Button signOutButton = (Button) findViewById(R.id.sign_out_button);
+	    if(signOutButton != null)
+	    	signOutButton.setVisibility(View.GONE);
 	    
 	    Log.d(LOG_TAG, "login failed");
 	}
