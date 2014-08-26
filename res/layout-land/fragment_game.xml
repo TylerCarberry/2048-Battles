@@ -11,14 +11,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.app_2048.GameFragment" >
 
-    <Button
-        android:id="@+id/restart_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/restart" />
-
     <TextView
         android:id="@+id/moves_textView"
         android:layout_width="wrap_content"
@@ -65,29 +57,9 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/undo_button"
         android:layout_alignBottom="@+id/undo_button"
-        android:layout_alignRight="@+id/restart_button"
+        android:layout_alignParentRight="true"
         android:text="1"
         android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/undo_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/restart_button"
-        android:layout_toLeftOf="@+id/undos_textview"
-        android:background="@drawable/undo_button"
-        android:maxHeight="36dp"
-        android:maxWidth="36dp"
-        android:minHeight="36dp"
-        android:minWidth="36dp" />
-
-    <Button
-        android:id="@+id/powerup_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/undo_button"
-        android:layout_below="@+id/undos_textview"
-        android:background="@drawable/powerup_button" />
 
     <TextView
         android:id="@+id/powerups_textview"
@@ -98,5 +70,33 @@
         android:layout_alignLeft="@+id/undos_textview"
         android:text="2"
         android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/powerup_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/undo_button"
+        android:layout_toLeftOf="@+id/powerups_textview"
+        android:background="@drawable/powerup_button" />
+
+    <Button
+        android:id="@+id/restart_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/turn_textview"
+        android:layout_toLeftOf="@+id/undos_textview"
+        android:background="@drawable/restart_button" />
+
+    <Button
+        android:id="@+id/undo_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/restart_button"
+        android:layout_below="@+id/restart_button"
+        android:background="@drawable/undo_button"
+        android:maxHeight="36dp"
+        android:maxWidth="36dp"
+        android:minHeight="36dp"
+        android:minWidth="36dp" />
 
 </RelativeLayout>
