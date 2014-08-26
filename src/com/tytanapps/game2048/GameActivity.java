@@ -379,8 +379,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			public void onAnimationEnd(Animator animation) {
 				
 				updateGame();
-				game.newTurn();
-				addTile();
+				
 				gameStats.totalMoves += 1;
 				activeAnimations.clear();
 				animationInProgress = false;
@@ -394,16 +393,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				if(ghostAttackActive && game.getAttackDuration() == 0)
 					endGhostAttack();
 				
-				
-				
-				/*
-				if(game.getIceDuration() > 0)
-				Toast.makeText(getApplicationContext(),
-					"FROZEN!	Cannot move " +
-					Location.directionToString(game.getIceDirection()) +
-					" for " + game.getIceDuration() + " turns",
-					Toast.LENGTH_SHORT).show();
-					*/
+				game.newTurn();
+				addTile();
 			}
 			
 			@Override
@@ -434,7 +425,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		// 16% ice attack, 17% ghost attack, 17% XTile attack
 		// 25% +1 undo,	25% +1 powerup
-		if(rand < .5 && game.getAttackDuration() <= 0)
+		if(rand < .5 && game.getAttackDuration() <= 0) {
 			if(rand < .16) 
 				ice();
 			else
@@ -442,6 +433,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 					ghostAttack();
 				else
 					XTileAttack();
+			updateTextviews();
+		}
 		else {
 			if(rand < 0.75) {
 				game.incrementUndosRemaining();
@@ -526,7 +519,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		TextView turnTextView = (TextView) findViewById(R.id.turn_textview);
 		TextView scoreTextView = (TextView) findViewById(R.id.score_textview);
 		TextView undosTextView = (TextView) findViewById(R.id.undos_textview);
-		TextView movesTextView = (TextView) findViewById(R.id.moves_textView);
+		TextView activeAttacksTextView = (TextView) findViewById(R.id.active_attacks_textview);
 		TextView powerupsTextView = (TextView) findViewById(R.id.powerups_textview);
 		Button undoButton = (Button) findViewById(R.id.undo_button);
 		Button powerupButton = (Button) findViewById(R.id.powerup_button);
@@ -551,12 +544,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		}
 		undoButton.setEnabled(undosLeft != 0);
 
-		// Update moves left
-		int movesLeft = game.getMovesRemaining();
-		if(movesLeft >= 0)
-			movesTextView.setText(getString(R.string.move_remaining) + ": " + movesLeft);
-		else
-			movesTextView.setVisibility(View.INVISIBLE);
+		// Update attacks
+		activeAttacksTextView.setText(getAttackString());
 
 		// Update the powerups left
 		int powerupsLeft = game.getPowerupsRemaining();
@@ -571,6 +560,29 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
 		}
 		powerupButton.setEnabled(powerupsLeft != 0);
+	}
+	
+	private String getAttackString() {
+		int activeGameAttack = game.getActiveAttack();
+		String resultString = "";
+		
+		switch(activeGameAttack) {
+		case Game.X_ATTACK:
+			resultString += "X Attack active";
+			break;
+		case Game.GHOST_ATTACK:
+			resultString += "Ghost Attack active";
+			break;
+		case Game.ICE_ATTACK:
+			resultString += "Frozen! Cannot move " + Location.directionToString(game.getIceDirection());
+			break;
+		default:
+			return "";
+		}
+		
+		resultString += " for " + game.getAttackDuration() + " turns";
+		return resultString;
+
 	}
 
 	/**
@@ -1208,13 +1220,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// This attack cannot be stacked
 		if(game.getAttackDuration() <= 0)
 			game.ice();
-		
-		// Create a new toast to diplay the attack
-		Toast.makeText(getApplicationContext(),
-				"FROZEN!	Cannot move " +
-				Location.directionToString(game.getIceDirection()) +
-				" for " + game.getAttackDuration() + " turns",
-				Toast.LENGTH_SHORT).show();
 	}
 	
 	/**
@@ -1228,11 +1233,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			XTileAttackActive = true;
 			updateGrid();
 		}
-
-		// Create a new toast to display the attack
-		Toast.makeText(getApplicationContext(),
-				"XTile Attack for " + game.getAttackDuration() + " turns",
-						Toast.LENGTH_SHORT).show();
 	}
 	
 	private void endXAttack() {

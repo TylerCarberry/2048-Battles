@@ -11,15 +11,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.app_2048.GameFragment" >
 
-    <TextView
-        android:id="@+id/moves_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/grid_layout"
-        android:layout_alignParentRight="true"
-        android:text="@string/move_remaining"
-        android:textSize="20sp" />
-
     <GridLayout
         android:id="@+id/grid_layout"
         android:layout_width="wrap_content"
@@ -98,5 +89,17 @@
         android:maxWidth="36dp"
         android:minHeight="36dp"
         android:minWidth="36dp" />
+
+    <TextView
+        android:id="@+id/active_attacks_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/powerup_button"
+        android:layout_toRightOf="@+id/grid_layout"
+        android:gravity="center"
+        android:text="Active Attacks"
+        android:textSize="20sp" />
 
 </RelativeLayout>

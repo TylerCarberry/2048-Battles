@@ -18,6 +18,10 @@ public class Game implements java.io.Serializable
 	public static final int X_TILE_VALUE = -2;
 	public static final int CORNER_TILE_VALUE = -1;
 	
+	public static final int ICE_ATTACK = 1;
+	public static final int X_ATTACK = 2;
+	public static final int GHOST_ATTACK = 3;
+	
 	// The main board the game is played on
 	private Grid board;
 	
@@ -65,9 +69,12 @@ public class Game implements java.io.Serializable
 	private ArrayList<Location> destinationLocations = new ArrayList<Location>();
 	
 	private int iceDirection = -1;
+	
 	private int attackDuration = -1;
 	
 	private int gameModeId;
+	
+	private int activeAttack = 0;
 	
 	/**
 	 * Creates a default game with the size 4x4
@@ -234,6 +241,11 @@ public class Game implements java.io.Serializable
 		
 		if(attackDuration > 0)
 			attackDuration--;
+		
+		if(attackDuration == 0) {
+			activeAttack = 0;
+			iceDirection = -1;
+		}
 	}
 	
 	/** 
@@ -623,6 +635,9 @@ public class Game implements java.io.Serializable
 	 * amount of time (currently between 3 and 10)
 	 */
 	public void ice() {
+		
+		activeAttack = ICE_ATTACK;
+		
 		double randomDirection = Math.random();
 		if(randomDirection < .5)
 			if(randomDirection < .25)
@@ -649,6 +664,8 @@ public class Game implements java.io.Serializable
 	 */
 	public Location XTileAttack() {
 		
+		activeAttack = X_ATTACK;
+		
 		// Between 5 and 10 moves
 		attackDuration = (int) (Math.random() * 6 + 5);
 		
@@ -670,6 +687,8 @@ public class Game implements java.io.Serializable
 	 * @return The location where it was added
 	 */
 	public void ghostAttack() {
+		
+		activeAttack = GHOST_ATTACK;
 		
 		// Between 5 and 10 moves
 		attackDuration = (int) (Math.random() * 6 + 5);
@@ -1027,6 +1046,10 @@ public class Game implements java.io.Serializable
 	
 	public int getGameModeId() {
 		return gameModeId;
+	}
+	
+	public int getActiveAttack() {
+		return activeAttack;
 	}
 	
 	/**

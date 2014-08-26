@@ -605,6 +605,7 @@ containing a value of this type.
         public static final int action_quests=0x7f0a0043;
         public static final int action_settings=0x7f0a0041;
         public static final int action_stats=0x7f0a0042;
+        public static final int active_attacks_textview=0x7f0a001b;
         public static final int arcade_button=0x7f0a0029;
         public static final int book_now=0x7f0a0010;
         public static final int buyButton=0x7f0a000a;
@@ -632,7 +633,6 @@ containing a value of this type.
         public static final int match_parent=0x7f0a000c;
         public static final int menu_item_share=0x7f0a003d;
         public static final int monochrome=0x7f0a0013;
-        public static final int moves_textView=0x7f0a001b;
         public static final int name_textview=0x7f0a0023;
         public static final int none=0x7f0a0000;
         public static final int normal=0x7f0a0001;

@@ -284,6 +284,7 @@ int id action_leaderboards 0x7f0a003f
 int id action_quests 0x7f0a0043
 int id action_settings 0x7f0a0041
 int id action_stats 0x7f0a0042
+int id active_attacks_textview 0x7f0a001b
 int id arcade_button 0x7f0a0029
 int id book_now 0x7f0a0010
 int id buyButton 0x7f0a000a
@@ -311,7 +312,6 @@ int id lowest_score 0x7f0a003c
 int id match_parent 0x7f0a000c
 int id menu_item_share 0x7f0a003d
 int id monochrome 0x7f0a0013
-int id moves_textView 0x7f0a001b
 int id name_textview 0x7f0a0023
 int id none 0x7f0a0000
 int id normal 0x7f0a0001
