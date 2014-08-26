@@ -15,14 +15,14 @@ public class TheBackupAgent extends BackupAgentHelper {
 	
 	final static String LOG_TAG = TheBackupAgent.class.getSimpleName();
 	
-	// The name of the SharedPreferences file
+	// The name of the file
 	public final String CURRENT_GAME_FILENAME = "CURRENT_GAME";
 
-	// The name of the SharedPreferences file
+	// The name of the file
 	public final String GAME_STATS_FILENAME = "GAME_STATS";
 
 	// The name of the SharedPreferences file
-	public final String GAME_PREFS_FILENAME = "prefs";
+	//public final String GAME_PREFS_FILENAME = "prefs";
 
 	// A key to uniquely identify the set of backup data
 	static final String FILES_BACKUP_KEY = "myfiles";
@@ -35,11 +35,15 @@ public class TheBackupAgent extends BackupAgentHelper {
 		Log.d(LOG_TAG, CURRENT_GAME_FILENAME);
 		Log.d(LOG_TAG, GAME_STATS_FILENAME);
 		
-		//FileBackupHelper helper = new FileBackupHelper(this, CURRENT_GAME_FILENAME, GAME_STATS_FILENAME);
+		FileBackupHelper helper = new FileBackupHelper(this, CURRENT_GAME_FILENAME, GAME_STATS_FILENAME);
         
+		/*
 		SharedPreferencesBackupHelper helper =
                 new SharedPreferencesBackupHelper(this, GAME_PREFS_FILENAME);
+		*/
+		
 		addHelper(FILES_BACKUP_KEY, helper);
+		
 	}
 
 	@Override

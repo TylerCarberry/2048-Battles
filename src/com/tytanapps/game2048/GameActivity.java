@@ -212,7 +212,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			return true;
 		}
 		if(id == R.id.action_leaderboards) {
-			callback();
+			requestRestore();
+			//callback();
 			return true;
 		}
 		
@@ -285,8 +286,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		animationInProgress = false;
 		
 		GoogleAnalytics.getInstance(this).reportActivityStop(this);
-
+		
 		super.onStop();
+		
 	}
 	
 	/**
@@ -1393,13 +1395,13 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			Toast.makeText(getApplicationContext(), "Error: Save file not found", Toast.LENGTH_SHORT).show();
 		}
 		
-		//requestBackup();
+		requestBackup();
 	}
 	
-	/*
+	
 	public void requestBackup() {
 
-		SharedPreferences settings = getSharedPreferences("hi", 0);
+		Log.d(LOG_TAG, "requesting backup");
 		
 		BackupManager bm = new BackupManager(this);
 		bm.dataChanged();
@@ -1407,6 +1409,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	
 	public void requestRestore()
 	{
+		Log.d(LOG_TAG, "request restore");
+		
 		BackupManager bm = new BackupManager(this);
 		bm.requestRestore(
 				new RestoreObserver() {
@@ -1430,6 +1434,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 						
 						super.restoreFinished(error);
 						Log.d(LOG_TAG, ""+gameStats.totalMoves);
+						
+						Log.d(LOG_TAG, "calling load");
+						load();
 						
 					}
 				});
@@ -1457,6 +1464,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			gameStats = new Statistics();
 		}
 		
+		Log.d(LOG_TAG, "total moves " + gameStats.totalMoves);
 		updateGame();
 	}
 	
