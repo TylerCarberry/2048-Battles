@@ -258,10 +258,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					v.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_selected));
-					showPowerupDialog();
 				}
 				else if (event.getAction() == MotionEvent.ACTION_UP) {
 					v.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
+					showPowerupDialog();
 				}
 				return true;
 			}
@@ -1309,7 +1309,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				// Reset the rotation to the default orientation
 				undoButton.setRotation(0);
 
-				ObjectAnimator spinAnimation = ObjectAnimator.ofFloat(undoButton, View.ROTATION, -350);
+				ObjectAnimator spinAnimation = ObjectAnimator.ofFloat(undoButton, View.ROTATION, -360);
 
 				if(game.getUndosRemaining() == 1) {
 					spinAnimation.addListener(new AnimatorListener() {
@@ -1345,6 +1345,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	public void restartGame() {
 		
 		Log.d(LOG_TAG, "restart game");
+		
+		Button restartButton = (Button) findViewById(R.id.restart_button);
+		restartButton.setRotation(0);
+		ObjectAnimator spinAnimation = ObjectAnimator.ofFloat(restartButton, View.ROTATION, -360);
+		spinAnimation.start();
 		
 		if(animationInProgress)
 			clearTileListeners();
