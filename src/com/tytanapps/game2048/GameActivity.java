@@ -116,6 +116,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	
 	String appUrl = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
 	
+	// Becomes false when the game is moved and becomes true in onDown
+	boolean listenForSwipe = true;
+	
 	boolean animationInProgress = false;
 	boolean gameLost = false;
 	
@@ -1620,43 +1623,49 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         this.mDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
-	
+    
+    @Override
+    public boolean onDown(MotionEvent event) {
+    	listenForSwipe = true;
+    	return true;
+    }
+    
     /**
      * When the screen is swiped, move the board
      */
     @Override
-    public boolean onFling(MotionEvent event1, MotionEvent event2, 
-            float velocityX, float velocityY) {
-        
-    	// If there is currently an animation in progress ignore the swipe
-    	if(!animationInProgress) {
-    		// Horizontal swipe
-    		if(Math.abs(velocityX) > Math.abs(velocityY))
-    			if(velocityX > 0)
-    				act(Location.RIGHT);
-    			else
+    public boolean onScroll(MotionEvent initialEvent, MotionEvent currentEvent,
+    		float distanceX, float distanceY) { 
+
+    	if(listenForSwipe && !animationInProgress) {
+    		if(Math.abs(initialEvent.getX() - currentEvent.getX()) > 100) {
+    			if(initialEvent.getX() > currentEvent.getX())
     				act(Location.LEFT);
-    		// Vertical
-    		else
-    			if(velocityY > 0)
-    				act(Location.DOWN);
     			else
+    				act(Location.RIGHT);
+
+    			listenForSwipe = false;
+    		}
+    		else if(Math.abs(initialEvent.getY() - currentEvent.getY()) > 100) {
+    			if(initialEvent.getY() > currentEvent.getY())
     				act(Location.UP);
+    			else
+    				act(Location.DOWN);
+    			listenForSwipe = false;
+    		}
     	}
     	return true;
     }
     
     @Override
-    public boolean onDown(MotionEvent event) {
+    public boolean onFling(MotionEvent event1, MotionEvent event2,
+    		float velocityX, float velocityY) {
     	return true;
     }
     @Override
-    public void onLongPress(MotionEvent event) {}
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-            float distanceY) { return true; }
-    @Override
     public void onShowPress(MotionEvent event) {}
+    @Override
+    public void onLongPress(MotionEvent event) {}
     @Override
     public boolean onSingleTapUp(MotionEvent event) { return true; }
 
