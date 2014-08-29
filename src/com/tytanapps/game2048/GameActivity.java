@@ -208,17 +208,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			startActivity(showSettings);
 			return true;
 		}
-		// When the achievements pressed
-		if(id == R.id.action_achievements) {
-			startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 1);
-			//showQuests();
-			return true;
-		}
-		if(id == R.id.action_leaderboards) {
-			requestRestore();
-			//callback();
-			return true;
-		}
 		
 		return super.onOptionsItemSelected(item);
 	}

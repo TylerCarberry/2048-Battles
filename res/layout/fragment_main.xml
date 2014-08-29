@@ -18,23 +18,8 @@
         android:textSize="35sp" />
 
     <!-- sign-in button -->
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/intro_textview" />
 
     <!-- sign-out button -->
-    <Button
-        android:id="@+id/sign_out_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/intro_textview"
-        android:onClick="onClick"
-        android:text="Sign Out"
-        android:visibility="gone" />
 
     <Space
         android:layout_width="wrap_content"
@@ -43,19 +28,12 @@
         android:layout_below="@+id/name_textview"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="25dp" />
-    
-    <Button
-        android:id="@+id/continue_game_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/intro_textview"
-        android:layout_alignLeft="@+id/intro_textview"
-        android:text="Continue Saved Game" />
 
     <RelativeLayout
         android:id="@+id/relativeLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/play_games_layout"
         android:layout_below="@+id/prompt_select_game" >
 
         <ScrollView
@@ -125,20 +103,20 @@
                     android:onClick="createGame"
                     android:text="@string/mode_zen" />
 
-                 <Button
+                <Button
                     android:id="@+id/ghost_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="createGame"
                     android:text="@string/mode_ghost" />
-                
+
                 <Button
                     android:id="@+id/crazy_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="createGame"
                     android:text="@string/mode_crazy" />
-                
+
                 <Button
                     android:id="@+id/custom_button"
                     android:layout_width="wrap_content"
@@ -152,6 +130,7 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_above="@+id/play_games_layout"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/prompt_select_game"
         android:layout_toRightOf="@+id/relativeLayout1" >
@@ -181,7 +160,6 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:text="Start Game" />
-        
     </RelativeLayout>
 
     <TextView
@@ -194,5 +172,76 @@
         android:gravity="center"
         android:text="Start A New Game"
         android:textSize="20sp" />
+
+    <LinearLayout
+        android:id="@id/play_games_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@color/White"
+        android:padding="0dp"
+        android:layout_margin="0dp" >
+
+        <Button
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="Sign In" />
+        
+        <Button
+            android:id="@+id/sign_out_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="Sign Out"
+            android:visibility="gone" />
+        
+        <ImageButton
+            android:id="@+id/achievements_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/White"
+            android:maxHeight="50dp"
+            android:maxWidth="50dp"
+            android:onClick="playGames"
+            android:scaleType="fitCenter"
+            android:src="@drawable/games_achievements_green" />
+        
+        <ImageButton
+            android:id="@+id/leaderboards_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/White"
+            android:maxHeight="50dp"
+            android:maxWidth="50dp"
+            android:onClick="playGames"
+            android:scaleType="fitCenter"
+            android:src="@drawable/games_leaderboards_green" />
+        
+        <ImageButton
+            android:id="@+id/quests_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/White"
+            android:maxHeight="50dp"
+            android:maxWidth="50dp"
+            android:onClick="playGames"
+            android:scaleType="fitCenter"
+            android:src="@drawable/games_quests_green" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/continue_game_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/intro_textview"
+        android:layout_centerHorizontal="true"
+        android:text="Continue Saved Game" />
 
 </RelativeLayout>

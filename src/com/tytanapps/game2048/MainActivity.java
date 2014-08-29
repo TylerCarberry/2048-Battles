@@ -193,10 +193,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 			return true;
 		}
 		
-		if (id == R.id.action_quests) {
-			showQuests();
-			return true;
-		}
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -223,6 +219,28 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	    // 0 is an arbitrary integer
 	    startActivityForResult(questsIntent, 0);
 	    
+	}
+	
+	public void playGames(View view) {
+		if(getApiClient().isConnected()) {
+			switch (view.getId()) {
+			case R.id.achievements_button:
+				Log.d(LOG_TAG, "ach");
+				startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 1);
+				break;
+			case R.id.quests_button:
+				Log.d(LOG_TAG, "quests");
+				showQuests();
+				break;
+			case R.id.leaderboards_button:
+				Log.d(LOG_TAG, "lead");
+				startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 0);
+				break;
+			}
+		}
+		else {
+			Toast.makeText(this, "You must be signed in to access Play Games", Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	/*
