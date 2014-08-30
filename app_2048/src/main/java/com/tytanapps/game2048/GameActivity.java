@@ -323,10 +323,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		if(translateAnimations.isEmpty()) {
 			animationInProgress = false;
-			
+
 			if(game.lost())
 				lost();
-				
+
 			return;
 		}
 		
@@ -353,13 +353,15 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				
 				game.newTurn();
 				addTile();
+
+                if(game.lost())
+                    lost();
 			}
 			
 			@Override
 			public void onAnimationStart(Animator animation) { }
 			@Override
 			public void onAnimationCancel(Animator animation) {
-				Log.d(LOG_TAG, "Animation cancelled");
 				animationInProgress = false;
 			}
 			@Override
@@ -753,12 +755,18 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
                     game.getScore());
         }
         */
-		
-		// You cannot undo a game once you lose
-		Button undoButton = (Button) findViewById(R.id.undo_button);
-		undoButton.setEnabled(false);
-		
-		// Create the message to show the player
+
+        // You cannot undo a game once you lose
+        Button undoButton = (Button) findViewById(R.id.undo_button);
+        undoButton.setEnabled(false);
+        undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
+
+        // You cannot undo a game once you lose
+        Button powerupButton = (Button) findViewById(R.id.powerup_button);
+        powerupButton.setEnabled(false);
+        powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_disabled));
+
+        // Create the message to show the player
 		String message = "";
 		message = createLoseMessage(game, gameStats);
 		builder.setMessage(message);
@@ -878,11 +886,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		}
 		else
 			if(game.getPowerupsRemaining() != 0) {
-				builder.setTitle("Choose powerup")
+				builder.setTitle(getString(R.string.prompt_choose_powerup))
 				.setItems(R.array.powerups, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						
-						Log.d(LOG_TAG, "on click");
 						
 						// The 'which' argument contains the index position
 						// of the selected item

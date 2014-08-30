@@ -504,6 +504,7 @@
     <string name="mode_zen">Zen</string>
     <string name="move_remaining">Moves Left</string>
     <string name="no_animation">No Animation</string>
+    <string name="not_signed_in_error">You must be signed in to access Play Games</string>
     <string name="pause">Pause</string>
     <string name="powerups_remaining">Powerups Left</string>
     <!-- From: file:/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/values/strings_activity_settings.xml -->
@@ -526,6 +527,7 @@
     <!-- From: file:/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/values/strings.xml -->
     <eat-comment />
 
+    <string name="prompt_choose_powerup">Choose Powerup</string>
     <string name="prompt_start_game">Start A New Game</string>
     <string name="remove_low">Remove Low Tiles</string>
     <string name="remove_tile">Remove A Tile</string>

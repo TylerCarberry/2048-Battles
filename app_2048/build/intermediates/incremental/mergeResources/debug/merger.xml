@@ -7608,13 +7608,13 @@ No Animation
                 </color>
                 <color name="Violet" >#EE82EE
                 </color>
-                <color name="red" >#FF0000
-                </color>
-                <color name="Azure" >#F0FFFF
-                </color>
                 <color name="MistyRose" >#FFE4E1
                 </color>
                 <color name="aqua" >#00FFFF
+                </color>
+                <color name="red" >#FF0000
+                </color>
+                <color name="Azure" >#F0FFFF
                 </color>
                 <color name="Crimson" >#DC143C
                 </color>
@@ -7928,6 +7928,8 @@ No Animation
                 </string>
                 <string name="mode_desc_zen" >All tiles combine. Impossible to lose. **Coming Soon**
                 </string>
+                <string name="prompt_choose_powerup" >Choose Powerup
+                </string>
                 <string name="shuffle" >Shuffle
                 </string>
                 <string name="mode_desc_corner" >Immovable tiles in the corner
@@ -7964,9 +7966,11 @@ No Animation
                 </string>
                 <string name="mode_desc_ghost" >All tiles appear as ?
                 </string>
-                <string name="mode_arcade" >Arcade
-                </string>
                 <string name="mode_desc_arcade" >Every move has a chance of granting a bonus but can also cause an attack
+                </string>
+                <string name="not_signed_in_error" >You must be signed in to access Play Games
+                </string>
+                <string name="mode_arcade" >Arcade
                 </string>
                 <string name="mode_custom" >Custom
                 </string>

@@ -157,7 +157,7 @@ public final class R {
 		public static final int gamehelper_license_failed = 0x7f0c0030;
 		public static final int gamehelper_sign_in_failed = 0x7f0c0031;
 		public static final int gamehelper_unknown_error = 0x7f0c0032;
-		public static final int wallet_buy_button_place_holder = 0x7f0c0083;
+		public static final int wallet_buy_button_place_holder = 0x7f0c0085;
 	}
 	public static final class style {
 		public static final int Theme_IAPTheme = 0x7f0d0002;

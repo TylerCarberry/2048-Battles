@@ -221,7 +221,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 			}
 		}
 		else {
-			Toast.makeText(this, "You must be signed in to access Play Games", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.not_signed_in_error), Toast.LENGTH_SHORT).show();
 		}
 	}
 	
@@ -268,8 +268,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	 * @param view The button that was pressed
 	 */
 	public void createGame(View view) {
-		
-		Log.d(LOG_TAG, "create game");
 		
 		TextView gameTitle = (TextView) findViewById(R.id.game_mode_textview);
 		TextView gameDesc = (TextView) findViewById(R.id.game_desc_textview);

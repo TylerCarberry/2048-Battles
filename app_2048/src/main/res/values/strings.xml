@@ -81,5 +81,8 @@
     <string name="high_score">High Score</string>
     <string name="lowest_score">Lowest Score</string>
     <string name="highest_tile">Highest Tile</string>
+
+    <string name="prompt_choose_powerup">Choose Powerup</string>
+    <string name="not_signed_in_error">You must be signed in to access Play Games</string>
     
 </resources>
