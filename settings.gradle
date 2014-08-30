@@ -1,0 +1,2 @@
+include ':baseGameUtils'
+include ':app_2048'

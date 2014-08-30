@@ -1,0 +1,36 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        config {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file('/Users/Tyler/Documents/keystore_2048_debug')
+            storePassword 'android'
+        }
+    }
+    compileSdkVersion 20
+    buildToolsVersion '20.0.0'
+    defaultConfig {
+        applicationId 'com.tytanapps.game2048'
+        minSdkVersion 14
+        targetSdkVersion 20
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+        debug {
+            signingConfig signingConfigs.config
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    compile project(':baseGameUtils')
+    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.google.android.gms:play-services:5.0.89'
+}
