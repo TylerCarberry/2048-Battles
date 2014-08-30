@@ -1,71 +1,22 @@
 package com.tytanapps.game2048;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.StreamCorruptedException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.games.Games;
-import com.google.android.gms.games.Player;
-import com.google.android.gms.games.event.Event;
-import com.google.android.gms.games.event.Events;
-import com.google.android.gms.games.quest.Quests;
-import com.google.example.games.basegameutils.BaseGameActivity;
-import com.google.example.games.basegameutils.GameHelper;
-import com.tytanapps.game2048.R;
-import com.tytanapps.game2048.MainApplication.TrackerName;
-import com.tytanapps.game2048.R.array;
-import com.tytanapps.game2048.R.drawable;
-import com.tytanapps.game2048.R.id;
-import com.tytanapps.game2048.R.layout;
-import com.tytanapps.game2048.R.menu;
-import com.tytanapps.game2048.R.string;
-
-import junit.framework.Assert;
-import android.R.color;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.backup.BackupManager;
 import android.app.backup.RestoreObserver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
-import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
-import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
-import android.view.Display;
-import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -78,18 +29,28 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodSession.EventCallback;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridLayout.Spec;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ShareActionProvider;
-import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Build;
-import android.preference.PreferenceManager;
+
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.event.Event;
+import com.google.android.gms.games.event.Events;
+import com.google.example.games.basegameutils.BaseGameActivity;
+import com.tytanapps.game2048.MainApplication.TrackerName;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameActivity extends BaseGameActivity implements OnGestureListener {
 	
@@ -98,9 +59,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	// The time in milliseconds for the animation
 	public static final long SHUFFLE_SPEED = 300;
 	public static final long NEW_TILE_SPEED = 300;
-	public static final long TILE_SLIDE_SPEED = 300;
-	
-	private static boolean boardCreated = false;
+    public static final long TILE_SLIDE_SPEED = 300;
+    public static long swipeSensitivity = 100;
+
+    private static boolean boardCreated = false;
 	private static Game game;
 	
 	GridLayout gridLayout;
@@ -259,6 +221,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				return true;
 			}
 		});
+
+        // Load the speed to move the tiles from the settings
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        swipeSensitivity = Integer.valueOf(prefs.getString("swipeSensitivity", "100"));
 
 		GoogleAnalytics.getInstance(this).reportActivityStart(this);
 
@@ -705,7 +671,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 	/**
 	 * Update the tile's icon to match its value
-	 * @param tile The ImageView to change
 	 * @param tileValue The numerical value of the tile
 	 */
 	private int getIcon(int tileValue) {
@@ -1153,7 +1118,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	
 	/**
 	 * Shuffles the game board and animates the grid
-	 * The grid layout spins 360¡, the tiles are shuffled, then it spins
+	 * The grid layout spins 360ï¿½, the tiles are shuffled, then it spins
 	 * back in the opposite direction
 	 */
 	private void shuffleGame() {
@@ -1627,7 +1592,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
     		float distanceX, float distanceY) { 
 
     	if(listenForSwipe && !animationInProgress) {
-    		if(Math.abs(initialEvent.getX() - currentEvent.getX()) > 100) {
+    		if(Math.abs(initialEvent.getX() - currentEvent.getX()) > swipeSensitivity) {
     			if(initialEvent.getX() > currentEvent.getX())
     				act(Location.LEFT);
     			else
@@ -1635,7 +1600,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
     			listenForSwipe = false;
     		}
-    		else if(Math.abs(initialEvent.getY() - currentEvent.getY()) > 100) {
+    		else if(Math.abs(initialEvent.getY() - currentEvent.getY()) > swipeSensitivity) {
     			if(initialEvent.getY() > currentEvent.getY())
     				act(Location.UP);
     			else

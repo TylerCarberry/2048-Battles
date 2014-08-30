@@ -11,17 +11,12 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
 
 import java.util.List;
-
-import com.tytanapps.game2048.R;
-import com.tytanapps.game2048.R.string;
-import com.tytanapps.game2048.R.xml;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -69,14 +64,9 @@ public class SettingsActivity extends PreferenceActivity {
 		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
 		// their values. When their values change, their summaries are updated
 		// to reflect the new value, per the Android Design guidelines.
-		
-		
-		bindPreferenceSummaryToValue(findPreference("name"));
-		//bindPreferenceSummaryToValue(findPreference("checkbox"));
 		bindPreferenceSummaryToValue(findPreference("speed"));
-		
-		
-	}
+        bindPreferenceSummaryToValue(findPreference("swipeSensitivity"));
+    }
 
 	/** {@inheritDoc} */
 	@Override

@@ -12,13 +12,15 @@ public final class R {
         public static final int shake=0x7f040000;
     }
     public static final class array {
-        public static final int lValues=0x7f070000;
-        public static final int list=0x7f070001;
-        public static final int powerups=0x7f070002;
-        public static final int pref_example_list_titles=0x7f070003;
-        public static final int pref_example_list_values=0x7f070004;
-        public static final int pref_sync_frequency_titles=0x7f070005;
-        public static final int pref_sync_frequency_values=0x7f070006;
+        public static final int powerups=0x7f070000;
+        public static final int pref_example_list_titles=0x7f070001;
+        public static final int pref_example_list_values=0x7f070002;
+        public static final int pref_sync_frequency_titles=0x7f070003;
+        public static final int pref_sync_frequency_values=0x7f070004;
+        public static final int swipeSensitivity=0x7f070005;
+        public static final int swipeSensitivityValues=0x7f070006;
+        public static final int tileSpeeds=0x7f070007;
+        public static final int tileSpeedsValues=0x7f070008;
     }
     public static final class attr {
         /** 

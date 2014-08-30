@@ -210,15 +210,12 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		if(getApiClient().isConnected()) {
 			switch (view.getId()) {
 			case R.id.achievements_button:
-				Log.d(LOG_TAG, "ach");
 				startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 1);
 				break;
 			case R.id.quests_button:
-				Log.d(LOG_TAG, "quests");
 				showQuests();
 				break;
 			case R.id.leaderboards_button:
-				Log.d(LOG_TAG, "lead");
 				startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 0);
 				break;
 			}

@@ -1,21 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string-array name="list">
+    <string-array name="tileSpeeds">
         <item>Slow</item>
         <item>Medium</item>
         <item>Fast</item>
         <item>No Animation</item>
     </string-array>
    
-    <string-array name="lValues">
+    <string-array name="tileSpeedsValues">
         <item>300</item>
         <item>200</item>
         <item>150</item>
         <item>0</item>
     </string-array>
-    
-    
+
+
+    <string-array name="swipeSensitivity">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+
+    <string-array name="swipeSensitivityValues">
+        <item>150</item>
+        <item>75</item>
+        <item>50</item>
+    </string-array>
+
+
     <string-array name="powerups">
         <item>Shuffle</item>
         <item>Remove A Tile</item>

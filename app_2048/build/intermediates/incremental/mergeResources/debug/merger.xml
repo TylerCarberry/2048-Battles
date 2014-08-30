@@ -7496,18 +7496,15 @@ normal
             <file
                 path="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/values/array.xml"
                 qualifiers="" >
-                <string-array name="list" >
+                <string-array name="swipeSensitivity" >
                     <item>
-Slow
+Low
                     </item>
                     <item>
 Medium
                     </item>
                     <item>
-Fast
-                    </item>
-                    <item>
-No Animation
+High
                     </item>
                 </string-array>
                 <string-array name="powerups" >
@@ -7524,7 +7521,18 @@ Remove All Low Tiles
 Genie
                     </item>
                 </string-array>
-                <string-array name="lValues" >
+                <string-array name="swipeSensitivityValues" >
+                    <item>
+150
+                    </item>
+                    <item>
+75
+                    </item>
+                    <item>
+50
+                    </item>
+                </string-array>
+                <string-array name="tileSpeedsValues" >
                     <item>
 300
                     </item>
@@ -7536,6 +7544,20 @@ Genie
                     </item>
                     <item>
 0
+                    </item>
+                </string-array>
+                <string-array name="tileSpeeds" >
+                    <item>
+Slow
+                    </item>
+                    <item>
+Medium
+                    </item>
+                    <item>
+Fast
+                    </item>
+                    <item>
+No Animation
                     </item>
                 </string-array>
             </file>
@@ -7586,13 +7608,13 @@ Genie
                 </color>
                 <color name="Violet" >#EE82EE
                 </color>
-                <color name="MistyRose" >#FFE4E1
-                </color>
-                <color name="aqua" >#00FFFF
-                </color>
                 <color name="red" >#FF0000
                 </color>
                 <color name="Azure" >#F0FFFF
+                </color>
+                <color name="MistyRose" >#FFE4E1
+                </color>
+                <color name="aqua" >#00FFFF
                 </color>
                 <color name="Crimson" >#DC143C
                 </color>
