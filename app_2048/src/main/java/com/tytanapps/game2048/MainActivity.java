@@ -1,33 +1,5 @@
 package com.tytanapps.game2048;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.StreamCorruptedException;
-
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.games.Games;
-import com.google.android.gms.games.quest.Quest;
-import com.google.android.gms.games.quest.QuestUpdateListener;
-import com.google.example.games.basegameutils.BaseGameActivity;
-import com.google.example.games.basegameutils.GameHelper;
-import com.tytanapps.game2048.MainApplication.TrackerName;
-import com.tytanapps.game2048.R;
-import com.tytanapps.game2048.R.id;
-import com.tytanapps.game2048.R.layout;
-import com.tytanapps.game2048.R.menu;
-import com.tytanapps.game2048.R.string;
-
-import android.app.Activity;
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
@@ -37,12 +9,26 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Build;
+
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.quest.Quest;
+import com.google.android.gms.games.quest.QuestUpdateListener;
+import com.google.example.games.basegameutils.BaseGameActivity;
+import com.tytanapps.game2048.MainApplication.TrackerName;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.StreamCorruptedException;
 
 public class MainActivity extends BaseGameActivity implements View.OnClickListener, QuestUpdateListener
 {
@@ -218,7 +204,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	    
 	    // 0 is an arbitrary integer
 	    startActivityForResult(questsIntent, 0);
-	    
 	}
 	
 	public void playGames(View view) {
