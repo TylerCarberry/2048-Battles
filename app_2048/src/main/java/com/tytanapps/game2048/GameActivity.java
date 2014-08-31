@@ -167,8 +167,15 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		}
 		// When the settings menu item is pressed switch to SettingsActivity
 		if(id == R.id.action_settings) {
-			Intent showSettings = new Intent(this, com.tytanapps.game2048.SettingsActivity.class);
-			startActivity(showSettings);
+			/*Intent showSettings = new Intent(this, com.tytanapps.game2048.SettingsActivity.class);
+			startActivity(showSettings);*/
+
+            List<Location> tileLocations = game.getGrid().toList();
+            for(Location tileLoc : tileLocations) {
+                // Check if that tile already exists
+                setIcon(findTileByLocation(tileLoc), 1);
+                findTileByLocation(tileLoc).setVisibility(View.VISIBLE);
+            }
 			return true;
 		}
 		
@@ -247,7 +254,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		GoogleAnalytics.getInstance(this).reportActivityStop(this);
 		
 		super.onStop();
-		
 	}
 	
 	/**
@@ -291,7 +297,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		// Loop through each tile
 		for(Location tile : tiles) {
-			int startingTileValue = game.getGrid().get(tile);
 
 			// Determine the number of spaces to move
 			int distance = game.move(tile, direction);
@@ -306,7 +311,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 				// The tag is changed to a value different than its actual value
 				// which causes it to be updated in updateGrid
-				//movedTile.setTag(-10);
+				movedTile.setTag(-10);
 				
 				// Determine the distance to move in pixels
 				ObjectAnimator animation;
@@ -548,14 +553,15 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		resultString += " for " + game.getAttackDuration() + " turns";
 		return resultString;
-
 	}
 
 	/**
 	 * Create the game board
 	 */
 	private void createGrid() {
-		
+
+        Log.d(LOG_TAG, "Create grid");
+
 		// The grid that all tiles are on
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		
@@ -641,7 +647,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				actualValue = -10;
 			}
 
-			if(expectedValue != actualValue) {
+            if(expectedValue != actualValue) {
 
                 //Log.d(LOG_TAG, tileLoc.toString());
                 //Log.d(LOG_TAG, "Expected: "+expectedValue);
@@ -671,20 +677,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
                 // Insert the new tile into the board
                 gridLayout.addView(tile, gridLayoutParam);
-
             }
         }
 
-        Log.d(LOG_TAG, "--");
-
-
-        for(Location combinedLoc : game.getDestinationLocations()) {
-
-            Log.d(LOG_TAG, "combining loc: " + combinedLoc.toString());
-
+        for(Location combinedLoc : game.getDestinationLocations())
             animateTileCombine(findTileByLocation(combinedLoc));
-        }
-
 
         if(game.lost())
 			lost();
@@ -704,7 +701,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         tile.setTag(tileValue);
 
         Log.d(LOG_TAG, "Tile Combine Value "+(tileValue));
-
 
         Drawable[] layers = new Drawable[2];
         // The current icon
