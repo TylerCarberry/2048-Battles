@@ -5,9 +5,10 @@ package com.tytanapps.game2048;
  * The main code of the game 2048
  */
 
-import java.util.*;
-
-import android.util.Log;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Game implements java.io.Serializable
 {
@@ -62,19 +63,17 @@ public class Game implements java.io.Serializable
 	// Ex. If the highest piece is 32 then a 2,4,8, or 16 can appear
 	// All possible tiles have an equal chance of appearing
 	private boolean dynamicTileSpawning = false;
-	
-	// When two tiles combine their location is stored. New tiles will not move to
+
+    // When two tiles combine their location is stored. New tiles will not move to
 	// that location. This prevents tiles from double combining. 
 	// (When 4|4|8|0 is shifted left it will form two 8's instead of a 16)
 	private ArrayList<Location> destinationLocations = new ArrayList<Location>();
-	
+
+    private int activeAttack = 0;
 	private int iceDirection = -1;
-	
 	private int attackDuration = -1;
 	
 	private int gameModeId;
-	
-	private int activeAttack = 0;
 	
 	/**
 	 * Creates a default game with the size 4x4
@@ -1051,6 +1050,10 @@ public class Game implements java.io.Serializable
 	public int getActiveAttack() {
 		return activeAttack;
 	}
+
+    public ArrayList<Location> getDestinationLocations() {
+        return destinationLocations;
+    }
 	
 	/**
 	 * Only used in the hideTileValues and speedMode methods to print the game
@@ -1077,21 +1080,21 @@ public class Game implements java.io.Serializable
 		if(movesRemaining >= 0)
 			output += movesRemaining;
 		else
-			output += "°";
+			output += "ï¿½";
 		
 		output += " Undos Left:";
 		
 		if(undosRemaining >= 0)
 			output += undosRemaining;
 		else
-			output += "°";
+			output += "ï¿½";
 		
 		output += " Time Left:";
 		
 		if(timeLeft >= 0)
 			output += timeLeft;
 		else
-			output += "°";
+			output += "ï¿½";
 		
 		
 		output += "\n---------------------------------------------\n";

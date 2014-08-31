@@ -2,6 +2,7 @@ package com.tytanapps.game2048;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
@@ -254,7 +255,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * @param direction Should use the static variables in Location class
 	 */
 	public void act(int direction) {
-		animationInProgress = true;
+
+        //Log.d(LOG_TAG, "act");
+
+        animationInProgress = true;
 		
 		// If the ice attack is active in that direction do not move
 		if((game.getAttackDuration() > 0 && game.getIceDirection() == direction) || gameLost) {
@@ -287,20 +291,22 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		// Loop through each tile
 		for(Location tile : tiles) {
+			int startingTileValue = game.getGrid().get(tile);
+
 			// Determine the number of spaces to move
 			int distance = game.move(tile, direction);
-			
+
 			// Only animate buttons that moved
 			if(distance > 0) {
-				
+
+                ImageView movedTile = findTileByLocation(tile);
+
 				if(direction == Location.LEFT || direction == Location.UP)
 					distance *= -1;
-				
-				ImageView movedTile = findTileByLocation(tile);
-				
+
 				// The tag is changed to a value different than its actual value
 				// which causes it to be updated in updateGrid
-				movedTile.setTag(-10);
+				//movedTile.setTag(-10);
 				
 				// Determine the distance to move in pixels
 				ObjectAnimator animation;
@@ -637,35 +643,99 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 			if(expectedValue != actualValue) {
 
-				specRow = GridLayout.spec(tileLoc.getRow(), 1); 
-				specCol = GridLayout.spec(tileLoc.getCol(), 1);
-				gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
+                //Log.d(LOG_TAG, tileLoc.toString());
+                //Log.d(LOG_TAG, "Expected: "+expectedValue);
+                //Log.d(LOG_TAG, "Actual: "+ actualValue);
 
-				// Remove the tile
-				ViewGroup layout = (ViewGroup) tile.getParent();
-				if(null!=layout)
-					layout.removeView(tile);
 
-				// Create a new tile to insert back into the board
-				tile = new ImageView(this);
-				tile.setId(getTileIdByLocation(tileLoc));
+                specRow = GridLayout.spec(tileLoc.getRow(), 1);
+                specCol = GridLayout.spec(tileLoc.getCol(), 1);
+                gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
 
-				tile.setTag(expectedValue);
-				setIcon(tile, expectedValue);
+                // Remove the tile
+                ViewGroup layout = (ViewGroup) tile.getParent();
+                if (null != layout)
+                    layout.removeView(tile);
 
-				if(expectedValue == 0) 
-					tile.setVisibility(View.INVISIBLE);
-				else
-					tile.setVisibility(View.VISIBLE);
+                // Create a new tile to insert back into the board
+                tile = new ImageView(this);
+                tile.setId(getTileIdByLocation(tileLoc));
 
-				// Insert the new tile into the board
-				gridLayout.addView(tile,gridLayoutParam);
-			}
-		}
-		
-		if(game.lost())
+                tile.setTag(expectedValue);
+                setIcon(tile, expectedValue);
+
+                if (expectedValue == 0)
+                    tile.setVisibility(View.INVISIBLE);
+                else
+                    tile.setVisibility(View.VISIBLE);
+
+                // Insert the new tile into the board
+                gridLayout.addView(tile, gridLayoutParam);
+
+            }
+        }
+
+        Log.d(LOG_TAG, "--");
+
+
+        for(Location combinedLoc : game.getDestinationLocations()) {
+
+            Log.d(LOG_TAG, "combining loc: " + combinedLoc.toString());
+
+            animateTileCombine(findTileByLocation(combinedLoc));
+        }
+
+
+        if(game.lost())
 			lost();
 	}
+
+    private void animateTileCombine(ImageView tile) {
+
+        //Log.d(LOG_TAG, "entering animate tile combine");
+
+        Location tileLoc = getTileLocationById(tile.getId());
+
+        tile.setVisibility(View.VISIBLE);
+
+        Log.d(LOG_TAG, tileLoc.toString());
+
+        int tileValue = game.getGrid().get(tileLoc);
+        tile.setTag(tileValue);
+
+        Log.d(LOG_TAG, "Tile Combine Value "+(tileValue));
+
+
+        Drawable[] layers = new Drawable[2];
+        // The current icon
+        layers[0] = tile.getBackground();
+
+        // The new icon
+        layers[1] = getResources().getDrawable(getIcon(tileValue));
+
+        TransitionDrawable transition = new TransitionDrawable(layers);
+        tile.setImageDrawable(transition);
+        transition.startTransition((int) NEW_TILE_SPEED);
+
+        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(tile, "scaleX", 1.2f);
+        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(tile, "scaleY", 1.2f);
+
+        scaleDownX.setDuration(NEW_TILE_SPEED / 2);
+        scaleDownY.setDuration(NEW_TILE_SPEED / 2);
+
+        scaleDownX.setRepeatCount(1);
+        scaleDownX.setRepeatMode(ObjectAnimator.REVERSE);
+
+        scaleDownY.setRepeatCount(1);
+        scaleDownY.setRepeatMode(ObjectAnimator.REVERSE);
+
+        AnimatorSet scaleDown = new AnimatorSet();
+
+        scaleDown.play(scaleDownX).with(scaleDownY);
+        scaleDown.start();
+        transition.startTransition((int) NEW_TILE_SPEED);
+
+    }
 	
 	private void setIcon(ImageView tile, int tileValue) {
 		tile.setBackgroundResource(getIcon(tileValue));
@@ -1489,6 +1559,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	private int getTileIdByLocation(Location loc) {
 		return loc.getRow() * 100 + loc.getCol();
 	}
+
+    private Location getTileLocationById(int id) {
+        return new Location(id / 100 , id % 100);
+    }
 
 	/**
 	 * Shows the active quests

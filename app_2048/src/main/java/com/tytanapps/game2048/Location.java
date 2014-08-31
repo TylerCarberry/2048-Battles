@@ -104,6 +104,15 @@ public class Location implements Cloneable, java.io.Serializable
 		Location left = new Location(getRow(), getCol()-1);
 		return left;
 	}
+
+    /**
+     * @return The location to the left
+     */
+    public Location getLeft(int distance)
+    {
+        Location left = new Location(getRow(), getCol()-distance);
+        return left;
+    }
 	
 	/** 
 	 * @return The location to the right
@@ -113,6 +122,15 @@ public class Location implements Cloneable, java.io.Serializable
 		Location right = new Location(getRow(), getCol()+1);
 		return right;
 	}
+
+    /**
+     * @return The location to the right
+     */
+    public Location getRight(int distance)
+    {
+        Location right = new Location(getRow(), getCol()+distance);
+        return right;
+    }
 	
 	/** 
 	 * @return The location up
@@ -122,6 +140,15 @@ public class Location implements Cloneable, java.io.Serializable
 		Location up = new Location(getRow()-1, getCol());
 		return up;
 	}
+
+    /**
+     * @return The location up
+     */
+    public Location getUp(int distance)
+    {
+        Location up = new Location(getRow()-distance, getCol());
+        return up;
+    }
 	
 	/** 
 	 * @return The location down
@@ -131,6 +158,15 @@ public class Location implements Cloneable, java.io.Serializable
 		Location down = new Location(getRow()+1, getCol());
 		return down;
 	}
+
+    /**
+     * @return The location down
+     */
+    public Location getDown(int distance)
+    {
+        Location down = new Location(getRow()+distance, getCol());
+        return down;
+    }
 	
 	/** Return the location in the given direction
 	 * @param direction The direction of the location to return
@@ -150,6 +186,20 @@ public class Location implements Cloneable, java.io.Serializable
 		
 		}
 	}
+
+    public Location getAdjacent(int direction, int distance) {
+        switch (direction) {
+            case UP:
+                return getUp(distance);
+            case RIGHT:
+                return getRight(distance);
+            case DOWN:
+                return getDown(distance);
+            case LEFT:
+                return getLeft(distance);
+        }
+        return null;
+    }
 	
 	@Override
 	public boolean equals(Object loc) {

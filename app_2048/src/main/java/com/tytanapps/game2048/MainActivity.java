@@ -347,9 +347,17 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
 	@Override
 	public void onSignInSucceeded() {
-	    // show sign-out button, hide the sign-in button
-	    findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-	    findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
+
+        // The sign in button is not a normal button, so cast to a view instead
+        View signInButton = (View) findViewById(R.id.sign_in_button);
+
+        // If the user has switched views before the sign in failed then the buttons
+        // are null and this will cause an error
+        if(signInButton != null)
+            signInButton.setVisibility(View.GONE);
+        Button signOutButton = (Button) findViewById(R.id.sign_out_button);
+        if(signOutButton != null)
+            signOutButton.setVisibility(View.VISIBLE);
 
 	    // Start the Quest listener.
 	    Games.Quests.registerQuestUpdateListener(this.getApiClient(), this);
