@@ -1,0 +1,105 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/game_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/AliceBlue"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.app_2048.GameFragment" >
+
+    <GridLayout
+        android:id="@+id/grid_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:animateLayoutChanges="false"
+        android:background="@drawable/blank_grid"
+        android:rowOrderPreserved="true"
+        android:useDefaultMargins="true" >
+    </GridLayout>
+
+    <TextView
+        android:id="@+id/turn_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/score_textview"
+        android:layout_alignTop="@+id/grid_layout"
+        android:text="@string/turn"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/score_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/undo_button"
+        android:layout_marginLeft="39dp"
+        android:layout_toRightOf="@+id/grid_layout"
+        android:text="@string/score"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/undos_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/undo_button"
+        android:layout_alignBottom="@+id/undo_button"
+        android:layout_alignParentRight="true"
+        android:text="1"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/powerups_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/powerup_button"
+        android:layout_alignBottom="@+id/powerup_button"
+        android:layout_alignLeft="@+id/undos_textview"
+        android:text="2"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/powerup_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/undo_button"
+        android:layout_toLeftOf="@+id/powerups_textview"
+        android:background="@drawable/powerup_button" />
+
+    <Button
+        android:id="@+id/restart_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/turn_textview"
+        android:layout_toLeftOf="@+id/undos_textview"
+        android:background="@drawable/restart_button" />
+
+    <Button
+        android:id="@+id/undo_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/restart_button"
+        android:layout_below="@+id/restart_button"
+        android:background="@drawable/undo_button"
+        android:maxHeight="36dp"
+        android:maxWidth="36dp"
+        android:minHeight="36dp"
+        android:minWidth="36dp" />
+
+    <TextView
+        android:id="@+id/active_attacks_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/powerup_button"
+        android:layout_toRightOf="@+id/grid_layout"
+        android:gravity="center"
+        android:text="Active Attacks"
+        android:textSize="20sp" />
+
+</RelativeLayout><!-- From: file:/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/layout-land/fragment_game.xml -->

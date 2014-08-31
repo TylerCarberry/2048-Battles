@@ -2,18 +2,6 @@
 <pre-dex-items>
 
     <item
-        dex="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/build/intermediates/pre-dexed/debug/classes-2f666f98bc4eb99f6df2c7c8a49891b4057a3e09.jar"
-        jar="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/build/intermediates/exploded-aar/com.google.android.gms/play-services/5.0.89/classes.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="d71573c9c5ea98a8db47ad6ff993a63d492b3bfa"/>
-    <item
-        dex="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/build/intermediates/pre-dexed/debug/classes-d50690f8332635736b792197b4be002ba03e1810.jar"
-        jar="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/build/intermediates/exploded-aar/com.android.support/support-v4/20.0.0/classes.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
-    <item
         dex="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/build/intermediates/pre-dexed/debug/support-annotations-20.0.0-bca9cd8c8082330ef7549e0398af852faae531fd.jar"
         jar="/Applications/Android Studio.app/sdk/extras/android/m2repository/com/android/support/support-annotations/20.0.0/support-annotations-20.0.0.jar"
         jumboMode="false"
@@ -31,5 +19,17 @@
         jumboMode="false"
         revision="20.0.0"
         sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
+    <item
+        dex="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/build/intermediates/pre-dexed/debug/classes-2f666f98bc4eb99f6df2c7c8a49891b4057a3e09.jar"
+        jar="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/build/intermediates/exploded-aar/com.google.android.gms/play-services/5.0.89/classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="d71573c9c5ea98a8db47ad6ff993a63d492b3bfa"/>
+    <item
+        dex="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/build/intermediates/pre-dexed/debug/classes-d50690f8332635736b792197b4be002ba03e1810.jar"
+        jar="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/build/intermediates/exploded-aar/com.android.support/support-v4/20.0.0/classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
 
 </pre-dex-items>

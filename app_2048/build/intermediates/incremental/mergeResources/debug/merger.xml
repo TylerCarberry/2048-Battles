@@ -7534,13 +7534,13 @@ Genie
                 </string-array>
                 <string-array name="tileSpeedsValues" >
                     <item>
-300
+225
                     </item>
                     <item>
-200
+175
                     </item>
                     <item>
-150
+125
                     </item>
                     <item>
 0
@@ -7608,13 +7608,13 @@ No Animation
                 </color>
                 <color name="Violet" >#EE82EE
                 </color>
-                <color name="MistyRose" >#FFE4E1
-                </color>
-                <color name="aqua" >#00FFFF
-                </color>
                 <color name="red" >#FF0000
                 </color>
                 <color name="Azure" >#F0FFFF
+                </color>
+                <color name="MistyRose" >#FFE4E1
+                </color>
+                <color name="aqua" >#00FFFF
                 </color>
                 <color name="Crimson" >#DC143C
                 </color>

@@ -59,9 +59,9 @@
         <item>No Animation</item>
     </string-array>
     <string-array name="tileSpeedsValues">
-        <item>300</item>
-        <item>200</item>
-        <item>150</item>
+        <item>225</item>
+        <item>175</item>
+        <item>125</item>
         <item>0</item>
     </string-array>
     <!-- From: file:/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/values/colors.xml -->

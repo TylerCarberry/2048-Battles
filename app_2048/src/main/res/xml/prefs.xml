@@ -4,7 +4,7 @@
     <ListPreference 
         android:title="Tile Slide Speed"
         android:key="speed"
-        android:defaultValue="200"
+        android:defaultValue="175"
         android:entries="@array/tileSpeeds"
         android:entryValues="@array/tileSpeedsValues"/>
 

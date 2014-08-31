@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <ListPreference 
+        android:title="Tile Slide Speed"
+        android:key="speed"
+        android:defaultValue="200"
+        android:entries="@array/tileSpeeds"
+        android:entryValues="@array/tileSpeedsValues"/>
+
+    <ListPreference
+        android:title="Swipe Sensitivity"
+        android:key="swipeSensitivity"
+        android:defaultValue="75"
+        android:entries="@array/swipeSensitivity"
+        android:entryValues="@array/swipeSensitivityValues"/>
+
+</PreferenceScreen>
+<!-- From: file:/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/xml/prefs.xml -->

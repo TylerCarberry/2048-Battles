@@ -59,7 +59,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	
 	// The time in milliseconds for the animation
 	public static final long SHUFFLE_SPEED = 300;
-	public static final long NEW_TILE_SPEED = 300;
+	public static final long NEW_TILE_SPEED = 200;
     public static final long TILE_SLIDE_SPEED = 300;
     public static long swipeSensitivity = 100;
 
@@ -167,15 +167,17 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		}
 		// When the settings menu item is pressed switch to SettingsActivity
 		if(id == R.id.action_settings) {
-			/*Intent showSettings = new Intent(this, com.tytanapps.game2048.SettingsActivity.class);
-			startActivity(showSettings);*/
+			Intent showSettings = new Intent(this, com.tytanapps.game2048.SettingsActivity.class);
+			startActivity(showSettings);
 
+            /*
             List<Location> tileLocations = game.getGrid().toList();
             for(Location tileLoc : tileLocations) {
                 // Check if that tile already exists
                 setIcon(findTileByLocation(tileLoc), 1);
                 findTileByLocation(tileLoc).setVisibility(View.VISIBLE);
             }
+            */
 			return true;
 		}
 		
@@ -653,6 +655,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
                 //Log.d(LOG_TAG, "Expected: "+expectedValue);
                 //Log.d(LOG_TAG, "Actual: "+ actualValue);
 
+                Drawable tileBackground = tile.getBackground();
 
                 specRow = GridLayout.spec(tileLoc.getRow(), 1);
                 specCol = GridLayout.spec(tileLoc.getCol(), 1);
@@ -668,7 +671,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
                 tile.setId(getTileIdByLocation(tileLoc));
 
                 tile.setTag(expectedValue);
-                setIcon(tile, expectedValue);
+
+                if(! game.getDestinationLocations().contains(tileLoc))
+                    setIcon(tile, expectedValue);
+                else
+                    tile.setBackgroundDrawable(tileBackground);
 
                 if (expectedValue == 0)
                     tile.setVisibility(View.INVISIBLE);
@@ -688,23 +695,19 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	}
 
     private void animateTileCombine(ImageView tile) {
-
-        //Log.d(LOG_TAG, "entering animate tile combine");
-
         Location tileLoc = getTileLocationById(tile.getId());
-
         tile.setVisibility(View.VISIBLE);
-
-        Log.d(LOG_TAG, tileLoc.toString());
 
         int tileValue = game.getGrid().get(tileLoc);
         tile.setTag(tileValue);
 
-        Log.d(LOG_TAG, "Tile Combine Value "+(tileValue));
-
         Drawable[] layers = new Drawable[2];
+
         // The current icon
-        layers[0] = tile.getBackground();
+        // I used a workaround to fix a bug that was caused when both of the tiles that
+        // combine are moving. This will causes issues when I implement zen mode because this
+        // code expects two similar tiles to combine
+        layers[0] = getResources().getDrawable(getIcon(tileValue / 2));
 
         // The new icon
         layers[1] = getResources().getDrawable(getIcon(tileValue));
@@ -713,15 +716,15 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         tile.setImageDrawable(transition);
         transition.startTransition((int) NEW_TILE_SPEED);
 
-        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(tile, "scaleX", 1.2f);
-        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(tile, "scaleY", 1.2f);
+        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(tile, View.SCALE_X, 1.05f);
+        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(tile, View.SCALE_Y, 1.05f);
 
+        // The tile increases in size by a factor of 1.05 and shrinks back down. At the same time
+        // it is fading to the new value.
         scaleDownX.setDuration(NEW_TILE_SPEED / 2);
         scaleDownY.setDuration(NEW_TILE_SPEED / 2);
-
         scaleDownX.setRepeatCount(1);
         scaleDownX.setRepeatMode(ObjectAnimator.REVERSE);
-
         scaleDownY.setRepeatCount(1);
         scaleDownY.setRepeatMode(ObjectAnimator.REVERSE);
 
@@ -1019,15 +1022,19 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Find the tile to make appear
 		ImageView newTile = findTileByLocation(loc);
 		
-		// Immediately set the alpha of the tile to 0
-		ObjectAnimator.ofFloat(newTile, View.ALPHA, 0).setDuration(0).start();
-		
-		// Update the new tile's tag and icon
+		// Immediately set the alpha of the tile to 0 and shrink to half size
+        ObjectAnimator.ofFloat(newTile, View.ALPHA, 0).setDuration(0).start();
+
+        // Update the new tile's tag and icon
 		int tileValue = game.getGrid().get(loc);
 		newTile.setTag(tileValue);
 		setIcon(newTile, tileValue);
-		
-		// Make the tile visible. It still cannot be seen because the alpha is 0
+
+        ObjectAnimator.ofFloat(newTile, View.SCALE_X, .50f).setDuration(0).start();
+        ObjectAnimator.ofFloat(newTile, View.SCALE_Y, .50f).setDuration(0).start();
+
+
+        // Make the tile visible. It still cannot be seen because the alpha is 0
 		newTile.setVisibility(View.VISIBLE);
 		
 		// Fade the tile in
@@ -1049,9 +1056,19 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			@Override
 			public void onAnimationRepeat(Animator animation) { }
 		});
-		
-		activeAnimations.add(alphaAnimation);
-		alphaAnimation.start();
+
+        ObjectAnimator scaleUpX = ObjectAnimator.ofFloat(newTile, View.SCALE_X, 1.00f).setDuration(NEW_TILE_SPEED);
+        ObjectAnimator scaleUpY = ObjectAnimator.ofFloat(newTile, View.SCALE_Y, 1.00f).setDuration(NEW_TILE_SPEED);
+
+        activeAnimations.add(alphaAnimation);
+        activeAnimations.add(scaleUpX);
+        activeAnimations.add(scaleUpY);
+
+        AnimatorSet addTile = new AnimatorSet();
+        addTile.play(alphaAnimation).with(scaleUpX).with(scaleUpY);
+
+        addTile.start();
+        alphaAnimation.start();
 	}
 	
 	/**
