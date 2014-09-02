@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class MainApplication extends Application{
 
-	private static final String PROPERTY_ID = "CENSORED";
+	private static final String PROPERTY_ID = "UA-53962546-1";
 	
 	/**
 	 * Enum used to identify the tracker that needs to be used for tracking.
