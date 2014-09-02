@@ -958,7 +958,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				builder.setTitle(getString(R.string.prompt_choose_powerup))
 				.setItems(R.array.powerups, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						
+
 						// The 'which' argument contains the index position
 						// of the selected item
 						switch(which) {
@@ -980,6 +980,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 							game.decrementPowerupsRemaining();
 							updateTextviews();
 							break;
+                        case 4:
+                            Grid newGrid = game.getGrid();
+                            List<Location> tiles = newGrid.toList();
+                            for(Location tile : tiles)
+                                newGrid.set(tile, newGrid.get(tile) * 2);
+                            game.setGrid(newGrid);
+                            updateGame();
+                            break;
 						}
 					}
 				});

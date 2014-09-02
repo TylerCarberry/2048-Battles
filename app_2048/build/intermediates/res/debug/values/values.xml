@@ -9,6 +9,7 @@
         <item>Remove A Tile</item>
         <item>Remove All Low Tiles</item>
         <item>Genie</item>
+        <item>(Debug) Double tile</item>
     </string-array>
     <!-- From: file:/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/values/strings_activity_settings.xml -->
     <eat-comment />

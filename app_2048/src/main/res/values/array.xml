@@ -34,6 +34,7 @@
         <item>Remove A Tile</item>
         <item>Remove All Low Tiles</item>
         <item>Genie</item>
+        <item>(Debug) Double tile</item>
     </string-array>
     
 </resources>

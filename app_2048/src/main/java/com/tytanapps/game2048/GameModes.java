@@ -1,8 +1,5 @@
 package com.tytanapps.game2048;
 
-import com.tytanapps.game2048.R;
-import com.tytanapps.game2048.R.string;
-
 public class GameModes
 {
 	public static final int LOAD_GAME_ID = 0;
@@ -275,6 +272,10 @@ public class GameModes
 	// Zen Mode
 	// Unlimited moves, undos and time
 	// Every piece can combine
+
+    /*
+        Used to debug the game. The game starts with every tile from 2 to 2048
+     */
 	public static Game zenMode()
 	{
 		Game game = new Game();
@@ -282,8 +283,21 @@ public class GameModes
 		game.setUndoLimit(-1);
 		game.setPowerupLimit(-1);
 		game.setTimeLimit(-1);
-		game.setZenMode(true);
-		game.setGameModeId(ZEN_MODE_ID);
+
+        //game.setZenMode(true);
+
+        int tile = 2;
+        Grid newGameGrid = game.getGrid();
+        newGameGrid.clear();
+        for(int row = 0; row < game.getGrid().getNumRows(); row++)
+            for(int col = 0; col < game.getGrid().getNumCols(); col++) {
+                if(tile <= 2048) {
+                    newGameGrid.set(new Location(row, col), tile);
+                    tile *= 2;
+                }
+            }
+
+        game.setGameModeId(ZEN_MODE_ID);
 		
 		return game;
 	}
