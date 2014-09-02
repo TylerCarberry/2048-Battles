@@ -867,11 +867,7 @@ containing a value of this type.
     public static final class xml {
         public static final int app_tracker=0x7f050000;
         public static final int global_tracker=0x7f050001;
-        public static final int pref_data_sync=0x7f050002;
-        public static final int pref_general=0x7f050003;
-        public static final int pref_headers=0x7f050004;
-        public static final int pref_notification=0x7f050005;
-        public static final int prefs=0x7f050006;
+        public static final int prefs=0x7f050002;
     }
     public static final class styleable {
         /** Attributes that can be used with a AdsAttrs.

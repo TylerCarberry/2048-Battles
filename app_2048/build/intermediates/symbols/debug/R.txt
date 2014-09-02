@@ -568,8 +568,4 @@ int styleable WalletFragmentStyle_maskedWalletDetailsLogoTextColor 9
 int styleable WalletFragmentStyle_maskedWalletDetailsTextAppearance 4
 int xml app_tracker 0x7f050000
 int xml global_tracker 0x7f050001
-int xml pref_data_sync 0x7f050002
-int xml pref_general 0x7f050003
-int xml pref_headers 0x7f050004
-int xml pref_notification 0x7f050005
-int xml prefs 0x7f050006
+int xml prefs 0x7f050002

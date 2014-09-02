@@ -7608,13 +7608,13 @@ No Animation
                 </color>
                 <color name="Violet" >#EE82EE
                 </color>
-                <color name="red" >#FF0000
-                </color>
-                <color name="Azure" >#F0FFFF
-                </color>
                 <color name="MistyRose" >#FFE4E1
                 </color>
                 <color name="aqua" >#00FFFF
+                </color>
+                <color name="red" >#FF0000
+                </color>
+                <color name="Azure" >#F0FFFF
                 </color>
                 <color name="Crimson" >#DC143C
                 </color>
@@ -7906,9 +7906,9 @@ No Animation
                 </string>
                 <string name="tile_128_achievement" >CggI2uf9iW8QAhAB
                 </string>
-                <string name="event_total_moves" >CggI2uf9iW8QAhAJ
-                </string>
                 <string name="event_played_game" >CggI2uf9iW8QAhAH
+                </string>
+                <string name="event_total_moves" >CggI2uf9iW8QAhAJ
                 </string>
                 <string name="tile_1024_achievement" >CggI2uf9iW8QAhAE
                 </string>
@@ -8243,26 +8243,6 @@ Never
             <file
                 name="global_tracker"
                 path="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/xml/global_tracker.xml"
-                qualifiers=""
-                type="xml" />
-            <file
-                name="pref_data_sync"
-                path="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/xml/pref_data_sync.xml"
-                qualifiers=""
-                type="xml" />
-            <file
-                name="pref_general"
-                path="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/xml/pref_general.xml"
-                qualifiers=""
-                type="xml" />
-            <file
-                name="pref_headers"
-                path="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/xml/pref_headers.xml"
-                qualifiers=""
-                type="xml" />
-            <file
-                name="pref_notification"
-                path="/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/xml/pref_notification.xml"
                 qualifiers=""
                 type="xml" />
             <file
