@@ -812,18 +812,30 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		           }
 		       });
 		
-		/*
+
 		// Update the leaderboards
 		if(getApiClient().isConnected()){
+            String leaderboard = null;
+            switch(game.getGameModeId()) {
+                case GameModes.NORMAL_MODE_ID:
+                    leaderboard = getString(R.string.leaderboard_classic_mode);
+                    break;
+                case GameModes.ARCADE_MODE_ID:
+                    leaderboard = getString(R.string.leaderboard_arcade_mode);
+                    break;
+                case GameModes.X_MODE_ID:
+                    leaderboard = getString(R.string.leaderboard_xmode);
+                    break;
+                case GameModes.CORNER_MODE_ID:
+                    leaderboard = getString(R.string.leaderboard_corner_mode);
+                    break;
+            }
+
+            if(leaderboard != null)
             Games.Leaderboards.submitScore(getApiClient(), 
-                    getString(R.string.leaderboard_classic_mode), 
-                    game.getScore());
-            
-            Games.Leaderboards.submitScore(getApiClient(), 
-                    getString(R.string.leaderboard_lowest_score), 
+                    leaderboard,
                     game.getScore());
         }
-        */
 
         // You cannot undo a game once you lose
         Button undoButton = (Button) findViewById(R.id.undo_button);

@@ -475,6 +475,16 @@
     <string name="how_to_play">Combine similar tiles to reach 2048.</string>
     <string name="intro">Welcome to 2048!</string>
     <string name="intro_creator_name">By Tyler Carberry</string>
+    <!-- From: file:/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/values/ids.xml -->
+    <eat-comment />
+
+    <string name="leaderboard_arcade_mode">CggI2uf9iW8QAhAO</string>
+    <string name="leaderboard_classic_mode">CggI2uf9iW8QAhAP</string>
+    <string name="leaderboard_corner_mode">CggI2uf9iW8QAhAT</string>
+    <string name="leaderboard_xmode">CggI2uf9iW8QAhAS</string>
+    <!-- From: file:/Users/Tyler/AndroidStudioProjects/App_2048/app_2048/src/main/res/values/strings.xml -->
+    <eat-comment />
+
     <string name="lowest_score">Lowest Score</string>
     <string name="medium">Medium</string>
     <string name="mode_arcade">Arcade</string>
