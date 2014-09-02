@@ -60,7 +60,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	// The time in milliseconds for the animation
 	public static final long SHUFFLE_SPEED = 300;
 	public static final long NEW_TILE_SPEED = 200;
-    public static final long TILE_SLIDE_SPEED = 300;
+
+    // This values are overridden with the option chosen in the settings
+    public static long tileSlideSpeed = 175;
     public static long swipeSensitivity = 100;
 
     private static boolean boardCreated = false;
@@ -68,8 +70,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	
 	GridLayout gridLayout;
 	
-	// Warns you about making a making a move that may
-	// lose you the game
+	// Warns about making a making a move that may lose the game
 	private static boolean genie_enabled = false;
 	private boolean XTileAttackActive = false;
 	private boolean ghostAttackActive = false;
@@ -128,17 +129,18 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.game, menu);
 		
-		// Locate MenuItem with ShareActionProvider
+		// Add the share action provider to the menu
 	    MenuItem item = menu.findItem(R.id.menu_item_share);
-
-	    // Fetch and store ShareActionProvider
-	    mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+        mShareActionProvider = (ShareActionProvider) item.getActionProvider();
 		createShareIntent();
 	    
 		return true;
 	}
-	
-	// Call to update the share intent
+
+    /**
+     * Used to create the share action provider.
+     * Plain text is shared with a message containing the current high score.
+     */
 	private void createShareIntent() {
 		Intent shareIntent = new Intent();
 		shareIntent.setAction(Intent.ACTION_SEND);
@@ -154,9 +156,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
+		// Handle action bar item clicks here
 		int id = item.getItemId();
 
 		// When the how to play menu item is pressed switch to InfoActivity
@@ -169,15 +169,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		if(id == R.id.action_settings) {
 			Intent showSettings = new Intent(this, com.tytanapps.game2048.SettingsActivity.class);
 			startActivity(showSettings);
-
-            /*
-            List<Location> tileLocations = game.getGrid().toList();
-            for(Location tileLoc : tileLocations) {
-                // Check if that tile already exists
-                setIcon(findTileByLocation(tileLoc), 1);
-                findTileByLocation(tileLoc).setVisibility(View.VISIBLE);
-            }
-            */
 			return true;
 		}
 		
@@ -205,17 +196,16 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Disable the undo button if there are no undos remaining
 		Button undoButton = ((Button) findViewById(R.id.undo_button));
 		undoButton.setEnabled(game.getUndosRemaining() != 0);
-		if (game.getUndosRemaining() == 0)
-			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
-		else
-			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
-		
-		Button powerupButton = ((Button) findViewById(R.id.powerup_button));
+
+        undoButton.setBackgroundDrawable(getResources().getDrawable(
+                (game.getUndosRemaining() == 0) ? R.drawable.undo_button_gray : R.drawable.undo_button));
+
+        // Disable the powerup button if there are no powerups remaining
+        Button powerupButton = ((Button) findViewById(R.id.powerup_button));
 		powerupButton.setEnabled(game.getPowerupsRemaining() != 0);
-		
-		if(game.getPowerupsRemaining() == 0) {
-			powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_disabled));
-		}
+
+        powerupButton.setBackgroundDrawable(getResources().getDrawable(
+                (game.getPowerupsRemaining() == 0) ? R.drawable.powerup_button_disabled : R.drawable.powerup_button));
 		
 		powerupButton.setOnTouchListener(new OnTouchListener() {
 
@@ -232,11 +222,12 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			}
 		});
 
-        // Load the speed to move the tiles from the settings
+        // Load the chosen settings
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         swipeSensitivity = Integer.valueOf(prefs.getString("swipeSensitivity", "100"));
+        tileSlideSpeed = Integer.valueOf(prefs.getString("speed", "175"));
 
-		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
 
 		super.onStart();	
 	}
@@ -264,8 +255,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	public void act(int direction) {
 
-        //Log.d(LOG_TAG, "act");
-
         animationInProgress = true;
 		
 		// If the ice attack is active in that direction do not move
@@ -273,7 +262,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			animationInProgress = false;
 			return;
 		}
-		
+
+        // The genie warns about making a move that will cause the game to lose
 		if(genie_enabled && game.causeGameToLose(direction)) {
 			animationInProgress = false;
 			warnAboutMove(direction);
@@ -286,8 +276,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Load the speed to move the tiles from the settings
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 				
-		int speed = Integer.valueOf(prefs.getString("speed", "200"));
-		
 		// Save the game history before each move
 		game.saveGameInHistory();
 		
@@ -327,7 +315,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				}
 				
 				// Time in milliseconds to move the tile
-				animation.setDuration(speed);
+				animation.setDuration(tileSlideSpeed);
 				
 				// Add the new animation to the list
 				translateAnimations.add(animation);
@@ -358,12 +346,13 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				if(game.getArcadeMode() && Math.random() < 0.1)
 					addRandomBonus();
 				
-				if(XTileAttackActive && game.getAttackDuration() == 0)
-					endXAttack();
-				
-				if(ghostAttackActive && game.getAttackDuration() == 0)
-					endGhostAttack();
-				
+				if(game.getAttackDuration() == 0) {
+                    if(XTileAttackActive)
+                        endXAttack();
+                    else if(ghostAttackActive)
+                        endGhostAttack();
+                }
+
 				game.newTurn();
 				addTile();
 
@@ -386,94 +375,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			animation.start();
 			activeAnimations.add(animation);
 		}
-		
+
+        // If a new highest tile is created this move unlock an achievement
 		if(game.highestPiece() > highestTile && game.getGameModeId() == GameModes.NORMAL_MODE_ID)
 			if(game.highestPiece() >= 128)
 				unlockAchievementNewHighestTile(game.highestPiece());
-	}
-	
-	private void addRandomBonus() {
-		double rand = Math.random();
-		String item = null;
-		
-		// 16% ice attack, 17% ghost attack, 17% XTile attack
-		// 25% +1 undo,	25% +1 powerup
-		if(rand < .5 && game.getAttackDuration() <= 0) {
-			if(rand < .16) 
-				ice();
-			else
-				if(rand < .33) 
-					ghostAttack();
-				else
-					XTileAttack();
-			updateTextviews();
-		}
-		else {
-			if(rand < 0.75) {
-				game.incrementUndosRemaining();
-				Button undoButton = (Button) findViewById(R.id.undo_button);
-				undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
-				undoButton.setEnabled(true);
-				item = "Undo";
-			}
-			else {
-				game.incrementPowerupsRemaining();
-				Button powerupButton = (Button) findViewById(R.id.powerup_button);
-				powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
-				powerupButton.setEnabled(true);
-				item = "Powerup";
-			}
-		
-		Toast.makeText(getApplicationContext(),	"Bonus! +1 " + item,
-				Toast.LENGTH_SHORT).show();
-		}
-	}
-
-	private void ghostAttack() {
-
-		game.ghostAttack();
-		
-		List<Location> tileLocs = game.getGrid().getFilledLocations();
-		int tileValue;
-		ImageView tile;
-		for(Location loc : tileLocs) {
-			tileValue = game.getGrid().get(loc);
-			tile = findTileByLocation(loc);
-			
-			Drawable[] layers = new Drawable[2];
-			// The current icon
-			layers[0] = getResources().getDrawable(getIcon(tileValue));
-			// No icon found, default to question mark
-			layers[1] = getResources().getDrawable(getIcon(-10));
-			TransitionDrawable transition = new TransitionDrawable(layers);
-			tile.setImageDrawable(transition);
-			transition.startTransition((int) NEW_TILE_SPEED);
-		}
-		
-		ghostAttackActive = true;
-		
-	}
-	private void endGhostAttack() {
-
-		ghostAttackActive = false;
-		
-		List<Location> tileLocs = game.getGrid().getFilledLocations();
-		int tileValue;
-		ImageView tile;
-		for(Location loc : tileLocs) {
-			tileValue = game.getGrid().get(loc);
-			tile = findTileByLocation(loc);
-			
-			Drawable[] layers = new Drawable[2];
-			// The ghost icon
-			layers[0] = getResources().getDrawable(getIcon(-10));
-			// The tile icon
-			layers[1] = getResources().getDrawable(getIcon(tileValue));
-			TransitionDrawable transition = new TransitionDrawable(layers);
-			tile.setImageDrawable(transition);
-			transition.startTransition((int) NEW_TILE_SPEED);
-			
-		}
 	}
 
 	/**
@@ -562,9 +468,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	private void createGrid() {
 
-        Log.d(LOG_TAG, "Create grid");
-
-		// The grid that all tiles are on
+        // The grid that all tiles are on
 		GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
 		
 		// Set the number of rows and columns in the game
@@ -596,14 +500,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			tile.setId(getTileIdByLocation(tileLoc));
 			
 			tileValue = game.getGrid().get(tileLoc);
-			if(tileValue == 0)
-				tile.setVisibility(View.INVISIBLE);
-			else 
-				tile.setVisibility(View.VISIBLE);
+            tile.setVisibility((tileValue == 0) ? View.INVISIBLE : View.VISIBLE);
 			
-			gridLayout.addView(tile,gridLayoutParam);
+			gridLayout.addView(tile, gridLayoutParam);
 		}
-		
 		boardCreated = true;
 	}
 	
@@ -650,11 +550,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			}
 
             if(expectedValue != actualValue) {
-
-                //Log.d(LOG_TAG, tileLoc.toString());
-                //Log.d(LOG_TAG, "Expected: "+expectedValue);
-                //Log.d(LOG_TAG, "Actual: "+ actualValue);
-
                 Drawable tileBackground = tile.getBackground();
 
                 specRow = GridLayout.spec(tileLoc.getRow(), 1);
@@ -791,8 +686,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Prevent the notification from appearing multiple times
 		if(gameLost)
 			return;
-		
-		gameLost = true;
+
+        gameLost = true;
 		
 		// This is the only place where total games played is incremented.
 		gameStats.totalGamesPlayed++;
@@ -811,31 +706,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		               // User cancelled the dialog
 		           }
 		       });
-		
-
-		// Update the leaderboards
-		if(getApiClient().isConnected()){
-            String leaderboard = null;
-            switch(game.getGameModeId()) {
-                case GameModes.NORMAL_MODE_ID:
-                    leaderboard = getString(R.string.leaderboard_classic_mode);
-                    break;
-                case GameModes.ARCADE_MODE_ID:
-                    leaderboard = getString(R.string.leaderboard_arcade_mode);
-                    break;
-                case GameModes.X_MODE_ID:
-                    leaderboard = getString(R.string.leaderboard_xmode);
-                    break;
-                case GameModes.CORNER_MODE_ID:
-                    leaderboard = getString(R.string.leaderboard_corner_mode);
-                    break;
-            }
-
-            if(leaderboard != null)
-            Games.Leaderboards.submitScore(getApiClient(), 
-                    leaderboard,
-                    game.getScore());
-        }
 
         // You cannot undo a game once you lose
         Button undoButton = (Button) findViewById(R.id.undo_button);
@@ -864,11 +734,42 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Delete the current save file. The user can no longer continue this game.
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		currentGameFile.delete();
-		
-		submitEvents(game);
+
+        updateLeaderboards(game.getScore(), game.getGameModeId());
+        submitEvents(game);
 	}
-	
-	/**
+
+    /**
+     * Updates the leaderboards with the new score
+     * @param score The final score of the game
+     * @param gameModeId The game mode using the GameModes class
+     */
+    private void updateLeaderboards(int score, int gameModeId) {
+        if(getApiClient().isConnected()){
+            String leaderboard = null;
+            switch(gameModeId) {
+                case GameModes.NORMAL_MODE_ID:
+                    leaderboard = getString(R.string.leaderboard_classic_mode);
+                    break;
+                case GameModes.ARCADE_MODE_ID:
+                    leaderboard = getString(R.string.leaderboard_arcade_mode);
+                    break;
+                case GameModes.X_MODE_ID:
+                    leaderboard = getString(R.string.leaderboard_xmode);
+                    break;
+                case GameModes.CORNER_MODE_ID:
+                    leaderboard = getString(R.string.leaderboard_corner_mode);
+                    break;
+            }
+
+            if(leaderboard != null)
+                Games.Leaderboards.submitScore(getApiClient(),
+                        leaderboard,
+                        score);
+        }
+    }
+
+    /**
 	 * Update the events on google play games with the game information
 	 * @param myGame The game to get the data from
 	 */
@@ -881,8 +782,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 			// Increment the event counters
 			Games.Events.increment(this.getApiClient(), playedGameId, 1);
-			Games.Events.increment(this.getApiClient(), totalMovesId, game.getTurns());
-			Games.Events.increment(this.getApiClient(), totalScoreId, game.getScore());
+			Games.Events.increment(this.getApiClient(), totalMovesId, myGame.getTurns());
+			Games.Events.increment(this.getApiClient(), totalScoreId, myGame.getScore());
 		}
 	}
 	
@@ -1153,6 +1054,43 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		}
 	}
 
+    private void addRandomBonus() {
+        double rand = Math.random();
+        String item = null;
+
+        // 16% ice attack, 17% ghost attack, 17% XTile attack
+        // 25% +1 undo,	25% +1 powerup
+        if(rand < .5 && game.getAttackDuration() <= 0) {
+            if(rand < .16)
+                ice();
+            else
+                if(rand < .33)
+                    ghostAttack();
+                else
+                    XTileAttack();
+            updateTextviews();
+        }
+        else {
+            if(rand < 0.75) {
+                game.incrementUndosRemaining();
+                Button undoButton = (Button) findViewById(R.id.undo_button);
+                undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
+                undoButton.setEnabled(true);
+                item = "Undo";
+            }
+            else {
+                game.incrementPowerupsRemaining();
+                Button powerupButton = (Button) findViewById(R.id.powerup_button);
+                powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
+                powerupButton.setEnabled(true);
+                item = "Powerup";
+            }
+
+            Toast.makeText(getApplicationContext(),	"Bonus! +1 " + item,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
 	/**
 	 * Remove all 2's and 4's from the game with a fade out animation
 	 */
@@ -1210,7 +1148,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			public void onAnimationStart(Animator animation) { }
 			@Override
 			public void onAnimationCancel(Animator animation) {
-				Log.d(LOG_TAG, "Animation cancelled");
 				activeAnimations.clear();
 				animationInProgress = false;
 			}
@@ -1261,7 +1198,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			}
 			@Override
 			public void onAnimationCancel(Animator animation) {
-				Log.d(LOG_TAG, "Shuffle animation cancelled");
 				activeAnimations.clear();
 				animationInProgress = false;
 			}
@@ -1282,7 +1218,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * Freezes the game (can not move in a direction for a random amount of turns)
 	 */
 	public void ice() {
-		
 		// This attack cannot be stacked
 		if(game.getAttackDuration() <= 0)
 			game.ice();
@@ -1292,7 +1227,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * Temporarily adds an X tile to the game for a limited amount of time
 	 */
 	private void XTileAttack() {
-		
 		// This attack cannot be stacked
 		if(game.getAttackDuration() <= 0) {
 			game.XTileAttack();
@@ -1302,7 +1236,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	}
 	
 	private void endXAttack() {
-		
 		XTileAttackActive = false;
 		Location XTileLoc = game.endXTileAttack();
 		
@@ -1311,23 +1244,57 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			
 			// Create and start an animation of the tile fading away
 			ObjectAnimator fade = ObjectAnimator.ofFloat(tile, View.ALPHA, 0)
-					.setDuration(NEW_TILE_SPEED);
-			fade.addListener(new AnimatorListener() {
-
-				@Override
-				public void onAnimationCancel(Animator arg0) {}
-				@Override
-				public void onAnimationEnd(Animator animation) {
-					//updateGame();
-				}
-				@Override
-				public void onAnimationRepeat(Animator animation) {}
-				@Override
-				public void onAnimationStart(Animator animation) {}
-			});
+                    .setDuration(NEW_TILE_SPEED);
 			fade.start();
 		}
 	}
+
+    private void ghostAttack() {
+        game.ghostAttack();
+
+        List<Location> tileLocs = game.getGrid().getFilledLocations();
+        int tileValue;
+        ImageView tile;
+
+        for(Location loc : tileLocs) {
+            tileValue = game.getGrid().get(loc);
+            tile = findTileByLocation(loc);
+
+            Drawable[] layers = new Drawable[2];
+            // The current icon
+            layers[0] = getResources().getDrawable(getIcon(tileValue));
+            // No icon found, default to question mark
+            layers[1] = getResources().getDrawable(getIcon(-10));
+            TransitionDrawable transition = new TransitionDrawable(layers);
+            tile.setImageDrawable(transition);
+            transition.startTransition((int) NEW_TILE_SPEED);
+        }
+
+        ghostAttackActive = true;
+    }
+    private void endGhostAttack() {
+        ghostAttackActive = false;
+
+        List<Location> tileLocs = game.getGrid().getFilledLocations();
+        int tileValue;
+        ImageView tile;
+
+        for(Location loc : tileLocs) {
+            tileValue = game.getGrid().get(loc);
+            tile = findTileByLocation(loc);
+
+            Drawable[] layers = new Drawable[2];
+
+            // The ghost icon
+            layers[0] = getResources().getDrawable(getIcon(-10));
+            // The tile icon
+            layers[1] = getResources().getDrawable(getIcon(tileValue));
+
+            TransitionDrawable transition = new TransitionDrawable(layers);
+            tile.setImageDrawable(transition);
+            transition.startTransition((int) NEW_TILE_SPEED);
+        }
+    }
 
 	/**
 	 * Warn the user about moving in that direction
@@ -1367,11 +1334,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	public void undo() {
 		final Button undoButton = (Button) findViewById(R.id.undo_button);
-		if(game.getUndosRemaining() == 0) {
+		if(game.getUndosRemaining() == 0)
 			undoButton.setEnabled(false);
-		}
-		else
-		{
+		else {
 			if(game.getTurns() > 1) {
 
 				// Reset the rotation to the default orientation
@@ -1411,13 +1376,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * Restart the game.
 	 */
 	public void restartGame() {
-		
-		Log.d(LOG_TAG, "restart game");
-		
+        // Spin the restart button 360 degrees counterclockwise
 		Button restartButton = (Button) findViewById(R.id.restart_button);
 		restartButton.setRotation(0);
-		ObjectAnimator spinAnimation = ObjectAnimator.ofFloat(restartButton, View.ROTATION, -360);
-		spinAnimation.start();
+		ObjectAnimator.ofFloat(restartButton, View.ROTATION, -360).start();
 		
 		if(animationInProgress)
 			clearTileListeners();
@@ -1460,7 +1422,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			// Notify the user of the error through a toast
 			Toast.makeText(getApplicationContext(), "Error: Save file not found", Toast.LENGTH_SHORT).show();
 		}
-		
 		requestBackup();
 	}
 	
@@ -1539,9 +1500,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * @param tile The new highest tile
 	 */
 	private void unlockAchievementNewHighestTile(int tile) {
-		
-		Log.d(LOG_TAG, "unlocking achievement " + tile + " tile");
-		
 		if(getApiClient().isConnected()) {
 			switch(tile) {
 			case 128:
@@ -1598,27 +1556,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
     }
 
 	/**
-	 * Shows the active quests
-	 */
-	/*
-	public void showQuests()
-	{
-		// EventCallback is a subclass of ResultCallback; use this to handle the
-		// query results
-		EventCallback ec = new EventCallback();
-
-		// Load all events tracked for your game
-		com.google.android.gms.common.api.PendingResult<Events.LoadEventsResult>
-		        pr = Games.Events.load(this.getApiClient(), true);
-		pr.setResultCallback(ec);
-		
-		Intent questsIntent = Games.Quests.getQuestsIntent(this.getApiClient(),
-	            Quests.SELECT_ALL_QUESTS);
-	    startActivityForResult(questsIntent, 0);
-	}
-	*/
-
-	/**
 	 * The only fragment in the activity. Has the game board and the
 	 * game info such as score or turn number
 	 */
@@ -1647,20 +1584,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	            	((GameActivity)getActivity()).restartGame();
 	            }
 	        });
-	        
-	        /*
-	        // Get tracker.
-	        Tracker t = ((MainApplication) getActivity().getApplication()).getTracker();
-
-	        // Set screen name.
-	        // Where path is a String representing the screen name.
-	        t.setScreenName("GameActivity");
-
-	        // Send a screen view.
-	        t.send(new HitBuilders.AppViewBuilder().build());
-
-	        t.send(new HitBuilders.ScreenViewBuilder().build());
-	        */
 	        
 	        return rootView;
 		}
