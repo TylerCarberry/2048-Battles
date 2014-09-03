@@ -25,7 +25,7 @@
     <string-array name="swipeSensitivityValues">
         <item>150</item>
         <item>75</item>
-        <item>50</item>
+        <item>0</item>
     </string-array>
 
 
@@ -34,7 +34,7 @@
         <item>Remove A Tile</item>
         <item>Remove All Low Tiles</item>
         <item>Genie</item>
-        <item>(Debug) Double tile</item>
+        <item>(Debug) Double tiles</item>
     </string-array>
     
 </resources>

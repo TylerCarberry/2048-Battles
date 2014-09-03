@@ -59,9 +59,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	
 	// The time in milliseconds for the animation
 	public static final long SHUFFLE_SPEED = 300;
-	public static final long NEW_TILE_SPEED = 200;
 
-    // This values are overridden with the option chosen in the settings
+    // This values are overridden with the options chosen in the settings
     public static long tileSlideSpeed = 175;
     public static long swipeSensitivity = 100;
 
@@ -609,15 +608,15 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
         TransitionDrawable transition = new TransitionDrawable(layers);
         tile.setImageDrawable(transition);
-        transition.startTransition((int) NEW_TILE_SPEED);
+        transition.startTransition((int) tileSlideSpeed);
 
-        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(tile, View.SCALE_X, 1.05f);
-        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(tile, View.SCALE_Y, 1.05f);
+        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(tile, View.SCALE_X, 1.1f);
+        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(tile, View.SCALE_Y, 1.1f);
 
-        // The tile increases in size by a factor of 1.05 and shrinks back down. At the same time
+        // The tile increases in size by a factor of 1.1 and shrinks back down. At the same time
         // it is fading to the new value.
-        scaleDownX.setDuration(NEW_TILE_SPEED / 2);
-        scaleDownY.setDuration(NEW_TILE_SPEED / 2);
+        scaleDownX.setDuration(tileSlideSpeed / 2);
+        scaleDownY.setDuration(tileSlideSpeed / 2);
         scaleDownX.setRepeatCount(1);
         scaleDownX.setRepeatMode(ObjectAnimator.REVERSE);
         scaleDownY.setRepeatCount(1);
@@ -627,7 +626,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
         scaleDown.play(scaleDownX).with(scaleDownY);
         scaleDown.start();
-        transition.startTransition((int) NEW_TILE_SPEED);
+        transition.startTransition((int) tileSlideSpeed);
 
     }
 	
@@ -960,7 +959,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		// Fade the tile in
 		ObjectAnimator alphaAnimation = ObjectAnimator.ofFloat(newTile, View.ALPHA, 1)
-				.setDuration(NEW_TILE_SPEED);
+				.setDuration(tileSlideSpeed);
 		
 		// Keep track of the active animations in case the activity is stopped
 		alphaAnimation.addListener(new AnimatorListener(){
@@ -978,8 +977,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			public void onAnimationRepeat(Animator animation) { }
 		});
 
-        ObjectAnimator scaleUpX = ObjectAnimator.ofFloat(newTile, View.SCALE_X, 1.00f).setDuration(NEW_TILE_SPEED);
-        ObjectAnimator scaleUpY = ObjectAnimator.ofFloat(newTile, View.SCALE_Y, 1.00f).setDuration(NEW_TILE_SPEED);
+        ObjectAnimator scaleUpX = ObjectAnimator.ofFloat(newTile, View.SCALE_X, 1.00f).setDuration(tileSlideSpeed);
+        ObjectAnimator scaleUpY = ObjectAnimator.ofFloat(newTile, View.SCALE_Y, 1.00f).setDuration(tileSlideSpeed);
 
         activeAnimations.add(alphaAnimation);
         activeAnimations.add(scaleUpX);
@@ -1016,7 +1015,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 							// Create and start an animation of the tile fading away
 							(ObjectAnimator.ofFloat(view, View.ALPHA, 0)
-									.setDuration(NEW_TILE_SPEED)).start();
+									.setDuration(tileSlideSpeed)).start();
 							game.removeTile(new Location(view.getId() / 100, view.getId() % 100));
 							game.decrementPowerupsRemaining();
 							updateTextviews();
@@ -1122,7 +1121,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				// Create a new animation of the tile fading away and
 				// add it to the list
 				alphaAnimations.add(ObjectAnimator.ofFloat(toRemove, View.ALPHA, 0)
-						.setDuration(NEW_TILE_SPEED));
+						.setDuration(tileSlideSpeed));
 			}
 		}
 		
@@ -1244,7 +1243,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			
 			// Create and start an animation of the tile fading away
 			ObjectAnimator fade = ObjectAnimator.ofFloat(tile, View.ALPHA, 0)
-                    .setDuration(NEW_TILE_SPEED);
+                    .setDuration(tileSlideSpeed);
 			fade.start();
 		}
 	}
@@ -1267,7 +1266,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
             layers[1] = getResources().getDrawable(getIcon(-10));
             TransitionDrawable transition = new TransitionDrawable(layers);
             tile.setImageDrawable(transition);
-            transition.startTransition((int) NEW_TILE_SPEED);
+            transition.startTransition((int) tileSlideSpeed);
         }
 
         ghostAttackActive = true;
@@ -1292,7 +1291,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
             TransitionDrawable transition = new TransitionDrawable(layers);
             tile.setImageDrawable(transition);
-            transition.startTransition((int) NEW_TILE_SPEED);
+            transition.startTransition((int) tileSlideSpeed);
         }
     }
 
@@ -1628,15 +1627,20 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
     		float distanceX, float distanceY) { 
 
     	if(listenForSwipe && !animationInProgress) {
-    		if(Math.abs(initialEvent.getX() - currentEvent.getX()) > swipeSensitivity) {
-    			if(initialEvent.getX() > currentEvent.getX())
-    				act(Location.LEFT);
-    			else
-    				act(Location.RIGHT);
 
-    			listenForSwipe = false;
-    		}
-    		else if(Math.abs(initialEvent.getY() - currentEvent.getY()) > swipeSensitivity) {
+            float totalDistanceX = Math.abs(initialEvent.getX() - currentEvent.getX());
+            float totalDistanceY = Math.abs(initialEvent.getY() - currentEvent.getY());
+
+            if(totalDistanceX > totalDistanceY) {
+                if(totalDistanceX > swipeSensitivity) {
+                    if (initialEvent.getX() > currentEvent.getX())
+                        act(Location.LEFT);
+                    else
+                        act(Location.RIGHT);
+                    listenForSwipe = false;
+                }
+            }
+    		else if(totalDistanceY > swipeSensitivity) {
     			if(initialEvent.getY() > currentEvent.getY())
     				act(Location.UP);
     			else
