@@ -129,7 +129,6 @@ public class GameModes
 		}
 	}
 
-
 	// Practice Mode
 	// Unlimited everything
 	public static Game practiceMode()
@@ -139,6 +138,7 @@ public class GameModes
 		game.setUndoLimit(-1);
 		game.setTimeLimit(-1);
 		game.setPowerupLimit(-1);
+        game.setGenieEnabled(true);
 		game.setGameModeId(PRACTICE_MODE_ID);
 
 		return game;

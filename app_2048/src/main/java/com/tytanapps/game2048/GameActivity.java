@@ -70,7 +70,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	GridLayout gridLayout;
 	
 	// Warns about making a making a move that may lose the game
-	private static boolean genie_enabled = false;
 	private boolean XTileAttackActive = false;
 	private boolean ghostAttackActive = false;
 	
@@ -263,7 +262,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		}
 
         // The genie warns about making a move that will cause the game to lose
-		if(genie_enabled && game.causeGameToLose(direction)) {
+		if(game.getGenieEnabled() && game.causeGameToLose(direction)) {
 			animationInProgress = false;
 			warnAboutMove(direction);
 			return;
@@ -888,7 +887,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 							game.decrementPowerupsRemaining();
 							break;
 						case 3:
-							genie_enabled = true;
+							game.setGenieEnabled(true);
 							game.decrementPowerupsRemaining();
 							updateTextviews();
 							break;
@@ -1300,7 +1299,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * @return True if the user decided to move in that direction anyway
 	 */
 	public void warnAboutMove(final int direction) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Are you sure?");
 		builder.setMessage("Moving " + Location.directionToString(direction) + " might cause you to lose");
 		
@@ -1308,16 +1307,19 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			// If the user clicked yes consume the powerup and move
 			public void onClick(DialogInterface dialog, int id) {
-				genie_enabled = false;
-				game.act(direction);
+                game.setGenieEnabled(false);
+                game.act(direction);
 				updateGame();
+                if(game.getGameModeId() == GameModes.PRACTICE_MODE_ID)
+                    game.setGenieEnabled(true);
 			}
 		});
 		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
 			// If the user clicked no consume the powerup and don't move
 			public void onClick(DialogInterface dialog, int id) {
-				genie_enabled = false;
-			}
+                if(game.getGameModeId() != GameModes.PRACTICE_MODE_ID)
+                    game.setGenieEnabled(false);
+            }
 		});
 		
 		AlertDialog dialog = builder.create();	
@@ -1394,14 +1396,22 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		game = GameModes.newGameFromId(game.getGameModeId());
 
-		// Set the undo button to be enabled or disabled
-		Button undoButton = (Button) findViewById(R.id.undo_button);
-		if (game.getUndosRemaining() == 0)
-			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
-		else
-			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
+        // Disable the undo button if there are no undos remaining
+        Button undoButton = ((Button) findViewById(R.id.undo_button));
+        undoButton.setEnabled(game.getUndosRemaining() != 0);
 
-		gameLost = false;
+        undoButton.setBackgroundDrawable(getResources().getDrawable(
+                (game.getUndosRemaining() == 0) ? R.drawable.undo_button_gray : R.drawable.undo_button));
+
+        // Disable the powerup button if there are no powerups remaining
+        Button powerupButton = ((Button) findViewById(R.id.powerup_button));
+        powerupButton.setEnabled(game.getPowerupsRemaining() != 0);
+
+        powerupButton.setBackgroundDrawable(getResources().getDrawable(
+                (game.getPowerupsRemaining() == 0) ? R.drawable.powerup_button_disabled : R.drawable.powerup_button));
+
+
+        gameLost = false;
 		updateGame();
 	}
 

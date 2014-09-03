@@ -74,6 +74,8 @@ public class Game implements java.io.Serializable
 	private int attackDuration = -1;
 	
 	private int gameModeId;
+
+    private boolean genie_enabled = false;
 	
 	/**
 	 * Creates a default game with the size 4x4
@@ -1033,7 +1035,15 @@ public class Game implements java.io.Serializable
 	public void setGrid(Grid newBoard) {
 		board = newBoard;
 	}
-	
+
+    public boolean getGenieEnabled() {
+        return genie_enabled;
+    }
+
+    public void setGenieEnabled(boolean isGenieEnabled) {
+        genie_enabled = isGenieEnabled;
+    }
+
 	/**
 	 * Changing this value does not affect the game. It is only for reference.
 	 * Use the methods such as cornerMode() or XMode() in addition
