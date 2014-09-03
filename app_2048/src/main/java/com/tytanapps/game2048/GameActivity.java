@@ -504,16 +504,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		}
 		boardCreated = true;
 	}
-	
-	/**
-	 * Calculate the distances that tiles should move when the game is swiped
-	 */
-	private void calculateDistances() {
-		GridLayout grid = (GridLayout) findViewById(R.id.grid_layout);
-		
-		verticalTileDistance = grid.getHeight() / game.getGrid().getNumRows();
-		horizontalTileDistance = grid.getWidth() / game.getGrid().getNumCols();
-	}
 
 	/**
 	 * Update the game board 
@@ -1052,6 +1042,15 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		}
 	}
 
+    /**
+     * Calculate the distances that tiles should move when the game is swiped
+     */
+    private void calculateDistances() {
+        GridLayout grid = (GridLayout) findViewById(R.id.grid_layout);
+        verticalTileDistance = grid.getHeight() / game.getGrid().getNumRows();
+        horizontalTileDistance = grid.getWidth() / game.getGrid().getNumCols();
+    }
+
     private void addRandomBonus() {
         double rand = Math.random();
         String item = null;
@@ -1059,13 +1058,19 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         // 16% ice attack, 17% ghost attack, 17% XTile attack
         // 25% +1 undo,	25% +1 powerup
         if(rand < .5 && game.getAttackDuration() <= 0) {
-            if(rand < .16)
+            if(rand < .125)
                 ice();
             else
-                if(rand < .33)
+                if(rand < .25)
                     ghostAttack();
                 else
-                    XTileAttack();
+                    if(rand < .375)
+                        XTileAttack();
+                    else {
+                        shuffleGame();
+                        Toast.makeText(this, "Random Shuffle", Toast.LENGTH_SHORT).show();
+                    }
+
             updateTextviews();
         }
         else {
@@ -1409,7 +1414,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
         powerupButton.setBackgroundDrawable(getResources().getDrawable(
                 (game.getPowerupsRemaining() == 0) ? R.drawable.powerup_button_disabled : R.drawable.powerup_button));
-
 
         gameLost = false;
 		updateGame();
