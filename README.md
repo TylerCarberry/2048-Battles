@@ -24,7 +24,8 @@ Genie- Warns you about making a bad move
 ### Features
 Achievements  
 Quests  
-Coming Soon: Leaderboards and Cloud Save
+Leaderboards  
+Coming Soon: Cloud Save
 
 
 <p align="center">
