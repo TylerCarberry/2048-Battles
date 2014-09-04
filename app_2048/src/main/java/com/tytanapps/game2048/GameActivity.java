@@ -148,6 +148,17 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		shareIntent.setType("text/plain");
 		if (mShareActionProvider != null) {
 	        mShareActionProvider.setShareIntent(shareIntent);
+            mShareActionProvider.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
+                @Override
+                public boolean onShareTargetSelected(ShareActionProvider shareActionProvider, Intent intent) {
+
+                    if(getApiClient().isConnected()) {
+                        Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_brag_to_your_friends));
+                    }
+
+                    return true;
+                }
+            });
 	    }
 	}
 
@@ -169,7 +180,16 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			startActivity(showSettings);
 			return true;
 		}
-		
+
+        if(id == R.id.menu_item_share) {
+            Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
+
+            if(getApiClient().isConnected()) {
+                Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_brag_to_your_friends));
+            }
+
+        }
+
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -725,6 +745,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
         updateLeaderboards(game.getScore(), game.getGameModeId());
         submitEvents(game);
+
+        if(game.getScore() <= 200 && game.getGameModeId() == GameModes.NORMAL_MODE_ID &&  getApiClient().isConnected()) {
+            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_worst_player_ever));
+        }
+
 	}
 
     /**
@@ -764,7 +789,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	public void submitEvents(Game myGame)
 	{
 		if(getApiClient().isConnected()) {
-			String playedGameId = getString(R.string.event_played_game);
+			String playedGameId = getString(R.string.event_games_lost);
 			String totalMovesId = getString(R.string.event_total_moves);
 			String totalScoreId = getString(R.string.event_total_score);
 
@@ -1055,8 +1080,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         double rand = Math.random();
         String item = null;
 
-        // 16% ice attack, 17% ghost attack, 17% XTile attack
-        // 25% +1 undo,	25% +1 powerup
+        // 50% chance of an attack: ice attack, ghost attack, XTile attack, shuffle attack
+        // 50% chance of bonus: +1 undo, +1 powerup
         if(rand < .5 && game.getAttackDuration() <= 0) {
             if(rand < .125)
                 ice();
@@ -1516,19 +1541,19 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		if(getApiClient().isConnected()) {
 			switch(tile) {
 			case 128:
-				Games.Achievements.unlock(getApiClient(), getString(R.string.tile_128_achievement));
+				Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_128_tile));
 				break;
 			case 256:
-				Games.Achievements.unlock(getApiClient(), getString(R.string.tile_256_achievement));
+				Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_256_tile));
 				break;
 			case 512:
-				Games.Achievements.unlock(getApiClient(), getString(R.string.tile_512_achievement));
+				Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_512_tile));
 				break;
 			case 1024:
-				Games.Achievements.unlock(getApiClient(), getString(R.string.tile_1024_achievement));
+				Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_1024_tile));
 				break;
 			case 2048:
-				Games.Achievements.unlock(getApiClient(), getString(R.string.tile_2048_achievement));
+				Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_2048_tile));
 				break;
 			}
 		}
