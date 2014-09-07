@@ -38,7 +38,7 @@
     <string name="try_again">Try Again</string>
     
     <string name="mode_desc_normal">10 Undos</string>
-    <string name="mode_desc_practice">Unlimited undos and powerups. Warns you if a move may cause the game to lose.</string>
+    <string name="mode_desc_practice">Unlimited undos and powerups. Warns you before you lose.</string>
     <string name="mode_desc_pro">No Undos</string>
     <string name="mode_desc_rush">Higher value tiles appear</string>
     <string name="mode_desc_survival">30 seconds time limit, combine tiles for more time **Coming Soon**</string>

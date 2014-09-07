@@ -3,14 +3,21 @@ package com.tytanapps.game2048;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Point;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +40,7 @@ import java.io.StreamCorruptedException;
 public class MainActivity extends BaseGameActivity implements View.OnClickListener, QuestUpdateListener
 {
 	final static String LOG_TAG = MainActivity.class.getSimpleName();
-	
-	// Stores the mode that is currently selected
-	private static int gameId = GameModes.NORMAL_MODE_ID;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	 */
 	protected void onResume() {
 
+
+
 		FileInputStream fi;
 		File file = new File(getFilesDir(), getString(R.string.file_current_game));
 
@@ -113,6 +120,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 			e.printStackTrace();
 		}
 
+        /*
+
 		// When the start game button is pressed
 		Button startGame = (Button) findViewById(R.id.start_game_button);
 		startGame.setOnClickListener(new View.OnClickListener() {
@@ -135,15 +144,26 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 				startGameActivity();
 			}
 		});
+
+		*/
 		
 		// When the continue game button is pressed switch to the game activity
 		// without saving over the saved file
 		continueGame.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				startGameActivity();
+
+                final HorizontalScrollView modeScrollView = (HorizontalScrollView) findViewById(R.id.modeScrollView);
+                modeScrollView.smoothScrollBy(100, 0);
+
+
+                //startGameActivity();
 			}
 		});
-		
+
+
+
+        createListView();
+
 		super.onResume();
 	}
 
@@ -181,7 +201,109 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		
 		return super.onOptionsItemSelected(item);
 	}
-	
+
+
+    public void createListView() {
+
+        LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
+        listOfModes.removeAllViewsInLayout();
+
+        for(int i = 1; i < 13; i++) {
+
+            LinearLayout modeDetailLayout = new LinearLayout(this);
+            modeDetailLayout.setOrientation(LinearLayout.VERTICAL);
+
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int width = size.x;
+            int height = size.y;
+
+            modeDetailLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                            width / 2, LayoutParams.WRAP_CONTENT)
+            );
+            modeDetailLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+
+
+            TextView modeName = new TextView(this);
+            modeName.setText(getString(GameModes.getGameTitleById(i)));
+            modeName.setTextSize(25);
+            modeName.setTypeface(null, Typeface.BOLD);
+
+            modeName.setLayoutParams(new LinearLayout.LayoutParams(
+                            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            );
+
+            TextView modeDesc = new TextView(this);
+            modeDesc.setText(getString(GameModes.getGameDescById(i)));
+            modeDesc.setTextSize(20);
+
+            modeDesc.setLayoutParams(new LinearLayout.LayoutParams(
+                            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            );
+            modeDesc.setGravity(Gravity.CENTER_HORIZONTAL);
+
+            TextView highScoreTextView = new TextView(this);
+            highScoreTextView.setText("High Score: 0");
+
+            highScoreTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            );
+
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)highScoreTextView.getLayoutParams();
+            params.setMargins(0, 50, 0, 0);
+            highScoreTextView.setLayoutParams(params);
+
+
+
+
+            TextView highTileTextView = new TextView(this);
+            highTileTextView.setText("Highest Tile: 0");
+
+            highTileTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            );
+
+
+            final int gameId = i;
+            Button startGameButton = new Button(this);
+            startGameButton.setText("Start Game");
+            startGameButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT));
+
+            startGameButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Game game = GameModes.newGameFromId(gameId);
+                    game.setGameModeId(gameId);
+                    File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+                    try {
+                        Save.save(game, currentGameFile);
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Switch to the game activity
+                    startGameActivity();
+                }
+            });
+
+
+            modeDetailLayout.addView(modeName);
+
+            modeDetailLayout.addView(modeDesc);
+            modeDetailLayout.addView(highScoreTextView);
+            modeDetailLayout.addView(highTileTextView);
+            modeDetailLayout.addView(startGameButton);
+
+            listOfModes.addView(modeDetailLayout);
+
+        }
+    }
+
+
+
 	/**
 	 * Display all quests
 	 */
@@ -257,7 +379,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
-			
+
 			return rootView;
 		}
 	}
@@ -267,6 +389,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	 *  title, description, and gameId
 	 * @param view The button that was pressed
 	 */
+    /*
 	public void createGame(View view) {
 		
 		TextView gameTitle = (TextView) findViewById(R.id.game_mode_textview);
@@ -317,6 +440,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		gameTitle.setText(getString(GameModes.getGameTitleById(gameId)));
 		gameDesc.setText(getString(GameModes.getGameDescById(gameId)));
 	}
+	*/
 	
 	/**
 	 * Switches to the game activity
