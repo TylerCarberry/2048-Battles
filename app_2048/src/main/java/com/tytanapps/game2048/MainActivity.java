@@ -180,6 +180,27 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
         listOfModes.removeAllViewsInLayout();
 
+        Statistics gameStats = new Statistics();
+        try {
+            File file = new File(getFilesDir(), getString(R.string.file_game_stats));
+            FileInputStream fi = new FileInputStream(file);
+            ObjectInputStream input = new ObjectInputStream(fi);
+
+            gameStats = (Statistics) input.readObject();
+
+            fi.close();
+            input.close();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (StreamCorruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         // Currently there are 13 game modes, TODO: change this to not be hardcoded in
         for(int i = 1; i < 13; i++) {
 
@@ -212,7 +233,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
             // High score of that mode (not implemented yet)
             TextView highScoreTextView = new TextView(this);
-            highScoreTextView.setText("High Score: 0");
+            highScoreTextView.setText("High Score: " + gameStats.getHighScore(i));
             highScoreTextView.setLayoutParams(new LinearLayout.LayoutParams(
                             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             );
@@ -224,7 +245,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
             // Highest tile of that mode (not implemented yet)
             TextView highTileTextView = new TextView(this);
-            highTileTextView.setText("Highest Tile: 0");
+            highTileTextView.setText("Highest Tile: " + gameStats.getHighestTile(i));
             highTileTextView.setLayoutParams(new LinearLayout.LayoutParams(
                             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             );

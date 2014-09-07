@@ -1,16 +1,6 @@
 package com.tytanapps.game2048;
 
-import java.io.File;
-import java.io.IOException;
-
-import com.tytanapps.game2048.R;
-import com.tytanapps.game2048.R.id;
-import com.tytanapps.game2048.R.layout;
-import com.tytanapps.game2048.R.menu;
-import com.tytanapps.game2048.R.string;
-
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.os.Build;
+
+import java.io.File;
+import java.io.IOException;
 
 public class StatsActivity extends Activity {
 	
@@ -78,19 +70,22 @@ public class StatsActivity extends Activity {
 		TextView lowestScore = (TextView) findViewById(R.id.lowest_score);
 		
 		totalGames.setText(getString(R.string.total_games) + ": "
-				+ gameStats.totalGamesPlayed);
+				+ gameStats.getTotalGamesPlayed());
 		totalUndos.setText(getString(R.string.total_undos) + ": "
-				+ gameStats.totalUndosUsed);
+				+ gameStats.getTotalUndosUsed());
 		totalShuffles.setText(getString(R.string.total_shuffles) + ": "
-				+ gameStats.totalShufflesUsed);
+				+ gameStats.getTotalShufflesUsed());
 		totalMoves.setText(getString(R.string.total_moves) + ": "
-				+ gameStats.totalMoves);
-		highScore.setText(getString(R.string.high_score) + ": "
+				+ gameStats.getTotalMoves());
+
+        /*
+        highScore.setText(getString(R.string.high_score) + ": "
 				+ gameStats.highScore);
 		highestTile.setText(getString(R.string.highest_tile) + ": "
 				+ gameStats.highestTile);
 		lowestScore.setText(getString(R.string.lowest_score) + ": "
 				+ gameStats.lowScore);
+				*/
 		
 		
 		super.onResume();

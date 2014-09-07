@@ -142,8 +142,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	private void createShareIntent() {
 		Intent shareIntent = new Intent();
 		shareIntent.setAction(Intent.ACTION_SEND);
-		shareIntent.putExtra(Intent.EXTRA_TEXT,
-				"I am playing 2048. My high score is " + gameStats.highScore
+
+        // TODO: High score
+        shareIntent.putExtra(Intent.EXTRA_TEXT,
+				"I am playing 2048. My high score is " + 0
 				+ ". Try to beat me! " + appUrl);
 		shareIntent.setType("text/plain");
 		if (mShareActionProvider != null) {
@@ -357,7 +359,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				
 				updateGame();
 				
-				gameStats.totalMoves += 1;
+				gameStats.incrementTotalMoves(1);
 				activeAnimations.clear();
 				animationInProgress = false;
 				
@@ -698,7 +700,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         gameLost = true;
 		
 		// This is the only place where total games played is incremented.
-		gameStats.totalGamesPlayed++;
+		gameStats.incrementGamesPlayed(1);
 		
 		// Create a new lose dialog
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -736,12 +738,19 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 		// Show the dialog
 		dialog.show();
-		
-		save();
+
+        gameStats.updateGameRecords(game.getGameModeId(), game);
+
+
+        save();
 		
 		// Delete the current save file. The user can no longer continue this game.
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		currentGameFile.delete();
+
+
+        Log.d("a", "Getting"+(gameStats.getHighScore(game.getGameModeId())));
+
 
         updateLeaderboards(game.getScore(), game.getGameModeId());
         submitEvents(game);
@@ -839,26 +848,20 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	private String createLoseMessage(Game myGame, Statistics myGameStats) {
 		String message = "";
 		// Notify if there is a new high score
-		if(myGame.getScore() > myGameStats.highScore) {
-			myGameStats.highScore = myGame.getScore();
-			myGameStats.bestGame = myGame;
+		if(myGame.getScore() > myGameStats.getHighScore(myGame.getGameModeId())) {
 			message += "New High Score! " + myGame.getScore();
 		}
 
 		// Notify if there is a new highest tile
-		if(myGame.highestPiece() > myGameStats.highestTile) {
-			myGameStats.highestTile = myGame.highestPiece();
-
+		if(myGame.highestPiece() > myGameStats.getHighestTile(myGame.getGameModeId())) {
 			if(! message.equals(""))
 				message += "\n"; 
 			message += "New Highest Tile! " + myGame.highestPiece();
 		}
 
 		// Only notify if there is a new low score if there are no other records.
-		if(myGameStats.lowScore < 0 ||
-				myGame.getScore() < myGameStats.lowScore) {
-			myGameStats.lowScore = myGame.getScore();
-			myGameStats.worstGame = myGame;
+		if(myGameStats.getLowestScore(game.getGameModeId()) < 0 ||
+				myGame.getScore() < myGameStats.getLowestScore(game.getGameModeId())) {
 
 			if(message.equals(""))
 				message += "New Lowest Score! " + myGame.getScore();
@@ -1166,7 +1169,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			public void onAnimationEnd(Animator animation) {
 				game.removeLowTiles();
 				game.newTurn();
-				gameStats.totalMoves += 1;
+				gameStats.incrementTotalMoves(1);
 				updateGame();
 				activeAnimations.clear();
 				animationInProgress = false;
@@ -1232,8 +1235,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			@Override
 			public void onAnimationRepeat(Animator animation) {
 				game.shuffle();
-				gameStats.totalShufflesUsed += 1;
-				gameStats.totalMoves += 1;
+				gameStats.incrementShufflesUsed(1);
+				gameStats.incrementTotalMoves(1);
 				updateGame();
 			}
 		});
@@ -1396,8 +1399,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				spinAnimation.start();
 
 				game.undo();
-				gameStats.totalMoves += 1;
-				gameStats.totalUndosUsed += 1;
+				gameStats.incrementTotalMoves(1);
+				gameStats.incrementUndosUsed(1);
 				updateGame();
 			}
 		}
@@ -1414,17 +1417,12 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		if(animationInProgress)
 			clearTileListeners();
-		
-		// Save any new records
-		if(game.highestPiece() > gameStats.highestTile)
-			gameStats.highestTile = game.highestPiece();
-		
-		if(game.getScore() > gameStats.highScore) {
-			gameStats.highScore = game.getScore();
-			gameStats.bestGame = game;
-		}
-		
-		game = GameModes.newGameFromId(game.getGameModeId());
+
+        // Save any new records
+        gameStats.updateGameRecords(game.getGameModeId(), game);
+
+        // Create a new game
+        game = GameModes.newGameFromId(game.getGameModeId());
 
         // Disable the undo button if there are no undos remaining
         Button undoButton = ((Button) findViewById(R.id.undo_button));
@@ -1482,7 +1480,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 					@Override
 					public void restoreStarting(int numPackages) {
 						Log.d(LOG_TAG, "Restore from cloud starting.");
-						Log.d(LOG_TAG, ""+gameStats.totalMoves);
+						Log.d(LOG_TAG, ""+gameStats.getTotalMoves());
 						
 						super.restoreStarting(numPackages);
 					}
@@ -1498,7 +1496,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 						Log.d(LOG_TAG, "Restore from cloud finished.");
 						
 						super.restoreFinished(error);
-						Log.d(LOG_TAG, ""+gameStats.totalMoves);
+						Log.d(LOG_TAG, ""+gameStats.getTotalMoves());
 						
 						Log.d(LOG_TAG, "calling load");
 						load();
@@ -1529,7 +1527,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			gameStats = new Statistics();
 		}
 		
-		Log.d(LOG_TAG, "total moves " + gameStats.totalMoves);
+		Log.d(LOG_TAG, "total moves " + gameStats.getTotalMoves());
 		updateGame();
 	}
 	
