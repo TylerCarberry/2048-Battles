@@ -205,66 +205,64 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
     public void createListView() {
 
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+
         LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
         listOfModes.removeAllViewsInLayout();
 
+        // Currently there are 13 game modes, TODO: change this to not be hardcoded in
         for(int i = 1; i < 13; i++) {
 
+            // The layout the contains all info for that mode
             LinearLayout modeDetailLayout = new LinearLayout(this);
             modeDetailLayout.setOrientation(LinearLayout.VERTICAL);
-
-            Display display = getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int width = size.x;
-            int height = size.y;
 
             modeDetailLayout.setLayoutParams(new LinearLayout.LayoutParams(
                             width / 2, LayoutParams.WRAP_CONTENT)
             );
             modeDetailLayout.setGravity(Gravity.CENTER_HORIZONTAL);
 
-
+            // The mode name
             TextView modeName = new TextView(this);
             modeName.setText(getString(GameModes.getGameTitleById(i)));
             modeName.setTextSize(25);
             modeName.setTypeface(null, Typeface.BOLD);
-
             modeName.setLayoutParams(new LinearLayout.LayoutParams(
                             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             );
 
+            // The mode description
             TextView modeDesc = new TextView(this);
             modeDesc.setText(getString(GameModes.getGameDescById(i)));
             modeDesc.setTextSize(20);
-
             modeDesc.setLayoutParams(new LinearLayout.LayoutParams(
                             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             );
             modeDesc.setGravity(Gravity.CENTER_HORIZONTAL);
 
+            // High score of that mode (not implemented yet)
             TextView highScoreTextView = new TextView(this);
             highScoreTextView.setText("High Score: 0");
-
             highScoreTextView.setLayoutParams(new LinearLayout.LayoutParams(
                             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             );
 
+            // There is a 50 dp margin between the description and high score
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)highScoreTextView.getLayoutParams();
             params.setMargins(0, 50, 0, 0);
             highScoreTextView.setLayoutParams(params);
 
-
-
-
+            // Highest tile of that mode (not implemented yet)
             TextView highTileTextView = new TextView(this);
             highTileTextView.setText("Highest Tile: 0");
-
             highTileTextView.setLayoutParams(new LinearLayout.LayoutParams(
                             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             );
 
-
+            // The button used to start the game
             final int gameId = i;
             Button startGameButton = new Button(this);
             startGameButton.setText("Start Game");
@@ -289,16 +287,15 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
                 }
             });
 
-
+            // Add each item of the mode to the layout
             modeDetailLayout.addView(modeName);
-
             modeDetailLayout.addView(modeDesc);
             modeDetailLayout.addView(highScoreTextView);
             modeDetailLayout.addView(highTileTextView);
             modeDetailLayout.addView(startGameButton);
 
+            // Add the mode to the list
             listOfModes.addView(modeDetailLayout);
-
         }
     }
 
