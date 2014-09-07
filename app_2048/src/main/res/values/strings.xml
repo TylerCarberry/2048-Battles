@@ -37,9 +37,9 @@
     <string name="mode_custom">Custom</string>
     <string name="try_again">Try Again</string>
     
-    <string name="mode_desc_normal">10 Undos</string>
+    <string name="mode_desc_normal">10 Undos\n5 Powerups</string>
     <string name="mode_desc_practice">Unlimited undos and powerups. Warns you before you lose.</string>
-    <string name="mode_desc_pro">No Undos</string>
+    <string name="mode_desc_pro">No Undos\nNo Powerups</string>
     <string name="mode_desc_rush">Higher value tiles appear</string>
     <string name="mode_desc_survival">30 seconds time limit, combine tiles for more time **Coming Soon**</string>
     <string name="mode_desc_x">X tile cannot be combined</string>
@@ -48,7 +48,7 @@
     <string name="mode_desc_zen">All tiles combine. Impossible to lose. **Coming Soon**</string>
     <string name="mode_desc_crazy">A 5x5 grid with every other mode enabled **Coming Soon**</string>
     <string name="mode_desc_ghost">All tiles appear as ?</string>
-    <string name="mode_desc_arcade">Every move has a chance of granting a bonus but can also cause an attack</string>
+    <string name="mode_desc_arcade">Randomly gain powerups and attacks</string>
     <string name="mode_desc_custom">Change everything about the game **Coming Soon**</string>
     
     <string name="title_activity_game">GameActivity</string>

@@ -12,11 +12,12 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
-import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -119,48 +120,14 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-
-        /*
-
-		// When the start game button is pressed
-		Button startGame = (Button) findViewById(R.id.start_game_button);
-		startGame.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				// Instead of passing the game to GameActivity through an intent,
-				// it is saved to a file. This should allow greater flexibility in
-				// the game that is passed and should allow custom mode creation.
-				if(gameId != GameModes.LOAD_GAME_ID) {
-					Game game = GameModes.newGameFromId(gameId);
-					game.setGameModeId(gameId);
-					File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
-					try {
-						Save.save(game, currentGameFile);
-					}
-					catch (IOException e) {
-						e.printStackTrace();
-					} 
-				}
-				// Switch to the game activity
-				startGameActivity();
-			}
-		});
-
-		*/
 		
 		// When the continue game button is pressed switch to the game activity
 		// without saving over the saved file
 		continueGame.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-
-                final HorizontalScrollView modeScrollView = (HorizontalScrollView) findViewById(R.id.modeScrollView);
-                modeScrollView.smoothScrollBy(100, 0);
-
-
-                //startGameActivity();
+                startGameActivity();
 			}
 		});
-
-
 
         createListView();
 
@@ -374,10 +341,33 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container,
+			final View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
 
-			return rootView;
+
+            View.OnTouchListener gamesOnClickListener = new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        view.setBackgroundColor(getResources().getColor(R.color.Yellow));
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        view.setBackgroundColor(getResources().getColor(R.color.white));
+                        ((MainActivity)getActivity()).playGames(view);
+                    }
+                    return true;
+                }
+            };
+
+            ImageButton achievementsButton = (ImageButton) rootView.findViewById(R.id.achievements_button);
+            ImageButton leaderboardsButton = (ImageButton) rootView.findViewById(R.id.leaderboards_button);
+            ImageButton questsButton = (ImageButton) rootView.findViewById(R.id.quests_button);
+
+            achievementsButton.setOnTouchListener(gamesOnClickListener);
+            leaderboardsButton.setOnTouchListener(gamesOnClickListener);
+            questsButton.setOnTouchListener(gamesOnClickListener);
+
+            return rootView;
 		}
 	}
 
