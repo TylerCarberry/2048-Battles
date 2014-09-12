@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -70,6 +71,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		// Get an Analytics tracker to report app starts & uncaught exceptions etc.
 		GoogleAnalytics.getInstance(this).reportActivityStart(this);
 
+        createListView();
+
 		super.onStart();
 	}
 	
@@ -88,8 +91,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	 * disable of the continue game button accordingly
 	 */
 	protected void onResume() {
-
-
 
 		FileInputStream fi;
 		File file = new File(getFilesDir(), getString(R.string.file_current_game));
@@ -129,10 +130,24 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 			}
 		});
 
-        createListView();
-
 		super.onResume();
 	}
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        if(hasFocus) {
+            HorizontalScrollView scrollView = (HorizontalScrollView) findViewById(R.id.modeScrollView);
+            if(scrollView.getScrollX() == 0) {
+                Display display = getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int width = size.x;
+                scrollView.smoothScrollTo(width / 4, 0);
+            }
+        }
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
