@@ -3,208 +3,120 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/AntiqueWhite"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    android:orientation="horizontal"
     tools:context="com.example.app_2048.MainActivity$PlaceholderFragment" >
 
     <TextView
         android:id="@+id/intro_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
         android:text="@string/intro"
         android:textSize="35sp" />
-    
-     <!-- sign-in button -->
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/continue_game_button" />
-
-    <!-- sign-out button -->
-    <Button
-        android:id="@+id/sign_out_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/continue_game_button"
-        android:onClick="onClick"
-        android:text="Sign Out"
-        android:visibility="gone" />
-
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/prompt_select_game"
-        android:layout_below="@+id/name_textview"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="25dp" />
-
-    <RelativeLayout
-        android:id="@+id/relativeLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/name_textview" >
-
-        <ScrollView
-            android:id="@+id/scrollView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="230dp"
-                android:columnCount="1"
-                android:orientation="vertical" >
-
-                <Button
-                    android:id="@+id/normal_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="createGame"
-                    android:text="@string/mode_normal" />
-
-                <Button
-                    android:id="@+id/practice_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="createGame"
-                    android:text="@string/mode_practice" />
-
-                <Button
-                    android:id="@+id/arcade_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="createGame"
-                    android:text="@string/mode_arcade" />
-
-                <Button
-                    android:id="@+id/x_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="createGame"
-                    android:text="@string/mode_x" />
-
-                <Button
-                    android:id="@+id/corner_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="createGame"
-                    android:text="@string/mode_corner" />
-
-                <Button
-                    android:id="@+id/rush_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="createGame"
-                    android:text="@string/mode_rush" />
-
-                <Button
-                    android:id="@+id/survival_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="createGame"
-                    android:text="@string/mode_survival" />
-
-                <Button
-                    android:id="@+id/zen_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="createGame"
-                    android:text="@string/mode_zen" />
-                
-                <Button
-                    android:id="@+id/ghost_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="createGame"
-                    android:text="@string/mode_ghost" />
-                
-
-                <Button
-                    android:id="@+id/crazy_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="createGame"
-                    android:text="@string/mode_crazy" />
-                
-                <Button
-                    android:id="@+id/custom_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="createGame"
-                    android:text="@string/mode_custom" />
-            </LinearLayout>
-        </ScrollView>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/prompt_select_game"
-        android:layout_toRightOf="@+id/relativeLayout1" >
-
-        <TextView
-            android:id="@+id/game_mode_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/mode_normal"
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/game_desc_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/game_mode_textview"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:text="@string/mode_desc_normal"
-            android:textSize="20sp" />
-
-        <Button
-            android:id="@+id/start_game_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:text="Start Game" />
-        
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/prompt_select_game"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/continue_game_button"
-        android:layout_marginTop="14dp"
-        android:layout_toRightOf="@+id/relativeLayout1"
-        android:gravity="center"
-        android:text="Start A New Game"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/name_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/intro_textview"
-        android:layout_below="@+id/intro_textview"
-        android:gravity="center"
-        android:text="@string/intro_creator_name"
-        android:textSize="20sp" />
 
     <Button
         android:id="@+id/continue_game_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/intro_textview"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="Continue Game"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/intro_textview"
+        android:layout_toEndOf="@+id/intro_textview" />
+
+
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/intro_textview"
+        android:layout_toLeftOf="@id/play_games_layout"
+        android:layout_marginTop="10dp">
+
+        <HorizontalScrollView
+            android:id="@+id/modeScrollView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/modeLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"/>
+
+        </HorizontalScrollView>
+    </RelativeLayout>
+
+
+
+
+    <LinearLayout
+        android:id="@+id/play_games_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_alignParentRight="true"
-        android:onClick="startGameActivity"
-        android:text="Continue Saved Game" />
+        android:layout_weight="0"
+        android:background="@color/White" >
+        <Button
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onClick"
+            android:text="Sign In" />
+
+        <Button
+            android:id="@+id/sign_out_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onClick"
+            android:text="Sign Out"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/achievements_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/White"
+            android:onClick="playGames"
+            android:scaleType="fitCenter"
+            android:src="@drawable/games_achievements_green" />
+
+        <ImageButton
+            android:id="@+id/leaderboards_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/White"
+            android:onClick="playGames"
+            android:scaleType="fitCenter"
+            android:src="@drawable/games_leaderboards_green" />
+
+        <ImageButton
+            android:id="@+id/quests_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/White"
+            android:onClick="playGames"
+            android:scaleType="fitCenter"
+            android:src="@drawable/games_quests_green" />
+
+    </LinearLayout>
+
+
 
 </RelativeLayout>
