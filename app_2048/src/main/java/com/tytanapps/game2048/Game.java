@@ -49,8 +49,12 @@ public class Game implements java.io.Serializable
 	private int movesRemaining = -1;
 	private int undosRemaining  = -1;
 	private int powerupsRemaining  = -1;
-	
-	// The time limit in seconds before the game automatically quits
+
+    private int undosUsed = 0;
+    private int powerupsUsed = 0;
+
+
+    // The time limit in seconds before the game automatically quits
 	// The timer starts immediately after the first move
 	private double timeLeft = -1;
 	
@@ -274,7 +278,8 @@ public class Game implements java.io.Serializable
 			score = history.popScore();
 			board = history.popBoard();
 			turnNumber--;
-			
+            undosUsed++;
+
 			// Use up one of the undos allowed
 			if(undosRemaining > 0)
 				undosRemaining--;
@@ -767,7 +772,8 @@ public class Game implements java.io.Serializable
 	 * @return The new amount remaining.
 	 */
 	public int decrementPowerupsRemaining() {
-		if(powerupsRemaining > 0)
+		powerupsUsed++;
+        if(powerupsRemaining > 0)
 			powerupsRemaining--;
 		return powerupsRemaining;
 	}
@@ -778,6 +784,14 @@ public class Game implements java.io.Serializable
 	public void incrementPowerupsRemaining() {
 		powerupsRemaining++;
 	}
+
+    public int getUndosUsed() {
+        return undosUsed;
+    }
+
+    public int getPowerupsUsed() {
+        return powerupsUsed;
+    }
 	
 	
 	/**

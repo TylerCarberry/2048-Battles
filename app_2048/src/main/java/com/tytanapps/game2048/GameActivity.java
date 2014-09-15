@@ -259,6 +259,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Stop all active animations. If this is not done the game will crash
 		for(ObjectAnimator animation : activeAnimations)
 			animation.end();
+
+        if(gameStats.getTotalMoves() >= 2048 && getApiClient().isConnected()) {
+            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
+        }
 		
 		animationInProgress = false;
 		
@@ -290,10 +294,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		calculateDistances();
 		int highestTile = game.highestPiece();
-		
-		// Load the speed to move the tiles from the settings
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-				
+
 		// Save the game history before each move
 		game.saveGameInHistory();
 		
@@ -358,6 +359,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				updateGame();
 				
 				gameStats.incrementTotalMoves(1);
+
+                if(gameStats.getTotalMoves() == 2048 && getApiClient().isConnected()) {
+                    Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
+                }
+
 				activeAnimations.clear();
 				animationInProgress = false;
 				
@@ -757,8 +763,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         if(game.getScore() <= 200 && game.getGameModeId() == GameModes.NORMAL_MODE_ID &&  getApiClient().isConnected()) {
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_worst_player_ever));
         }
-
-	}
+        if(game.getPowerupsUsed() <= 0 && game.getUndosUsed() <= 0 &&
+                game.getGameModeId() == GameModes.PRACTICE_MODE_ID &&  getApiClient().isConnected()) {
+            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_i_dont_want_any_help));
+        }
+    }
 
     /**
      * Updates the leaderboards with the new score
@@ -780,6 +789,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
                     break;
                 case GameModes.CORNER_MODE_ID:
                     leaderboard = getString(R.string.leaderboard_corner_mode);
+                    break;
+                case GameModes.RUSH_MODE_ID:
+                    leaderboard = getString(R.string.leaderboard_rush_mode);
                     break;
             }
 
@@ -1171,6 +1183,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				game.removeLowTiles();
 				game.newTurn();
 				gameStats.incrementTotalMoves(1);
+                if(gameStats.getTotalMoves() == 2048 && getApiClient().isConnected()) {
+                    Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
+                }
 				updateGame();
 				activeAnimations.clear();
 				animationInProgress = false;
@@ -1238,6 +1253,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				game.shuffle();
 				gameStats.incrementShufflesUsed(1);
 				gameStats.incrementTotalMoves(1);
+                if(gameStats.getTotalMoves() == 2048 && getApiClient().isConnected()) {
+                    Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
+                }
 				updateGame();
 			}
 		});
