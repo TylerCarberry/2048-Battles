@@ -64,7 +64,7 @@
     <string name="move_remaining">Moves Left</string>
     <string name="time_remaining">Time Left</string>
     <string name="powerups_remaining">Powerups Left</string>
-    <string name="you_lose">YOU LOSE</string>
+    <string name="you_lost">You Lost</string>
     <string name="slow">Slow</string>
     <string name="medium">Medium</string>
     <string name="fast">Fast</string>
@@ -78,11 +78,29 @@
     <string name="total_undos">Total Undos</string>
     <string name="total_shuffles">Total Shuffles</string>
     <string name="total_moves">Total Moves</string>
-    <string name="high_score">High Score</string>
+    <string name="high_score">High Score: %1$d</string>
+    <string name="highest_tile">Highest Tile: %1$d</string>
     <string name="lowest_score">Lowest Score</string>
-    <string name="highest_tile">Highest Tile</string>
+    <string name="new_high_score">New High Score: %1$d</string>
+    <string name="new_high_tile">New Highest Tile: %1$d</string>
+    <string name="new_low_score">New Lowest Score: %1$d</string>
+    <string name="final_score">Final Score: %1$d</string>
+    <string name="share_intent_message">I am playing 2048. My high score is %1$d. Try to beat me!</string>
 
     <string name="prompt_choose_powerup">Choose Powerup</string>
     <string name="not_signed_in_error">You must be signed in to access Play Games</string>
-    
+    <string name="continue_game">Continue Game</string>
+    <string name="share">Share</string>
+    <string name="start_new_game">Start A New Game</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="error_can_not_save">Error: The game cannot be saved</string>
+
+    <string name="x_attack_active">X Attack Active for %1$d turns</string>
+    <string name="ghost_attack_active">Ghost Attack Active for %1$d turns</string>
+    <string name="ice_attack_active">Frozen! Cannot move %1$s for %2$d turns</string>
+    <string name="start_game">Start Game</string>
+
 </resources>

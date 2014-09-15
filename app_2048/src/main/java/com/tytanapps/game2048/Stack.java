@@ -6,15 +6,13 @@ package com.tytanapps.game2048;
  */
 
 import java.util.LinkedList;
-
-import android.util.Log;
 public class Stack implements Cloneable, java.io.Serializable
 {
 	private static final long serialVersionUID = -7493874171801469542L;
 	final static String LOG_TAG = Stack.class.getSimpleName();
 	
-	LinkedList<Grid> stackBoard;
-	LinkedList<Integer> stackScore;
+	private LinkedList<Grid> stackBoard;
+	private LinkedList<Integer> stackScore;
 	
 	/**
 	 * Constructor

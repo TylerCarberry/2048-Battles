@@ -8,21 +8,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.io.StreamCorruptedException;
-import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Save
 {
-	// NOT USED
 	public static final String SAVEGAMELOCATION = "savegame.txt";
 	public static final String HIGHSCORELOCATION = "highscore.txt";
-	public static final String KEYMAPLOCATION = "keymap.txt";
-	
+
 	/**
 	 * Saves the current game to a file. Overwrites any previous saves.
-	 * @param game The game to save
+	 * @param object The object to save
+     * @param file The file to save to
 	 * @throws IOException Save file can not be accessed
 	 */
 	public static void save(Serializable object, File file) throws IOException

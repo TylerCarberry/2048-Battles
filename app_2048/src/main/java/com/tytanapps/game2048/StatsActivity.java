@@ -16,7 +16,7 @@ import java.io.IOException;
 
 public class StatsActivity extends Activity {
 	
-	Statistics gameStats;
+	private Statistics gameStats;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

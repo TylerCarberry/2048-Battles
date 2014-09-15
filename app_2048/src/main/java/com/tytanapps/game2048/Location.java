@@ -101,8 +101,7 @@ public class Location implements Cloneable, java.io.Serializable
 	*/
 	public Location getLeft()
 	{
-		Location left = new Location(getRow(), getCol()-1);
-		return left;
+		return new Location(getRow(), getCol()-1);
 	}
 
     /**
@@ -110,8 +109,7 @@ public class Location implements Cloneable, java.io.Serializable
      */
     public Location getLeft(int distance)
     {
-        Location left = new Location(getRow(), getCol()-distance);
-        return left;
+        return new Location(getRow(), getCol() - distance);
     }
 	
 	/** 
@@ -119,8 +117,7 @@ public class Location implements Cloneable, java.io.Serializable
 	*/
 	public Location getRight()
 	{
-		Location right = new Location(getRow(), getCol()+1);
-		return right;
+		return new Location(getRow(), getCol()+1);
 	}
 
     /**
@@ -128,8 +125,7 @@ public class Location implements Cloneable, java.io.Serializable
      */
     public Location getRight(int distance)
     {
-        Location right = new Location(getRow(), getCol()+distance);
-        return right;
+        return new Location(getRow(), getCol()+distance);
     }
 	
 	/** 
@@ -137,8 +133,7 @@ public class Location implements Cloneable, java.io.Serializable
 	*/
 	public Location getUp()
 	{
-		Location up = new Location(getRow()-1, getCol());
-		return up;
+		return new Location(getRow()-1, getCol());
 	}
 
     /**
@@ -146,8 +141,7 @@ public class Location implements Cloneable, java.io.Serializable
      */
     public Location getUp(int distance)
     {
-        Location up = new Location(getRow()-distance, getCol());
-        return up;
+        return new Location(getRow()-distance, getCol());
     }
 	
 	/** 
@@ -155,8 +149,7 @@ public class Location implements Cloneable, java.io.Serializable
 	*/
 	public Location getDown()
 	{
-		Location down = new Location(getRow()+1, getCol());
-		return down;
+		return new Location(getRow()+1, getCol());
 	}
 
     /**
@@ -164,8 +157,7 @@ public class Location implements Cloneable, java.io.Serializable
      */
     public Location getDown(int distance)
     {
-        Location down = new Location(getRow()+distance, getCol());
-        return down;
+        return new Location(getRow()+distance, getCol());
     }
 	
 	/** Return the location in the given direction

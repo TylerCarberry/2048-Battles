@@ -4,9 +4,6 @@
     android:versionCode="12"
     android:versionName="0.5.1" >
 
-    <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="19" />
 
     <application
         android:name="com.tytanapps.game2048.MainApplication"

@@ -27,7 +27,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="Continue Game"
+        android:text="@string/continue_game"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/intro_textview"
         android:layout_toEndOf="@+id/intro_textview" />
@@ -56,9 +56,6 @@
         </HorizontalScrollView>
     </RelativeLayout>
 
-
-
-
     <LinearLayout
         android:id="@+id/play_games_layout"
         android:layout_width="wrap_content"
@@ -68,13 +65,12 @@
         android:layout_alignParentRight="true"
         android:layout_weight="0"
         android:background="@color/White" >
-        <Button
+        <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:onClick="onClick"
-            android:text="Sign In" />
+            android:onClick="onClick" />
 
         <Button
             android:id="@+id/sign_out_button"
@@ -82,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="onClick"
-            android:text="Sign Out"
+            android:text="@string/sign_out"
             android:visibility="gone" />
 
         <ImageButton

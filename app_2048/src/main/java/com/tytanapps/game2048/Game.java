@@ -931,9 +931,7 @@ public class Game implements java.io.Serializable
 		if(d1 == null)
 			return 0;
 		
-		Date d2 = new Date();
-		double seconds = ((d2.getTime() - d1.getTime()) / 1000.0);
-		return seconds;
+		return (new Date().getTime() - d1.getTime()) / 1000.0;
 	}
 	
 	/**
@@ -978,8 +976,7 @@ public class Game implements java.io.Serializable
 	 */
 	public Game clone()
 	{
-		Game game = new Game(this);
-		return game;
+		return new Game(this);
 	}
 
 	/**

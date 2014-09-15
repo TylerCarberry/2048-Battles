@@ -1,19 +1,18 @@
 package com.tytanapps.game2048;
 
-import java.io.IOException;
-
 import android.app.backup.BackupAgentHelper;
 import android.app.backup.BackupDataInput;
 import android.app.backup.BackupDataOutput;
 import android.app.backup.FileBackupHelper;
-import android.app.backup.SharedPreferencesBackupHelper;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
+
+import java.io.IOException;
 
 
 public class TheBackupAgent extends BackupAgentHelper {
 	
-	final static String LOG_TAG = TheBackupAgent.class.getSimpleName();
+	private final static String LOG_TAG = TheBackupAgent.class.getSimpleName();
 	
 	// The name of the file
 	public final String CURRENT_GAME_FILENAME = "CURRENT_GAME";

@@ -55,7 +55,7 @@ import java.util.List;
 
 public class GameActivity extends BaseGameActivity implements OnGestureListener {
 	
-	final static String LOG_TAG = GameActivity.class.getSimpleName();
+	private final static String LOG_TAG = GameActivity.class.getSimpleName();
 	
 	// The time in milliseconds for the animation
 	public static final long SHUFFLE_SPEED = 300;
@@ -67,7 +67,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
     private static boolean boardCreated = false;
 	private static Game game;
 	
-	GridLayout gridLayout;
+	private GridLayout gridLayout;
 	
 	// Warns about making a making a move that may lose the game
 	private boolean XTileAttackActive = false;
@@ -76,13 +76,13 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	// Used to detect swipes and move the board
 	private GestureDetectorCompat mDetector; 
 	
-	String appUrl = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
+	public final String APP_URL = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
 	
 	// Becomes false when the game is moved and becomes true in onDown
-	boolean listenForSwipe = true;
+	private boolean listenForSwipe = true;
 	
-	boolean animationInProgress = false;
-	boolean gameLost = false;
+	private boolean animationInProgress = false;
+	private boolean gameLost = false;
 	
 	// This keeps track of the active animations and
 	// stops them in onStop
@@ -143,10 +143,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		Intent shareIntent = new Intent();
 		shareIntent.setAction(Intent.ACTION_SEND);
 
-        // TODO: High score
-        shareIntent.putExtra(Intent.EXTRA_TEXT,
-				"I am playing 2048. My high score is " + 0
-				+ ". Try to beat me! " + appUrl);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.share_intent_message),
+                        gameStats.getHighScore(game.getGameModeId())) + " " + APP_URL);
 		shareIntent.setType("text/plain");
 		if (mShareActionProvider != null) {
 	        mShareActionProvider.setShareIntent(shareIntent);
@@ -184,7 +182,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		}
 
         if(id == R.id.menu_item_share) {
-            Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Debug: Share pressed", Toast.LENGTH_SHORT).show();
 
             if(getApiClient().isConnected()) {
                 Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_brag_to_your_friends));
@@ -273,7 +271,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * Moves all of the tiles
 	 * @param direction Should use the static variables in Location class
 	 */
-	public void act(int direction) {
+	protected void act(int direction) {
 
         animationInProgress = true;
 		
@@ -467,19 +465,20 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		switch(activeGameAttack) {
 		case Game.X_ATTACK:
-			resultString += "X Attack active";
+			resultString += String.format(getString(R.string.x_attack_active), game.getAttackDuration());
 			break;
 		case Game.GHOST_ATTACK:
-			resultString += "Ghost Attack active";
+            resultString += String.format(getString(R.string.ghost_attack_active), game.getAttackDuration());
 			break;
 		case Game.ICE_ATTACK:
-			resultString += "Frozen! Cannot move " + Location.directionToString(game.getIceDirection());
-			break;
+            resultString += String.format(getString(R.string.ice_attack_active),
+                    Location.directionToString(game.getIceDirection()),
+                    game.getAttackDuration());
+            break;
 		default:
 			return "";
 		}
 		
-		resultString += " for " + game.getAttackDuration() + " turns";
 		return resultString;
 	}
 
@@ -704,7 +703,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		
 		// Create a new lose dialog
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("You Lost");
+		builder.setTitle(getString(R.string.you_lost));
 		// Two buttons appear, try again and cancel
 		builder.setPositiveButton(R.string.try_again, new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
@@ -795,7 +794,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * Update the events on google play games with the game information
 	 * @param myGame The game to get the data from
 	 */
-	public void submitEvents(Game myGame)
+	private void submitEvents(Game myGame)
 	{
 		if(getApiClient().isConnected()) {
 			String playedGameId = getString(R.string.event_games_lost);
@@ -849,14 +848,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		String message = "";
 		// Notify if there is a new high score
 		if(myGame.getScore() > myGameStats.getHighScore(myGame.getGameModeId())) {
-			message += "New High Score! " + myGame.getScore();
+            message += String.format(getString(R.string.new_high_score), myGame.getScore());
 		}
 
 		// Notify if there is a new highest tile
 		if(myGame.highestPiece() > myGameStats.getHighestTile(myGame.getGameModeId())) {
 			if(! message.equals(""))
-				message += "\n"; 
-			message += "New Highest Tile! " + myGame.highestPiece();
+				message += "\n";
+            message += String.format(getString(R.string.new_high_tile), myGame.highestPiece());
 		}
 
 		// Only notify if there is a new low score if there are no other records.
@@ -864,12 +863,12 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				myGame.getScore() < myGameStats.getLowestScore(game.getGameModeId())) {
 
 			if(message.equals(""))
-				message += "New Lowest Score! " + myGame.getScore();
+                message += String.format(getString(R.string.new_low_score), myGame.getScore());
 		}
 
 		// If there are no records then just show the score
 		if(message.equals(""))
-			message += "Final Score: " + myGame.getScore();
+            message += String.format(getString(R.string.final_score), myGame.getScore());
 		return message;
 	}
 	
@@ -909,6 +908,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 							game.decrementPowerupsRemaining();
 							updateTextviews();
 							break;
+                        // Debug option, I change this to test the code
+                        // Currently doubles all tiles
                         case 4:
                             Grid newGrid = game.getGrid();
                             List<Location> tiles = newGrid.toList();
@@ -1248,7 +1249,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	/**
 	 * Freezes the game (can not move in a direction for a random amount of turns)
 	 */
-	public void ice() {
+	private void ice() {
 		// This attack cannot be stacked
 		if(game.getAttackDuration() <= 0)
 			game.ice();
@@ -1331,13 +1332,13 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * Warn the user about moving in that direction
 	 * @return True if the user decided to move in that direction anyway
 	 */
-	public void warnAboutMove(final int direction) {
+	private void warnAboutMove(final int direction) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Are you sure?");
+		builder.setTitle(getString(R.string.are_you_sure));
 		builder.setMessage("Moving " + Location.directionToString(direction) + " might cause you to lose");
 		
 		// Two buttons appear, yes and no
-		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
 			// If the user clicked yes consume the powerup and move
 			public void onClick(DialogInterface dialog, int id) {
                 game.setGenieEnabled(false);
@@ -1347,7 +1348,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
                     game.setGenieEnabled(true);
 			}
 		});
-		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
 			// If the user clicked no consume the powerup and don't move
 			public void onClick(DialogInterface dialog, int id) {
                 if(game.getGameModeId() != GameModes.PRACTICE_MODE_ID)
@@ -1366,7 +1367,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * Undo the game. Currently does not have any animations because it
 	 * would be difficult to track every tile separately
 	 */
-	public void undo() {
+	private void undo() {
 		final Button undoButton = (Button) findViewById(R.id.undo_button);
 		if(game.getUndosRemaining() == 0)
 			undoButton.setEnabled(false);
@@ -1409,7 +1410,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	/**
 	 * Restart the game.
 	 */
-	public void restartGame() {
+	private void restartGame() {
         // Spin the restart button 360 degrees counterclockwise
 		Button restartButton = (Button) findViewById(R.id.restart_button);
 		restartButton.setRotation(0);
@@ -1456,13 +1457,12 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		} catch (IOException e) {
 			e.printStackTrace();
 			// Notify the user of the error through a toast
-			Toast.makeText(getApplicationContext(), "Error: Save file not found", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), getString(R.string.error_can_not_save), Toast.LENGTH_SHORT).show();
 		}
 		requestBackup();
 	}
 	
-	
-	public void requestBackup() {
+	protected void requestBackup() {
 
 		Log.d(LOG_TAG, "requesting backup");
 		

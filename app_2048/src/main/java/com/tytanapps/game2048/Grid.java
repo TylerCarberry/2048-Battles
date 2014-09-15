@@ -183,8 +183,7 @@ public class Grid implements Cloneable, java.io.Serializable
 			for(int col = 0; col < board[0].length; col++)
 				temp[row][col] = board[row][col];
 		
-		Grid result = new Grid(temp);
-		return result;	
+		return new Grid(temp);
 	}
 	
 	

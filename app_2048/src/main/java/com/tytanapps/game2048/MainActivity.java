@@ -41,7 +41,7 @@ import java.io.StreamCorruptedException;
 
 public class MainActivity extends BaseGameActivity implements View.OnClickListener, QuestUpdateListener
 {
-	final static String LOG_TAG = MainActivity.class.getSimpleName();
+	private final static String LOG_TAG = MainActivity.class.getSimpleName();
 
 	
 	@Override
@@ -185,7 +185,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	}
 
 
-    public void createListView() {
+    private void createListView() {
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -246,9 +246,9 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             );
             modeDesc.setGravity(Gravity.CENTER_HORIZONTAL);
 
-            // High score of that mode (not implemented yet)
+            // High score of that mode
             TextView highScoreTextView = new TextView(this);
-            highScoreTextView.setText("High Score: " + gameStats.getHighScore(i));
+            highScoreTextView.setText(String.format(getString(R.string.high_score), gameStats.getHighScore(i)));
             highScoreTextView.setLayoutParams(new LinearLayout.LayoutParams(
                             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             );
@@ -258,9 +258,9 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             params.setMargins(0, 50, 0, 0);
             highScoreTextView.setLayoutParams(params);
 
-            // Highest tile of that mode (not implemented yet)
+            // Highest tile of that mode
             TextView highTileTextView = new TextView(this);
-            highTileTextView.setText("Highest Tile: " + gameStats.getHighestTile(i));
+            highTileTextView.setText(String.format(getString(R.string.highest_tile), gameStats.getHighestTile(i)));
             highTileTextView.setLayoutParams(new LinearLayout.LayoutParams(
                             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             );
@@ -268,7 +268,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             // The button used to start the game
             final int gameId = i;
             Button startGameButton = new Button(this);
-            startGameButton.setText("Start Game");
+            startGameButton.setText(getString(R.string.start_game));
             startGameButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
 
@@ -307,7 +307,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	/**
 	 * Display all quests
 	 */
-	public void showQuests()
+	protected void showQuests()
 	{
 		// In the developer tutorial they use Quests.SELECT_ALL_QUESTS
 		// but that is not valid for me. That may require an update
@@ -468,7 +468,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	/**
 	 * Switches to the game activity
 	 */
-	public void startGameActivity() {
+	private void startGameActivity() {
 		startActivity(new Intent(this, GameActivity.class));
 	}
 
@@ -478,8 +478,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	 */
 	public void onSignInFailed() {
 	    
-		// The sign in button is not a normal button, so cast to a view instead
-		View signInButton = (View) findViewById(R.id.sign_in_button);
+		// The sign in button is not a normal button, so keep it as a default view
+		View signInButton = findViewById(R.id.sign_in_button);
 	    
 		// If the user has switched views before the sign in failed then the buttons
 		// are null and this will cause an error
@@ -495,8 +495,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	@Override
 	public void onSignInSucceeded() {
 
-        // The sign in button is not a normal button, so cast to a view instead
-        View signInButton = (View) findViewById(R.id.sign_in_button);
+        // The sign in button is not a normal button, so keep it as a default view
+        View signInButton = findViewById(R.id.sign_in_button);
 
         // If the user has switched views before the sign in failed then the buttons
         // are null and this will cause an error
