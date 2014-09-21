@@ -216,8 +216,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             e.printStackTrace();
         }
 
-        // Currently there are 13 game modes, TODO: change this to not be hardcoded in
-        for(int i = 1; i < 13; i++) {
+        // Loop through every game mode and add it to the list
+        for(int id : GameModes.getListOfGameModesIds()) {
 
             // The layout the contains all info for that mode
             LinearLayout modeDetailLayout = new LinearLayout(this);
@@ -230,7 +230,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
             // The mode name
             TextView modeName = new TextView(this);
-            modeName.setText(getString(GameModes.getGameTitleById(i)));
+            modeName.setText(getString(GameModes.getGameTitleById(id)));
             modeName.setTextSize(25);
             modeName.setTypeface(null, Typeface.BOLD);
             modeName.setLayoutParams(new LinearLayout.LayoutParams(
@@ -239,7 +239,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
             // The mode description
             TextView modeDesc = new TextView(this);
-            modeDesc.setText(getString(GameModes.getGameDescById(i)));
+            modeDesc.setText(getString(GameModes.getGameDescById(id)));
             modeDesc.setTextSize(20);
             modeDesc.setLayoutParams(new LinearLayout.LayoutParams(
                             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
@@ -248,7 +248,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
             // High score of that mode
             TextView highScoreTextView = new TextView(this);
-            highScoreTextView.setText(String.format(getString(R.string.high_score), gameStats.getHighScore(i)));
+            highScoreTextView.setText(String.format(getString(R.string.high_score), gameStats.getHighScore(id)));
             highScoreTextView.setLayoutParams(new LinearLayout.LayoutParams(
                             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             );
@@ -260,13 +260,13 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
             // Highest tile of that mode
             TextView highTileTextView = new TextView(this);
-            highTileTextView.setText(String.format(getString(R.string.highest_tile), gameStats.getHighestTile(i)));
+            highTileTextView.setText(String.format(getString(R.string.highest_tile), gameStats.getHighestTile(id)));
             highTileTextView.setLayoutParams(new LinearLayout.LayoutParams(
                             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             );
 
             // The button used to start the game
-            final int gameId = i;
+            final int gameId = id;
             Button startGameButton = new Button(this);
             startGameButton.setText(getString(R.string.start_game));
             startGameButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,

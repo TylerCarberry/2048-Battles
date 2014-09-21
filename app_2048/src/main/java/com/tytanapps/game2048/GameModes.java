@@ -1,5 +1,8 @@
 package com.tytanapps.game2048;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameModes
 {
 	public static final int LOAD_GAME_ID = 0;
@@ -16,7 +19,31 @@ public class GameModes
 	public static final int GHOST_MODE_ID = 11;
 	public static final int CRAZY_MODE_ID = 12;
 	public static final int CUSTOM_MODE_ID = 13;
-	
+
+
+    public static List<Integer> getListOfGameModesIds() {
+        List<Integer> gameModes = new ArrayList<Integer>();
+        gameModes.add(PRACTICE_MODE_ID);
+        gameModes.add(NORMAL_MODE_ID);
+        gameModes.add(PRO_MODE_ID);
+        gameModes.add(ARCADE_MODE_ID);
+        gameModes.add(RUSH_MODE_ID);
+        gameModes.add(X_MODE_ID);
+        gameModes.add(CORNER_MODE_ID);
+        gameModes.add(GHOST_MODE_ID);
+
+        // The following modes are coming soon
+        gameModes.add(ZEN_MODE_ID);
+        gameModes.add(SPEED_MODE_ID);
+        gameModes.add(SURVIVAL_MODE_ID);
+        gameModes.add(CRAZY_MODE_ID);
+
+
+
+
+        return gameModes;
+    }
+
 	public static Game newGameFromId(int id)
 	{
 		switch (id) {
