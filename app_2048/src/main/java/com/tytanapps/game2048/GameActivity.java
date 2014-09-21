@@ -280,10 +280,16 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         animationInProgress = true;
 		
 		// If the ice attack is active in that direction do not move
-		if((game.getAttackDuration() > 0 && game.getIceDirection() == direction) || gameLost) {
-			animationInProgress = false;
+		if((game.getAttackDuration() > 0 && game.getIceDirection() == direction)) {
+			emphasizeAttack();
+            animationInProgress = false;
 			return;
 		}
+
+        if(gameLost) {
+            animationInProgress = false;
+            return;
+        }
 
         // The genie warns about making a move that will cause the game to lose
 		if(game.getGenieEnabled() && game.causeGameToLose(direction)) {
@@ -1424,6 +1430,30 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			}
 		}
 	}
+
+    // If an ice attack is active and the user tries to move anyway screen will flash
+    private void emphasizeAttack() {
+        TextView activeAttack = (TextView) findViewById(R.id.active_attacks_textview);
+
+        if(activeAttack.getAnimation() == null) {
+            ObjectAnimator scaleUpX = ObjectAnimator.ofFloat(activeAttack, View.SCALE_X, 1.1f);
+            ObjectAnimator scaleUpY = ObjectAnimator.ofFloat(activeAttack, View.SCALE_Y, 1.1f);
+
+            // The tile increases in size by a factor of 1.1 and shrinks back down. At the same time
+            // it is fading to the new value.
+            scaleUpX.setDuration(500);
+            scaleUpY.setDuration(500);
+            scaleUpX.setRepeatCount(1);
+            scaleUpX.setRepeatMode(ObjectAnimator.REVERSE);
+            scaleUpY.setRepeatCount(1);
+            scaleUpY.setRepeatMode(ObjectAnimator.REVERSE);
+
+            AnimatorSet scaleDown = new AnimatorSet();
+
+            scaleDown.play(scaleUpX).with(scaleUpY);
+            scaleDown.start();
+        }
+    }
 	
 	/**
 	 * Restart the game.
