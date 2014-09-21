@@ -823,16 +823,19 @@ public class Game implements java.io.Serializable
 	 * 90% add 2, 10% add 4
 	 * CHANCE_OF_2 is a final variable declared at the top
 	 * 
-	 * If dynamicTileSpawing is true,
-	 * any tile less than the max tile can spawn
+	 * If dynamicTileSpawing is true, any tile less than the max tile can spawn
 	 * Ex. If the highest piece is 32 then a 2,4,8, or 16 can appear
 	 * All possible tiles have an equal chance of appearing
 	 */
 	public Location addRandomPiece()
 	{
-		List<Integer> possibleTiles = getPossibleTilesToAdd();
-		int random = (int) (Math.random() * possibleTiles.size());
-		return addRandomPiece(possibleTiles.get(random));
+        if(dynamicTileSpawning) {
+            List<Integer> possibleTiles = getPossibleTilesToAdd();
+            int random = (int) (Math.random() * possibleTiles.size());
+            return addRandomPiece(possibleTiles.get(random));
+        }
+        else
+            return addRandomPiece((Math.random() < CHANCE_OF_2) ? 2 : 4);
 	}
 	
 	/**

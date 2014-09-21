@@ -60,7 +60,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	// The time in milliseconds for the animation
 	public static final long SHUFFLE_SPEED = 300;
 
-    // This values are overridden with the options chosen in the settings
+    // These values are overridden with the options chosen in the settings
     public static long tileSlideSpeed = 175;
     public static long swipeSensitivity = 100;
 
