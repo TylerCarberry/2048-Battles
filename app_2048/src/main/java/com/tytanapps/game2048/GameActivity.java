@@ -12,8 +12,12 @@ import android.app.backup.RestoreObserver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
@@ -50,6 +54,7 @@ import com.tytanapps.game2048.MainApplication.TrackerName;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,6 +100,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	// The distance in pixels between tiles
 	private static int verticalTileDistance = 0;
 	private static int horizontalTileDistance = 0;
+
+    Drawable foo = null;
 	
 	ShareActionProvider mShareActionProvider;
 	
@@ -181,17 +188,58 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			return true;
 		}
 
-        if(id == R.id.menu_item_share) {
-            Toast.makeText(this, "Debug: Share pressed", Toast.LENGTH_SHORT).show();
+        if(id == R.id.menu_item_share && getApiClient().isConnected()) {
+            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_brag_to_your_friends));
+            return true;
+        }
 
-            if(getApiClient().isConnected()) {
-                Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_brag_to_your_friends));
-            }
-
+        if(id == R.id.action_debug) {
+            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+            photoPickerIntent.setType("image/*");
+            startActivityForResult(photoPickerIntent, 100);
         }
 
 		return super.onOptionsItemSelected(item);
 	}
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+        Log.d("A", "ON ACTIVITY RESULT");
+
+        switch(requestCode) {
+            case 100:
+                Log.d("A", "100");
+
+                if(resultCode == RESULT_OK){
+                    Log.d("A", "RESULT OK");
+
+                    try {
+                        Uri selectedImage = imageReturnedIntent.getData();
+                        InputStream imageStream = getContentResolver().openInputStream(selectedImage);
+                        Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
+
+                        //Button undoButton = (Button) findViewById(R.id.undo_button);
+                        //undoButton.setBackgroundDrawable(new BitmapDrawable(yourSelectedImage));
+
+                        //foo = new BitmapDrawable(yourSelectedImage);
+
+                        //int width = getResources().getDrawable(R.drawable.tile_2).getBounds().width();
+                        //int height = getResources().getDrawable(R.drawable.tile_2).getBounds().height();
+
+                        foo = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(yourSelectedImage, 128, 128, true));
+
+                        Log.d("A", "DONE ACTIVITY RESULT");
+
+                    }
+                    catch(Exception e) {
+                        Log.d(LOG_TAG, "ERROR");
+                        Log.e(LOG_TAG, e.getMessage());
+                    }
+                }
+        }
+    }
 
 	@Override
 	protected void onStart() {
@@ -653,7 +701,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
     }
 	
 	private void setIcon(ImageView tile, int tileValue) {
-		tile.setBackgroundResource(getIcon(tileValue));
+		if(foo != null && tileValue == 2)
+            tile.setBackgroundDrawable(foo);
+        else
+            tile.setBackgroundResource(getIcon(tileValue));
 	}
 
 	/**
