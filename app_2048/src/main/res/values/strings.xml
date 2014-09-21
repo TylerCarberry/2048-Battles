@@ -100,7 +100,7 @@
 
     <string name="x_attack_active">X Attack Active for %1$d turns</string>
     <string name="ghost_attack_active">Ghost Attack Active for %1$d turns</string>
-    <string name="ice_attack_active">Frozen! Cannot move %1$s for %2$d turns</string>
+    <string name="ice_attack_active">Frozen! Can't move %1$s for %2$d turns</string>
     <string name="start_game">Start Game</string>
 
 </resources>
