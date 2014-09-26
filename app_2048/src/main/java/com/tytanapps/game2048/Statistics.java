@@ -1,6 +1,11 @@
 package com.tytanapps.game2048;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Statistics implements java.io.Serializable {
@@ -26,6 +31,11 @@ public class Statistics implements java.io.Serializable {
 
     // Stores the high scores of each mode
     private Map<Integer, Game> worstGames = new HashMap<Integer, Game>();
+
+    // Stores custom tile icons
+    private Map<Integer, List<Byte>> customTileIcon = new HashMap<Integer, List<Byte>>();
+
+
 
     public Statistics() {
         totalGamesPlayed = 0;
@@ -78,6 +88,37 @@ public class Statistics implements java.io.Serializable {
             return lowScores.get(gameMode);
         return 0;
     }
+
+    public Bitmap getCustomTileIconBitmap(int tileValue) {
+        Log.d("a", "entering getCustomTileIcon Tile:" + tileValue);
+        Log.d("a", "Is empty? " + customTileIcon.isEmpty());
+
+        if(customTileIcon.containsKey(tileValue)) {
+            Log.d("a", "getCustomTileIcon: returning a custom tile for " + tileValue);
+
+            List<Byte> imageByteList = customTileIcon.get(tileValue);
+
+            byte[] imageByteArray = new byte[imageByteList.size()];
+            for(int i = 0; i < imageByteList.size(); i++)
+                imageByteArray[i] = imageByteList.get(i).byteValue();
+
+
+            BitmapFactory.Options opt = new BitmapFactory.Options();
+            opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+            Bitmap image = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length, opt);
+
+            return image;
+
+            //return customTileIcon.get(tileValue);
+        }
+        Log.d("a", "getCustomTileIcon: returning null");
+        return null;
+    }
+    public void setCustomTileIcon(int tileValue, List iconByteArray) {
+        customTileIcon.put(tileValue, iconByteArray);
+    }
+
     public Game getWorstGame(int gameMode) {
         return worstGames.get(gameMode);
     }

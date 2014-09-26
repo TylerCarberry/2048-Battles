@@ -701,11 +701,23 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
     }
 	
 	private void setIcon(ImageView tile, int tileValue) {
-		if(foo != null && tileValue == 2)
-            tile.setBackgroundDrawable(foo);
+
+        File fileCustomTiles = new File(getFilesDir(), getString(R.string.file_custom_tile_icons) + tileValue);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Bitmap bitmap = BitmapFactory.decodeFile(fileCustomTiles.getAbsolutePath(), options);
+
+        if(bitmap != null) {
+            Log.d("a", "setting a custom tile icon for " + tileValue);
+
+            Drawable tileIconDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 128, 128, true));
+
+            tile.setBackgroundDrawable(tileIconDrawable);
+        }
         else
             tile.setBackgroundResource(getIcon(tileValue));
 	}
+    
 
 	/**
 	 * Update the tile's icon to match its value

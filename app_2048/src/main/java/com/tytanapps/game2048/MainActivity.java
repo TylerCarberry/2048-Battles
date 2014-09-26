@@ -130,6 +130,24 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 			}
 		});
 
+
+        /*
+        File saveFile = new File(getFilesDir(), "savedTileIcon");
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Bitmap bitmap = BitmapFactory.decodeFile(saveFile.getAbsolutePath(), options);
+
+        Log.d(LOG_TAG, "Is bitmap null 1:" + (bitmap == null));
+
+
+
+        Drawable imageDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 128, 128, true));
+
+
+        ((ImageButton) findViewById(R.id.achievements_button)).setBackgroundDrawable(imageDrawable);
+
+*/
+
 		super.onResume();
 	}
 
@@ -164,22 +182,39 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		int id = item.getItemId();
 
 		if (id == R.id.action_how_to_play) {
-			Intent showInfo = new Intent(this, com.tytanapps.game2048.InfoActivity.class);
+			Intent showInfo = new Intent(this, InfoActivity.class);
 			startActivity(showInfo);
 			return true;
 		}
 
 		if (id == R.id.action_stats) {
-			Intent showInfo = new Intent(this, com.tytanapps.game2048.StatsActivity.class);
+			Intent showInfo = new Intent(this, StatsActivity.class);
 			startActivity(showInfo);
 			return true;
 		}
 
-		if (id == R.id.action_settings) {
-			Intent showSettings = new Intent(this, com.tytanapps.game2048.SettingsActivity.class);
-			startActivity(showSettings);
-			return true;
-		}
+        if (id == R.id.action_settings) {
+            Intent showSettings = new Intent(this, SettingsActivity.class);
+            startActivity(showSettings);
+            return true;
+        }
+
+        if (id == R.id.action_set_icons) {
+            startActivity(new Intent(this, CustomIconActivity.class));
+            return true;
+        }
+
+        if (id == R.id.action_reset_game) {
+
+            // Delete the current save file. The user can no longer continue this game.
+            File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+            currentGameFile.delete();
+            // Delete the current save file. The user can no longer continue this game.
+            File currentStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+            currentStatsFile.delete();
+
+            return true;
+        }
 		
 		return super.onOptionsItemSelected(item);
 	}
