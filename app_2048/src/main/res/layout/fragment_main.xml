@@ -11,18 +11,16 @@
 
     <TextView
         android:id="@+id/intro_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/intro"
-        android:textSize="35sp" />
-
-    <Space
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/prompt_select_game"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="25dp" />
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:gravity="center"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/continue_game_button"
+        android:layout_alignBaseline="@id/continue_game_button"
+        android:text="@string/intro"
+        android:textSize="20sp" />
 
     <RelativeLayout
         android:id="@+id/relativeLayout1"
@@ -123,8 +121,9 @@
         android:id="@+id/continue_game_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/intro_textview"
-        android:layout_centerHorizontal="true"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
         android:text="@string/continue_game" />
 
 </RelativeLayout>

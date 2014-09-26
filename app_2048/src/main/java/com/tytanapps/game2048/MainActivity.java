@@ -158,10 +158,10 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	}
 
 	@Override
+    /**
+     *  Action bar item clicks are handled here
+     */
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 
 		if (id == R.id.action_how_to_play) {
@@ -176,26 +176,24 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 			return true;
 		}
 
-        if (id == R.id.action_settings) {
-            Intent showSettings = new Intent(this, SettingsActivity.class);
-            startActivity(showSettings);
-            return true;
-        }
-
         if (id == R.id.action_set_icons) {
             startActivity(new Intent(this, CustomIconActivity.class));
             return true;
         }
 
         if (id == R.id.action_reset_game) {
+            resetGame();
+            return true;
+        }
 
-            // Delete the current save file. The user can no longer continue this game.
-            File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
-            currentGameFile.delete();
-            // Delete the current save file. The user can no longer continue this game.
-            File currentStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
-            currentStatsFile.delete();
+        if (id == R.id.action_about) {
+            Toast.makeText(this, "Made By Tyler Carberry", Toast.LENGTH_SHORT).show();
+            return true;
+        }
 
+        if (id == R.id.action_settings) {
+            Intent showSettings = new Intent(this, SettingsActivity.class);
+            startActivity(showSettings);
             return true;
         }
 		
@@ -468,6 +466,17 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	}
 
     /**
+     * Delete the current game file and overall game statistics file
+     */
+    private void resetGame() {
+        File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+        currentGameFile.delete();
+
+        File currentStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+        currentStatsFile.delete();
+    }
+
+    /**
      * Contains all of the game views
      */
     public static class PlaceholderFragment extends Fragment {
@@ -571,7 +580,4 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         }
 
     }
-
-
-
 }
