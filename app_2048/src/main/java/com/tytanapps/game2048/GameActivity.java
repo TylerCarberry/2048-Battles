@@ -17,7 +17,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
@@ -54,7 +53,6 @@ import com.tytanapps.game2048.MainApplication.TrackerName;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,8 +100,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	// The distance in pixels between tiles
 	private static int verticalTileDistance = 0;
 	private static int horizontalTileDistance = 0;
-
-    Drawable foo = null;
 
     // Stores custom tile icons
     private Map<Integer, Drawable> customTileIcon = new HashMap<Integer, Drawable>();
@@ -198,53 +194,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
             return true;
         }
 
-        if(id == R.id.action_debug) {
-            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-            photoPickerIntent.setType("image/*");
-            startActivityForResult(photoPickerIntent, 100);
-        }
-
 		return super.onOptionsItemSelected(item);
 	}
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
-        Log.d("A", "ON ACTIVITY RESULT");
-
-        switch(requestCode) {
-            case 100:
-                Log.d("A", "100");
-
-                if(resultCode == RESULT_OK){
-                    Log.d("A", "RESULT OK");
-
-                    try {
-                        Uri selectedImage = imageReturnedIntent.getData();
-                        InputStream imageStream = getContentResolver().openInputStream(selectedImage);
-                        Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
-
-                        //Button undoButton = (Button) findViewById(R.id.undo_button);
-                        //undoButton.setBackgroundDrawable(new BitmapDrawable(yourSelectedImage));
-
-                        //foo = new BitmapDrawable(yourSelectedImage);
-
-                        //int width = getResources().getDrawable(R.drawable.tile_2).getBounds().width();
-                        //int height = getResources().getDrawable(R.drawable.tile_2).getBounds().height();
-
-                        foo = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(yourSelectedImage, 128, 128, true));
-
-                        Log.d("A", "DONE ACTIVITY RESULT");
-
-                    }
-                    catch(Exception e) {
-                        Log.d(LOG_TAG, "ERROR");
-                        Log.e(LOG_TAG, e.getMessage());
-                    }
-                }
-        }
-    }
 
 	@Override
 	protected void onStart() {
@@ -299,7 +250,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         tileSlideSpeed = Integer.valueOf(prefs.getString("speed", "175"));
 
         loadCustomTileIcons();
-
 
         GoogleAnalytics.getInstance(this).reportActivityStart(this);
 
@@ -679,10 +629,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         // I used a workaround to fix a bug that was caused when both of the tiles that
         // combine are moving. This will causes issues when I implement zen mode because this
         // code expects two similar tiles to combine
-        layers[0] = getResources().getDrawable(getIcon(tileValue / 2));
+        layers[0] = getTileIconDrawable(tileValue);
 
         // The new icon
-        layers[1] = getResources().getDrawable(getIcon(tileValue));
+        layers[1] = getTileIconDrawable(tileValue);
 
         TransitionDrawable transition = new TransitionDrawable(layers);
         tile.setImageDrawable(transition);
@@ -715,6 +665,12 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         else
             tile.setBackgroundResource(getIcon(tileValue));
 	}
+
+    private Drawable getTileIconDrawable(int tileValue) {
+        if(customTileIcon.containsKey(tileValue))
+            return customTileIcon.get(tileValue);
+        return getResources().getDrawable(getIcon(tileValue));
+    }
 
 	/**
 	 * Update the tile's icon to match its value
@@ -1392,9 +1348,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
             Drawable[] layers = new Drawable[2];
             // The current icon
-            layers[0] = getResources().getDrawable(getIcon(tileValue));
+            layers[0] = getTileIconDrawable(tileValue);
             // No icon found, default to question mark
-            layers[1] = getResources().getDrawable(getIcon(-10));
+            layers[1] = getTileIconDrawable(-10);
             TransitionDrawable transition = new TransitionDrawable(layers);
             tile.setImageDrawable(transition);
             transition.startTransition((int) tileSlideSpeed);
@@ -1416,9 +1372,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
             Drawable[] layers = new Drawable[2];
 
             // The ghost icon
-            layers[0] = getResources().getDrawable(getIcon(-10));
+            layers[0] = getTileIconDrawable(-10);
             // The tile icon
-            layers[1] = getResources().getDrawable(getIcon(tileValue));
+            layers[1] = getTileIconDrawable(tileValue);
 
             TransitionDrawable transition = new TransitionDrawable(layers);
             tile.setImageDrawable(transition);

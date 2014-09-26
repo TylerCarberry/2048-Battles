@@ -42,7 +42,6 @@ import java.io.StreamCorruptedException;
 public class MainActivity extends BaseGameActivity implements View.OnClickListener, QuestUpdateListener
 {
 	private final static String LOG_TAG = MainActivity.class.getSimpleName();
-
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,21 +66,16 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	
 	@Override
 	protected void onStart() {
-		
 		// Get an Analytics tracker to report app starts & uncaught exceptions etc.
 		GoogleAnalytics.getInstance(this).reportActivityStart(this);
-
         createListView();
-
 		super.onStart();
 	}
 	
 	@Override
 	protected void onStop() {
-		
 		// Stop the analytics tracking
 		GoogleAnalytics.getInstance(this).reportActivityStop(this);
-
 		super.onStop();
 	}
 	
@@ -129,24 +123,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
                 startGameActivity();
 			}
 		});
-
-
-        /*
-        File saveFile = new File(getFilesDir(), "savedTileIcon");
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        Bitmap bitmap = BitmapFactory.decodeFile(saveFile.getAbsolutePath(), options);
-
-        Log.d(LOG_TAG, "Is bitmap null 1:" + (bitmap == null));
-
-
-
-        Drawable imageDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 128, 128, true));
-
-
-        ((ImageButton) findViewById(R.id.achievements_button)).setBackgroundDrawable(imageDrawable);
-
-*/
 
 		super.onResume();
 	}
@@ -221,7 +197,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
 
     private void createListView() {
-
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -336,8 +311,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             listOfModes.addView(modeDetailLayout);
         }
     }
-
-
 
 	/**
 	 * Display all quests

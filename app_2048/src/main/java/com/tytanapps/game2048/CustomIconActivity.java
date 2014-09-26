@@ -5,6 +5,8 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +69,7 @@ public class CustomIconActivity extends Activity {
 
     private void createLinearLayout() {
         LinearLayout listOfTiles = (LinearLayout) findViewById(R.id.tile_icon_linear_layout);
+        listOfTiles.removeAllViewsInLayout();
 
         for(int i=2; i <= 2048; i *= 2) {
             LinearLayout tileIconLayout = new LinearLayout(this);
@@ -94,7 +98,11 @@ public class CustomIconActivity extends Activity {
                 }
             });
 
+            ImageView tileIcon = new ImageView(this);
+            tileIcon.setImageDrawable(getTileIcon(i));
+
             tileIconLayout.addView(tileNumberTextView);
+            tileIconLayout.addView(tileIcon);
             tileIconLayout.addView(changeIconButton);
             tileIconLayout.addView(resetImageButton);
             listOfTiles.addView(tileIconLayout);
@@ -107,33 +115,68 @@ public class CustomIconActivity extends Activity {
         startActivityForResult(photoPickerIntent, tile);
     }
 
+    private Drawable getTileIcon(int tile) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        File fileCustomTiles = getIconFile(tile);
+        Bitmap bitmap = BitmapFactory.decodeFile(fileCustomTiles.getAbsolutePath(), options);
+
+        if (bitmap != null)
+            return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 128, 128, true));
+        return getResources().getDrawable(getIconResourceId(tile));
+    }
+
+    /**
+     * Update the tile's icon to match its value
+     * @param tileValue The numerical value of the tile
+     */
+    private int getIconResourceId(int tileValue) {
+        switch(tileValue) {
+            case -2:
+                return R.drawable.tile_x;
+            case -1:
+                return R.drawable.tile_corner;
+            case 0:
+                return R.drawable.tile_blank;
+            case 2:
+                return R.drawable.tile_2;
+            case 4:
+                return R.drawable.tile_4;
+            case 8:
+                return R.drawable.tile_8;
+            case 16:
+                return R.drawable.tile_16;
+            case 32:
+                return R.drawable.tile_32;
+            case 64:
+                return R.drawable.tile_64;
+            case 128:
+                return R.drawable.tile_128;
+            case 256:
+                return R.drawable.tile_256;
+            case 512:
+                return R.drawable.tile_512;
+            case 1024:
+                return R.drawable.tile_1024;
+            case 2048:
+                return R.drawable.tile_2048;
+            // If I did not create an image for the tile,
+            // default to a question mark
+            default:
+                return R.drawable.tile_question;
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
-        Log.d("A", "ON ACTIVITY RESULT");
 
         try {
             Uri selectedImage = imageReturnedIntent.getData();
             InputStream imageStream = getContentResolver().openInputStream(selectedImage);
             Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
 
-            Log.d(LOG_TAG, "Is yourSelected image null? " + (yourSelectedImage == null));
-
-            /*
-            Drawable imageDrawable = new BitmapDrawable(yourSelectedImage);
-
-
-            int width = getResources().getDrawable(R.drawable.tile_2).getBounds().width();
-            int height = getResources().getDrawable(R.drawable.tile_2).getBounds().height();
-
-*/
-
-//            Drawable imageDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(yourSelectedImage, 128, 128, true));
-
-
             File fileCustomTiles = getIconFile(requestCode);
-
             FileOutputStream out = null;
             try {
                 out = new FileOutputStream(fileCustomTiles);
@@ -142,24 +185,14 @@ public class CustomIconActivity extends Activity {
                 e.printStackTrace();
             } finally {
                 try {
-                    if (out != null) {
+                    if (out != null)
                         out.close();
-                    }
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-
-
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            Bitmap bitmap = BitmapFactory.decodeFile(fileCustomTiles.getAbsolutePath(), options);
-
-            Log.d("A", "result null? " + (bitmap == null));
-
-            Log.d("A", "DONE ACTIVITY RESULT");
         }
-
         catch(IOException e) {
             Log.e(LOG_TAG, "ERROR");
             Log.e(LOG_TAG, e.toString());
@@ -175,44 +208,6 @@ public class CustomIconActivity extends Activity {
     public File getIconFile(int tile) {
         return new File(getFilesDir(), getString(R.string.file_custom_tile_icons) + tile);
     }
-
-    /*
-
-    private void saveChosenIcon(Bitmap icon, int tile) {
-
-        Log.d(LOG_TAG, "Enter save chosen icon");
-
-        FileOutputStream out = null;
-        File saveFile = new File(getFilesDir(), "savedTileIcon"+tile);
-        try {
-            out = new FileOutputStream(saveFile);
-            icon.compress(Bitmap.CompressFormat.PNG, 90, out);
-            Log.d(LOG_TAG, "saved tile");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Log.d(LOG_TAG, "trying to read back icon");
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        Bitmap bitmap = BitmapFactory.decodeFile(saveFile.getAbsolutePath(), options);
-
-        Log.d(LOG_TAG, "Is bitmap null 1:" + (bitmap == null));
-
-        //selected_photo.setImageBitmap(bitmap);
-    }
-
-*/
-
 
     /**
      * A placeholder fragment containing a simple view.
