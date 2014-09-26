@@ -23,6 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -48,10 +50,15 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+        /*
 		if (savedInstanceState == null) {
-			getFragmentManager().beginTransaction()
-			.add(R.id.container, new PlaceholderFragment()).commit();
-		}
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, new PlaceholderFragment()).commit();
+
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, new AdFragment()).commit();
+        }
+        */
 
 	    // Get a Tracker (should auto-report)
 	    ((MainApplication) getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
@@ -373,105 +380,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		}
 	}
 	*/
-
-	/**
-	 * Currently the only fragment in the activity.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			final View rootView = inflater.inflate(R.layout.fragment_main, container,
-					false);
-
-
-            View.OnTouchListener gamesOnClickListener = new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        view.setBackgroundColor(getResources().getColor(R.color.Yellow));
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        view.setBackgroundColor(getResources().getColor(R.color.white));
-                        ((MainActivity)getActivity()).playGames(view);
-                    }
-                    return true;
-                }
-            };
-
-            ImageButton achievementsButton = (ImageButton) rootView.findViewById(R.id.achievements_button);
-            ImageButton leaderboardsButton = (ImageButton) rootView.findViewById(R.id.leaderboards_button);
-            ImageButton questsButton = (ImageButton) rootView.findViewById(R.id.quests_button);
-
-            achievementsButton.setOnTouchListener(gamesOnClickListener);
-            leaderboardsButton.setOnTouchListener(gamesOnClickListener);
-            questsButton.setOnTouchListener(gamesOnClickListener);
-
-            return rootView;
-		}
-	}
-
-	/**
-	 *  When a button is pressed to change the game mode update the
-	 *  title, description, and gameId
-	 * @param view The button that was pressed
-	 */
-    /*
-	public void createGame(View view) {
-		
-		TextView gameTitle = (TextView) findViewById(R.id.game_mode_textview);
-		TextView gameDesc = (TextView) findViewById(R.id.game_desc_textview);
-
-		switch (view.getId()) {
-		case R.id.normal_button:
-			gameId = GameModes.NORMAL_MODE_ID;
-			break;
-		case R.id.practice_button:
-			gameId = GameModes.PRACTICE_MODE_ID;
-			break;
-		case R.id.arcade_button:
-			gameId = GameModes.ARCADE_MODE_ID;
-			break;
-		case R.id.x_button:
-			gameId = GameModes.X_MODE_ID;
-			break;
-		case R.id.corner_button:
-			gameId = GameModes.CORNER_MODE_ID;
-			break;
-		case R.id.rush_button:
-			gameId = GameModes.RUSH_MODE_ID;
-			break;
-		case R.id.survival_button:
-			gameId = GameModes.SURVIVAL_MODE_ID;
-			break;
-		case R.id.zen_button:
-			gameId = GameModes.ZEN_MODE_ID;
-			break;
-		case R.id.ghost_button:
-			gameId = GameModes.GHOST_MODE_ID;
-			break;
-		case R.id.crazy_button:
-			gameId = GameModes.CRAZY_MODE_ID;
-			break;
-		case R.id.custom_button:
-			gameId = GameModes.CUSTOM_MODE_ID;
-			break;
-		default:
-			Log.d(LOG_TAG, "Unexpected button pressed");
-			// Default to normal mode
-			gameId = GameModes.NORMAL_MODE_ID;
-			return;
-		}
-
-		// Update the game title and description
-		gameTitle.setText(getString(GameModes.getGameTitleById(gameId)));
-		gameDesc.setText(getString(GameModes.getGameDescById(gameId)));
-	}
-	*/
 	
 	/**
 	 * Switches to the game activity
@@ -558,5 +466,112 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	    	Log.w(LOG_TAG, e.toString());
 	    }
 	}
-	
+
+    /**
+     * Contains all of the game views
+     */
+    public static class PlaceholderFragment extends Fragment {
+
+        public PlaceholderFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            final View rootView = inflater.inflate(R.layout.fragment_main, container,
+                    false);
+
+
+            View.OnTouchListener gamesOnClickListener = new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        view.setBackgroundColor(getResources().getColor(R.color.Yellow));
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        view.setBackgroundColor(getResources().getColor(R.color.white));
+                        ((MainActivity)getActivity()).playGames(view);
+                    }
+                    return true;
+                }
+            };
+
+            ImageButton achievementsButton = (ImageButton) rootView.findViewById(R.id.achievements_button);
+            ImageButton leaderboardsButton = (ImageButton) rootView.findViewById(R.id.leaderboards_button);
+            ImageButton questsButton = (ImageButton) rootView.findViewById(R.id.quests_button);
+
+            achievementsButton.setOnTouchListener(gamesOnClickListener);
+            leaderboardsButton.setOnTouchListener(gamesOnClickListener);
+            questsButton.setOnTouchListener(gamesOnClickListener);
+
+            return rootView;
+        }
+    }
+
+    /**
+     * This class makes the ad request and loads the ad.
+     */
+    public static class AdFragment extends Fragment {
+
+        private AdView mAdView;
+
+        public AdFragment() {
+        }
+
+        @Override
+        public void onActivityCreated(Bundle bundle) {
+            super.onActivityCreated(bundle);
+
+            // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
+            // values/strings.xml.
+            mAdView = (AdView) getView().findViewById(R.id.adView);
+
+            // Create an ad request. Check logcat output for the hashed device ID to
+            // get test ads on a physical device. e.g.
+            // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .build();
+
+            // Start loading the ad in the background.
+            mAdView.loadAd(adRequest);
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_ad, container, false);
+        }
+
+        /** Called when leaving the activity */
+        @Override
+        public void onPause() {
+            if (mAdView != null) {
+                mAdView.pause();
+            }
+            super.onPause();
+        }
+
+        /** Called when returning to the activity */
+        @Override
+        public void onResume() {
+            super.onResume();
+            if (mAdView != null) {
+                mAdView.resume();
+            }
+        }
+
+        /** Called before the activity is destroyed */
+        @Override
+        public void onDestroy() {
+            if (mAdView != null) {
+                mAdView.destroy();
+            }
+            super.onDestroy();
+        }
+
+    }
+
+
+
 }

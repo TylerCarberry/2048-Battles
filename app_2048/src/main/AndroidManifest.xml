@@ -70,6 +70,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tytanapps.game2048.SettingsActivity" />
         </activity>
+        <!--Include the AdActivity configChanges and theme. -->
+        <activity android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:theme="@android:style/Theme.Translucent" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
