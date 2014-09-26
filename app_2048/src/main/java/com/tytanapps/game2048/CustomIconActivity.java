@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -66,7 +67,6 @@ public class CustomIconActivity extends Activity {
     private void createLinearLayout() {
         LinearLayout listOfTiles = (LinearLayout) findViewById(R.id.tile_icon_linear_layout);
 
-
         for(int i=2; i <= 2048; i *= 2) {
             LinearLayout tileIconLayout = new LinearLayout(this);
             tileIconLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -84,10 +84,20 @@ public class CustomIconActivity extends Activity {
                 }
             });
 
+            Button resetImageButton = new Button(this);
+            resetImageButton.setText("Reset");
+            resetImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clearSaveFile(currentTile);
+                    Toast.makeText(getApplicationContext(), "Deleted " + currentTile, Toast.LENGTH_SHORT).show();
+                }
+            });
+
             tileIconLayout.addView(tileNumberTextView);
             tileIconLayout.addView(changeIconButton);
+            tileIconLayout.addView(resetImageButton);
             listOfTiles.addView(tileIconLayout);
-
         }
     }
 
@@ -96,8 +106,6 @@ public class CustomIconActivity extends Activity {
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, tile);
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
@@ -124,7 +132,7 @@ public class CustomIconActivity extends Activity {
 //            Drawable imageDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(yourSelectedImage, 128, 128, true));
 
 
-            File fileCustomTiles = new File(getFilesDir(), getString(R.string.file_custom_tile_icons) + requestCode);
+            File fileCustomTiles = getIconFile(requestCode);
 
             FileOutputStream out = null;
             try {
@@ -156,6 +164,16 @@ public class CustomIconActivity extends Activity {
             Log.e(LOG_TAG, "ERROR");
             Log.e(LOG_TAG, e.toString());
         }
+    }
+
+    public void clearSaveFile(int tile) {
+        // Delete the current save file. The user can no longer continue this game.
+        File customIconFile = getIconFile(tile);
+        customIconFile.delete();
+    }
+
+    public File getIconFile(int tile) {
+        return new File(getFilesDir(), getString(R.string.file_custom_tile_icons) + tile);
     }
 
     /*

@@ -56,7 +56,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GameActivity extends BaseGameActivity implements OnGestureListener {
 	
@@ -102,8 +104,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	private static int horizontalTileDistance = 0;
 
     Drawable foo = null;
-	
-	ShareActionProvider mShareActionProvider;
+
+    // Stores custom tile icons
+    private Map<Integer, Drawable> customTileIcon = new HashMap<Integer, Drawable>();
+
+    ShareActionProvider mShareActionProvider;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -292,6 +297,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         swipeSensitivity = Integer.valueOf(prefs.getString("swipeSensitivity", "100"));
         tileSlideSpeed = Integer.valueOf(prefs.getString("speed", "175"));
+
+        loadCustomTileIcons();
+
 
         GoogleAnalytics.getInstance(this).reportActivityStart(this);
 
@@ -701,23 +709,12 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
     }
 	
 	private void setIcon(ImageView tile, int tileValue) {
-
-        File fileCustomTiles = new File(getFilesDir(), getString(R.string.file_custom_tile_icons) + tileValue);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        Bitmap bitmap = BitmapFactory.decodeFile(fileCustomTiles.getAbsolutePath(), options);
-
-        if(bitmap != null) {
-            Log.d("a", "setting a custom tile icon for " + tileValue);
-
-            Drawable tileIconDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 128, 128, true));
-
-            tile.setBackgroundDrawable(tileIconDrawable);
+        if(customTileIcon.containsKey(tileValue)) {
+            tile.setBackgroundDrawable(customTileIcon.get(tileValue));
         }
         else
             tile.setBackgroundResource(getIcon(tileValue));
 	}
-    
 
 	/**
 	 * Update the tile's icon to match its value
@@ -764,6 +761,25 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			}
 		}
 	}
+
+    private void loadCustomTileIcons() {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+        for(int tile = 2; tile <= 2048; tile *= 2) {
+            File fileCustomTiles = getIconFile(tile);
+            Bitmap bitmap = BitmapFactory.decodeFile(fileCustomTiles.getAbsolutePath(), options);
+
+            if (bitmap != null) {
+                Drawable tileIconDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 128, 128, true));
+                customTileIcon.put(tile, tileIconDrawable);
+            }
+        }
+    }
+
+    public File getIconFile(int tile) {
+        return new File(getFilesDir(), getString(R.string.file_custom_tile_icons) + tile);
+    }
 	
 	private void lost() {
 		
@@ -815,16 +831,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
         gameStats.updateGameRecords(game.getGameModeId(), game);
 
-
         save();
 		
 		// Delete the current save file. The user can no longer continue this game.
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		currentGameFile.delete();
-
-
-        Log.d("a", "Getting"+(gameStats.getHighScore(game.getGameModeId())));
-
 
         updateLeaderboards(game.getScore(), game.getGameModeId());
         submitEvents(game);
