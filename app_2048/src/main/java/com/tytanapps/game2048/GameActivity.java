@@ -206,7 +206,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		boardCreated = false;
 		
 		gridLayout = (GridLayout) findViewById(R.id.grid_layout);
-		
+
+        loadCustomTileIcons();
+
 		// Load the saved file containing the game. This also updates the screen.
 		load();
 		
@@ -248,8 +250,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         swipeSensitivity = Integer.valueOf(prefs.getString("swipeSensitivity", "100"));
         tileSlideSpeed = Integer.valueOf(prefs.getString("speed", "175"));
-
-        loadCustomTileIcons();
 
         GoogleAnalytics.getInstance(this).reportActivityStart(this);
 
@@ -638,8 +638,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         tile.setImageDrawable(transition);
         transition.startTransition((int) tileSlideSpeed);
 
-        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(tile, View.SCALE_X, 1.1f);
-        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(tile, View.SCALE_Y, 1.1f);
+        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(tile, View.SCALE_X, 1.15f);
+        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(tile, View.SCALE_Y, 1.15f);
 
         // The tile increases in size by a factor of 1.1 and shrinks back down. At the same time
         // it is fading to the new value.
@@ -659,32 +659,38 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
     }
 	
 	private void setIcon(ImageView tile, int tileValue) {
-        if(customTileIcon.containsKey(tileValue)) {
-            tile.setBackgroundDrawable(customTileIcon.get(tileValue));
-        }
-        else
-            tile.setBackgroundResource(getIcon(tileValue));
+        tile.setBackgroundDrawable(getTileIconDrawable(tileValue));
 	}
 
     private Drawable getTileIconDrawable(int tileValue) {
-        if(customTileIcon.containsKey(tileValue))
+        if(game.getGameModeId() == GameModes.GHOST_MODE_ID || ghostAttackActive) {
+            tileValue = Game.GHOST_TILE_VALUE;
+        }
+
+        Log.d("a","drawableTile"+tileValue);
+
+        if(customTileIcon.containsKey(tileValue)) {
+            Log.d("a","contains"+tileValue);
             return customTileIcon.get(tileValue);
-        return getResources().getDrawable(getIcon(tileValue));
+        }
+        return getResources().getDrawable(getTileIconResource(tileValue));
     }
 
 	/**
 	 * Update the tile's icon to match its value
 	 * @param tileValue The numerical value of the tile
 	 */
-	private int getIcon(int tileValue) {
+	private int getTileIconResource(int tileValue) {
 
 		if(game.getGameModeId() == GameModes.GHOST_MODE_ID || ghostAttackActive)
 			return R.drawable.tile_question;
 		else {
 			switch(tileValue) {
-			case -2:
+            case Game.GHOST_TILE_VALUE:
+                return R.drawable.tile_question;
+			case Game.X_TILE_VALUE:
 				return R.drawable.tile_x;
-			case -1:
+			case Game.CORNER_TILE_VALUE:
 				return R.drawable.tile_corner;
 			case 0:
 				return R.drawable.tile_blank;
@@ -722,7 +728,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
-        for(int tile = 2; tile <= 2048; tile *= 2) {
+        for(int tile : Game.getListOfAllTileValues()) {
             File fileCustomTiles = getIconFile(tile);
             Bitmap bitmap = BitmapFactory.decodeFile(fileCustomTiles.getAbsolutePath(), options);
 

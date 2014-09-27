@@ -65,10 +65,7 @@ public class StatsActivity extends Activity {
 		TextView totalUndos = (TextView) findViewById(R.id.total_undos);
 		TextView totalShuffles = (TextView) findViewById(R.id.total_shuffles);
 		TextView totalMoves = (TextView) findViewById(R.id.total_moves);
-		TextView highScore = (TextView) findViewById(R.id.high_score);
-		TextView highestTile = (TextView) findViewById(R.id.highest_tile);
-		TextView lowestScore = (TextView) findViewById(R.id.lowest_score);
-		
+
 		totalGames.setText(getString(R.string.total_games) + ": "
 				+ gameStats.getTotalGamesPlayed());
 		totalUndos.setText(getString(R.string.total_undos) + ": "
@@ -78,16 +75,6 @@ public class StatsActivity extends Activity {
 		totalMoves.setText(getString(R.string.total_moves) + ": "
 				+ gameStats.getTotalMoves());
 
-        /*
-        highScore.setText(getString(R.string.high_score) + ": "
-				+ gameStats.highScore);
-		highestTile.setText(getString(R.string.highest_tile) + ": "
-				+ gameStats.highestTile);
-		lowestScore.setText(getString(R.string.lowest_score) + ": "
-				+ gameStats.lowScore);
-				*/
-		
-		
 		super.onResume();
 	}
 

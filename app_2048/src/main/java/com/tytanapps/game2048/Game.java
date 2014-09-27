@@ -15,8 +15,9 @@ public class Game implements java.io.Serializable
 	private static final long serialVersionUID = 3356339029021499348L;
 	
 	private final static String LOG_TAG = Game.class.getSimpleName();
-	
-	public static final int X_TILE_VALUE = -2;
+
+    public static final int GHOST_TILE_VALUE = -3;
+    public static final int X_TILE_VALUE = -2;
 	public static final int CORNER_TILE_VALUE = -1;
 	
 	public static final int ICE_ATTACK = 1;
@@ -1078,7 +1079,21 @@ public class Game implements java.io.Serializable
     public ArrayList<Location> getDestinationLocations() {
         return destinationLocations;
     }
-	
+
+
+    public static List<Integer> getListOfAllTileValues() {
+        ArrayList<Integer> listOfTiles = new ArrayList<Integer>();
+
+        for(int tile = 2; tile <= 2048; tile *= 2)
+            listOfTiles.add(tile);
+
+        listOfTiles.add(Game.CORNER_TILE_VALUE);
+        listOfTiles.add(Game.X_TILE_VALUE);
+        listOfTiles.add(Game.GHOST_TILE_VALUE);
+
+        return listOfTiles;
+    }
+
 	/**
 	 * Only used in the hideTileValues and speedMode methods to print the game
 	 */

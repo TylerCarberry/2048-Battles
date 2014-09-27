@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class CustomIconActivity extends Activity {
 
@@ -71,14 +72,30 @@ public class CustomIconActivity extends Activity {
         LinearLayout listOfTiles = (LinearLayout) findViewById(R.id.tile_icon_linear_layout);
         listOfTiles.removeAllViewsInLayout();
 
-        for(int i=2; i <= 2048; i *= 2) {
+        List<Integer> listOfTileValues = Game.getListOfAllTileValues();
+
+        for(int tile : listOfTileValues) {
             LinearLayout tileIconLayout = new LinearLayout(this);
             tileIconLayout.setOrientation(LinearLayout.HORIZONTAL);
 
             TextView tileNumberTextView = new TextView(this);
-            tileNumberTextView.setText("" + i);
 
-            final int currentTile = i;
+            switch (tile) {
+                case Game.X_TILE_VALUE:
+                    tileNumberTextView.setText("X Tile");
+                    break;
+                case Game.CORNER_TILE_VALUE:
+                    tileNumberTextView.setText("Corner Tile");
+                    break;
+                case Game.GHOST_TILE_VALUE:
+                    tileNumberTextView.setText("Ghost Tile");
+                    break;
+                default:
+                    tileNumberTextView.setText(""+tile);
+                    break;
+            }
+
+            final int currentTile = tile;
             Button changeIconButton = new Button(this);
             changeIconButton.setText("Change");
             changeIconButton.setOnClickListener(new View.OnClickListener() {
@@ -95,11 +112,12 @@ public class CustomIconActivity extends Activity {
                 public void onClick(View view) {
                     clearSaveFile(currentTile);
                     Toast.makeText(getApplicationContext(), "Deleted " + currentTile, Toast.LENGTH_SHORT).show();
+                    createLinearLayout();
                 }
             });
 
             ImageView tileIcon = new ImageView(this);
-            tileIcon.setImageDrawable(getTileIcon(i));
+            tileIcon.setImageDrawable(getTileIcon(tile));
 
             tileIconLayout.addView(tileNumberTextView);
             tileIconLayout.addView(tileIcon);
@@ -112,6 +130,10 @@ public class CustomIconActivity extends Activity {
     private void showPictureDialog(int tile) {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
+        Log. d("a", "Tile"+tile);
+
+        if(tile < 0)
+            tile = tile * -1 + 100;
         startActivityForResult(photoPickerIntent, tile);
     }
 
@@ -171,7 +193,15 @@ public class CustomIconActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
+        Log.d("a", "ON RESULT");
+
         try {
+
+            if(requestCode == -1*(Game.X_TILE_VALUE - 100) ||
+               requestCode == -1*(Game.CORNER_TILE_VALUE - 100) ||
+               requestCode == -1*(Game.GHOST_TILE_VALUE - 100))
+                    requestCode = -1*(requestCode - 100);
+
             Uri selectedImage = imageReturnedIntent.getData();
             InputStream imageStream = getContentResolver().openInputStream(selectedImage);
             Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
@@ -200,7 +230,7 @@ public class CustomIconActivity extends Activity {
     }
 
     public void clearSaveFile(int tile) {
-        // Delete the current save file. The user can no longer continue this game.
+        // Delete the custom icon for this tile
         File customIconFile = getIconFile(tile);
         customIconFile.delete();
     }

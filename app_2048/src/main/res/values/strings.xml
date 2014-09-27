@@ -50,7 +50,7 @@
     <string name="mode_desc_ghost">All tiles appear as ?</string>
     <string name="mode_desc_arcade">Randomly gain powerups and attacks</string>
     <string name="mode_desc_custom">Change everything about the game **Coming Soon**</string>
-    <string name="title_activity_game">GameActivity</string>
+    <string name="title_activity_game">2048</string>
     <string name="title_activity_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="remove_low">Remove Low Tiles</string>
@@ -69,11 +69,11 @@
     <string name="medium">Medium</string>
     <string name="fast">Fast</string>
     <string name="no_animation">No Animation</string>
-    <string name="title_activity_info">InfoActivity</string>
+    <string name="title_activity_info">How To Play</string>
     <string name="file_current_game">CURRENT_GAME</string>
     <string name="file_game_stats">GAME_STATS</string>
     <string name="file_custom_tile_icons">TILE_ICONS</string>
-    <string name="title_activity_stats">StatsActivity</string>
+    <string name="title_activity_stats">Game Stats</string>
     <string name="game_stats">Game Stats</string>
     <string name="total_games">Total Games Lost</string>
     <string name="total_undos">Total Undos</string>
@@ -101,8 +101,7 @@
     <string name="ghost_attack_active">Ghost Attack Active for %1$d turns</string>
     <string name="ice_attack_active">Frozen! Can\'t move %1$s for %2$d turns</string>
     <string name="start_game">Start Game</string>
-    <string name="title_activity_custom_icon">CustomIconActivity</string>
+    <string name="title_activity_custom_icon">Customize Tile Icons</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="about">About</string>
-
 </resources>

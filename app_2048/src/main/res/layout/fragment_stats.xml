@@ -17,60 +17,36 @@
         android:gravity="center"
         android:text="@string/game_stats" />
 
-     <TextView
-         android:id="@+id/total_games"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_below="@+id/stats_title"
-         android:text="@string/total_games" />
+    <TextView
+        android:id="@+id/total_games"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/stats_title"
+        android:text="@string/total_games" />
 
-     <TextView
-         android:id="@+id/total_undos"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_below="@+id/total_games"
-         android:text="@string/total_undos" />
+    <TextView
+        android:id="@+id/total_undos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/total_games"
+        android:text="@string/total_undos" />
 
-     <TextView
-         android:id="@+id/total_shuffles"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_below="@+id/total_undos"
-         android:text="@string/total_shuffles" />
+    <TextView
+        android:id="@+id/total_shuffles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/total_undos"
+        android:text="@string/total_shuffles" />
 
-     <TextView
-         android:id="@+id/total_moves"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_below="@+id/total_shuffles"
-         android:text="@string/total_moves" />
+    <TextView
+        android:id="@+id/total_moves"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/total_shuffles"
+        android:text="@string/total_moves" />
 
-     <TextView
-         android:id="@+id/high_score"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_below="@+id/total_moves"
-         android:text="@string/high_score" />
-
-     <TextView
-         android:id="@+id/highest_tile"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_below="@+id/high_score"
-         android:text="@string/highest_tile" />
-
-     <TextView
-         android:id="@+id/lowest_score"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_below="@+id/highest_tile"
-         android:text="@string/lowest_score" />
-    
 </RelativeLayout>

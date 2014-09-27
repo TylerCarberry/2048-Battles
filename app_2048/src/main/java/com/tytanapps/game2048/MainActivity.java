@@ -320,22 +320,21 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	/**
 	 * Display all quests
 	 */
-	protected void showQuests()
-	{
+	protected void showQuests() {
 		// In the developer tutorial they use Quests.SELECT_ALL_QUESTS
 		// but that is not valid for me. That may require an update
 		// but for now selecting all possibilities works the same way
 		int[] questParams = new int[8];
 		questParams[0] = Games.Quests.SELECT_ACCEPTED;
-		questParams[1] = Games.Quests.SELECT_COMPLETED;
-		questParams[2] = Games.Quests.SELECT_COMPLETED_UNCLAIMED;
-		questParams[3] = Games.Quests.SELECT_ENDING_SOON;
-		questParams[4] = Games.Quests.SELECT_EXPIRED;
-		questParams[5] = Games.Quests.SELECT_FAILED;
-		questParams[6] = Games.Quests.SELECT_OPEN;
-		questParams[7] = Games.Quests.SELECT_UPCOMING;
-		
-		Intent questsIntent = Games.Quests.getQuestsIntent(getApiClient(), questParams);
+        questParams[1] = Games.Quests.SELECT_OPEN;
+        questParams[2] = Games.Quests.SELECT_ENDING_SOON;
+        questParams[3] = Games.Quests.SELECT_UPCOMING;
+		questParams[4] = Games.Quests.SELECT_COMPLETED;
+		questParams[5] = Games.Quests.SELECT_COMPLETED_UNCLAIMED;
+		questParams[6] = Games.Quests.SELECT_FAILED;
+        questParams[7] = Games.Quests.SELECT_EXPIRED;
+
+        Intent questsIntent = Games.Quests.getQuestsIntent(getApiClient(), questParams);
 	    
 	    // 0 is an arbitrary integer
 	    startActivityForResult(questsIntent, 0);
@@ -359,25 +358,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 			Toast.makeText(this, getString(R.string.not_signed_in_error), Toast.LENGTH_SHORT).show();
 		}
 	}
-	
-	/*
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		
-		Log.d(LOG_TAG, "entering on activity result");
-		
-		if(resultCode == RESULT_OK) {
-			
-			Log.d(LOG_TAG, "entering if");
-			
-			Quest quest = data.getParcelableExtra("EXTRA_QUEST");
-			
-			Log.d(LOG_TAG, quest.toString());
-			
-			if(quest.getState() == Games.Quests.SELECT_COMPLETED_UNCLAIMED)
-				onQuestCompleted(quest);
-		}
-	}
-	*/
 	
 	/**
 	 * Switches to the game activity
@@ -578,6 +558,5 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             }
             super.onDestroy();
         }
-
     }
 }
