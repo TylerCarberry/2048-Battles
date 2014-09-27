@@ -520,6 +520,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
             AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .addTestDevice(getString(R.string.test_device_id))
                     .build();
 
             // Start loading the ad in the background.
