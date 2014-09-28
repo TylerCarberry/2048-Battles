@@ -33,9 +33,9 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridLayout.Spec;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
@@ -234,20 +234,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			getActionBar().setTitle(gameTitleId);
 		
 		// Disable the undo button if there are no undos remaining
-		Button undoButton = ((Button) findViewById(R.id.undo_button));
-		undoButton.setEnabled(game.getUndosRemaining() != 0);
-
-        undoButton.setBackgroundDrawable(getResources().getDrawable(
-                (game.getUndosRemaining() == 0) ? R.drawable.undo_button_gray : R.drawable.undo_button));
+		setUndoButtonEnabled(game.getUndosRemaining() != 0);
 
         // Disable the powerup button if there are no powerups remaining
-        Button powerupButton = ((Button) findViewById(R.id.powerup_button));
-		powerupButton.setEnabled(game.getPowerupsRemaining() != 0);
+        setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
 
-        powerupButton.setBackgroundDrawable(getResources().getDrawable(
-                (game.getPowerupsRemaining() == 0) ? R.drawable.powerup_button_disabled : R.drawable.powerup_button));
-		
-		powerupButton.setOnTouchListener(new OnTouchListener() {
+
+        ImageButton powerupButton = (ImageButton) findViewById(R.id.powerup_button);
+        powerupButton.setOnTouchListener(new OnTouchListener() {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -452,8 +446,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		TextView undosTextView = (TextView) findViewById(R.id.undos_textview);
 		TextView activeAttacksTextView = (TextView) findViewById(R.id.active_attacks_textview);
 		TextView powerupsTextView = (TextView) findViewById(R.id.powerups_textview);
-		Button undoButton = (Button) findViewById(R.id.undo_button);
-		Button powerupButton = (Button) findViewById(R.id.powerup_button);
+        ImageButton undoButton = (ImageButton) findViewById(R.id.undo_button);
+        ImageButton powerupButton = (ImageButton) findViewById(R.id.powerup_button);
 		
 		// Update the turn number
 		turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
@@ -473,7 +467,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			undosTextView.setText(""+undosLeft);
 			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
 		}
-		undoButton.setEnabled(undosLeft != 0);
 
 		// Update attacks
 		activeAttacksTextView.setText(getAttackString());
@@ -486,11 +479,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_disabled));
 		}
 		else {
-			powerupsTextView.setVisibility(View.VISIBLE);
-			powerupsTextView.setText(""+powerupsLeft);
-			powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
-		}
-		powerupButton.setEnabled(powerupsLeft != 0);
+            powerupsTextView.setVisibility(View.VISIBLE);
+            powerupsTextView.setText("" + powerupsLeft);
+            powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
+        }
 	}
 	
 	private String getAttackString() {
@@ -679,16 +671,12 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	}
 
     private Drawable getTileIconDrawable(int tileValue) {
-        if(game.getGameModeId() == GameModes.GHOST_MODE_ID || ghostAttackActive) {
+        if(game.getGameModeId() == GameModes.GHOST_MODE_ID || ghostAttackActive)
             tileValue = Game.GHOST_TILE_VALUE;
-        }
 
-        Log.d("a","drawableTile"+tileValue);
-
-        if(customTileIcon.containsKey(tileValue)) {
-            Log.d("a","contains"+tileValue);
+        if(customTileIcon.containsKey(tileValue))
             return customTileIcon.get(tileValue);
-        }
+
         return getResources().getDrawable(getTileIconResource(tileValue));
     }
 
@@ -766,7 +754,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			return;
 
         gameLost = true;
-		
+
+        displayInterstitial();
+
 		// This is the only place where total games played is incremented.
 		gameStats.incrementGamesPlayed(1);
 		
@@ -785,15 +775,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		           }
 		       });
 
-        // You cannot undo a game once you lose
-        Button undoButton = (Button) findViewById(R.id.undo_button);
-        undoButton.setEnabled(false);
-        undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
+
+        setUndoButtonEnabled(false);
 
         // You cannot undo a game once you lose
-        Button powerupButton = (Button) findViewById(R.id.powerup_button);
-        powerupButton.setEnabled(false);
-        powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_disabled));
+        setPowerupButtonEnabled(false);
 
         // Create the message to show the player
 		String message = "";
@@ -825,8 +811,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
                 game.getGameModeId() == GameModes.PRACTICE_MODE_ID &&  getApiClient().isConnected()) {
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_i_dont_want_any_help));
         }
-
-        displayInterstitial();
     }
 
     /**
@@ -947,8 +931,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	private void showPowerupDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-		final Button powerupButton = (Button) findViewById(R.id.powerup_button);
-		
 		if(game.lost()) {
 			builder.setTitle("Cannot use powerup")
 			.setMessage("You cannot use powerups after you lose");
@@ -991,6 +973,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
                             updateGame();
                             break;
 						}
+                        setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
 					}
 				});
 			}
@@ -1108,6 +1091,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 									.setDuration(tileSlideSpeed)).start();
 							game.removeTile(new Location(view.getId() / 100, view.getId() % 100));
 							game.decrementPowerupsRemaining();
+                            setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
 							updateTextviews();
 							clearTileListeners();
 						}
@@ -1121,11 +1105,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 			@Override
 			public boolean onTouch(View view, MotionEvent event) {
-					clearTileListeners();
-					Button powerupButton = (Button) findViewById(R.id.powerup_button);
-					powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
-					powerupButton.setEnabled(true);
-					return true;
+			    clearTileListeners();
+				setPowerupButtonEnabled(true);
+                return true;
 				}
 		});
 	}
@@ -1177,16 +1159,12 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         else {
             if(rand < 0.75) {
                 game.incrementUndosRemaining();
-                Button undoButton = (Button) findViewById(R.id.undo_button);
-                undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
-                undoButton.setEnabled(true);
+                setUndoButtonEnabled(true);
                 item = "Undo";
             }
             else {
                 game.incrementPowerupsRemaining();
-                Button powerupButton = (Button) findViewById(R.id.powerup_button);
-                powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
-                powerupButton.setEnabled(true);
+                setPowerupButtonEnabled(true);
                 item = "Powerup";
             }
 
@@ -1446,9 +1424,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 * would be difficult to track every tile separately
 	 */
 	private void undo() {
-		final Button undoButton = (Button) findViewById(R.id.undo_button);
+		final ImageButton undoButton = (ImageButton) findViewById(R.id.undo_button);
 		if(game.getUndosRemaining() == 0)
-			undoButton.setEnabled(false);
+			setUndoButtonEnabled(false);
 		else {
 			if(game.getTurns() > 1) {
 
@@ -1514,7 +1492,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	 */
 	private void restartGame() {
         // Spin the restart button 360 degrees counterclockwise
-		Button restartButton = (Button) findViewById(R.id.restart_button);
+		ImageButton restartButton = (ImageButton) findViewById(R.id.restart_button);
 		restartButton.setRotation(0);
 		ObjectAnimator.ofFloat(restartButton, View.ROTATION, -360).start();
 		
@@ -1528,18 +1506,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         game = GameModes.newGameFromId(game.getGameModeId());
 
         // Disable the undo button if there are no undos remaining
-        Button undoButton = ((Button) findViewById(R.id.undo_button));
-        undoButton.setEnabled(game.getUndosRemaining() != 0);
-
-        undoButton.setBackgroundDrawable(getResources().getDrawable(
-                (game.getUndosRemaining() == 0) ? R.drawable.undo_button_gray : R.drawable.undo_button));
+        setUndoButtonEnabled(game.getUndosRemaining() != 0);
 
         // Disable the powerup button if there are no powerups remaining
-        Button powerupButton = ((Button) findViewById(R.id.powerup_button));
-        powerupButton.setEnabled(game.getPowerupsRemaining() != 0);
-
-        powerupButton.setBackgroundDrawable(getResources().getDrawable(
-                (game.getPowerupsRemaining() == 0) ? R.drawable.powerup_button_disabled : R.drawable.powerup_button));
+        setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
 
         gameLost = false;
 		updateGame();
@@ -1565,10 +1535,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	}
 	
 	protected void requestBackup() {
-
-		Log.d(LOG_TAG, "requesting backup");
-		
-		BackupManager bm = new BackupManager(this);
+        BackupManager bm = new BackupManager(this);
 		bm.dataChanged();
 	}
 	
@@ -1620,7 +1587,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			
 			gameStats = (Statistics) Save.load(gameStatsFile);
 		} catch (ClassNotFoundException e) {
-			Log.w(LOG_TAG, "Class not found exception in load");
+			Log.e(LOG_TAG, "Class not found exception in load");
 			game = new Game();
 			gameStats = new Statistics();
 		} catch (IOException e) {
@@ -1628,8 +1595,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			game = new Game();
 			gameStats = new Statistics();
 		}
-		
-		Log.d(LOG_TAG, "total moves " + gameStats.getTotalMoves());
 		updateGame();
 	}
 	
@@ -1665,6 +1630,25 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
             interstitial.show();
         }
     }
+
+    private void setUndoButtonEnabled(boolean enabled) {
+        // Disable the undo button if there are no undos remaining
+        ImageButton undoButton = (ImageButton) findViewById(R.id.undo_button);
+        undoButton.setEnabled(game.getUndosRemaining() != 0);
+
+        undoButton.setBackgroundDrawable(getResources().getDrawable(
+                (enabled) ? R.drawable.undo_button : R.drawable.undo_button_gray));
+    }
+
+    private void setPowerupButtonEnabled(boolean enabled) {
+        ImageButton powerupButton = (ImageButton) findViewById(R.id.powerup_button);
+        powerupButton.setEnabled(enabled);
+
+        powerupButton.setBackgroundDrawable(getResources().getDrawable(
+                (enabled) ? R.drawable.powerup_button : R.drawable.powerup_button_disabled));
+    }
+
+
 	
 	private List<ImageView> getListOfAllTiles() {
 		List<ImageView> tiles = new ArrayList<ImageView>();
@@ -1716,14 +1700,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			View rootView = inflater.inflate(R.layout.fragment_game, container,
 					false);
 			
-			final Button undoButton = (Button) rootView.findViewById(R.id.undo_button);  
+			final ImageButton undoButton = (ImageButton) rootView.findViewById(R.id.undo_button);
 	        undoButton.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {
 	            	((GameActivity)getActivity()).undo();
 	            }
 	        });
 			
-	        final Button restartButton = (Button) rootView.findViewById(R.id.restart_button);  
+	        final ImageButton restartButton = (ImageButton) rootView.findViewById(R.id.restart_button);
 	        restartButton.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {
 	            	((GameActivity)getActivity()).restartGame();
