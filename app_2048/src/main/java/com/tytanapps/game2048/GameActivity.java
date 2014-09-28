@@ -41,6 +41,8 @@ import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -105,8 +107,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
     private Map<Integer, Drawable> customTileIcon = new HashMap<Integer, Drawable>();
 
     ShareActionProvider mShareActionProvider;
-	
-	@Override
+
+    private InterstitialAd interstitial;
+
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
@@ -127,6 +132,17 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		t.setScreenName("Game Activity");
 		// Send a screen view.
 		t.send(new HitBuilders.AppViewBuilder().build());
+
+        // Create the interstitial.
+        interstitial = new InterstitialAd(this);
+        interstitial.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice(getString(R.string.test_device_id))
+                .build();
+
+        // Begin loading your interstitial.
+        interstitial.loadAd(adRequest);
 	}
 
 	@Override
@@ -809,6 +825,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
                 game.getGameModeId() == GameModes.PRACTICE_MODE_ID &&  getApiClient().isConnected()) {
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_i_dont_want_any_help));
         }
+
+        displayInterstitial();
     }
 
     /**
@@ -1640,6 +1658,13 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			}
 		}
 	}
+
+    // Invoke displayInterstitial() when you are ready to display an interstitial.
+    public void displayInterstitial() {
+        if (interstitial.isLoaded()) {
+            interstitial.show();
+        }
+    }
 	
 	private List<ImageView> getListOfAllTiles() {
 		List<ImageView> tiles = new ArrayList<ImageView>();
