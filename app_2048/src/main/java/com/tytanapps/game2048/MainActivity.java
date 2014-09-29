@@ -96,8 +96,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		FileInputStream fi;
 		File file = new File(getFilesDir(), getString(R.string.file_current_game));
 
-		Button continueGame = (Button) findViewById(R.id.continue_game_button);	
-		continueGame.setEnabled(false);
+		Button continueGame = (Button) findViewById(R.id.continue_game_button);
+		setContinueGameEnabled(false);
 
 		try {
 			fi = new FileInputStream(file);
@@ -110,7 +110,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 			fi.close();
 			input.close();
 
-			continueGame.setEnabled(true);
+            setContinueGameEnabled(true);
 		}
 		// If an exception is caught then the game does not exist
 		// and the continue game button remains disabled
@@ -125,11 +125,20 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		
 		// When the continue game button is pressed switch to the game activity
 		// without saving over the saved file
-		continueGame.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-                startGameActivity();
-			}
-		});
+		continueGame.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        v.setBackgroundDrawable(getResources().getDrawable(R.drawable.continue_game_button_pressed));
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        v.setBackgroundDrawable(getResources().getDrawable(R.drawable.continue_game_button));
+                        startGameActivity();
+                    }
+                    return true;
+                }
+        });
 
 		super.onResume();
 	}
@@ -444,6 +453,13 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	    	Log.w(LOG_TAG, e.toString());
 	    }
 	}
+
+    private void setContinueGameEnabled(boolean enabled) {
+        Button continueGameButton = (Button) findViewById(R.id.continue_game_button);
+        continueGameButton.setEnabled(enabled);
+
+        continueGameButton.setBackgroundResource((enabled) ? R.drawable.continue_game_button : R.drawable.continue_game_button_disabled);
+    }
 
     /**
      * Delete the current game file and overall game statistics file

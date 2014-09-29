@@ -18,24 +18,26 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="@string/turn"
-        android:textSize="20sp" />
+        android:textSize="25sp" />
 
     <TextView
         android:id="@+id/score_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:text="@string/score"
-        android:textSize="20sp" />
+        android:textSize="25sp"
+        android:layout_below="@+id/turn_textview"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <GridLayout
         android:id="@+id/grid_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:animateLayoutChanges="false"
         android:background="@drawable/blank_grid"
+        android:layout_centerHorizontal="true"
         android:rowOrderPreserved="true"
         android:useDefaultMargins="true" />
 
@@ -43,21 +45,21 @@
         android:id="@+id/undo_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/turn_textview"
-        android:layout_below="@+id/turn_textview"
         android:background="@drawable/undo_button"
         android:maxHeight="36dp"
         android:maxWidth="36dp"
         android:minHeight="36dp"
-        android:minWidth="36dp" />
+        android:minWidth="36dp"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/undos_textview"/>
 
     <ImageButton
         android:id="@+id/restart_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:background="@drawable/restart_button"
         android:layout_alignParentTop="true"
-        android:background="@drawable/restart_button" />
+        android:layout_alignParentRight="true"/>
 
     <TextView
         android:id="@+id/active_attacks_textview"
@@ -73,9 +75,9 @@
         android:id="@+id/powerup_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/undos_textview"
-        android:layout_alignTop="@+id/undo_button"
-        android:background="@drawable/powerup_button" />
+        android:background="@drawable/powerup_button"
+        android:layout_below="@+id/undo_button"
+        android:layout_alignLeft="@+id/undo_button" />
 
     <TextView
         android:id="@+id/powerups_textview"
@@ -92,7 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/undo_button"
         android:layout_alignBottom="@+id/undo_button"
-        android:layout_toRightOf="@+id/undo_button"
+        android:layout_toLeftOf="@+id/restart_button"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:text="@string/undo_remaining"
         android:textSize="20sp" />

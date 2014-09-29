@@ -89,6 +89,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	private boolean listenForSwipe = true;
 	
 	private boolean animationInProgress = false;
+
+    // This only becomes true after the lose message is shown
 	private boolean gameLost = false;
 	
 	// This keeps track of the active animations and
@@ -106,10 +108,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
     // Stores custom tile icons
     private Map<Integer, Drawable> customTileIcon = new HashMap<Integer, Drawable>();
 
+    // Handles the share button in the menu bar
     ShareActionProvider mShareActionProvider;
 
+    // A full screen ad that is show after the game is lost
     private InterstitialAd interstitial;
-
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -128,12 +131,10 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Google Analytics
 		((MainApplication) getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
 		Tracker t = ((MainApplication) getApplication()).getTracker(TrackerName.APP_TRACKER);
-		// Set screen name.
 		t.setScreenName("Game Activity");
-		// Send a screen view.
 		t.send(new HitBuilders.AppViewBuilder().build());
 
-        // Create the interstitial.
+        // Create the interstitial ad.
         interstitial = new InterstitialAd(this);
         interstitial.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
         AdRequest adRequest = new AdRequest.Builder()
@@ -141,13 +142,12 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
                 .addTestDevice(getString(R.string.test_device_id))
                 .build();
 
-        // Begin loading your interstitial.
+        // Begin loading the interstitial ad. It is not show until the game is lost.
         interstitial.loadAd(adRequest);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.game, menu);
 		
@@ -176,9 +176,9 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
                 @Override
                 public boolean onShareTargetSelected(ShareActionProvider shareActionProvider, Intent intent) {
 
-                    if(getApiClient().isConnected()) {
+                    // An achievement is unlocked when using the share action provider
+                    if(getApiClient().isConnected())
                         Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_brag_to_your_friends));
-                    }
 
                     return true;
                 }
@@ -188,7 +188,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
 		// Handle action bar item clicks here
 		int id = item.getItemId();
 
@@ -205,17 +204,11 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			return true;
 		}
 
-        if(id == R.id.menu_item_share && getApiClient().isConnected()) {
-            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_brag_to_your_friends));
-            return true;
-        }
-
 		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
 	protected void onStart() {
-		
 		// If GameActivity is loaded for the first time the grid is created. If user returns to
 		// this activity after switching to another activity, the grid is still recreated because
 		// there is a chance that android killed this activity in the background
@@ -238,7 +231,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
         // Disable the powerup button if there are no powerups remaining
         setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
-
 
         ImageButton powerupButton = (ImageButton) findViewById(R.id.powerup_button);
         powerupButton.setOnTouchListener(new OnTouchListener() {
@@ -444,8 +436,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		TextView turnTextView = (TextView) findViewById(R.id.turn_textview);
 		TextView scoreTextView = (TextView) findViewById(R.id.score_textview);
 		TextView undosTextView = (TextView) findViewById(R.id.undos_textview);
-		TextView activeAttacksTextView = (TextView) findViewById(R.id.active_attacks_textview);
 		TextView powerupsTextView = (TextView) findViewById(R.id.powerups_textview);
+        TextView activeAttacksTextView = (TextView) findViewById(R.id.active_attacks_textview);
         ImageButton undoButton = (ImageButton) findViewById(R.id.undo_button);
         ImageButton powerupButton = (ImageButton) findViewById(R.id.powerup_button);
 		
@@ -459,13 +451,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		int undosLeft = game.getUndosRemaining();
 		if(undosLeft <= 0) {
 			undosTextView.setVisibility(View.INVISIBLE);
+            undosTextView.setText("");
 			if(undosLeft == 0)
-				undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button_gray));
+				setUndoButtonEnabled(false);
 		}
 		else {
 			undosTextView.setVisibility(View.VISIBLE);
 			undosTextView.setText(""+undosLeft);
-			undoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.undo_button));
+			setUndoButtonEnabled(true);
 		}
 
 		// Update attacks
@@ -475,13 +468,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		int powerupsLeft = game.getPowerupsRemaining();
 		if(powerupsLeft <= 0) {
 			powerupsTextView.setVisibility(View.INVISIBLE);
+            powerupsTextView.setText("");
 			if(powerupsLeft == 0)
-				powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_disabled));
+				setPowerupButtonEnabled(false);
 		}
 		else {
             powerupsTextView.setVisibility(View.VISIBLE);
-            powerupsTextView.setText("" + powerupsLeft);
-            powerupButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
+            powerupsTextView.setText(""+powerupsLeft);
+            setPowerupButtonEnabled(true);
         }
 	}
 	
@@ -1505,10 +1499,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
         // Create a new game
         game = GameModes.newGameFromId(game.getGameModeId());
 
-        // Disable the undo button if there are no undos remaining
+        // Disable the undo button and powerup button if necessary
         setUndoButtonEnabled(game.getUndosRemaining() != 0);
-
-        // Disable the powerup button if there are no powerups remaining
         setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
 
         gameLost = false;
@@ -1591,7 +1583,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			game = new Game();
 			gameStats = new Statistics();
 		} catch (IOException e) {
-			Log.w(LOG_TAG, "In load: No save file found, using default game");
 			game = new Game();
 			gameStats = new Statistics();
 		}
