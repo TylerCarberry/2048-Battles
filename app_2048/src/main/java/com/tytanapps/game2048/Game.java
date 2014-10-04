@@ -34,7 +34,7 @@ public class Game implements java.io.Serializable
 	public static final double CHANCE_OF_2 = .90;
 	
 	private int score = 0;
-	private int turnNumber = 0;
+	private int turnNumber = 1;
 	
 	// If the game was quit
 	private boolean quitGame = false;

@@ -369,9 +369,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 			// When the animation is over increment the turn number, update the game, 
 			// and add a new tile
 			public void onAnimationEnd(Animator animation) {
-				
-				updateGame();
-				
+
+                updateGame();
 				gameStats.incrementTotalMoves(1);
 
                 if(gameStats.getTotalMoves() == 2048 && getApiClient().isConnected()) {
@@ -383,15 +382,17 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 				
 				if(game.getArcadeMode() && Math.random() < 0.1)
 					addRandomBonus();
-				
-				if(game.getAttackDuration() == 0) {
+
+                game.newTurn();
+                updateTextviews();
+
+                if(game.getAttackDuration() == 0) {
                     if(XTileAttackActive)
                         endXAttack();
                     else if(ghostAttackActive)
                         endGhostAttack();
                 }
 
-				game.newTurn();
 				addTile();
 
                 if(game.lost())
@@ -438,9 +439,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		TextView undosTextView = (TextView) findViewById(R.id.undos_textview);
 		TextView powerupsTextView = (TextView) findViewById(R.id.powerups_textview);
         TextView activeAttacksTextView = (TextView) findViewById(R.id.active_attacks_textview);
-        ImageButton undoButton = (ImageButton) findViewById(R.id.undo_button);
-        ImageButton powerupButton = (ImageButton) findViewById(R.id.powerup_button);
-		
+
 		// Update the turn number
 		turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
 
@@ -728,11 +727,14 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
         for(int tile : Game.getListOfAllTileValues()) {
             File fileCustomTiles = getIconFile(tile);
-            Bitmap bitmap = BitmapFactory.decodeFile(fileCustomTiles.getAbsolutePath(), options);
 
-            if (bitmap != null) {
-                Drawable tileIconDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 128, 128, true));
-                customTileIcon.put(tile, tileIconDrawable);
+            if(fileCustomTiles != null) {
+                Bitmap bitmap = BitmapFactory.decodeFile(fileCustomTiles.getAbsolutePath(), options);
+
+                if (bitmap != null) {
+                    Drawable tileIconDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 128, 128, true));
+                    customTileIcon.put(tile, tileIconDrawable);
+                }
             }
         }
     }
