@@ -531,10 +531,9 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             // values/strings.xml.
             mAdView = (AdView) getView().findViewById(R.id.adView);
 
-            // Create an ad request. Check logcat output for the hashed device ID to
-            // get test ads on a physical device. e.g.
-            // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+            // Create an ad request
             AdRequest adRequest = new AdRequest.Builder()
+                    // Test ads are shown on my device and the emulator
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                     .addTestDevice(getString(R.string.test_device_id))
                     .build();

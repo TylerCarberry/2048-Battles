@@ -27,7 +27,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/continue_game"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/intro_textview"
         android:layout_toEndOf="@+id/intro_textview" />
