@@ -9,12 +9,12 @@ android {
             storePassword 'android'
         }
     }
-    compileSdkVersion 20
-    buildToolsVersion '20.0.0'
+    compileSdkVersion 21
+    buildToolsVersion '21.0.2'
     defaultConfig {
         applicationId 'com.tytanapps.game2048'
         minSdkVersion 14
-        targetSdkVersion 20
+        targetSdkVersion 21
     }
     buildTypes {
         release {
@@ -31,6 +31,6 @@ android {
 
 dependencies {
     compile project(':baseGameUtils')
-    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.android.support:support-v4:21.0.0'
     compile 'com.google.android.gms:play-services:5.0.89'
 }

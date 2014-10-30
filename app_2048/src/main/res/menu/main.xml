@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.app_2048.MainActivity" >
-    
+
     <item
         android:id="@+id/action_how_to_play"
         android:orderInCategory="100"

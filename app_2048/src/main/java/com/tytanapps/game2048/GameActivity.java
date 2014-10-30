@@ -592,7 +592,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
                 // Create a new tile to insert back into the board
                 tile = new ImageView(this);
                 tile.setId(getTileIdByLocation(tileLoc));
-
                 tile.setTag(expectedValue);
 
                 if(! game.getDestinationLocations().contains(tileLoc))

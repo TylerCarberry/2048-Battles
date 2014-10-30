@@ -9,51 +9,40 @@
     tools:context="com.example.app_2048.MainActivity$PlaceholderFragment"
     android:background="@color/FloralWhite">
 
-    <TextView
-        android:id="@+id/intro_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:gravity="center"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/continue_game_button"
-        android:layout_alignBaseline="@id/continue_game_button"
-        android:text="@string/intro"
-        android:textSize="20sp" />
-
     <RelativeLayout
         android:id="@+id/relativeLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/prompt_select_game"
         android:layout_above="@+id/play_games_layout"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical">
 
         <HorizontalScrollView
             android:id="@+id/modeScrollView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:id="@+id/modeLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"/>
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical"/>
 
         </HorizontalScrollView>
     </RelativeLayout>
 
     <TextView
         android:id="@+id/prompt_select_game"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/relativeLayout1"
-        android:layout_below="@+id/continue_game_button"
-        android:layout_marginTop="14dp"
         android:gravity="center"
         android:text="@string/start_new_game"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:layout_alignBottom="@+id/continue_game_button"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/continue_game_button" />
 
     <LinearLayout
         android:id="@+id/play_games_layout"
@@ -62,7 +51,7 @@
         android:layout_alignParentBottom="true"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="0dp"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:background="@android:color/white"
         android:layout_marginTop="0dp">
@@ -126,5 +115,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:background="@drawable/continue_game_button" />
+
+
 
 </RelativeLayout>
