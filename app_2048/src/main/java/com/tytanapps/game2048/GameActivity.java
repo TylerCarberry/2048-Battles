@@ -224,7 +224,12 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		// Show the game mode in the menu bar
 		int gameTitleId = GameModes.getGameTitleById(game.getGameModeId()); 
 		if(gameTitleId != -1)
-			getActionBar().setTitle(gameTitleId);
+            try {
+                getActionBar().setTitle(gameTitleId);
+            }
+            catch (NullPointerException e) {
+                getActionBar().setTitle(R.string.app_name);
+            }
 		
 		// Disable the undo button if there are no undos remaining
 		setUndoButtonEnabled(game.getUndosRemaining() != 0);
@@ -880,7 +885,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	        for (int i=0; i < eb.getCount(); i++) {
 	        	Event e = eb.get(i);
 	        	
-	        	Log.d(LOG_TAG, ""+e.toString());
+	        	//Log.d(LOG_TAG, ""+e.toString());
 	        	
 	        	Toast.makeText(getApplicationContext(),
 	    				""+e.getValue(),
@@ -922,67 +927,62 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
             message += String.format(getString(R.string.final_score), myGame.getScore());
 		return message;
 	}
-	
-	private void showPowerupDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-		if(game.lost()) {
-			builder.setTitle("Cannot use powerup")
-			.setMessage("You cannot use powerups after you lose");
-		}
-		else
-			if(game.getPowerupsRemaining() != 0) {
-				builder.setTitle(getString(R.string.prompt_choose_powerup))
-				.setItems(R.array.powerups, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
+    private void showPowerupDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-						// The 'which' argument contains the index position
-						// of the selected item
-						switch(which) {
-						case 0:
-							shuffleGame();
-							game.decrementPowerupsRemaining();
-							break;
-						case 1:
-							// The number of powerups is decremented in removeTile
-							// after a tile has been selected
-							removeTile();
-							break;
-						case 2:
-							removeLowTiles();
-							game.decrementPowerupsRemaining();
-							break;
-						case 3:
-							game.setGenieEnabled(true);
-							game.decrementPowerupsRemaining();
-							updateTextviews();
-							break;
-                        // Debug option, I change this to test the code
-                        // Currently doubles all tiles
-                        case 4:
-                            Grid newGrid = game.getGrid();
-                            List<Location> tiles = newGrid.toList();
-                            for(Location tile : tiles)
-                                newGrid.set(tile, newGrid.get(tile) * 2);
-                            game.setGrid(newGrid);
-                            updateGame();
-                            break;
-						}
+        if(! game.lost()) {
+            if (game.getPowerupsRemaining() == 0) {
+                builder.setTitle("No More Powerups")
+                        .setMessage("There are no powerups remaining");
+            }
+            else {
+                builder.setTitle(getString(R.string.prompt_choose_powerup)).setItems(R.array.powerups, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        // The 'which' argument contains the index position
+                        // of the selected item
+                        switch (which) {
+                            case 0:
+                                shuffleGame();
+                                game.decrementPowerupsRemaining();
+                                break;
+                            case 1:
+                                // The number of powerups is decremented in removeTile
+                                // after a tile has been selected
+                                removeTile();
+                                break;
+                            case 2:
+                                removeLowTiles();
+                                game.decrementPowerupsRemaining();
+                                break;
+                            case 3:
+                                game.setGenieEnabled(true);
+                                game.decrementPowerupsRemaining();
+                                updateTextviews();
+                                break;
+                            // Debug option, I change this to test the code
+                            // Currently doubles all tiles
+                            case 4:
+                                Grid newGrid = game.getGrid();
+                                List<Location> tiles = newGrid.toList();
+                                for (Location tile : tiles)
+                                    newGrid.set(tile, newGrid.get(tile) * 2);
+                                game.setGrid(newGrid);
+                                updateGame();
+                                break;
+                        }
                         setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
-					}
-				});
-			}
-			else {
-				builder.setTitle("No More Powerups")
-				.setMessage("There are no powerups remaining");
-			}
-		builder.create().show();
-	}
-	
+                    }
+                });
+            }
+            builder.create().show();
+        }
+    }
+
 	/**
-	 * This method is no longer used because I switched
-	 * to ImageViews instead of buttons. I may need this method 
-	 * later for zen mode.
+	 * @deprecated This method is no longer used because I switched to ImageViews instead of
+     * buttons. I may need this method later for zen mode.
 	 * @param tile The number representation of the tile
 	 * @return The string representation of the tile
 	 */
