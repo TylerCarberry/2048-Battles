@@ -6,9 +6,19 @@
 
 2048 for Android By Tyler Carberry  
 My version of 2048 based off the orginal 2048 by Gabriele Cirulli.  
-[Download the latest beta](https://github.com/tytan34/2048-for-Android/blob/master/app_2048/build/outputs/apk/app_2048-debug.apk?raw=true)  
-[Download the latest stable release](https://github.com/tytan34/2048-for-Android/blob/master/app_2048/app_2048-release.apk?raw=true
-)
+
+### Download the beta from Google Play
+1) Join this Google+ Community  
+https://plus.google.com/communities/100444948974584286905  
+2) Opt into the beta  
+https://play.google.com/apps/testing/com.tytanapps.game2048  
+3) ** Wait several hours for the app to become visible **  
+4) Download the app  
+https://play.google.com/store/apps/details?id=com.tytanapps.game2048﻿
+
+Or click here to download the latest  [beta](https://github.com/tytan34/2048-for-Android/blob/master/app_2048/build/outputs/apk/app_2048-debug.apk?raw=true) or
+[stable](https://github.com/tytan34/2048-for-Android/blob/master/app_2048/app_2048-release.apk?raw=true
+) apk directly
 
 ### Different Modes
 Classic: 10 Undos and 5 Powerups  
