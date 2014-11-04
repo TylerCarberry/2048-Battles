@@ -1,4 +1,8 @@
 package com.tytanapps.game2048;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -63,4 +67,32 @@ public class Save
 		output.close();
 		fop.close();
 	}
+
+    public static void saveBitmap(Bitmap bitmap, File file) throws IOException
+    {
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static Bitmap loadBitmap(File file) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+        if (file != null)
+            return BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+        return null;
+    }
 }

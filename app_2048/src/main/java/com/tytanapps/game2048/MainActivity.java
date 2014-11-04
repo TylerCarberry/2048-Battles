@@ -3,6 +3,7 @@ package com.tytanapps.game2048;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,6 +77,12 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	protected void onStart() {
 		// Get an Analytics tracker to report app starts & uncaught exceptions etc.
 		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+
+        ((LinearLayout) findViewById(R.id.modeLinearLayout)).removeAllViewsInLayout();
+
+        if(isSavedGame())
+            addSavedGameView();
+
         createListView();
 		super.onStart();
 	}
@@ -93,52 +101,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	 */
 	protected void onResume() {
 
-		FileInputStream fi;
-		File file = new File(getFilesDir(), getString(R.string.file_current_game));
 
-		Button continueGame = (Button) findViewById(R.id.continue_game_button);
-		setContinueGameEnabled(false);
-
-		try {
-			fi = new FileInputStream(file);
-			ObjectInputStream input = new ObjectInputStream(fi);
-
-			// The value of game is not used but if it is able to be read
-			// without any exceptions than it exists.
-			Game game = (Game) input.readObject();
-
-			fi.close();
-			input.close();
-
-            setContinueGameEnabled(true);
-		}
-		// If an exception is caught then the game does not exist
-		// and the continue game button remains disabled
-		catch (FileNotFoundException e) {}
-		catch (StreamCorruptedException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		// When the continue game button is pressed switch to the game activity
-		// without saving over the saved file
-		continueGame.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        v.setBackgroundDrawable(getResources().getDrawable(R.drawable.continue_game_button_pressed));
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        v.setBackgroundDrawable(getResources().getDrawable(R.drawable.continue_game_button));
-                        startGameActivity();
-                    }
-                    return true;
-                }
-        });
 
 		super.onResume();
 	}
@@ -209,6 +172,101 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		return super.onOptionsItemSelected(item);
 	}
 
+    // Precondition: there is a saved game
+    private void addSavedGameView() {
+
+        File savedGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+        Game savedGame;
+        try {
+            savedGame = (Game) Save.load(savedGameFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        if(savedGame == null) {
+            Log.d(LOG_TAG, "Saved game is null");
+            return;
+        }
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+
+        LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
+        //listOfModes.removeAllViewsInLayout();
+
+
+        File savedGameBitmapFile = new File(getFilesDir(), "CURRENT_GAME_SCREENSHOT");
+        Bitmap savedGameBitmap = Save.loadBitmap(savedGameBitmapFile);
+
+        //Toast.makeText(this, "is saved game bitmap null? "+(savedGameBitmap == null), Toast.LENGTH_SHORT).show();
+
+        // The layout the contains all info for that mode
+        LinearLayout modeDetailLayout = new LinearLayout(this);
+        modeDetailLayout.setOrientation(LinearLayout.VERTICAL);
+
+        modeDetailLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                        width / 2, LayoutParams.WRAP_CONTENT)
+        );
+        modeDetailLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        // The mode name
+        TextView modeName = new TextView(this);
+        modeName.setText("Continue Game");
+        modeName.setTextSize(25);
+        modeName.setTypeface(null, Typeface.BOLD);
+        modeName.setLayoutParams(new LinearLayout.LayoutParams(
+                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        );
+
+        // The mode description
+        TextView modeDesc = new TextView(this);
+        modeDesc.setText(getString(GameModes.getGameTitleById((savedGame.getGameModeId()))));
+        modeDesc.setTextSize(20);
+        modeDesc.setLayoutParams(new LinearLayout.LayoutParams(
+                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        );
+        modeDesc.setGravity(Gravity.CENTER_HORIZONTAL);
+
+
+        ImageView currentGameImageView = new ImageView(this);
+        currentGameImageView.setImageBitmap(savedGameBitmap);
+
+        // The button used to start the game
+        Button startGameButton = new Button(this);
+        startGameButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.continue_game_button));
+        startGameButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT));
+
+        startGameButton.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    v.setBackgroundDrawable(getResources().getDrawable(R.drawable.continue_game_button_pressed));
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    v.setBackgroundDrawable(getResources().getDrawable(R.drawable.continue_game_button));
+                    startGameActivity();
+                }
+                return true;
+            }
+        });
+
+        // Add each item of the mode to the layout
+        modeDetailLayout.addView(startGameButton);
+        //modeDetailLayout.addView(modeName);
+        modeDetailLayout.addView(modeDesc);
+        modeDetailLayout.addView(currentGameImageView);
+
+
+        // Add the mode to the list
+        listOfModes.addView(modeDetailLayout);
+    }
 
     private void createListView() {
         Display display = getWindowManager().getDefaultDisplay();
@@ -217,7 +275,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         int width = size.x;
 
         LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
-        listOfModes.removeAllViewsInLayout();
+        //listOfModes.removeAllViewsInLayout();
 
         Statistics gameStats = new Statistics();
         try {
@@ -375,6 +433,37 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		startActivity(new Intent(this, GameActivity.class));
 	}
 
+    private boolean isSavedGame() {
+        FileInputStream fi;
+        File file = new File(getFilesDir(), getString(R.string.file_current_game));
+
+        try {
+            fi = new FileInputStream(file);
+            ObjectInputStream input = new ObjectInputStream(fi);
+
+            // The value of game is not used but if it is able to be read
+            // without any exceptions than it exists.
+            Game game = (Game) input.readObject();
+
+            fi.close();
+            input.close();
+
+            return true;
+        }
+        // If an exception is caught then the game does not exist
+        // and the continue game button remains disabled
+        catch (FileNotFoundException e) {}
+        catch (StreamCorruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
 	@Override
 	/**
 	 *  Sign in has failed. Show the user the sign-in button.
@@ -436,7 +525,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		
 	    // Claim the quest reward.
 	    Games.Quests.claim(this.getApiClient(), quest.getQuestId(),
-	            quest.getCurrentMilestone().getMilestoneId());
+                quest.getCurrentMilestone().getMilestoneId());
 
 	    // Process the RewardData to provision a specific reward.
 	    try {
@@ -454,12 +543,14 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	    }
 	}
 
+    /*
     private void setContinueGameEnabled(boolean enabled) {
         Button continueGameButton = (Button) findViewById(R.id.continue_game_button);
         continueGameButton.setEnabled(enabled);
 
         continueGameButton.setBackgroundResource((enabled) ? R.drawable.continue_game_button : R.drawable.continue_game_button_disabled);
     }
+    */
 
     /**
      * Delete the current game file and overall game statistics file

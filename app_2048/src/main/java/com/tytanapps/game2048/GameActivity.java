@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -1516,9 +1517,17 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
 
+        File currentGameScreenshotFile = new File(getFilesDir(), "CURRENT_GAME_SCREENSHOT");
+
 		try {
 			Save.save(game, currentGameFile);
 			Save.save(gameStats, gameStatsFile);
+
+            View currentGame = findViewById(R.id.grid_layout);
+            Bitmap currentGameBitmap = loadBitmapFromView(currentGame, currentGame.getWidth(), currentGame.getHeight());
+            Save.saveBitmap(currentGameBitmap, currentGameScreenshotFile);
+
+            //Save.save(gameStats, gameStatsFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 			// Notify the user of the error through a toast
@@ -1526,7 +1535,15 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 		}
 		requestBackup();
 	}
-	
+
+    public static Bitmap loadBitmapFromView(View v, int width, int height) {
+        Bitmap b = Bitmap.createBitmap(width , height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
+        v.draw(c);
+        return b;
+    }
+
 	protected void requestBackup() {
         BackupManager bm = new BackupManager(this);
 		bm.dataChanged();

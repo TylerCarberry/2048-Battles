@@ -13,7 +13,6 @@
         android:id="@+id/relativeLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/prompt_select_game"
         android:layout_above="@+id/play_games_layout"
         android:layout_marginTop="10dp"
         android:gravity="center_vertical">
@@ -32,17 +31,6 @@
 
         </HorizontalScrollView>
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/prompt_select_game"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/start_new_game"
-        android:textSize="20sp"
-        android:layout_alignBottom="@+id/continue_game_button"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/continue_game_button" />
 
     <LinearLayout
         android:id="@+id/play_games_layout"
@@ -106,16 +94,6 @@
             android:background="@color/White" />
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/continue_game_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/continue_game_button" />
-
 
 
 </RelativeLayout>
