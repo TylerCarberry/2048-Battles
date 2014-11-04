@@ -22,6 +22,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -208,6 +209,9 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
         // The layout the contains all info for that mode
         LinearLayout modeDetailLayout = new LinearLayout(this);
+        modeDetailLayout.setPadding((int) getResources().getDimension(R.dimen.activity_horizontal_margin),
+                0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin), 0);
+
         modeDetailLayout.setOrientation(LinearLayout.VERTICAL);
 
         modeDetailLayout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -215,23 +219,18 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         );
         modeDetailLayout.setGravity(Gravity.CENTER_HORIZONTAL);
 
+
+
         // The mode name
         TextView modeName = new TextView(this);
-        modeName.setText("Continue Game");
-        modeName.setTextSize(25);
+        modeName.setText(getString(GameModes.getGameTitleById((savedGame.getGameModeId()))));
+        modeName.setTextSize(20);
         modeName.setTypeface(null, Typeface.BOLD);
         modeName.setLayoutParams(new LinearLayout.LayoutParams(
                         LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         );
-
-        // The mode description
-        TextView modeDesc = new TextView(this);
-        modeDesc.setText(getString(GameModes.getGameTitleById((savedGame.getGameModeId()))));
-        modeDesc.setTextSize(20);
-        modeDesc.setLayoutParams(new LinearLayout.LayoutParams(
-                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-        );
-        modeDesc.setGravity(Gravity.CENTER_HORIZONTAL);
+        modeName.setPadding(0, (int) getResources().getDimension(R.dimen.activity_vertical_margin), 0, 0);
+        modeName.setGravity(Gravity.CENTER_HORIZONTAL);
 
 
         ImageView currentGameImageView = new ImageView(this);
@@ -259,10 +258,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
         // Add each item of the mode to the layout
         modeDetailLayout.addView(startGameButton);
-        //modeDetailLayout.addView(modeName);
-        modeDetailLayout.addView(modeDesc);
+        modeDetailLayout.addView(modeName);
         modeDetailLayout.addView(currentGameImageView);
-
 
         // Add the mode to the list
         listOfModes.addView(modeDetailLayout);
@@ -298,6 +295,18 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             e.printStackTrace();
         }
 
+        Space marginStart = new Space(this);
+        marginStart.setLayoutParams(new LinearLayout.LayoutParams(
+                        (int) getResources().getDimension(R.dimen.activity_horizontal_margin), LayoutParams.MATCH_PARENT)
+        );
+
+        /*
+        Space marginEnd = new Space(this);
+        marginEnd.setLayoutParams(new LinearLayout.LayoutParams(
+                        (int) getResources().getDimension(R.dimen.activity_horizontal_margin), LayoutParams.MATCH_PARENT)
+        );
+        */
+
         // Loop through every game mode and add it to the list
         for(int id : GameModes.getListOfGameModesIds()) {
 
@@ -309,6 +318,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
                             width / 2, LayoutParams.WRAP_CONTENT)
             );
             modeDetailLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+            modeDetailLayout.setPadding(0, 0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin), 0);
+
 
             // The mode name
             TextView modeName = new TextView(this);
@@ -380,7 +391,9 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             modeDetailLayout.addView(startGameButton);
 
             // Add the mode to the list
+            //listOfModes.addView(marginStart);
             listOfModes.addView(modeDetailLayout);
+            //listOfModes.addView(marginEnd);
         }
     }
 

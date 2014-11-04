@@ -10,34 +10,11 @@
     android:orientation="horizontal"
     tools:context="com.example.app_2048.MainActivity$PlaceholderFragment" >
 
-    <TextView
-        android:id="@+id/intro_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:text="@string/intro"
-        android:textSize="35sp" />
-
-    <Button
-        android:id="@+id/continue_game_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/intro_textview"
-        android:layout_toEndOf="@+id/intro_textview" />
-
-
 
     <RelativeLayout
         android:id="@+id/relativeLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/intro_textview"
         android:layout_toLeftOf="@id/play_games_layout"
         android:layout_marginTop="10dp">
 
