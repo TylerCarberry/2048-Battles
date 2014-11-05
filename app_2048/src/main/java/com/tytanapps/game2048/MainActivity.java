@@ -219,8 +219,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         );
         modeDetailLayout.setGravity(Gravity.CENTER_HORIZONTAL);
 
-
-
         // The mode name
         TextView modeName = new TextView(this);
         modeName.setText(getString(GameModes.getGameTitleById((savedGame.getGameModeId()))));
@@ -260,6 +258,15 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         modeDetailLayout.addView(startGameButton);
         modeDetailLayout.addView(modeName);
         modeDetailLayout.addView(currentGameImageView);
+
+        modeDetailLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP)
+                    startGameActivity();
+                return true;
+            }
+        });
 
         // Add the mode to the list
         listOfModes.addView(modeDetailLayout);
