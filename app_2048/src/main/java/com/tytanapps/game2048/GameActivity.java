@@ -84,7 +84,7 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	// Used to detect swipes and move the board
 	private GestureDetectorCompat mDetector; 
 	
-	public final String APP_URL = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
+	public static final String APP_URL = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
 	
 	// Becomes false when the game is moved and becomes true in onDown
 	private boolean listenForSwipe = true;
@@ -669,7 +669,8 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	}
 
     private Drawable getTileIconDrawable(int tileValue) {
-        if(game.getGameModeId() == GameModes.GHOST_MODE_ID || ghostAttackActive)
+        if(game.getGameModeId() == GameModes.GHOST_MODE_ID ||
+                game.getActiveAttack() == Game.GHOST_ATTACK || ghostAttackActive)
             tileValue = Game.GHOST_TILE_VALUE;
 
         if(customTileIcon.containsKey(tileValue))
@@ -1021,7 +1022,6 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 
         ObjectAnimator.ofFloat(newTile, View.SCALE_X, .50f).setDuration(0).start();
         ObjectAnimator.ofFloat(newTile, View.SCALE_Y, .50f).setDuration(0).start();
-
 
         // Make the tile visible. It still cannot be seen because the alpha is 0
 		newTile.setVisibility(View.VISIBLE);

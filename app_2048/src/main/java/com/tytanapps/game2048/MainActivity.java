@@ -37,6 +37,8 @@ import com.google.android.gms.games.quest.QuestUpdateListener;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.tytanapps.game2048.MainApplication.TrackerName;
 
+import junit.framework.Assert;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -173,7 +175,10 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		return super.onOptionsItemSelected(item);
 	}
 
-    // Precondition: there is a saved game
+    /**
+     * Adds the continue game listview to the screen
+     * Contains the game mode and screenshot of the game
+     */
     private void addSavedGameView() {
 
         File savedGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
@@ -188,10 +193,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             return;
         }
 
-        if(savedGame == null) {
-            Log.d(LOG_TAG, "Saved game is null");
-            return;
-        }
+        Assert.assertTrue(savedGame != null);
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -200,7 +202,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
         LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
         //listOfModes.removeAllViewsInLayout();
-
 
         File savedGameBitmapFile = new File(getFilesDir(), "CURRENT_GAME_SCREENSHOT");
         Bitmap savedGameBitmap = Save.loadBitmap(savedGameBitmapFile);
