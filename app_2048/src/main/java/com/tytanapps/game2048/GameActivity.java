@@ -1722,8 +1722,21 @@ public class GameActivity extends BaseGameActivity implements OnGestureListener 
 	            	((GameActivity)getActivity()).restartGame();
 	            }
 	        });
-	        
-	        return rootView;
+
+            for(int row = 0; row < 4; row++) {
+                for(int col = 0; col < 4; col++) {
+                    Spec specRow = GridLayout.spec(row, 1);
+                    Spec specCol = GridLayout.spec(col, 1);
+                    GridLayout.LayoutParams gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
+
+                    ImageView tile = new ImageView(getActivity());
+                    tile.setImageResource(R.drawable.tile_blank);
+
+                    ((GridLayout) rootView.findViewById(R.id.grid_layout)).addView(tile, gridLayoutParam);
+                }
+            }
+
+            return rootView;
 		}
 	}
 	

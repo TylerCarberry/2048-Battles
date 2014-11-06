@@ -13,11 +13,9 @@
         android:id="@+id/grid_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:animateLayoutChanges="false"
-        android:background="@drawable/blank_grid"
         android:rowOrderPreserved="true"
         android:useDefaultMargins="true" >
     </GridLayout>

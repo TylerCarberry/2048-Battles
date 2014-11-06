@@ -36,7 +36,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:animateLayoutChanges="false"
-        android:background="@drawable/blank_grid"
         android:layout_centerHorizontal="true"
         android:rowOrderPreserved="true"
         android:useDefaultMargins="true" />
