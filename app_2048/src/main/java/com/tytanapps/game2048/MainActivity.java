@@ -156,6 +156,11 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             return true;
         }
 
+        if (id == R.id.action_multiplayer) {
+            startActivity(new Intent(this, MultiplayerActivity.class));
+            return true;
+        }
+
         if (id == R.id.action_reset_game) {
             resetGame();
             return true;

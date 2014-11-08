@@ -103,4 +103,6 @@
     <string name="start_game">Start Game</string>
     <string name="title_activity_custom_icon">Customize Tile Icons</string>
     <string name="about">About</string>
+    <string name="title_activity_multiplayer">MultiplayerActivity</string>
+
 </resources>
