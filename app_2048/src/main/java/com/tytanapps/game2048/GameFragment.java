@@ -210,12 +210,18 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         super.onStart();
     }
 
+
     @Override
-    public void onStop() {
+    public void onPause() {
         // Only save a game that is still in progress
         if(! game.lost())
             save();
+        super.onPause();
+    }
 
+
+    @Override
+    public void onStop() {
         // Stop all active animations. If this is not done the game will crash
         for(ObjectAnimator animation : activeAnimations)
             animation.end();
