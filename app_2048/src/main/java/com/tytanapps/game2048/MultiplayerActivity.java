@@ -118,8 +118,14 @@ public class MultiplayerActivity extends Activity implements GoogleApiClient.Con
                     Toast.makeText(this, "mPartic size: " + mParticipants.size(), Toast.LENGTH_SHORT).show();
 
                 }
+                break;
+            case R.id.to_game_button:
+                //startActivity(new Intent(this, GameActivity.class));
 
 
+
+                //findViewById(R.id.game_fragment).setVisibility(View.VISIBLE);
+                //findViewById(R.id.multiplayer_fragment).setVisibility(View.GONE);
                 break;
         }
     }
