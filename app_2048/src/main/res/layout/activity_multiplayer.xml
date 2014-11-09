@@ -10,13 +10,6 @@
         android:id="@+id/multiplayer_fragment"
         android:name="com.tytanapps.game2048.MultiplayerActivity$PlaceholderFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <fragment
-        android:id="@+id/game_fragment"
-        android:name="com.tytanapps.game2048.GameActivity$GameFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible"/>
+        android:layout_height="match_parent"/>
 
 </FrameLayout>

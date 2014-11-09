@@ -2,6 +2,7 @@ package com.tytanapps.game2048;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +31,8 @@ import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListene
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.android.gms.plus.Plus;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +107,7 @@ public class MultiplayerActivity extends Activity implements GoogleApiClient.Con
                 break;
             case R.id.send_button:
                 // play a single-player game
-                sendMessage(1, false);
+                sendMessage(getMessage(), false);
                 break;
             case R.id.in_game_button:
                 // play a single-player game
@@ -120,12 +123,22 @@ public class MultiplayerActivity extends Activity implements GoogleApiClient.Con
                 }
                 break;
             case R.id.to_game_button:
-                //startActivity(new Intent(this, GameActivity.class));
 
 
+                Game game = GameModes.multiplayerMode();
+                File saveGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
 
-                //findViewById(R.id.game_fragment).setVisibility(View.VISIBLE);
-                //findViewById(R.id.multiplayer_fragment).setVisibility(View.GONE);
+                try {
+                    Save.save(game, saveGameFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.multiplayer_activity, new GameFragment(), "NewFragmentTag");
+                ft.addToBackStack(null);
+                ft.commit();
+
                 break;
         }
     }
@@ -619,8 +632,13 @@ public class MultiplayerActivity extends Activity implements GoogleApiClient.Con
         */
     }
 
+    private String getMessage() {
+        EditText messageTextview = (EditText) findViewById(R.id.message_edittext);
+        return messageTextview.getText().toString();
+    }
+
     // Broadcast my score to everybody else.
-    void sendMessage(int direction, boolean reliable) {
+    void sendMessage(String message, boolean reliable) {
 
         if(mRoomId == null) {
             Toast.makeText(this, "You are not in a game", Toast.LENGTH_SHORT).show();
@@ -630,17 +648,9 @@ public class MultiplayerActivity extends Activity implements GoogleApiClient.Con
 
         //Toast.makeText(this, "SEND MESSAGE", Toast.LENGTH_SHORT).show();
         //Toast.makeText(this, "Is mParticipants null in send message " + (mParticipants == null), Toast.LENGTH_SHORT).show();
-
         //Toast.makeText(this, "STEP 2", Toast.LENGTH_SHORT).show();
-
-
         // // First byte in message indicates whether it's a final score or not
 
-
-
-
-        EditText messageTextview = (EditText) findViewById(R.id.message_edittext);
-        String message = messageTextview.getText().toString();
         mMsgBuf = new byte[message.length()];
 
         for(int position = 0; position < message.length(); position++) {

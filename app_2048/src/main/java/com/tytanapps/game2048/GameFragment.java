@@ -746,8 +746,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         File currentGameFile = new File(getActivity().getFilesDir(), getString(R.string.file_current_game));
         currentGameFile.delete();
 
+        /*
         updateLeaderboards(game.getScore(), game.getGameModeId());
         submitEvents(game);
+
 
         if(game.getScore() <= 200 && game.getGameModeId() == GameModes.NORMAL_MODE_ID &&  getApiClient().isConnected()) {
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_worst_player_ever));
@@ -756,6 +758,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 game.getGameModeId() == GameModes.PRACTICE_MODE_ID &&  getApiClient().isConnected()) {
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_i_dont_want_any_help));
         }
+        */
+
+        if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)
+            ((MultiplayerActivity) getActivity()).sendMessage("Your Opponent Has Lost", true);
+
     }
 
     /**

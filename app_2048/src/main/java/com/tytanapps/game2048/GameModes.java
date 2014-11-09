@@ -18,8 +18,8 @@ public class GameModes
 	public static final int ZEN_MODE_ID = 10;
 	public static final int GHOST_MODE_ID = 11;
 	public static final int CRAZY_MODE_ID = 12;
-	public static final int CUSTOM_MODE_ID = 13;
-
+    public static final int CUSTOM_MODE_ID = 13;
+    public static final int MULTIPLAYER_MODE_ID = 14;
 
     public static List<Integer> getListOfGameModesIds() {
         List<Integer> gameModes = new ArrayList<Integer>();
@@ -37,9 +37,7 @@ public class GameModes
         gameModes.add(SPEED_MODE_ID);
         gameModes.add(SURVIVAL_MODE_ID);
         gameModes.add(CRAZY_MODE_ID);
-
-
-
+        gameModes.add(MULTIPLAYER_MODE_ID);
 
         return gameModes;
     }
@@ -69,9 +67,11 @@ public class GameModes
 			return zenMode();
 		case GHOST_MODE_ID:
 			return ghostMode();
-		case CRAZY_MODE_ID:
-			return crazyMode();
-		default:
+        case CRAZY_MODE_ID:
+            return crazyMode();
+        case MULTIPLAYER_MODE_ID:
+            return multiplayerMode();
+        default:
 			return normalMode();
 		}
 	}
@@ -108,10 +108,11 @@ public class GameModes
 			return R.string.mode_ghost;
 		case CRAZY_MODE_ID:
 			return R.string.mode_crazy;
-		case CUSTOM_MODE_ID:
-			return R.string.mode_custom;
-		
-		default:
+        case CUSTOM_MODE_ID:
+            return R.string.mode_custom;
+        case MULTIPLAYER_MODE_ID:
+            return R.string.mode_multiplayer;
+        default:
 			return -1;
 		}
 	}
@@ -150,7 +151,8 @@ public class GameModes
 			return R.string.mode_desc_crazy;
 		case CUSTOM_MODE_ID:
 			return R.string.mode_desc_custom;
-		
+        case MULTIPLAYER_MODE_ID:
+            return R.string.mode_desc_multiplayer;
 		default:
 			return -1;
 		}
@@ -362,4 +364,14 @@ public class GameModes
 
 		return game;
 	}
+
+    // Multiplayer Mode
+    // Arcade game but with multiplayer enabled
+    public static Game multiplayerMode()
+    {
+        Game game = arcadeMode();
+        game.setMultiplayerActive(true);
+        game.setGameModeId(MULTIPLAYER_MODE_ID);
+        return game;
+    }
 }

@@ -81,6 +81,8 @@ public class Game implements java.io.Serializable
 	private int gameModeId;
 
     private boolean genie_enabled = false;
+    private boolean multiplayerActive = false;
+
 	
 	/**
 	 * Creates a default game with the size 4x4
@@ -1059,7 +1061,16 @@ public class Game implements java.io.Serializable
         genie_enabled = isGenieEnabled;
     }
 
-	/**
+    public boolean getMultiplayerActive() {
+        return multiplayerActive;
+    }
+
+    public void setMultiplayerActive(boolean isMultiplayerActive) {
+        multiplayerActive = isMultiplayerActive;
+    }
+
+
+    /**
 	 * Changing this value does not affect the game. It is only for reference.
 	 * Use the methods such as cornerMode() or XMode() in addition
 	 * @param mode The game mode. Should use the GameModes class
