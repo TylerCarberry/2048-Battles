@@ -39,6 +39,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.event.Event;
 import com.google.android.gms.games.event.Events;
+import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
 
 import java.io.File;
@@ -746,7 +747,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         File currentGameFile = new File(getActivity().getFilesDir(), getString(R.string.file_current_game));
         currentGameFile.delete();
 
-        /*
+
         updateLeaderboards(game.getScore(), game.getGameModeId());
         submitEvents(game);
 
@@ -758,7 +759,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 game.getGameModeId() == GameModes.PRACTICE_MODE_ID &&  getApiClient().isConnected()) {
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_i_dont_want_any_help));
         }
-        */
 
         if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)
             ((MultiplayerActivity) getActivity()).sendMessage("Your Opponent Has Lost", true);
@@ -1633,8 +1633,18 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         return new Location(id / 100 , id % 100);
     }
 
+
+    /**
+     * Precondition: The activity that this fragment is in extends from BaseGameActivity
+     * @return the api client of the activity that it is in.
+     */
     protected GoogleApiClient getApiClient() {
-        return mHelper.getApiClient();
+        if(getActivity().getClass().getSuperclass() == BaseGameActivity.class)
+            return ((BaseGameActivity) getActivity()).getApiClient();
+
+        Log.w(LOG_TAG, "GameFragment is not a member of an activity that extends BaseGameActivity");
+
+        return null;
     }
 
     /*

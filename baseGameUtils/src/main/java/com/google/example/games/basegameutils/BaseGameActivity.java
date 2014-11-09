@@ -130,7 +130,7 @@ public abstract class BaseGameActivity extends FragmentActivity implements
         mHelper.onActivityResult(request, response, data);
     }
 
-    protected GoogleApiClient getApiClient() {
+    public GoogleApiClient getApiClient() {
         return mHelper.getApiClient();
     }
 
