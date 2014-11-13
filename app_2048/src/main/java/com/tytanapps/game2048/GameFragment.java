@@ -102,7 +102,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     // The game helper object.
     protected GameHelper mHelper;
 
-
     public GameFragment() {
     }
 
@@ -146,7 +145,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 return onTouchEvent(event);
             }
         });
-
 
         // Start listening for swipes
         mDetector = new GestureDetectorCompat(getActivity(),this);
@@ -377,6 +375,12 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(game.highestPiece() > highestTile && game.getGameModeId() == GameModes.NORMAL_MODE_ID)
             if(game.highestPiece() >= 128)
                 unlockAchievementNewHighestTile(game.highestPiece());
+
+
+        if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
+                ((MultiplayerActivity) getActivity()).sendMessage("s" + game.getScore(), false);
+        }
+
     }
 
     /**
@@ -1489,6 +1493,29 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         requestBackup();
     }
 
+    /**
+     * Load the game from a file and update the game
+     */
+    private void load() {
+
+        File currentGameFile = new File(getActivity().getFilesDir(), getString(R.string.file_current_game));
+        File gameStatsFile = new File(getActivity().getFilesDir(), getString(R.string.file_game_stats));
+
+        try {
+            game = (Game) Save.load(currentGameFile);
+
+            gameStats = (Statistics) Save.load(gameStatsFile);
+        } catch (ClassNotFoundException e) {
+            Log.e(LOG_TAG, "Class not found exception in load");
+            game = new Game();
+            gameStats = new Statistics();
+        } catch (IOException e) {
+            game = new Game();
+            gameStats = new Statistics();
+        }
+        updateGame();
+    }
+
     public static Bitmap loadBitmapFromView(View v, int width, int height) {
         Bitmap b = Bitmap.createBitmap(width , height, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
@@ -1535,29 +1562,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
                     }
                 });
-    }
-
-    /**
-     * Load the game from a file and update the game
-     */
-    private void load() {
-
-        File currentGameFile = new File(getActivity().getFilesDir(), getString(R.string.file_current_game));
-        File gameStatsFile = new File(getActivity().getFilesDir(), getString(R.string.file_game_stats));
-
-        try {
-            game = (Game) Save.load(currentGameFile);
-
-            gameStats = (Statistics) Save.load(gameStatsFile);
-        } catch (ClassNotFoundException e) {
-            Log.e(LOG_TAG, "Class not found exception in load");
-            game = new Game();
-            gameStats = new Statistics();
-        } catch (IOException e) {
-            game = new Game();
-            gameStats = new Statistics();
-        }
-        updateGame();
     }
 
     /**

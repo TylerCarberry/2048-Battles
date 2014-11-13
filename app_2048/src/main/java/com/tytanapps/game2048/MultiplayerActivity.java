@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -70,7 +71,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     String mRoomId = null;
 
     // Are we playing in multiplayer mode?
-    boolean mMultiplayer = false;
+    private boolean multiplayerActive = false;
 
     // The participants in the currently active game
     ArrayList<Participant> mParticipants = null;
@@ -99,6 +100,9 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 .build();
     }
 
+
+
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -125,23 +129,28 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 break;
             case R.id.to_game_button:
 
-
-                Game game = GameModes.multiplayerMode();
-                File saveGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
-
-                try {
-                    Save.save(game, saveGameFile);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.multiplayer_activity, new GameFragment(), "NewFragmentTag");
-                ft.addToBackStack(null);
-                ft.commit();
+                switchToGame();
 
                 break;
         }
+    }
+
+    private void switchToGame() {
+        Game game = GameModes.multiplayerMode();
+        File saveGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+
+        try {
+            Save.save(game, saveGameFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.multiplayer_activity, new GameFragment(), "NewFragmentTag");
+        ft.addToBackStack(null);
+        ft.commit();
+
+        multiplayerActive = true;
     }
 
     void startQuickGame() {
@@ -449,6 +458,8 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         Log.d(TAG, "Is mParticipants null " + (mParticipants == null));
 
         Log.d(TAG, "<< CONNECTED TO ROOM>>");
+
+        //switchToGame();
     }
 
     // Called when we've successfully left the room (this happens a result of voluntarily leaving
@@ -581,9 +592,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage rtm) {
-
-
-        Toast.makeText(this, "Message Received", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Message Received", Toast.LENGTH_LONG).show();
 
         byte[] buf = rtm.getMessageData();
 
@@ -594,8 +603,10 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             message += letter;
         }
 
-
-        Toast.makeText(this, message , Toast.LENGTH_LONG).show();
+        if(message.charAt(0) == 's')
+            updateOpponentTextView(Integer.parseInt(message.substring(1)));
+        else
+            Toast.makeText(this, message , Toast.LENGTH_LONG).show();
 
 
         /*
@@ -631,6 +642,11 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         }
 
         */
+    }
+
+    private void updateOpponentTextView(int score) {
+        TextView opponentTextView = (TextView) findViewById(R.id.opponent_score_textview);
+        opponentTextView.setText("Them: " + score);
     }
 
     private String getMessage() {
@@ -675,14 +691,14 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             //    continue;
             if (reliable) {
 
-                Toast.makeText(this, "RELIABLE MESSAGE SENT", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "RELIABLE MESSAGE SENT", Toast.LENGTH_SHORT).show();
 
                 // final score notification must be sent via reliable message
                 Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null, mMsgBuf,
                         mRoomId, p.getParticipantId());
             } else {
 
-                Toast.makeText(this, "UNRELIABLE MESSAGE SENT", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "UNRELIABLE MESSAGE SENT", Toast.LENGTH_SHORT).show();
 
                 // it's an interim score notification, so we can use unreliable
                 Games.RealTimeMultiplayer.sendUnreliableMessage(mGoogleApiClient, mMsgBuf, mRoomId,
