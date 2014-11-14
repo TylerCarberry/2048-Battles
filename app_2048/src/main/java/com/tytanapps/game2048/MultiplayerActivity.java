@@ -122,6 +122,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 }
                 break;
             case R.id.to_game_button:
+                //sendMessage("o", true);
                 switchToGame();
                 break;
         }
@@ -180,7 +181,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 if (responseCode == Activity.RESULT_OK) {
                     // ready to start playing
                     Log.d(LOG_TAG, "Starting game (waiting room returned OK).");
-                    //startGame(true);
+                    switchToGame();
                 } else if (responseCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
                     // player indicated that they want to leave the room
                     leaveRoom();
@@ -403,8 +404,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 return;
             }
         }
-        //switchToMainScreen();
-
     }
 
     @Override
@@ -499,6 +498,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             return;
         }
         updateRoom(room);
+        //switchToGame();
     }
 
     @Override
@@ -575,7 +575,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage rtm) {
         //Toast.makeText(this, "Message Received", Toast.LENGTH_LONG).show();
-        
+
         byte[] buf = rtm.getMessageData();
 
         // Convert the message to a string
@@ -591,6 +591,9 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         // The other user sent a message from the edit text field
         else
             Toast.makeText(this, message , Toast.LENGTH_LONG).show();
+
+        if(message.charAt(0) == 'o')
+            switchToGame();
     }
 
     private void updateOpponentTextView(int score) {

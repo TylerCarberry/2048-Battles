@@ -6,10 +6,4 @@
     tools:context=".MyActivity"
     tools:ignore="MergeRootFrame" >
 
-    <fragment
-        android:id="@+id/multiplayer_fragment"
-        android:name="com.tytanapps.game2048.MultiplayerActivity$PlaceholderFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
 </FrameLayout>
