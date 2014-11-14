@@ -203,11 +203,15 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         swipeSensitivity = Integer.valueOf(prefs.getString("swipeSensitivity", "100"));
         tileSlideSpeed = Integer.valueOf(prefs.getString("speed", "175"));
 
+
         GoogleAnalytics.getInstance(getActivity()).reportActivityStart(getActivity());
+
+
+        if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)
+            ((MultiplayerActivity) getActivity()).createMultiplayerTimer(30);
 
         super.onStart();
     }
-
 
     @Override
     public void onPause() {

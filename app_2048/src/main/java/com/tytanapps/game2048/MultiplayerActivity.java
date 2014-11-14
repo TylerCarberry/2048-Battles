@@ -1,6 +1,7 @@
 package com.tytanapps.game2048;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -37,6 +38,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class MultiplayerActivity extends BaseGameActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
@@ -122,7 +125,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 }
                 break;
             case R.id.to_game_button:
-                //sendMessage("o", true);
                 switchToGame();
                 break;
         }
@@ -206,6 +208,71 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 break;
         }
         super.onActivityResult(requestCode, responseCode, intent);
+    }
+
+    protected void createMultiplayerTimer(final int seconds) {
+
+        ((TextView) findViewById(R.id.time_left_textview)).setText(""+seconds);
+
+        final Timer t = new Timer();
+        t.scheduleAtFixedRate(new TimerTask() {
+            int times = 0;
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        times++;
+
+                        if(times > seconds) {
+                            t.cancel();
+                            t.purge();
+                            return;
+                        }
+
+                        decreaseTimeLeft(1);
+
+                    }
+                });
+
+            }}, 1000, 1000);
+    }
+
+    private int decreaseTimeLeft(int seconds) {
+        TextView timerTextView = (TextView) findViewById(R.id.time_left_textview);
+        int secondsLeft = Integer.parseInt(timerTextView.getText().toString());
+        secondsLeft -= seconds;
+        timerTextView.setText(""+secondsLeft);
+
+        Log.d(LOG_TAG, "Seconds Left: "+secondsLeft);
+
+        if(secondsLeft == 0)
+            multiplayerTimeUp();
+
+        return secondsLeft;
+    }
+
+    private void multiplayerTimeUp() {
+        Toast.makeText(this, "Time Up", Toast.LENGTH_SHORT).show();
+
+        // This is a very quick way to get the scores. It determines the scores based on the text views.
+        // I will probably run into problems with this later
+        // TODO: Clean up the code to determine the scores
+        String myScoreString = (((TextView) findViewById(R.id.score_textview)).getText().toString());
+        int myScore = Integer.parseInt(myScoreString.substring(myScoreString.indexOf(' ') + 1));
+        String theirScoreString = (((TextView) findViewById(R.id.opponent_score_textview)).getText().toString());
+        int theirScore = Integer.parseInt(theirScoreString.substring(theirScoreString.indexOf(' ') + 1));
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Time Is Up");
+
+        if (myScore > theirScore)
+            builder.setMessage("YOU WIN");
+        else if (myScore == theirScore)
+            builder.setMessage("IT'S A TIE!");
+        else
+            builder.setMessage("You Lose");
+
+        builder.create().show();
     }
 
     // Handle the result of the "Select players UI" we launched when the user clicked the
@@ -585,15 +652,17 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             message += letter;
         }
 
-        // Messages sent with the score start with s followed by the score (s500)
-        if(message.charAt(0) == 's')
-            updateOpponentTextView(Integer.parseInt(message.substring(1)));
-        // The other user sent a message from the edit text field
-        else
-            Toast.makeText(this, message , Toast.LENGTH_LONG).show();
 
-        if(message.charAt(0) == 'o')
-            switchToGame();
+        switch(message.charAt(0)) {
+            // The score was sent
+            case 's':
+                updateOpponentTextView(Integer.parseInt(message.substring(1)));
+                break;
+            // I will add more game info that will be sent
+            default:
+                Toast.makeText(this, message , Toast.LENGTH_LONG).show();
+
+        }
     }
 
     private void updateOpponentTextView(int score) {
