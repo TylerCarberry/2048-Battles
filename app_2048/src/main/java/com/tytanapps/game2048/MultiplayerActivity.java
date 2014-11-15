@@ -636,7 +636,13 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     void updateRoom(Room room) {
         if (room != null) {
             mParticipants = room.getParticipants();
+            if(room.getRoomId() == null)
+                roomIsEmpty();
         }
+    }
+
+    private void roomIsEmpty() {
+        Toast.makeText(this, "Everybody has left the game.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
