@@ -113,24 +113,26 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         View rootView;
 
-        if(container.getId() == R.id.container)
+        if(container.getId() == R.id.container) {
             rootView = inflater.inflate(R.layout.fragment_game, container, false);
-        else
+
+            final ImageButton undoButton = (ImageButton) rootView.findViewById(R.id.undo_button);
+            undoButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    undo();
+                }
+            });
+
+            final ImageButton restartButton = (ImageButton) rootView.findViewById(R.id.restart_button);
+            restartButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    restartGame();
+                }
+            });
+        }
+        else {
             rootView = inflater.inflate(R.layout.fragment_multiplayer_game, container, false);
-
-        final ImageButton undoButton = (ImageButton) rootView.findViewById(R.id.undo_button);
-        undoButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                undo();
-            }
-        });
-
-        final ImageButton restartButton = (ImageButton) rootView.findViewById(R.id.restart_button);
-        restartButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                restartGame();
-            }
-        });
+        }
 
         for(int row = 0; row < 4; row++) {
             for(int col = 0; col < 4; col++) {
@@ -413,24 +415,24 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         TextView powerupsTextView = (TextView) getView().findViewById(R.id.powerups_textview);
         TextView activeAttacksTextView = (TextView) getView().findViewById(R.id.active_attacks_textview);
 
-        // Update the turn number
-        turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
+        if(game.getGameModeId() != GameModes.MULTIPLAYER_MODE_ID) {
+            // Update the turn number
+            turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
+            // Update the score
+            scoreTextView.setText(getString(R.string.score) + ": " + game.getScore());
 
-        // Update the score
-        scoreTextView.setText(getString(R.string.score) + ": " + game.getScore());
-
-        // Update the undos left
-        int undosLeft = game.getUndosRemaining();
-        if(undosLeft <= 0) {
-            undosTextView.setVisibility(View.INVISIBLE);
-            undosTextView.setText("");
-            if(undosLeft == 0)
-                setUndoButtonEnabled(false);
-        }
-        else {
-            undosTextView.setVisibility(View.VISIBLE);
-            undosTextView.setText(""+undosLeft);
-            setUndoButtonEnabled(true);
+            // Update the undos left
+            int undosLeft = game.getUndosRemaining();
+            if (undosLeft <= 0) {
+                undosTextView.setVisibility(View.INVISIBLE);
+                undosTextView.setText("");
+                if (undosLeft == 0)
+                    setUndoButtonEnabled(false);
+            } else {
+                undosTextView.setVisibility(View.VISIBLE);
+                undosTextView.setText("" + undosLeft);
+                setUndoButtonEnabled(true);
+            }
         }
 
         // Update attacks
@@ -1602,12 +1604,14 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private void setUndoButtonEnabled(boolean enabled) {
-        // Disable the undo button if there are no undos remaining
-        ImageButton undoButton = (ImageButton) getView().findViewById(R.id.undo_button);
-        undoButton.setEnabled(game.getUndosRemaining() != 0);
+        if(game.getGameModeId() != GameModes.MULTIPLAYER_MODE_ID) {
+            // Disable the undo button if there are no undos remaining
+            ImageButton undoButton = (ImageButton) getView().findViewById(R.id.undo_button);
+            undoButton.setEnabled(game.getUndosRemaining() != 0);
 
-        undoButton.setBackgroundDrawable(getResources().getDrawable(
-                (enabled) ? R.drawable.undo_button : R.drawable.undo_button_gray));
+            undoButton.setBackgroundDrawable(getResources().getDrawable(
+                    (enabled) ? R.drawable.undo_button : R.drawable.undo_button_gray));
+        }
     }
 
     private void setPowerupButtonEnabled(boolean enabled) {

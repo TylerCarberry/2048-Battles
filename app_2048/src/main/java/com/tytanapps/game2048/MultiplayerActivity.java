@@ -726,7 +726,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             case 's':
                 int opponentScore = Integer.parseInt(message.substring(1));
                 gameFragment.getGame().setOpponentScore(opponentScore);
-                updateOpponentTextView(opponentScore);
                 break;
             case 'r':
                 opponentRequestedRematch = true;
@@ -738,11 +737,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 Toast.makeText(this, message , Toast.LENGTH_LONG).show();
 
         }
-    }
-
-    private void updateOpponentTextView(int score) {
-        TextView opponentTextView = (TextView) findViewById(R.id.opponent_score_textview);
-        opponentTextView.setText("Them: " + score);
     }
 
     private String getMessage() {
