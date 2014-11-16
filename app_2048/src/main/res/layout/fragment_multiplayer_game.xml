@@ -34,6 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/player_imageview"
         android:layout_alignLeft="@id/player_imageview"
+        android:layout_alignRight="@id/player_imageview"
+        android:gravity="center_horizontal"
         android:text="Player Name"/>
 
     <ImageView
@@ -50,6 +52,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/opponent_imageview"
         android:layout_alignLeft="@id/opponent_imageview"
+        android:layout_alignRight="@id/opponent_imageview"
+        android:gravity="center_horizontal"
         android:text="Opponent Name"/>
 
     <GridLayout

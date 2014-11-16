@@ -6,6 +6,9 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +43,9 @@ import com.google.example.games.basegameutils.BaseGameActivity;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -58,6 +65,12 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     // Request code used to invoke sign in user interactions.
     private static final int RC_SIGN_IN = 9001;
+
+    private static final char SEND_SCORE = 's';
+    private static final char SEND_REMATCH = 'r';
+    private static final char SEND_NAME = 'n';
+    private static final char SEND_PIC_URL = 'p';
+
 
     // Client used to interact with Google APIs.
     private GoogleApiClient mGoogleApiClient;
@@ -96,6 +109,9 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     private boolean iRequestedRematch = false;
     private boolean opponentRequestedRematch = false;
+
+    private String opponentName;
+    private String opponentPicUrl;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -157,11 +173,8 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
         multiplayerActive = true;
 
-        Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-
-        currentPerson.getName().getGivenName();
-        Toast.makeText(this, currentPerson.getName().getGivenName(), Toast.LENGTH_SHORT).show();
-
+        sendMessage(SEND_NAME + getPlayerName(), true);
+        sendMessage(SEND_PIC_URL + getPlayer().getImage().getUrl(), true);
     }
 
     /**
@@ -243,7 +256,8 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                     public void run() {
                         times++;
 
-                        if(times > seconds) {
+                        // If the time is up or the user switched screens then stop the timer
+                        if(times > seconds || findViewById(R.id.multiplayerProgressBar) == null) {
                             t.cancel();
                             t.purge();
                             return;
@@ -337,6 +351,15 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         gameFragment.setGame(GameModes.multiplayerMode());
         gameFragment.updateGame();
         createMultiplayerTimer(30);
+    }
+
+    protected void setImageView(final ImageView imageView, final Bitmap bitmap) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                imageView.setImageBitmap(bitmap);
+            }
+        });
     }
 
     // Handle the result of the "Select players UI" we launched when the user clicked the
@@ -469,6 +492,19 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         } //else {
             //switchToMainScreen();
         //}
+    }
+
+    protected String getPlayerName() {
+        return Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getName().getGivenName();
+    }
+
+    protected Person getPlayer() {
+        return Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+    }
+
+    protected void setImageViewBackground(ImageView imageView, String url) {
+        imageView.setTag(url);
+        new DownloadImagesTask().execute(imageView);
     }
 
     // Show the waiting room UI to track the progress of other players as they enter the
@@ -723,16 +759,28 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
         switch(message.charAt(0)) {
             // The score was sent
-            case 's':
+            case SEND_SCORE:
                 int opponentScore = Integer.parseInt(message.substring(1));
                 gameFragment.getGame().setOpponentScore(opponentScore);
                 break;
-            case 'r':
+            case SEND_REMATCH:
                 opponentRequestedRematch = true;
                 if(iRequestedRematch)
                     startRematch();
+                break;
+            case SEND_NAME:
+                opponentName = message.substring(1);
 
-            // I will add more game info that will be sent
+                if(findViewById(R.id.multiplayerProgressBar) != null)
+                    gameFragment.updateOpponentName();
+
+                break;
+            case SEND_PIC_URL:
+                opponentPicUrl = message.substring(1);
+
+                if(findViewById(R.id.multiplayerProgressBar) != null)
+                    gameFragment.updateOpponentPic();
+                break;
             default:
                 Toast.makeText(this, message , Toast.LENGTH_LONG).show();
 
@@ -742,6 +790,14 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     private String getMessage() {
         EditText messageTextview = (EditText) findViewById(R.id.message_edittext);
         return messageTextview.getText().toString();
+    }
+
+    public String getOpponentName() {
+        return opponentName;
+    }
+
+    public String getOpponentPicUrl() {
+        return opponentPicUrl;
     }
 
     /**
@@ -810,5 +866,49 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         }
 
 
+    }
+
+    public static class DownloadImagesTask extends AsyncTask<ImageView, Void, Bitmap> {
+
+        ImageView imageView = null;
+
+        @Override
+        protected Bitmap doInBackground(ImageView... imageViews) {
+            this.imageView = imageViews[0];
+            return download_Image((String) imageView.getTag());
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+
+            new MultiplayerActivity().setImageView(imageView, result);
+        }
+
+
+        private Bitmap download_Image(String stringUrl) {
+            try {
+                URL url = new URL(stringUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap myBitmap = BitmapFactory.decodeStream(input);
+
+                //imageView.setImageBitmap(myBitmap);
+
+                return myBitmap;
+            } catch (IOException e) {
+                // Log exception
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
     }
 }

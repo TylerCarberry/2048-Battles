@@ -101,7 +101,7 @@
     <string name="error_can_not_save">Error: The game cannot be saved</string>
     <string name="x_attack_active">X Attack Active for %1$d turns</string>
     <string name="ghost_attack_active">Ghost Attack Active for %1$d turns</string>
-    <string name="ice_attack_active">Frozen! Can\'t move %1$s for %2$d turns</string>
+    <string name="ice_attack_active">Can\'t move %1$s for %2$d turns</string>
     <string name="start_game">Start Game</string>
     <string name="title_activity_custom_icon">Customize Tile Icons</string>
     <string name="about">About</string>

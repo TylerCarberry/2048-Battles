@@ -213,14 +213,39 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         GoogleAnalytics.getInstance(getActivity()).reportActivityStart(getActivity());
 
-
         if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
             ((MultiplayerActivity) getActivity()).createMultiplayerTimer(30);
-            getView().findViewById(R.id.multiplayerProgressBar).setVisibility(View.VISIBLE);
+
+            updatePlayerPic();
+            updateOpponentPic();
+            updatePlayerName();
+            updateOpponentName();
         }
 
         super.onStart();
     }
+
+    protected void updateOpponentPic() {
+        ImageView opponentPicture = (ImageView) getView().findViewById(R.id.opponent_imageview);
+        ((MultiplayerActivity) getActivity()).setImageViewBackground(opponentPicture, ((MultiplayerActivity) getActivity()).getOpponentPicUrl());
+    }
+
+    protected void updatePlayerPic() {
+        ImageView playerPicture = (ImageView) getView().findViewById(R.id.player_imageview);
+        ((MultiplayerActivity) getActivity()).setImageViewBackground(playerPicture, ((MultiplayerActivity) getActivity()).getPlayer().getImage().getUrl());
+
+    }
+
+    protected void updatePlayerName() {
+        ((TextView) getView().findViewById(R.id.player_name)).setText(((MultiplayerActivity) getActivity()).getPlayerName());
+    }
+
+    protected void updateOpponentName() {
+        ((TextView) getView().findViewById(R.id.opponent_name)).setText(((MultiplayerActivity) getActivity()).getOpponentName());
+
+    }
+
+
 
     @Override
     public void onPause() {
