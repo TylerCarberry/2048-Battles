@@ -391,7 +391,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * Update the game information.
      * Turn, Score, Undos Left, and Moves Left
      */
-    private void updateGame() {
+    public void updateGame() {
 
         updateTextviews();
 
@@ -1611,6 +1611,15 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 (enabled) ? R.drawable.powerup_button : R.drawable.powerup_button_disabled));
     }
 
+    public Game getGame() {
+        return game;
+    }
+
+    public Game setGame(Game newGame) {
+        Game oldGame = game;
+        game = newGame;
+        return oldGame;
+    }
 
 
     private List<ImageView> getListOfAllTiles() {

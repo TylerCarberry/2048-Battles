@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -86,8 +87,13 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     // invitation listener
     String mIncomingInvitationId = null;
 
+    GameFragment gameFragment;
+
     // Message buffer for sending messages
     byte[] mMsgBuf;
+
+    private boolean iRequestedRematch = false;
+    private boolean opponentRequestedRematch = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -141,15 +147,22 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         }
 
         final FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.multiplayer_activity, new GameFragment(), "NewFragmentTag");
+
+        gameFragment = new GameFragment();
+        ft.replace(R.id.multiplayer_activity, gameFragment, "NewFragmentTag");
         ft.addToBackStack(null);
         ft.commit();
 
         multiplayerActive = true;
     }
 
-    void startQuickGame() {
-        // quick-start a game with 1 randomly selected opponent
+    /**
+     * A quick game with 1 random opponent
+     */
+    private void startQuickGame() {
+
+        Toast.makeText(this, "Starting Quick Game", Toast.LENGTH_SHORT).show();
+
         final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 1;
         Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MIN_OPPONENTS,
                 MAX_OPPONENTS, 0);
@@ -157,7 +170,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         rtmConfigBuilder.setMessageReceivedListener(this);
         rtmConfigBuilder.setRoomStatusUpdateListener(this);
         rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
-        //switchToScreen(R.id.screen_wait);
         keepScreenOn();
         //resetGameVars();
         Games.RealTimeMultiplayer.create(mGoogleApiClient, rtmConfigBuilder.build());
@@ -257,8 +269,9 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         // This is a very quick way to get the scores. It determines the scores based on the text views.
         // I will probably run into problems with this later
         // TODO: Clean up the code to determine the scores
-        String myScoreString = (((TextView) findViewById(R.id.score_textview)).getText().toString());
-        int myScore = Integer.parseInt(myScoreString.substring(myScoreString.indexOf(' ') + 1));
+
+        int myScore = gameFragment.getGame().getScore();
+
         String theirScoreString = (((TextView) findViewById(R.id.opponent_score_textview)).getText().toString());
         int theirScore = Integer.parseInt(theirScoreString.substring(theirScoreString.indexOf(' ') + 1));
 
@@ -272,7 +285,46 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         else
             builder.setMessage("You Lose");
 
-        builder.create().show();
+        builder.setNegativeButton("Leave Game", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                sendMessage("Your opponent has left the game", true);
+                leaveRoom();
+                //startActivity(new Intent(this, MainActivity.class));
+            }
+        });
+
+        builder.setPositiveButton("Rematch", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                requestRematch();
+            }
+        });
+        AlertDialog dialog = builder.create();
+
+        // You must click on one of the buttons in order to dismiss the dialog
+        dialog.setCanceledOnTouchOutside(false);
+
+        // Show the dialog
+        dialog.show();
+    }
+
+    private void requestRematch() {
+        iRequestedRematch = true;
+        sendMessage("rematch", true);
+        if(opponentRequestedRematch)
+            startRematch();
+        else
+            Toast.makeText(this, "Requested Rematch. Continue playing while waiting for your opponent", Toast.LENGTH_LONG).show();
+    }
+
+    private void startRematch() {
+        opponentRequestedRematch = false;
+        iRequestedRematch = false;
+
+        gameFragment.setGame(GameModes.multiplayerMode());
+        gameFragment.updateGame();
+        createMultiplayerTimer(30);
     }
 
     // Handle the result of the "Select players UI" we launched when the user clicked the
@@ -515,8 +567,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         Log.d(LOG_TAG, "Is mParticipants null " + (mParticipants == null));
 
         Log.d(LOG_TAG, "<< CONNECTED TO ROOM>>");
-
-        //switchToGame();
     }
 
     // Called when we've successfully left the room (this happens a result of voluntarily leaving
@@ -664,6 +714,11 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             case 's':
                 updateOpponentTextView(Integer.parseInt(message.substring(1)));
                 break;
+            case 'r':
+                opponentRequestedRematch = true;
+                if(iRequestedRematch)
+                    startRematch();
+
             // I will add more game info that will be sent
             default:
                 Toast.makeText(this, message , Toast.LENGTH_LONG).show();
