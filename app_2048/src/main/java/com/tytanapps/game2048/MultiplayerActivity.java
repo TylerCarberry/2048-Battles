@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -242,6 +243,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                         }
 
                         decreaseTimeLeft(1);
+                        updateScoreProgressbar();
 
                     }
                 });
@@ -264,23 +266,17 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     }
 
     private void multiplayerTimeUp() {
-        Toast.makeText(this, "Time Up", Toast.LENGTH_SHORT).show();
-
-        // This is a very quick way to get the scores. It determines the scores based on the text views.
-        // I will probably run into problems with this later
-        // TODO: Clean up the code to determine the scores
+        Toast.makeText(this, "Time Is Up", Toast.LENGTH_SHORT).show();
 
         int myScore = gameFragment.getGame().getScore();
-
-        String theirScoreString = (((TextView) findViewById(R.id.opponent_score_textview)).getText().toString());
-        int theirScore = Integer.parseInt(theirScoreString.substring(theirScoreString.indexOf(' ') + 1));
+        int opponentScore = gameFragment.getGame().getOpponentScore();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Time Is Up");
 
-        if (myScore > theirScore)
+        if (myScore > opponentScore)
             builder.setMessage("YOU WIN");
-        else if (myScore == theirScore)
+        else if (myScore == opponentScore)
             builder.setMessage("IT'S A TIE!");
         else
             builder.setMessage("You Lose");
@@ -307,6 +303,15 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
         // Show the dialog
         dialog.show();
+    }
+
+    private void updateScoreProgressbar() {
+        int myScore = gameFragment.getGame().getScore();
+        int theirScore = gameFragment.getGame().getOpponentScore();
+
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.multiplayerProgressBar);
+        progressBar.setMax(myScore + theirScore);
+        progressBar.setProgress(myScore);
     }
 
     private void requestRematch() {
@@ -712,7 +717,9 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         switch(message.charAt(0)) {
             // The score was sent
             case 's':
-                updateOpponentTextView(Integer.parseInt(message.substring(1)));
+                int opponentScore = Integer.parseInt(message.substring(1));
+                gameFragment.getGame().setOpponentScore(opponentScore);
+                updateOpponentTextView(opponentScore);
                 break;
             case 'r':
                 opponentRequestedRematch = true;

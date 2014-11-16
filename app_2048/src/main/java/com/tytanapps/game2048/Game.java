@@ -81,8 +81,11 @@ public class Game implements java.io.Serializable
 	private int gameModeId;
 
     private boolean genie_enabled = false;
+
     private boolean multiplayerActive = false;
 
+    // This must be updated manually by the driver
+    private int opponentScore = -1;
 	
 	/**
 	 * Creates a default game with the size 4x4
@@ -1082,6 +1085,16 @@ public class Game implements java.io.Serializable
 	public int getGameModeId() {
 		return gameModeId;
 	}
+
+    public int setOpponentScore(int newOpponentScore) {
+        int oldOpponentScore = opponentScore;
+        opponentScore = newOpponentScore;
+        return oldOpponentScore;
+    }
+
+    public int getOpponentScore() {
+        return opponentScore;
+    }
 	
 	public int getActiveAttack() {
 		return activeAttack;

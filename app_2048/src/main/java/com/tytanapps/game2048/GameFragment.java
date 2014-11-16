@@ -207,8 +207,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         GoogleAnalytics.getInstance(getActivity()).reportActivityStart(getActivity());
 
 
-        if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)
+        if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
             ((MultiplayerActivity) getActivity()).createMultiplayerTimer(30);
+            getView().findViewById(R.id.multiplayerProgressBar).setVisibility(View.VISIBLE);
+        }
 
         super.onStart();
     }
