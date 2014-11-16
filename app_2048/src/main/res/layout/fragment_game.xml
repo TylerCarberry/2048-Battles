@@ -115,14 +115,4 @@
         android:text="@string/undo_remaining"
         android:textSize="20sp" />
 
-
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/multiplayerProgressBar"
-        android:layout_above="@+id/active_attacks_textview"
-        android:visibility="invisible"/>
-
 </RelativeLayout>

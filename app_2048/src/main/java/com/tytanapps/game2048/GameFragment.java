@@ -110,8 +110,13 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_game, container,
-                false);
+
+        View rootView;
+
+        if(container.getId() == R.id.container)
+            rootView = inflater.inflate(R.layout.fragment_game, container, false);
+        else
+            rootView = inflater.inflate(R.layout.fragment_multiplayer_game, container, false);
 
         final ImageButton undoButton = (ImageButton) rootView.findViewById(R.id.undo_button);
         undoButton.setOnClickListener(new View.OnClickListener() {

@@ -34,6 +34,7 @@ import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 import com.google.example.games.basegameutils.BaseGameActivity;
 
 import java.io.File;
@@ -155,6 +156,12 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         ft.commit();
 
         multiplayerActive = true;
+
+        Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+
+        currentPerson.getName().getGivenName();
+        Toast.makeText(this, currentPerson.getName().getGivenName(), Toast.LENGTH_SHORT).show();
+
     }
 
     /**
