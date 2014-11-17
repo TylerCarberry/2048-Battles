@@ -86,6 +86,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         if(isSavedGame())
             addSavedGameView();
 
+        addMultiplayerGameView();
         createListView();
 		super.onStart();
 	}
@@ -153,11 +154,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
         if (id == R.id.action_set_icons) {
             startActivity(new Intent(this, CustomIconActivity.class));
-            return true;
-        }
-
-        if (id == R.id.action_multiplayer) {
-            startActivity(new Intent(this, MultiplayerActivity.class));
             return true;
         }
 
@@ -270,6 +266,77 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP)
                     startGameActivity();
+                return true;
+            }
+        });
+
+        // Add the mode to the list
+        listOfModes.addView(modeDetailLayout);
+    }
+
+    private void addMultiplayerGameView() {
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+
+        LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
+
+        // The layout the contains all info for that mode
+        LinearLayout modeDetailLayout = new LinearLayout(this);
+        modeDetailLayout.setPadding((int) getResources().getDimension(R.dimen.activity_horizontal_margin),
+                0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin), 0);
+
+        modeDetailLayout.setOrientation(LinearLayout.VERTICAL);
+        modeDetailLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                        width / 2, LayoutParams.WRAP_CONTENT)
+        );
+        modeDetailLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        // The mode name
+        TextView modeName = new TextView(this);
+        modeName.setText(getString(R.string.mode_multiplayer));
+        modeName.setTextSize(20);
+        modeName.setTypeface(null, Typeface.BOLD);
+        modeName.setLayoutParams(new LinearLayout.LayoutParams(
+                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        );
+        modeName.setPadding(0, (int) getResources().getDimension(R.dimen.activity_vertical_margin), 0, 0);
+        modeName.setGravity(Gravity.CENTER_HORIZONTAL);
+
+
+        // The button used to start the game
+        Button quickGameButton = new Button(this);
+        quickGameButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT));
+        quickGameButton.setText("Quick Game");
+        quickGameButton.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Intent multiplayerIntent = new Intent(getBaseContext(), MultiplayerActivity.class);
+                    multiplayerIntent.putExtra("startMultiplayer", true);
+                    startActivity(multiplayerIntent);
+                    return true;
+                }
+                return true;
+            }
+        });
+
+        // Add each item of the mode to the layout
+        modeDetailLayout.addView(modeName);
+        modeDetailLayout.addView(quickGameButton);
+
+        modeDetailLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Intent multiplayerIntent = new Intent(getBaseContext(), MultiplayerActivity.class);
+                    multiplayerIntent.putExtra("startMultiplayer", true);
+                    startActivity(multiplayerIntent);
+                }
                 return true;
             }
         });

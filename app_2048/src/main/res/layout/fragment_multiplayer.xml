@@ -8,52 +8,52 @@
     tools:context="com.tytanapps.game2048.MultiplayerActivity$PlaceholderFragment">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/quick_game_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="Quick Game"
+        android:onClick="onClick"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true" />
 
-        <Button
-            android:id="@+id/quick_game_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Quick Game"
-            android:onClick="onClick"/>
+    <Button
+        android:id="@+id/to_game_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="To Game"
+        android:onClick="onClick"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
-        <Button
-            android:id="@+id/send_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Send"
-            android:onClick="onClick"/>
+    <Button
+        android:id="@+id/in_game_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Debug Info"
+        android:onClick="onClick"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/quick_game_button"
+        android:layout_toLeftOf="@id/to_game_button"/>
 
-        <Button
-            android:id="@+id/in_game_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Debug Info"
-            android:onClick="onClick"/>
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
-        <EditText
-            android:id="@+id/message_edittext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <Button
-            android:id="@+id/to_game_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="To Game"
-            android:onClick="onClick"/>
-
-    </LinearLayout>
-
-
-
-
-
-
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="50dp"
+        android:text="Starting Multiplayer Game"
+        android:id="@+id/textView"
+        android:gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

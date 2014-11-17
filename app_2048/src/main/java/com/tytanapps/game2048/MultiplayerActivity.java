@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -132,6 +131,24 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         hideIdentity = prefs.getBoolean("hideIdentity", false);
+
+        Intent intent = getIntent();
+
+        // If the room should be created automatically
+        if(intent.getExtras().getBoolean("startMultiplayer", false)) {
+
+            mGoogleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                @Override
+                public void onConnected(Bundle bundle) {
+                    startQuickGame();
+                }
+
+                @Override
+                public void onConnectionSuspended(int i) {
+
+                }
+            });
+        }
     }
 
     @Override
@@ -140,10 +157,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             case R.id.quick_game_button:
                 // Create a multiplayer game
                 startQuickGame();
-                break;
-            case R.id.send_button:
-                // send a message to the other player
-                sendMessage(getMessage(), false);
                 break;
             case R.id.in_game_button:
                 // play a single-player game
@@ -202,6 +215,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         keepScreenOn();
         //resetGameVars();
+
         Games.RealTimeMultiplayer.create(mGoogleApiClient, rtmConfigBuilder.build());
     }
 
@@ -806,11 +820,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 Toast.makeText(this, message , Toast.LENGTH_LONG).show();
 
         }
-    }
-
-    private String getMessage() {
-        EditText messageTextview = (EditText) findViewById(R.id.message_edittext);
-        return messageTextview.getText().toString();
     }
 
     public String getOpponentName() {
