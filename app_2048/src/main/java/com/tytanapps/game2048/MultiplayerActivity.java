@@ -500,11 +500,28 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     // Handle back key to make sure we cleanly leave a game if we are in the middle of one
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent e) {
-        //if (keyCode == KeyEvent.KEYCODE_BACK && mCurScreen == R.id.screen_game) {
-            leaveRoom();
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Leave Multiplayer Game?");
+            //builder.setMessage("Leave the multiplayer game?");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    leaveRoom();
+                    switchToMainActivity();
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            builder.create().show();
             return true;
-        //}
-        //return super.onKeyDown(keyCode, e);
+        }
+
+        return super.onKeyDown(keyCode, e);
     }
 
     // Leave the room.
