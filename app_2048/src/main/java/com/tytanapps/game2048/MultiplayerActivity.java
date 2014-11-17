@@ -6,10 +6,12 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -113,6 +115,8 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     private String opponentName;
     private String opponentPicUrl;
 
+    private boolean hideIdentity = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +129,9 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        hideIdentity = prefs.getBoolean("hideIdentity", false);
     }
 
     @Override
@@ -173,8 +180,10 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
         multiplayerActive = true;
 
-        sendMessage(SEND_NAME + getPlayerName(), true);
-        sendMessage(SEND_PIC_URL + getPlayer().getImage().getUrl(), true);
+        if(! hideIdentity) {
+            sendMessage(SEND_NAME + getPlayerName(), true);
+            sendMessage(SEND_PIC_URL + getPlayer().getImage().getUrl(), true);
+        }
     }
 
     /**
@@ -495,10 +504,18 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     }
 
     protected String getPlayerName() {
+
+        if(hideIdentity)
+            return "Player";
+
         return Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getName().getGivenName();
     }
 
     protected Person getPlayer() {
+
+        if(hideIdentity)
+            return null;
+
         return Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
     }
 

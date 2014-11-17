@@ -9,9 +9,9 @@
     </string-array>
    
     <string-array name="tileSpeedsValues">
-        <item>225</item>
         <item>175</item>
         <item>125</item>
+        <item>100</item>
         <item>0</item>
     </string-array>
 
@@ -27,7 +27,6 @@
         <item>75</item>
         <item>0</item>
     </string-array>
-
 
     <string-array name="powerups">
         <item>Shuffle</item>

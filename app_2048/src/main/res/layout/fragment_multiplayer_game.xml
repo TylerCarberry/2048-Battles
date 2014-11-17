@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:background="@drawable/tile_2048"/>
+        android:background="@drawable/smiley_face"/>
 
     <TextView
         android:id="@+id/player_name"
@@ -36,7 +36,7 @@
         android:layout_alignLeft="@id/player_imageview"
         android:layout_alignRight="@id/player_imageview"
         android:gravity="center_horizontal"
-        android:text="Player Name"/>
+        android:text="Me"/>
 
     <ImageView
         android:id="@+id/opponent_imageview"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/tile_2048"/>
+        android:background="@drawable/smiley_face"/>
 
     <TextView
         android:id="@+id/opponent_name"
@@ -54,7 +54,7 @@
         android:layout_alignLeft="@id/opponent_imageview"
         android:layout_alignRight="@id/opponent_imageview"
         android:gravity="center_horizontal"
-        android:text="Opponent Name"/>
+        android:text="Opponent"/>
 
     <GridLayout
         android:id="@+id/grid_layout"

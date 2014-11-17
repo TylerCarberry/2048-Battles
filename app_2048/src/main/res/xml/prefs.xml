@@ -4,7 +4,7 @@
     <ListPreference 
         android:title="Tile Slide Speed"
         android:key="speed"
-        android:defaultValue="175"
+        android:defaultValue="125"
         android:entries="@array/tileSpeeds"
         android:entryValues="@array/tileSpeedsValues"/>
 
@@ -14,5 +14,10 @@
         android:defaultValue="75"
         android:entries="@array/swipeSensitivity"
         android:entryValues="@array/swipeSensitivityValues"/>
+
+    <CheckBoxPreference
+        android:title="Hide Identity in Multiplayer"
+        android:key="hideIdentity"
+        android:defaultValue="false" />
 
 </PreferenceScreen>

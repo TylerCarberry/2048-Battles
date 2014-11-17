@@ -61,8 +61,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     public static final long SHUFFLE_SPEED = 300;
 
     // These values are overridden with the options chosen in the settings
-    public static long tileSlideSpeed = 175;
-    public static long swipeSensitivity = 100;
+    public static long tileSlideSpeed = 125;
+    public static long swipeSensitivity = 75;
 
     private static boolean boardCreated = false;
     private static Game game;
@@ -207,8 +207,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         // Load the chosen settings
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        swipeSensitivity = Integer.valueOf(prefs.getString("swipeSensitivity", "100"));
-        tileSlideSpeed = Integer.valueOf(prefs.getString("speed", "175"));
+        swipeSensitivity = Integer.valueOf(prefs.getString("swipeSensitivity", "75"));
+        tileSlideSpeed = Integer.valueOf(prefs.getString("speed", "125"));
 
 
         GoogleAnalytics.getInstance(getActivity()).reportActivityStart(getActivity());
@@ -216,10 +216,15 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
             ((MultiplayerActivity) getActivity()).createMultiplayerTimer(30);
 
-            updatePlayerPic();
-            updateOpponentPic();
-            updatePlayerName();
+            if(! prefs.getBoolean("hideIdentity", false)) {
+                updatePlayerName();
+                updatePlayerPic();
+            }
+
+
+
             updateOpponentName();
+            updateOpponentPic();
         }
 
         super.onStart();
@@ -241,7 +246,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     protected void updateOpponentName() {
-        ((TextView) getView().findViewById(R.id.opponent_name)).setText(((MultiplayerActivity) getActivity()).getOpponentName());
+        String opponentName = ((MultiplayerActivity) getActivity()).getOpponentName();
+        if(opponentName != null)
+            ((TextView) getView().findViewById(R.id.opponent_name)).setText(opponentName);
 
     }
 
