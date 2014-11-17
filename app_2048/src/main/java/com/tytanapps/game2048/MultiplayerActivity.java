@@ -316,7 +316,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             public void onClick(DialogInterface dialog, int which) {
                 sendMessage("Your opponent has left the game", true);
                 leaveRoom();
-                //startActivity(new Intent(this, MainActivity.class));
+                switchToMainActivity();
             }
         });
 
@@ -369,6 +369,10 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 imageView.setImageBitmap(bitmap);
             }
         });
+    }
+
+    private void switchToMainActivity() {
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     // Handle the result of the "Select players UI" we launched when the user clicked the
