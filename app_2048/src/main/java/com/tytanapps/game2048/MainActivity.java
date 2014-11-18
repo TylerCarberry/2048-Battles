@@ -4,11 +4,9 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -97,28 +95,18 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	}
 	
 	@Override
-	/**
-	 * Determine if a saved game exists and either enable or
-	 * disable of the continue game button accordingly
-	 */
-	protected void onResume() {
-
-
-
-		super.onResume();
-	}
-
-    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
         if(hasFocus) {
             HorizontalScrollView scrollView = (HorizontalScrollView) findViewById(R.id.modeScrollView);
             if(scrollView.getScrollX() == 0) {
-                Display display = getWindowManager().getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                int width = size.x;
+                //Display display = getWindowManager().getDefaultDisplay();
+                //Point size = new Point();
+                //display.getSize(size);
+                //int width = size.x;
+
+                int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
                 scrollView.smoothScrollTo(width / 4, 0);
             }
         }
@@ -195,13 +183,14 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         if(savedGame == null || savedGame.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)
             return;
 
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
+        //Display display = getWindowManager().getDefaultDisplay();
+        //Point size = new Point();
+        //display.getSize(size);
+        //int width = size.x;
+
+        int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
 
         LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
-        //listOfModes.removeAllViewsInLayout();
 
         File savedGameBitmapFile = new File(getFilesDir(), "CURRENT_GAME_SCREENSHOT");
         Bitmap savedGameBitmap = Save.loadBitmap(savedGameBitmapFile);
@@ -275,10 +264,13 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
     private void addMultiplayerGameView() {
 
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
+
+        //Display display = getWindowManager().getDefaultDisplay();
+        //Point size = new Point();
+        //display.getSize(size);
+        //int width = size.x;
+
+        int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
 
         LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
 
@@ -345,13 +337,16 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
     }
 
     private void createListView() {
+
+        /*
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int width = size.x;
+        int width = size.x; */
+
+        int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
 
         LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
-        //listOfModes.removeAllViewsInLayout();
 
         Statistics gameStats = new Statistics();
         try {
