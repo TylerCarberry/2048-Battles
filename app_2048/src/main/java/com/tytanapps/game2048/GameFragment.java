@@ -256,8 +256,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     @Override
     public void onPause() {
-        // Only save a game that is still in progress
-        if(! game.lost())
+        // Only save a game that is still in progress and not a multiplayer game
+        if(!game.lost() && game.getGameModeId() != GameModes.MULTIPLAYER_MODE_ID)
             save();
         super.onPause();
     }

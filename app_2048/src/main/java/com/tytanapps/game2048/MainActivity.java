@@ -37,8 +37,6 @@ import com.google.android.gms.games.quest.QuestUpdateListener;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.tytanapps.game2048.MainApplication.TrackerName;
 
-import junit.framework.Assert;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -194,7 +192,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             return;
         }
 
-        Assert.assertTrue(savedGame != null);
+        if(savedGame == null || savedGame.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)
+            return;
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();

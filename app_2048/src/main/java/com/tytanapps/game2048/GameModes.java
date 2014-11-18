@@ -34,12 +34,15 @@ public class GameModes
         gameModes.add(CORNER_MODE_ID);
         gameModes.add(GHOST_MODE_ID);
 
+        // I commented out multiplayer mode so it does not appear in the list of game modes twice
+        // If I change the way new games are created it may be used again
+        //gameModes.add(MULTIPLAYER_MODE_ID);
+
         // The following modes are coming soon
         gameModes.add(ZEN_MODE_ID);
         gameModes.add(SPEED_MODE_ID);
         gameModes.add(SURVIVAL_MODE_ID);
         gameModes.add(CRAZY_MODE_ID);
-        gameModes.add(MULTIPLAYER_MODE_ID);
 
         return gameModes;
     }
