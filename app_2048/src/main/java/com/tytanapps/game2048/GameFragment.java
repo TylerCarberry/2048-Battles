@@ -59,6 +59,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     // The time in milliseconds for the animation
     public static final long SHUFFLE_SPEED = 300;
+    // The number of seconds a multiplayer game lasts for
+    public static final int MULTIPLAYER_TIMER_LENGTH = 30; //seconds
+    // The % chance of a bonus or attack each move in arcade mode
+    public static final double CHANCE_OF_ARCADE_BONUS = 0.10;
+
 
     // These values are overridden with the options chosen in the settings
     public static long tileSlideSpeed = 125;
@@ -102,17 +107,12 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     // The game helper object.
     protected GameHelper mHelper;
 
-    public GameFragment() {
-    }
-
+    public GameFragment() { }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // The game has a different layout for single and multiplayer games
         View rootView;
-
         if(container.getId() == R.id.container) {
             rootView = inflater.inflate(R.layout.fragment_game, container, false);
 
@@ -130,10 +130,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 }
             });
         }
-        else {
+        else
             rootView = inflater.inflate(R.layout.fragment_multiplayer_game, container, false);
-        }
 
+        // Add blank tiles to every position on the grid
         for(int row = 0; row < 4; row++) {
             for(int col = 0; col < 4; col++) {
                 GridLayout.Spec specRow = GridLayout.spec(row, 1);
@@ -142,18 +142,16 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
                 ImageView tile = new ImageView(getActivity());
                 tile.setImageResource(R.drawable.tile_blank);
-
                 ((GridLayout) rootView.findViewById(R.id.grid_layout)).addView(tile, gridLayoutParam);
             }
         }
 
+        // Start listening for swipes
         rootView.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 return onTouchEvent(event);
             }
         });
-
-        // Start listening for swipes
         mDetector = new GestureDetectorCompat(getActivity(),this);
 
         return rootView;
@@ -168,6 +166,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         gridLayout = (GridLayout) getView().findViewById(R.id.grid_layout);
 
+        // Load the custom tiles and place them in the Map customTileIcon to be accessed later
         loadCustomTileIcons();
 
         // Load the saved file containing the game. This also updates the screen.
@@ -183,20 +182,19 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 getActivity().getActionBar().setTitle(R.string.app_name);
             }
 
-        // Disable the undo button if there are no undos remaining
+        // Disable the undo and powerup buttons based on the undos/powerups remaining
         setUndoButtonEnabled(game.getUndosRemaining() != 0);
-
-        // Disable the powerup button if there are no powerups remaining
         setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
 
+        // When the powerup button is pressed it switches its background to one suppressed
+        // When it is released its background changes back and the powerup dialog is shown
         ImageButton powerupButton = (ImageButton) getView().findViewById(R.id.powerup_button);
         powerupButton.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
                     v.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_selected));
-                }
                 else if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
                     showPowerupDialog();
@@ -205,54 +203,31 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             }
         });
 
-        // Load the chosen settings
+        // Load the settings for the tile speed and sensitivity
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         swipeSensitivity = Integer.valueOf(prefs.getString("swipeSensitivity", "75"));
         tileSlideSpeed = Integer.valueOf(prefs.getString("speed", "125"));
 
-
+        // Tell Google Analytics that the user switched to the game
         GoogleAnalytics.getInstance(getActivity()).reportActivityStart(getActivity());
 
+        // Start the multiplayer aspects of the game if necessary
         if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
-            ((MultiplayerActivity) getActivity()).createMultiplayerTimer(30);
-
+            // Create the game timer
+            ((MultiplayerActivity) getActivity()).createMultiplayerTimer(MULTIPLAYER_TIMER_LENGTH);
+            // If the user chose to hide their identity do not show them their own identity
+            // This confirms the change to the user as they cannot see their opponents screen
             if(! prefs.getBoolean("hideIdentity", false)) {
                 updatePlayerName();
                 updatePlayerPic();
             }
-
-
-
+            // Show the opponent's first name and profile picture.
+            // If the opponent hid their identity these methods do nothing
             updateOpponentName();
             updateOpponentPic();
         }
-
         super.onStart();
     }
-
-    protected void updateOpponentPic() {
-        ImageView opponentPicture = (ImageView) getView().findViewById(R.id.opponent_imageview);
-        ((MultiplayerActivity) getActivity()).setImageViewBackground(opponentPicture, ((MultiplayerActivity) getActivity()).getOpponentPicUrl());
-    }
-
-    protected void updatePlayerPic() {
-        ImageView playerPicture = (ImageView) getView().findViewById(R.id.player_imageview);
-        ((MultiplayerActivity) getActivity()).setImageViewBackground(playerPicture, ((MultiplayerActivity) getActivity()).getPlayer().getImage().getUrl());
-
-    }
-
-    protected void updatePlayerName() {
-        ((TextView) getView().findViewById(R.id.player_name)).setText(((MultiplayerActivity) getActivity()).getPlayerName());
-    }
-
-    protected void updateOpponentName() {
-        String opponentName = ((MultiplayerActivity) getActivity()).getOpponentName();
-        if(opponentName != null)
-            ((TextView) getView().findViewById(R.id.opponent_name)).setText(opponentName);
-
-    }
-
-
 
     @Override
     public void onPause() {
@@ -268,24 +243,31 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // Stop all active animations. If this is not done the game will crash
         for(ObjectAnimator animation : activeAnimations)
             animation.end();
-
-        if(gameStats.getTotalMoves() >= 2048 && getApiClient().isConnected()) {
-            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
-        }
-
         animationInProgress = false;
 
-        GoogleAnalytics.getInstance(getActivity()).reportActivityStop(getActivity());
+        // The achievement long time player is unlocked after 2048 moves are made. The game will
+        // still call the api every time afterwards but for now this is not a major issue
+        if(gameStats.getTotalMoves() >= 2048 && getApiClient().isConnected())
+            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
 
+        GoogleAnalytics.getInstance(getActivity()).reportActivityStop(getActivity());
         super.onStop();
     }
 
     /**
      * Moves all of the tiles
+     * The game has an imageview as a tile in each position of the grid The tiles move to the
+     * correct position and get reset after each move. This means that after each move there is
+     * one imageview at every position even if the space is empty
+     *
+     * | 16 | 8 | 4 | x |
+     * | 4  | 2 | 2 | x | --> Moved left --> The tiles slide into their new position
+     * | x  | 4 | x | x |                    The moved tiles get reset to their original position
+     * | x  | x | x | x |                    Every tile is updated with its new value
+     *
      * @param direction Should use the static variables in Location class
      */
     protected void act(int direction) {
-
         animationInProgress = true;
 
         // If the ice attack is active in that direction do not move
@@ -295,39 +277,39 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             return;
         }
 
+        // A game cannot be moved after it is lost
         if(gameLost) {
             animationInProgress = false;
             return;
         }
 
-        // The genie warns about making a move that will cause the game to lose
+        // If the genie is active and the player is about to lose a dialog appears warning the user
         if(game.getGenieEnabled() && game.causeGameToLose(direction)) {
             animationInProgress = false;
             warnAboutMove(direction);
             return;
         }
 
+        // Calculate the distance that tiles should move when the game is swiped
         calculateDistances();
+
+        // This is compared to the highest tile after the move in order to unlock achievements
         int highestTile = game.highestPiece();
 
         // Save the game history before each move
         game.saveGameInHistory();
 
-        // Get a list of all tiles
-        List<Location> tiles = game.getGrid().getLocationsInTraverseOrder(direction);
-
         // An list of the move animations to play
         ArrayList<ObjectAnimator> translateAnimations = new ArrayList<ObjectAnimator>();
 
-        // Loop through each tile
+        // Get a list of all tile locations and loop through each tile
+        List<Location> tiles = game.getGrid().getLocationsInTraverseOrder(direction);
         for(Location tile : tiles) {
-
-            // Determine the number of spaces to move
+            // Move the piece and determine the number of spaces it moved
             int distance = game.move(tile, direction);
 
             // Only animate buttons that moved
             if(distance > 0) {
-
                 ImageView movedTile = findTileByLocation(tile);
 
                 if(direction == Location.LEFT || direction == Location.UP)
@@ -381,7 +363,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 activeAnimations.clear();
                 animationInProgress = false;
 
-                if(game.getArcadeMode() && Math.random() < 0.1)
+                if(game.getArcadeMode() && Math.random() < CHANCE_OF_ARCADE_BONUS)
                     addRandomBonus();
 
                 game.newTurn();
@@ -425,21 +407,19 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
                 ((MultiplayerActivity) getActivity()).sendMessage("s" + game.getScore(), false);
         }
-
     }
 
     /**
-     * Update the game information.
-     * Turn, Score, Undos Left, and Moves Left
+     * Update the entire screen: the grid and game information.
      */
     public void updateGame() {
-
         updateTextviews();
-
-        // Update the game board
         updateGrid();
     }
 
+    /**
+     * Update the turn number, score, number of undos and powerups left, and the active attack
+     */
     private void updateTextviews() {
         TextView turnTextView = (TextView) getView().findViewById(R.id.turn_textview);
         TextView scoreTextView = (TextView) getView().findViewById(R.id.score_textview);
@@ -485,6 +465,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
     }
 
+    /**
+     * @return the string telling the user the current attack and duraction left
+     */
     private String getAttackString() {
         int activeGameAttack = game.getActiveAttack();
         String resultString = "";
@@ -504,15 +487,13 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             default:
                 return "";
         }
-
         return resultString;
     }
 
     /**
-     * Create the game board
+     * Create the game board. This places blank tiles at every position in the grid layout
      */
     private void createGrid() {
-
         // The grid that all tiles are on
         GridLayout gridLayout = (GridLayout) getView().findViewById(R.id.grid_layout);
 
@@ -544,6 +525,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             tile = new ImageView(getActivity());
             tile.setId(getTileIdByLocation(tileLoc));
 
+            // Tiles without a value become invisible
             tileValue = game.getGrid().get(tileLoc);
             tile.setVisibility((tileValue == 0) ? View.INVISIBLE : View.VISIBLE);
 
@@ -1559,6 +1541,41 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             gameStats = new Statistics();
         }
         updateGame();
+    }
+
+    /**
+     * Updates player_imageview with the active player's google profile picture
+     */
+    protected void updatePlayerPic() {
+        ImageView playerPicture = (ImageView) getView().findViewById(R.id.player_imageview);
+        ((MultiplayerActivity) getActivity()).setImageViewBackground(playerPicture, ((MultiplayerActivity) getActivity()).getPlayer().getImage().getUrl());
+
+    }
+
+    /**
+     * Updates opponent_imageview with the opponents google profile picture
+     */
+    protected void updateOpponentPic() {
+        ImageView opponentPicture = (ImageView) getView().findViewById(R.id.opponent_imageview);
+        ((MultiplayerActivity) getActivity()).setImageViewBackground(opponentPicture, ((MultiplayerActivity) getActivity()).getOpponentPicUrl());
+    }
+
+    /**
+     * Updates player_name with the active player's first name
+     */
+    protected void updatePlayerName() {
+        ((TextView) getView().findViewById(R.id.player_name)).setText(((MultiplayerActivity) getActivity()).getPlayerName());
+    }
+
+    /**
+     * Updates opponent_name with the opponent's first name
+     * If the opponent chose to hide their identity the textview does not change
+     */
+    protected void updateOpponentName() {
+        String opponentName = ((MultiplayerActivity) getActivity()).getOpponentName();
+        if(opponentName != null)
+            ((TextView) getView().findViewById(R.id.opponent_name)).setText(opponentName);
+
     }
 
     public static Bitmap loadBitmapFromView(View v, int width, int height) {
