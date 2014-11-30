@@ -733,7 +733,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private void lost() {
-
         // Prevent the notification from appearing multiple times
         if(gameLost)
             return;
@@ -751,8 +750,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         gameStats.updateGameRecords(game.getGameModeId(), game);
 
+        // Save the updated gameStats and delete the current game save file.
+        // The user can no longer continue this game.
         save();
-        // Delete the current save file. The user can no longer continue this game.
         File currentGameFile = new File(getActivity().getFilesDir(), getString(R.string.file_current_game));
         currentGameFile.delete();
 
@@ -985,7 +985,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     /**
-     * Add a new tile to the board
+     * Add a new tile to the board.
+     * It fades in while expanding from half its size.
      */
     private void addTile() {
 
@@ -1113,12 +1114,15 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         horizontalTileDistance = grid.getWidth() / game.getGrid().getNumCols();
     }
 
+    /**
+     * Give a random bonus or attack to the player
+     * 50% chance of an attack: ice attack, ghost attack, XTile attack, shuffle attack
+     * 50% chance of bonus: +1 undo, +1 powerup
+     */
     private void addRandomBonus() {
-        double rand = Math.random();
-        String item = null;
+        String item;
 
-        // 50% chance of an attack: ice attack, ghost attack, XTile attack, shuffle attack
-        // 50% chance of bonus: +1 undo, +1 powerup
+        double rand = Math.random();
         if(rand < .5 && game.getAttackDuration() <= 0) {
             if(rand < .125)
                 ice();
@@ -1147,7 +1151,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 item = "Powerup";
             }
 
-            Toast.makeText(getActivity(),	"Bonus! +1 " + item, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Bonus! +1 " + item, Toast.LENGTH_SHORT).show();
         }
     }
 

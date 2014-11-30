@@ -22,8 +22,7 @@ public class Location implements Cloneable, java.io.Serializable
 	 * @param rowNum The row number of the location
 	 * @param colNum The column number of the location
 	 */
-	public Location(int rowNum, int colNum)
-	{
+	public Location(int rowNum, int colNum) {
 		row = rowNum;
 		col = colNum;
 	}
@@ -31,16 +30,14 @@ public class Location implements Cloneable, java.io.Serializable
 	/**
 	 * @return The row of the location
 	 */
-	public int getRow()
-	{
+	public int getRow() {
 		return row;
 	}
 	
 	/**
 	 * @return The column of the location
 	 */
-	public int getCol()
-	{
+	public int getCol() {
 		return col;
 	}
 	
@@ -48,8 +45,7 @@ public class Location implements Cloneable, java.io.Serializable
 	 * @param newRow The new row value
 	 * @return The previous row value
 	 */
-	public int setRow(int newRow)
-	{
+	public int setRow(int newRow) {
 		int temp = row;
 		row = newRow;
 		return temp;
@@ -66,8 +62,7 @@ public class Location implements Cloneable, java.io.Serializable
 		return temp;
 	}
 	
-	public Location clone()
-	{
+	public Location clone() {
 		return new Location(row, col);
 	}
 	
@@ -75,8 +70,7 @@ public class Location implements Cloneable, java.io.Serializable
 	 * @return a linked list of valid adjacent locations
 	 * Not diagonals
 	 */
-	public LinkedList<Location> getAdjacentLocations()
-	{
+	public LinkedList<Location> getAdjacentLocations() {
 		LinkedList<Location> locs = new LinkedList<Location>();
 		
 		int nextRow, nextCol;
@@ -99,64 +93,56 @@ public class Location implements Cloneable, java.io.Serializable
 	/** 
 	 * @return The location to the left
 	*/
-	public Location getLeft()
-	{
+	public Location getLeft() {
 		return new Location(getRow(), getCol()-1);
 	}
 
     /**
      * @return The location to the left
      */
-    public Location getLeft(int distance)
-    {
+    public Location getLeft(int distance) {
         return new Location(getRow(), getCol() - distance);
     }
 	
 	/** 
 	 * @return The location to the right
 	*/
-	public Location getRight()
-	{
+	public Location getRight() {
 		return new Location(getRow(), getCol()+1);
 	}
 
     /**
      * @return The location to the right
      */
-    public Location getRight(int distance)
-    {
+    public Location getRight(int distance) {
         return new Location(getRow(), getCol()+distance);
     }
 	
 	/** 
 	 * @return The location up
 	*/
-	public Location getUp()
-	{
+	public Location getUp() {
 		return new Location(getRow()-1, getCol());
 	}
 
     /**
      * @return The location up
      */
-    public Location getUp(int distance)
-    {
+    public Location getUp(int distance) {
         return new Location(getRow()-distance, getCol());
     }
 	
 	/** 
 	 * @return The location down
 	*/
-	public Location getDown()
-	{
+	public Location getDown() {
 		return new Location(getRow()+1, getCol());
 	}
 
     /**
      * @return The location down
      */
-    public Location getDown(int distance)
-    {
+    public Location getDown(int distance) {
         return new Location(getRow()+distance, getCol());
     }
 	
@@ -165,17 +151,14 @@ public class Location implements Cloneable, java.io.Serializable
 	 * Precondition: direction is a final variable declared in location class
 	 * @return The location in the given direction
 	 */
-	public Location getAdjacent(int direction)
-	{
-		switch(direction)
-		{
+	public Location getAdjacent(int direction) {
+		switch(direction) {
 			case UP: return getUp();
 			case RIGHT: return getRight();
 			case DOWN: return getDown();
 			case LEFT: return getLeft();
 			
 			default: return null;
-		
 		}
 	}
 
@@ -219,10 +202,9 @@ public class Location implements Cloneable, java.io.Serializable
 	}
 	
 	/**
-	 * @return The location in the form 2,3
+	 * @return The location in the form row,col
 	 */
-	public String toString()
-	{
+	public String toString() {
 		return row + "," + col;
 	}
 	

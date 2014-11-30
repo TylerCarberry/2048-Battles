@@ -55,25 +55,14 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-        /*
-		if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment()).commit();
-
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new AdFragment()).commit();
-        }
-        */
-
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         // The number of days since the epoch
         long lastDatePlayed = prefs.getLong("lastDatePlayed", -1);
         long currentDate = TimeUnit.MILLISECONDS.toDays(Calendar.getInstance().getTimeInMillis());
 
-        Toast.makeText(this, "last date played " +lastDatePlayed, Toast.LENGTH_LONG).show();
-        Toast.makeText(this, "current date " +currentDate, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "last date played " +lastDatePlayed, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "current date " +currentDate, Toast.LENGTH_LONG).show();
 
         if (currentDate > lastDatePlayed)
             showWelcomeBack();
@@ -538,6 +527,10 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         builder.create().show();
     }
 
+    /**
+     * Called when either the achievements, leaderboards, or quests buttons are pressed
+     * @param view The button that was pressed
+     */
 	public void playGames(View view) {
 		if(getApiClient().isConnected()) {
 			switch (view.getId()) {
@@ -564,6 +557,9 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 		startActivity(new Intent(this, GameActivity.class));
 	}
 
+    /**
+     * @return Whether there is a saved game
+     */
     private boolean isSavedGame() {
         FileInputStream fi;
         File file = new File(getFilesDir(), getString(R.string.file_current_game));
@@ -582,7 +578,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             return true;
         }
         // If an exception is caught then the game does not exist
-        // and the continue game button remains disabled
         catch (FileNotFoundException e) {}
         catch (StreamCorruptedException e) {
             e.printStackTrace();
@@ -673,15 +668,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	    	Log.w(LOG_TAG, e.toString());
 	    }
 	}
-
-    /*
-    private void setContinueGameEnabled(boolean enabled) {
-        Button continueGameButton = (Button) findViewById(R.id.continue_game_button);
-        continueGameButton.setEnabled(enabled);
-
-        continueGameButton.setBackgroundResource((enabled) ? R.drawable.continue_game_button : R.drawable.continue_game_button_disabled);
-    }
-    */
 
     /**
      * Delete the current game file and overall game statistics file
