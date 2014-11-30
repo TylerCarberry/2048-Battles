@@ -743,51 +743,21 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // This is the only place where total games played is incremented.
         gameStats.incrementGamesPlayed(1);
 
-        // Create a new lose dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getString(R.string.you_lost));
-        // Two buttons appear, try again and cancel
-        builder.setPositiveButton(R.string.try_again, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                restartGame();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
-            }
-        });
-
-
+        // You cannot act on a game once you lose
         setUndoButtonEnabled(false);
-
-        // You cannot undo a game once you lose
         setPowerupButtonEnabled(false);
 
-        // Create the message to show the player
-        String message = "";
-        message = createLoseMessage(game, gameStats);
-        builder.setMessage(message);
-        AlertDialog dialog = builder.create();
-
-        // You must click on one of the buttons in order to dismiss the dialog
-        dialog.setCanceledOnTouchOutside(false);
-
-        // Show the dialog
-        dialog.show();
+        showLoseDialog();
 
         gameStats.updateGameRecords(game.getGameModeId(), game);
 
         save();
-
         // Delete the current save file. The user can no longer continue this game.
         File currentGameFile = new File(getActivity().getFilesDir(), getString(R.string.file_current_game));
         currentGameFile.delete();
 
-
         updateLeaderboards(game.getScore(), game.getGameModeId());
         submitEvents(game);
-
 
         if(game.getScore() <= 200 && game.getGameModeId() == GameModes.NORMAL_MODE_ID &&  getApiClient().isConnected()) {
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_worst_player_ever));
@@ -799,7 +769,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)
             ((MultiplayerActivity) getActivity()).sendMessage("Your Opponent Has Lost", true);
-
     }
 
     /**
@@ -965,6 +934,35 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             }
             builder.create().show();
         }
+    }
+
+    private void showLoseDialog() {
+        // Create a new lose dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getString(R.string.you_lost));
+        // Two buttons appear, try again and cancel
+        builder.setPositiveButton(R.string.try_again, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                restartGame();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+
+        // Create the message to show the player
+        String message = "";
+        message = createLoseMessage(game, gameStats);
+        builder.setMessage(message);
+        AlertDialog dialog = builder.create();
+
+        // You must click on one of the buttons in order to dismiss the dialog
+        dialog.setCanceledOnTouchOutside(false);
+
+        // Show the dialog
+        dialog.show();
     }
 
     /**

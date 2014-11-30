@@ -28,7 +28,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.backup.api_key"
-            android:value="AEdPqrEAAAAIgaJ6Ma95NGNAxjNDH-8tNvHvpzA3Kc3WzQ_5eQ" />
+            android:value="@string/android_backup_api_key" />
 
         <activity
             android:name="com.tytanapps.game2048.MainActivity"

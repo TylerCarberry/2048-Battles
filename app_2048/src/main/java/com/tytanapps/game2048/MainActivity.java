@@ -3,9 +3,11 @@ package com.tytanapps.game2048;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -41,6 +43,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends BaseGameActivity implements View.OnClickListener, QuestUpdateListener
 {
@@ -60,6 +64,31 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
                     .add(R.id.container, new AdFragment()).commit();
         }
         */
+
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // The number of days since the epoch
+        long lastDatePlayed = prefs.getLong("lastDatePlayed", -1);
+        long currentDate = TimeUnit.MILLISECONDS.toDays(Calendar.getInstance().getTimeInMillis());
+
+        Toast.makeText(this, "last date played " +lastDatePlayed, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "current date " +currentDate, Toast.LENGTH_LONG).show();
+
+        if (currentDate > lastDatePlayed)
+            showWelcomeBack();
+        else
+            // The time was changed
+            if (currentDate < lastDatePlayed) {
+                Toast.makeText(this, "You changed the date", Toast.LENGTH_LONG).show();
+
+                // The user must wait another 3 days
+                currentDate = lastDatePlayed + 3;
+            }
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong("lastDatePlayed", currentDate);
+        editor.commit();
 
 	    // Get a Tracker (should auto-report)
 	    ((MainApplication) getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
@@ -493,7 +522,22 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	    // 0 is an arbitrary integer
 	    startActivityForResult(questsIntent, 0);
 	}
-	
+
+    private void showWelcomeBack() {
+        Toast.makeText(this, "Welcome Back", Toast.LENGTH_LONG).show();
+
+        // Create a new lose dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Welcome Back");
+
+        // Create the message to show the player
+        String message = "";
+        message = "You Gained 1 Powerup!\n" +
+                  "Come back tomorrow for more.";
+        builder.setMessage(message);
+        builder.create().show();
+    }
+
 	public void playGames(View view) {
 		if(getApiClient().isConnected()) {
 			switch (view.getId()) {
