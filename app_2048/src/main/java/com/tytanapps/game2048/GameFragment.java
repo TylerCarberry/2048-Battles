@@ -1080,6 +1080,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             }
         }
 
+
         View gameActivity = getView().findViewById(R.id.game_activity);
         gameActivity.setOnTouchListener(new View.OnTouchListener(){
 
@@ -1090,11 +1091,16 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 return true;
             }
         });
+
     }
 
     private void clearTileListeners() {
         animationInProgress = false;
-        (getView().findViewById(R.id.game_activity)).setOnTouchListener(null);
+        (getView().findViewById(R.id.game_activity)).setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return onTouchEvent(event);
+            }
+        });
 
         for(int row = 0; row < game.getGrid().getNumRows(); row++) {
             for(int col = 0; col < game.getGrid().getNumCols(); col++) {
