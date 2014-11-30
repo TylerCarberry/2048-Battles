@@ -11,7 +11,7 @@
     <string name="action_achievements">Achievements</string>
     <string name="action_leaderboards">Leaderboards</string>
     <string name="action_quests">Quests</string>
-    <string name="how_to_play">Combine similar tiles to reach 2048.</string>
+    <string name="how_to_play">Swipe to move the board.\nTiles with the same value combine.\nReach a 2048 tile to win.</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="pause">Pause</string>

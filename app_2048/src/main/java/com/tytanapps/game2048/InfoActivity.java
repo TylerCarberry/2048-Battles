@@ -1,21 +1,17 @@
 package com.tytanapps.game2048;
 
-import com.tytanapps.game2048.R;
-import com.tytanapps.game2048.R.id;
-import com.tytanapps.game2048.R.layout;
-import com.tytanapps.game2048.R.menu;
-
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
+import android.widget.VideoView;
 
 public class InfoActivity extends Activity {
 
@@ -53,6 +49,25 @@ public class InfoActivity extends Activity {
 		
 		return super.onOptionsItemSelected(item);
 	}
+
+    @Override
+    protected void onStart() {
+        VideoView videoview = (VideoView) findViewById(R.id.video_view);
+
+        Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.how_to_play_2048);
+
+        videoview.setVideoURI(uri);
+        videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+            }
+        });
+
+        videoview.start();
+
+        super.onStart();
+    }
 
 	/**
 	 * A placeholder fragment containing a simple view.
