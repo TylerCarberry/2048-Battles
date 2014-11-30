@@ -7,6 +7,8 @@
 2048 for Android By Tyler Carberry  
 My version of 2048 based off the orginal 2048 by Gabriele Cirulli.  
 
+**Licensing:** Although this app is open source, you may **not** modify or distribute it outside of the [Github Terms of Service](https://help.github.com/articles/github-terms-of-service/). See the [Digital Millennium Copyright Act (DMCA)](http://www.copyright.gov/legislation/dmca.pdf) for more information. 
+
 ### Download the beta from Google Play
 1) Join this Google+ Community  
 https://plus.google.com/communities/100444948974584286905  
