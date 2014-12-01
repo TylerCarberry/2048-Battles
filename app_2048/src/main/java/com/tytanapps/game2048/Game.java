@@ -54,6 +54,8 @@ public class Game implements java.io.Serializable
     private int undosUsed = 0;
     private int powerupsUsed = 0;
 
+    // Used to increment the event total tiles combined
+    private int tilesCombined = 0;
 
     // The time limit in seconds before the game automatically quits
 	// The timer starts immediately after the first move
@@ -75,13 +77,12 @@ public class Game implements java.io.Serializable
 	private ArrayList<Location> destinationLocations = new ArrayList<Location>();
 
     private int activeAttack = 0;
-	private int iceDirection = -1;
 	private int attackDuration = -1;
+    private int iceDirection = -1;
 	
 	private int gameModeId;
 
     private boolean genie_enabled = false;
-
     private boolean multiplayerActive = false;
 
     // This must be updated manually by the driver
@@ -238,6 +239,8 @@ public class Game implements java.io.Serializable
 		// If two pieces combined into a tile another piece cannot
 		// move there that turn
 		destinationLocations.add(to);
+
+        tilesCombined++;
 	}
 	
 	public void newTurn() {
@@ -797,6 +800,14 @@ public class Game implements java.io.Serializable
 
     public int getPowerupsUsed() {
         return powerupsUsed;
+    }
+
+    public int getTilesCombined() {
+        return tilesCombined;
+    }
+
+    public void resetTilesCombined() {
+        tilesCombined = 0;
     }
 	
 	

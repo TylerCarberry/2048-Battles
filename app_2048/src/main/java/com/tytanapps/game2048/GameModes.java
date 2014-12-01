@@ -1,7 +1,5 @@
 package com.tytanapps.game2048;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,10 +85,7 @@ public class GameModes
 	 * @return The mode name
 	 */
 	public static int getGameTitleById(int id) {
-
-        Log.d("a", "id: " + id);
-
-		switch (id) {
+        switch (id) {
 		case NORMAL_MODE_ID:
 			return R.string.mode_normal;
 		case PRACTICE_MODE_ID:

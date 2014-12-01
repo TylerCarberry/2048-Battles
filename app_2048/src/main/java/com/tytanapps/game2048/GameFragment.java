@@ -250,6 +250,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(gameStats.getTotalMoves() >= 2048 && getApiClient().isConnected())
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
 
+        Games.Events.increment(this.getApiClient(), getString(R.string.event_tiles_combined), game.getTilesCombined());
+        game.resetTilesCombined();
+
         GoogleAnalytics.getInstance(getActivity()).reportActivityStop(getActivity());
         super.onStop();
     }
@@ -812,13 +815,15 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     {
         if(getApiClient().isConnected()) {
             String playedGameId = getString(R.string.event_games_lost);
-            String totalMovesId = getString(R.string.event_total_moves);
-            String totalScoreId = getString(R.string.event_total_score);
+            String totalMovesId = getString(R.string.event_moves);
+            String totalScoreId = getString(R.string.event_score);
+            String tilesCombinedId = getString(R.string.event_tiles_combined);
 
             // Increment the event counters
             Games.Events.increment(this.getApiClient(), playedGameId, 1);
             Games.Events.increment(this.getApiClient(), totalMovesId, myGame.getTurns());
             Games.Events.increment(this.getApiClient(), totalScoreId, myGame.getScore());
+            Games.Events.increment(this.getApiClient(), tilesCombinedId, game.getTilesCombined());
         }
     }
 
@@ -895,7 +900,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             else {
                 builder.setTitle(getString(R.string.prompt_choose_powerup)).setItems(R.array.powerups, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-
+                        Games.Events.increment(getApiClient(), getString(R.string.event_powerups_used), 1);
                         // The 'which' argument contains the index position
                         // of the selected item
                         switch (which) {
@@ -1417,7 +1422,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             setUndoButtonEnabled(false);
         else {
             if(game.getTurns() > 1) {
-
                 // Reset the rotation to the default orientation
                 undoButton.setRotation(0);
 
@@ -1447,6 +1451,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 gameStats.incrementTotalMoves(1);
                 gameStats.incrementUndosUsed(1);
                 updateGame();
+
+                Games.Events.increment(this.getApiClient(), getString(R.string.event_undos_used), 1);
             }
         }
     }
@@ -1681,6 +1687,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     public Game getGame() {
         return game;
+    }
+
+    public Statistics getGameStats() {
+        return gameStats;
     }
 
     public Game setGame(Game newGame) {

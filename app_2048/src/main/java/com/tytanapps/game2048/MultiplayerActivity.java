@@ -347,6 +347,8 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
         // Show the dialog
         dialog.show();
+
+        Games.Events.increment(this.getApiClient(), getString(R.string.event_multiplayer_games_played), 1);
     }
 
     private void updateScoreProgressbar() {
