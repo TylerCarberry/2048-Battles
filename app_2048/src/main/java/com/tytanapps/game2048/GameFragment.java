@@ -231,6 +231,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     @Override
     public void onPause() {
+        Games.Events.increment(this.getApiClient(), getString(R.string.event_tiles_combined), game.getTilesCombined());
+        game.resetTilesCombined();
+
         // Only save a game that is still in progress and not a multiplayer game
         if(!game.lost() && game.getGameModeId() != GameModes.MULTIPLAYER_MODE_ID)
             save();
@@ -249,9 +252,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // still call the api every time afterwards but for now this is not a major issue
         if(gameStats.getTotalMoves() >= 2048 && getApiClient().isConnected())
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
-
-        Games.Events.increment(this.getApiClient(), getString(R.string.event_tiles_combined), game.getTilesCombined());
-        game.resetTilesCombined();
 
         GoogleAnalytics.getInstance(getActivity()).reportActivityStop(getActivity());
         super.onStop();
