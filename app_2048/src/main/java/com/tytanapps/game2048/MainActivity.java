@@ -366,13 +366,13 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
         LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
 
-        Statistics gameStats = new Statistics();
+        GameData gameStats = new GameData();
         try {
             File file = new File(getFilesDir(), getString(R.string.file_game_stats));
             FileInputStream fi = new FileInputStream(file);
             ObjectInputStream input = new ObjectInputStream(fi);
 
-            gameStats = (Statistics) input.readObject();
+            gameStats = (GameData) input.readObject();
 
             fi.close();
             input.close();

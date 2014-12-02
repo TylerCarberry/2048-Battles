@@ -16,7 +16,7 @@ import java.io.IOException;
 
 public class StatsActivity extends Activity {
 	
-	private Statistics gameStats;
+	private GameData gameStats;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +55,11 @@ public class StatsActivity extends Activity {
 		File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
 
 		try {
-			gameStats = (Statistics) Save.load(gameStatsFile);
+			gameStats = (GameData) Save.load(gameStatsFile);
 		} catch (ClassNotFoundException e) {
-			gameStats = new Statistics();
+			gameStats = new GameData();
 		} catch (IOException e) {
-			gameStats = new Statistics();
+			gameStats = new GameData();
 		}
 		TextView totalGames = (TextView) findViewById(R.id.total_games);
 		TextView totalUndos = (TextView) findViewById(R.id.total_undos);

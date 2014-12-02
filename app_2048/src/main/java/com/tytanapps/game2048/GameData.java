@@ -1,3 +1,9 @@
+//***********************************************************************
+// Tyler Carberry
+// GameData.java
+// Stores information about the app that persists through each game
+//***********************************************************************
+
 package com.tytanapps.game2048;
 
 import android.graphics.Bitmap;
@@ -8,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Statistics implements java.io.Serializable {
+public class GameData implements java.io.Serializable {
 	
 	private static final long serialVersionUID = -4114433717246666155L;
 	
@@ -37,7 +43,7 @@ public class Statistics implements java.io.Serializable {
 
 
 
-    public Statistics() {
+    public GameData() {
         totalGamesPlayed = 0;
         totalUndosUsed = 0;
         totalShufflesUsed = 0;

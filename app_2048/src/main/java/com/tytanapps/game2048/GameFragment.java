@@ -95,7 +95,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             = new ArrayList<ObjectAnimator>();
 
     // Stores info about the game such as high score
-    private static Statistics gameStats;
+    private static GameData gameStats;
 
     // The distance in pixels between tiles
     private static int verticalTileDistance = 0;
@@ -861,7 +861,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * @param myGameStats The game stats of the game
      * @return The message to display
      */
-    private String createLoseMessage(Game myGame, Statistics myGameStats) {
+    private String createLoseMessage(Game myGame, GameData myGameStats) {
         String message = "";
         // Notify if there is a new high score
         if(myGame.getScore() > myGameStats.getHighScore(myGame.getGameModeId())) {
@@ -1545,14 +1545,14 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         try {
             game = (Game) Save.load(currentGameFile);
 
-            gameStats = (Statistics) Save.load(gameStatsFile);
+            gameStats = (GameData) Save.load(gameStatsFile);
         } catch (ClassNotFoundException e) {
             Log.e(LOG_TAG, "Class not found exception in load");
             game = new Game();
-            gameStats = new Statistics();
+            gameStats = new GameData();
         } catch (IOException e) {
             game = new Game();
-            gameStats = new Statistics();
+            gameStats = new GameData();
         }
         updateGame();
     }
@@ -1689,7 +1689,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         return game;
     }
 
-    public Statistics getGameStats() {
+    public GameData getGameStats() {
         return gameStats;
     }
 
