@@ -48,8 +48,8 @@ public class Game implements java.io.Serializable
 	
 	// Limited number of moves or undos, -1 = unlimited
 	private int movesRemaining = -1;
-	private int undosRemaining  = -1;
-	private int powerupsRemaining  = -1;
+	private int undosRemaining = -1;
+	private int powerupsRemaining = -1;
 
     private int undosUsed = 0;
     private int powerupsUsed = 0;
@@ -81,6 +81,8 @@ public class Game implements java.io.Serializable
     private int iceDirection = -1;
 	
 	private int gameModeId;
+
+    private boolean useItemInventory = false;
 
     private boolean genie_enabled = false;
     private boolean multiplayerActive = false;
@@ -1105,6 +1107,14 @@ public class Game implements java.io.Serializable
 
     public int getOpponentScore() {
         return opponentScore;
+    }
+
+    public void setUseItemInventory(boolean isEnabled) {
+        useItemInventory = isEnabled;
+    }
+
+    public boolean getUseItemInventory() {
+        return useItemInventory;
     }
 	
 	public int getActiveAttack() {

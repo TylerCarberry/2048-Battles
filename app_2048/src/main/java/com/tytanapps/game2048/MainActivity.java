@@ -203,19 +203,12 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         if(savedGame == null || savedGame.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)
             return;
 
-        //Display display = getWindowManager().getDefaultDisplay();
-        //Point size = new Point();
-        //display.getSize(size);
-        //int width = size.x;
-
         int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
 
         LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
 
         File savedGameBitmapFile = new File(getFilesDir(), "CURRENT_GAME_SCREENSHOT");
         Bitmap savedGameBitmap = Save.loadBitmap(savedGameBitmapFile);
-
-        //Toast.makeText(this, "is saved game bitmap null? "+(savedGameBitmap == null), Toast.LENGTH_SHORT).show();
 
         // The layout the contains all info for that mode
         LinearLayout modeDetailLayout = new LinearLayout(this);
@@ -519,6 +512,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
                 public void onClick(View view) {
                     Game game = GameModes.newGameFromId(gameId);
                     game.setGameModeId(gameId);
+
                     File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
                     try {
                         Save.save(game, currentGameFile);

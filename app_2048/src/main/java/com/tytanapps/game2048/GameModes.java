@@ -182,9 +182,8 @@ public class GameModes
 	{
 		Game game = new Game();
 		game.setMoveLimit(-1);
-		game.setUndoLimit(5);
-		game.setPowerupLimit(3);
 		game.setTimeLimit(-1);
+        game.setUseItemInventory(true);
 		game.setGameModeId(NORMAL_MODE_ID);
 
 		return game;

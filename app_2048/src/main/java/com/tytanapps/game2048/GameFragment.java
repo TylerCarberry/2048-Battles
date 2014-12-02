@@ -907,6 +907,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                             case 0:
                                 shuffleGame();
                                 game.decrementPowerupsRemaining();
+                                if(game.getUseItemInventory())
+                                    gameStats.decrementPowerupInventory();
                                 break;
                             case 1:
                                 // The number of powerups is decremented in removeTile
@@ -916,10 +918,14 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                             case 2:
                                 removeLowTiles();
                                 game.decrementPowerupsRemaining();
+                                if(game.getUseItemInventory())
+                                    gameStats.decrementPowerupInventory();
                                 break;
                             case 3:
                                 game.setGenieEnabled(true);
                                 game.decrementPowerupsRemaining();
+                                if(game.getUseItemInventory())
+                                    gameStats.decrementPowerupInventory();
                                 updateTextviews();
                                 break;
                             // Debug option, I change this to test the code
@@ -1076,6 +1082,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                                     .setDuration(tileSlideSpeed)).start();
                             game.removeTile(new Location(view.getId() / 100, view.getId() % 100));
                             game.decrementPowerupsRemaining();
+                            if(game.getUseItemInventory())
+                                gameStats.decrementPowerupInventory();
                             setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
                             updateTextviews();
                             clearTileListeners();
@@ -1450,6 +1458,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 game.undo();
                 gameStats.incrementTotalMoves(1);
                 gameStats.incrementUndosUsed(1);
+                if(game.getUseItemInventory())
+                    gameStats.decrementUndoInventory();
                 updateGame();
 
                 Games.Events.increment(this.getApiClient(), getString(R.string.event_undos_used), 1);
@@ -1554,6 +1564,13 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             game = new Game();
             gameStats = new GameData();
         }
+
+        if(game.getUseItemInventory()) {
+            game.setUndoLimit(gameStats.getUndoInventory());
+            game.setPowerupLimit(gameStats.getPowerupInventory());
+        }
+
+
         updateGame();
     }
 
