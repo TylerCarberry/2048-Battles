@@ -101,6 +101,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         if(isSavedGame())
             addSavedGameView();
 
+        addInventoryView();
         addMultiplayerGameView();
         createListView();
 		super.onStart();
@@ -282,13 +283,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
     }
 
     private void addMultiplayerGameView() {
-
-
-        //Display display = getWindowManager().getDefaultDisplay();
-        //Point size = new Point();
-        //display.getSize(size);
-        //int width = size.x;
-
         int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
 
         LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
@@ -355,13 +349,82 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         listOfModes.addView(modeDetailLayout);
     }
 
-    private void createListView() {
+    private void addInventoryView() {
+        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+        GameData gameData = new GameData();
+        try {
+            gameData = (GameData) Save.load(gameDataFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-        /*
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x; */
+        int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
+
+        LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
+
+        // The layout the contains all info for that mode
+        LinearLayout modeDetailLayout = new LinearLayout(this);
+        modeDetailLayout.setPadding((int) getResources().getDimension(R.dimen.activity_horizontal_margin),
+                0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin), 0);
+
+        modeDetailLayout.setOrientation(LinearLayout.VERTICAL);
+        modeDetailLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                        width / 2, LayoutParams.WRAP_CONTENT));
+        modeDetailLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        // The mode name
+        TextView modeName = new TextView(this);
+        modeName.setText("Inventory");
+        modeName.setTextSize(20);
+        modeName.setTypeface(null, Typeface.BOLD);
+        modeName.setLayoutParams(new LinearLayout.LayoutParams(
+                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        modeName.setPadding(0, (int) getResources().getDimension(R.dimen.activity_vertical_margin), 0, 0);
+        modeName.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        // Powerups
+        TextView powerupTextView = new TextView(this);
+        powerupTextView.setText("Powerups: " + gameData.getPowerupInventory());
+        powerupTextView.setTextSize(20);
+        powerupTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        powerupTextView.setPadding(0, (int) getResources().getDimension(R.dimen.activity_vertical_margin), 0, 0);
+        powerupTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        // Undos
+        TextView undoTextView = new TextView(this);
+        undoTextView.setText("Undos: " + gameData.getUndoInventory());
+        undoTextView.setTextSize(20);
+        undoTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        );
+        undoTextView.setPadding(0, (int) getResources().getDimension(R.dimen.activity_vertical_margin), 0, 0);
+        undoTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        // Add each item of the mode to the layout
+        modeDetailLayout.addView(modeName);
+        modeDetailLayout.addView(powerupTextView);
+        modeDetailLayout.addView(undoTextView);
+
+        modeDetailLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Intent multiplayerIntent = new Intent(getBaseContext(), MultiplayerActivity.class);
+                    multiplayerIntent.putExtra("startMultiplayer", true);
+                    startActivity(multiplayerIntent);
+                }
+                return true;
+            }
+        });
+
+        // Add the mode to the list
+        listOfModes.addView(modeDetailLayout);
+    }
+
+    private void createListView() {
 
         int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
 
@@ -392,13 +455,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         marginStart.setLayoutParams(new LinearLayout.LayoutParams(
                         (int) getResources().getDimension(R.dimen.activity_horizontal_margin), LayoutParams.MATCH_PARENT)
         );
-
-        /*
-        Space marginEnd = new Space(this);
-        marginEnd.setLayoutParams(new LinearLayout.LayoutParams(
-                        (int) getResources().getDimension(R.dimen.activity_horizontal_margin), LayoutParams.MATCH_PARENT)
-        );
-        */
 
         // Loop through every game mode and add it to the list
         for(int id : GameModes.getListOfGameModesIds()) {
