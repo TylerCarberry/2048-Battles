@@ -64,9 +64,10 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         //Toast.makeText(this, "last date played " +lastDatePlayed, Toast.LENGTH_LONG).show();
         //Toast.makeText(this, "current date " +currentDate, Toast.LENGTH_LONG).show();
 
-        if (currentDate > lastDatePlayed)
-            showWelcomeBack();
-        else
+        //if (currentDate > lastDatePlayed) {
+            addWelcomeBackBonus();
+        //}
+        //else
             // The time was changed
             if (currentDate < lastDatePlayed) {
                 Toast.makeText(this, "You changed the date", Toast.LENGTH_LONG).show();
@@ -512,18 +513,36 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	    startActivityForResult(questsIntent, 0);
 	}
 
-    private void showWelcomeBack() {
-        Toast.makeText(this, "Welcome Back", Toast.LENGTH_LONG).show();
-
-        // Create a new lose dialog
+    private void addWelcomeBackBonus() {
+        // Create a new dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Welcome Back");
 
-        // Create the message to show the player
-        String message = "";
-        message = "You Gained 1 Powerup!\n" +
-                  "Come back tomorrow for more.";
-        builder.setMessage(message);
+        // Add either 1 or 2 bonus items
+        int bonusAmount = (int) (Math.random() * 2 + 1);
+
+        try {
+            if (Math.random() < 0.5) {
+                //Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
+                incrementPowerupInventory(bonusAmount);
+                builder.setMessage("You Gained " + bonusAmount + " Powerup!\n" +
+                        "Come back tomorrow for more.");
+            }
+            else {
+                //Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
+                incrementUndoInventory(bonusAmount);
+                builder.setMessage("You Gained " + bonusAmount + " Undo!\n" +
+                        "Come back tomorrow for more.");
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Unable to add random bonus", Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Unable to access save file to add random bonus", Toast.LENGTH_LONG).show();
+        }
+
+        // Show the message to the player
         builder.create().show();
     }
 
@@ -590,10 +609,28 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         return false;
     }
 
-	@Override
+    private void incrementPowerupInventory(int amount) throws IOException, ClassNotFoundException {
+        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+        GameData gameData = (GameData) Save.load(gameDataFile);
+        gameData.incrementPowerupInventory(amount);
+        Save.save(gameData, gameDataFile);
+
+        //Toast.makeText(this, "Your powerups: " + gameData.getPowerupInventory(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Your undos: " + gameData.getUndoInventory(), Toast.LENGTH_LONG).show();
+    }
+
+    private void incrementUndoInventory(int amount) throws IOException, ClassNotFoundException {
+        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+        GameData gameData = (GameData) Save.load(gameDataFile);
+        gameData.incrementUndoInventory(amount);
+        Save.save(gameData, gameDataFile);
+    }
+
+
 	/**
 	 *  Sign in has failed. Show the user the sign-in button.
 	 */
+    @Override
 	public void onSignInFailed() {
 	    
 		// The sign in button is not a normal button, so keep it as a default view
@@ -647,6 +684,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 	@Override
 	public void onQuestCompleted(Quest quest) {
 
+        Toast.makeText(this, "Quest Completed", Toast.LENGTH_SHORT).show();
 		Log.d(LOG_TAG, "in onQuestCompleted");
 		
 	    // Claim the quest reward.
@@ -655,16 +693,34 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
 	    // Process the RewardData to provision a specific reward.
 	    try {
-	        String reward = new
-	                String(quest.getCurrentMilestone().getCompletionRewardData(),
-	                "UTF-8");
+	        // The reward will be in the form [integer][character]
+            // The integer is the number of items gained
+            // The character is either u or p for undos or powerups
+            String rewardRaw = new
+	                String(quest.getCurrentMilestone().getCompletionRewardData(), "UTF-8");
 
-	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            int rewardAmount = Character.getNumericValue(rewardRaw.charAt(0));
+            String reward = "";
+
+            if(rewardRaw.charAt(1) == 'p') {
+                reward = "Powerup";
+                incrementPowerupInventory(rewardAmount);
+            }
+
+            else {
+                if(rewardRaw.charAt(1) == 'u') {
+                    reward = "Undo";
+                    incrementUndoInventory(rewardAmount);
+                }
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	        builder.setTitle("Quest Completed");
-	        builder.setMessage("You gained " + reward);
+	        builder.setMessage("You gained " + rewardAmount + " " + reward);
 	        builder.create().show();
 	        
 	    } catch (Exception e) {
+            Toast.makeText(this, "Unable to claim quest reward", Toast.LENGTH_LONG).show();
 	    	Log.w(LOG_TAG, e.toString());
 	    }
 	}
