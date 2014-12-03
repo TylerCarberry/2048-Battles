@@ -38,7 +38,7 @@
     <string name="mode_custom">Custom</string>
     <string name="mode_multiplayer">Multiplayer</string>
     <string name="try_again">Try Again</string>
-    <string name="mode_desc_normal">10 Undos\n5 Powerups</string>
+    <string name="mode_desc_normal">The classic game of 2048.</string>
     <string name="mode_desc_practice">Unlimited undos and powerups. Warns you before you lose.</string>
     <string name="mode_desc_pro">No Undos\nNo Powerups</string>
     <string name="mode_desc_rush">Higher value tiles appear</string>
@@ -54,7 +54,6 @@
     <string name="mode_desc_multiplayer">Multiplayer description here</string>
     <string name="title_activity_game">2048</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
     <string name="remove_low">Remove Low Tiles</string>
     <string name="remove_tile">Remove A Tile</string>
     <string name="prompt_start_game">Start A New Game</string>

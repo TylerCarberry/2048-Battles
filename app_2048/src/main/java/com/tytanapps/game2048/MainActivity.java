@@ -64,10 +64,10 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         //Toast.makeText(this, "last date played " +lastDatePlayed, Toast.LENGTH_LONG).show();
         //Toast.makeText(this, "current date " +currentDate, Toast.LENGTH_LONG).show();
 
-        //if (currentDate > lastDatePlayed) {
+        if (currentDate > lastDatePlayed) {
             addWelcomeBackBonus();
-        //}
-        //else
+        }
+        else
             // The time was changed
             if (currentDate < lastDatePlayed) {
                 Toast.makeText(this, "You changed the date", Toast.LENGTH_LONG).show();

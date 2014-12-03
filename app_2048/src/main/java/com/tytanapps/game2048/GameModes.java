@@ -25,7 +25,7 @@ public class GameModes
         List<Integer> gameModes = new ArrayList<Integer>();
         gameModes.add(PRACTICE_MODE_ID);
         gameModes.add(NORMAL_MODE_ID);
-        gameModes.add(PRO_MODE_ID);
+        //gameModes.add(PRO_MODE_ID);
         gameModes.add(ARCADE_MODE_ID);
         gameModes.add(RUSH_MODE_ID);
         gameModes.add(X_MODE_ID);
@@ -228,6 +228,7 @@ public class GameModes
 		game.setPowerupLimit(3);
 		game.setDynamicTileSpawning(true);
 		game.setGameModeId(RUSH_MODE_ID);
+        game.setUseItemInventory(true);
 
 		return game;
 	}
@@ -262,6 +263,7 @@ public class GameModes
 		game.setTimeLimit(-1);
 		game.setXMode();
 		game.setGameModeId(X_MODE_ID);
+        game.setUseItemInventory(true);
 
 		return game;
 	}
@@ -279,6 +281,7 @@ public class GameModes
 		game.setTimeLimit(-1);
 		game.cornerMode();
 		game.setGameModeId(CORNER_MODE_ID);
+        game.setUseItemInventory(true);
 
 		return game;
 	}
@@ -362,6 +365,7 @@ public class GameModes
 		game.setUndoLimit(5);
         game.setPowerupLimit(3);
         game.setGameModeId(GHOST_MODE_ID);
+        game.setUseItemInventory(true);
 
 		return game;
 	}
