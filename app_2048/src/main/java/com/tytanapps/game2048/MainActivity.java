@@ -1,10 +1,12 @@
 package com.tytanapps.game2048;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -32,8 +34,11 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.quest.Quest;
 import com.google.android.gms.games.quest.QuestUpdateListener;
+import com.google.android.gms.games.request.GameRequest;
+import com.google.android.gms.games.request.Requests;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.tytanapps.game2048.MainApplication.TrackerName;
 
@@ -43,14 +48,21 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends BaseGameActivity implements View.OnClickListener, QuestUpdateListener
 {
 	private final static String LOG_TAG = MainActivity.class.getSimpleName();
-	
-	@Override
+
+    private final static int SEND_REQUEST_CODE = 1001;
+    private final static int SEND_GIFT_CODE = 1002;
+    private final static int SHOW_INBOX = 1003;
+
+
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
@@ -121,11 +133,6 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         if(hasFocus) {
             HorizontalScrollView scrollView = (HorizontalScrollView) findViewById(R.id.modeScrollView);
             if(scrollView.getScrollX() == 0) {
-                //Display display = getWindowManager().getDefaultDisplay();
-                //Point size = new Point();
-                //display.getSize(size);
-                //int width = size.x;
-
                 int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
                 scrollView.smoothScrollTo(width / 4, 0);
             }
@@ -322,9 +329,33 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             }
         });
 
+        Button sendGiftButton = new Button(this);
+        sendGiftButton.setText("Send Gift");
+        sendGiftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
+                        "p".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
+                                R.drawable.powerup_button), "Desc");
+                startActivityForResult(intent, SEND_GIFT_CODE);
+            }
+        });
+
+        Button showInboxButton = new Button(this);
+        showInboxButton.setText("Show Inbox");
+        showInboxButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(Games.Requests.getInboxIntent(getApiClient()), SHOW_INBOX);
+            }
+        });
+
         // Add each item of the mode to the layout
         modeDetailLayout.addView(modeName);
         modeDetailLayout.addView(quickGameButton);
+        modeDetailLayout.addView(sendGiftButton);
+        modeDetailLayout.addView(showInboxButton);
+
 
         modeDetailLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -676,8 +707,66 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         Save.save(gameData, gameDataFile);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SEND_REQUEST_CODE:
+                if (resultCode == GamesActivityResultCodes.RESULT_SEND_REQUEST_FAILED) {
+                    Toast.makeText(this, "FAILED TO SEND REQUEST!", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case SEND_GIFT_CODE:
+                if (resultCode == GamesActivityResultCodes.RESULT_SEND_REQUEST_FAILED) {
+                    Toast.makeText(this, "FAILED TO SEND GIFT!", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case SHOW_INBOX:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    handleInboxResult(Games.Requests
+                            .getGameRequestsFromInboxResponse(data));
+                } else {
+                    // handle failure to process inbox result
+                    Toast.makeText(this, "Unable to claim reward", Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
-	/**
+    private void handleInboxResult(ArrayList<GameRequest> gameRequests) {
+        for(GameRequest request : gameRequests) {
+            String message = request.getSender().getDisplayName() + " sent you ";
+            if(request.getData() == "p".getBytes()) {
+                message += "a powerup";
+                try {
+                    incrementPowerupInventory(1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                message += "an undo";
+                try {
+                    incrementUndoInventory(1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            Games.Requests.acceptRequest(getApiClient(), request.getRequestId());
+
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+
+        }
+
+    }
+
+
+    /**
 	 *  Sign in has failed. Show the user the sign-in button.
 	 */
     @Override
