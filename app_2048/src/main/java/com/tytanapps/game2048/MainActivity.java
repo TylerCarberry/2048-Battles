@@ -33,6 +33,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.quest.Quest;
@@ -91,6 +92,20 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong("lastDatePlayed", currentDate);
         editor.commit();
+
+        getApiClient().registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+            @Override
+            public void onConnected(Bundle bundle) {
+                ArrayList <GameRequest> gameRequests
+                        = Games.Requests.getGameRequestsFromBundle(bundle);
+                handleInboxResult(gameRequests);
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+
+            }
+        });
 
 	    // Get a Tracker (should auto-report)
 	    ((MainApplication) getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
