@@ -3,6 +3,7 @@ package com.tytanapps.game2048;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -346,13 +347,35 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
         Button sendGiftButton = new Button(this);
         sendGiftButton.setText("Send Gift");
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.prompt_choose_powerup)).setItems(R.array.gifts, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent ;
+                // The 'which' argument contains the index position
+                // of the selected item
+                switch (which) {
+                    // Powerup
+                    case 0:
+                        intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
+                                "p".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
+                                        R.drawable.powerup_button), "Powerup Desc");
+                        startActivityForResult(intent, SEND_GIFT_CODE);
+                        break;
+                    case 1:
+                        intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
+                                "u".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
+                                        R.drawable.undo_button), "Undo Desc");
+                        startActivityForResult(intent, SEND_GIFT_CODE);
+                        break;
+                }
+            }
+        });
+
         sendGiftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
-                        "p".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
-                                R.drawable.powerup_button), "Desc");
-                startActivityForResult(intent, SEND_GIFT_CODE);
+                builder.create().show();
             }
         });
 
@@ -741,7 +764,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
                             .getGameRequestsFromInboxResponse(data));
                 } else {
                     // handle failure to process inbox result
-                    Toast.makeText(this, "Unable to claim reward", Toast.LENGTH_LONG).show();
+                    if(resultCode != Activity.RESULT_CANCELED)
+                        Toast.makeText(this, "Unable to claim reward", Toast.LENGTH_LONG).show();
                 }
                 break;
         }
@@ -751,7 +775,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
     private void handleInboxResult(ArrayList<GameRequest> gameRequests) {
         for(GameRequest request : gameRequests) {
             String message = request.getSender().getDisplayName() + " sent you ";
-            if(request.getData() == "p".getBytes()) {
+            if(new String(request.getData()).equals("p")) {
                 message += "a powerup";
                 try {
                     incrementPowerupInventory(1);

@@ -35,5 +35,10 @@
         <item>Genie</item>
         <item>(Debug) Double tiles</item>
     </string-array>
+
+    <string-array name="gifts">
+        <item>Powerup</item>
+        <item>Undo</item>
+    </string-array>
     
 </resources>
