@@ -371,10 +371,12 @@ public class GameModes
 	}
 
     // Multiplayer Mode
-    // Arcade game but with multiplayer enabled
     public static Game multiplayerMode()
     {
-        Game game = arcadeMode();
+        Game game = new Game();
+        game.setUseItemInventory(false);
+        game.setPowerupLimit(-1);
+        game.setUndoLimit(-1);
         game.setMultiplayerActive(true);
         game.setGameModeId(MULTIPLAYER_MODE_ID);
         return game;

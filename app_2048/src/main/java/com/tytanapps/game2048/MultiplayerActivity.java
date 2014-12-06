@@ -78,7 +78,8 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     private static final char SEND_ATTACK_GHOST = 'g';
     private static final char SEND_ATTACK_X = 'x';
 
-
+    // The % chance that a bonus will be received this second
+    private final static double BONUS_CHANCE = 0.20;
 
     // Client used to interact with Google APIs.
     private GoogleApiClient mGoogleApiClient;
@@ -312,10 +313,8 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
         if(secondsLeft <= 0)
             multiplayerTimeUp();
-        else {
-            if(Math.random() < 0.10)
-                addAttackBonus(SEND_ATTACK_GHOST);
-        }
+        else if(Math.random() < BONUS_CHANCE)
+                addBonus();
 
         return secondsLeft;
     }
@@ -389,13 +388,73 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         createMultiplayerTimer(30);
     }
 
+    private void addBonus() {
+        double random = Math.random();
+
+        if(random < .5)
+            if(random < .25)
+                if(random < .125)
+                    addAttackBonus(SEND_ATTACK_GHOST);
+                else
+                    addAttackBonus(SEND_ATTACK_ICE);
+            else if(random < .375)
+                addAttackBonus(SEND_ATTACK_SHUFFLE);
+            else
+                addAttackBonus(SEND_ATTACK_X);
+        else if (random < .75)
+            addPowerupBonus();
+        else
+            addUndoBonus();
+
+    }
+
+    private void addPowerupBonus() {
+        final ImageButton powerupButton = new ImageButton(this);
+        final LinearLayout bonusesLinearLayout = (LinearLayout) gameFragment.getView().findViewById(R.id.bonuses_linear_layout);
+
+        powerupButton.setBackgroundResource(R.drawable.powerup_button);
+        powerupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        gameFragment.showPowerupDialog();
+                        bonusesLinearLayout.removeView(powerupButton);
+                    }
+                });
+            }
+        });
+        bonusesLinearLayout.addView(powerupButton);
+    }
+
+    private void addUndoBonus() {
+        final ImageButton undoButton = new ImageButton(this);
+        final LinearLayout bonusesLinearLayout = (LinearLayout) gameFragment.getView().findViewById(R.id.bonuses_linear_layout);
+
+        undoButton.setBackgroundResource(R.drawable.undo_button);
+        undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        gameFragment.undo();
+                        bonusesLinearLayout.removeView(undoButton);
+                    }
+                });
+            }
+        });
+        bonusesLinearLayout.addView(undoButton);
+    }
+
     private void addAttackBonus(char attack) {
         final ImageButton attackButton = new ImageButton(this);
         final LinearLayout bonusesLinearLayout = (LinearLayout) gameFragment.getView().findViewById(R.id.bonuses_linear_layout);
 
         switch (attack){
             case SEND_ATTACK_GHOST:
-                attackButton.setBackgroundResource(R.drawable.games_matches_green);
+                attackButton.setBackgroundResource(R.drawable.tile_question);
                 attackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -411,7 +470,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 bonusesLinearLayout.addView(attackButton);
                 break;
             case SEND_ATTACK_SHUFFLE:
-                attackButton.setBackgroundResource(R.drawable.games_matches_green);
+                attackButton.setBackgroundResource(R.drawable.tile_question);
                 attackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -427,7 +486,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 bonusesLinearLayout.addView(attackButton);
                 break;
             case SEND_ATTACK_ICE:
-                attackButton.setBackgroundResource(R.drawable.games_matches_green);
+                attackButton.setBackgroundResource(R.drawable.tile_question);
                 attackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -443,7 +502,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 bonusesLinearLayout.addView(attackButton);
                 break;
             case SEND_ATTACK_X:
-                attackButton.setBackgroundResource(R.drawable.games_matches_green);
+                attackButton.setBackgroundResource(R.drawable.tile_question);
                 attackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -183,25 +183,28 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             }
 
         // Disable the undo and powerup buttons based on the undos/powerups remaining
-        setUndoButtonEnabled(game.getUndosRemaining() != 0);
-        setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
+        if(! game.getMultiplayerActive()) {
+            setUndoButtonEnabled(game.getUndosRemaining() != 0);
+            setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
 
-        // When the powerup button is pressed it switches its background to one suppressed
-        // When it is released its background changes back and the powerup dialog is shown
-        ImageButton powerupButton = (ImageButton) getView().findViewById(R.id.powerup_button);
-        powerupButton.setOnTouchListener(new View.OnTouchListener() {
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                    v.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_selected));
-                else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    v.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
-                    showPowerupDialog();
+            // When the powerup button is pressed it switches its background to one suppressed
+            // When it is released its background changes back and the powerup dialog is shown
+            ImageButton powerupButton = (ImageButton) getView().findViewById(R.id.powerup_button);
+            powerupButton.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN)
+                        v.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button_selected));
+                    else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        v.setBackgroundDrawable(getResources().getDrawable(R.drawable.powerup_button));
+                        showPowerupDialog();
+                    }
+                    return true;
                 }
-                return true;
-            }
-        });
+            });
+        }
 
         // Load the settings for the tile speed and sensitivity
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
@@ -430,9 +433,13 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         TextView powerupsTextView = (TextView) getView().findViewById(R.id.powerups_textview);
         TextView activeAttacksTextView = (TextView) getView().findViewById(R.id.active_attacks_textview);
 
-        if(game.getGameModeId() != GameModes.MULTIPLAYER_MODE_ID) {
+        // Update attacks
+        activeAttacksTextView.setText(getAttackString());
+
+        if(! game.getMultiplayerActive()) {
             // Update the turn number
             turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
+
             // Update the score
             scoreTextView.setText(getString(R.string.score) + ": " + game.getScore());
 
@@ -448,28 +455,24 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 undosTextView.setText("" + undosLeft);
                 setUndoButtonEnabled(true);
             }
-        }
 
-        // Update attacks
-        activeAttacksTextView.setText(getAttackString());
-
-        // Update the powerups left
-        int powerupsLeft = game.getPowerupsRemaining();
-        if(powerupsLeft <= 0) {
-            powerupsTextView.setVisibility(View.INVISIBLE);
-            powerupsTextView.setText("");
-            if(powerupsLeft == 0)
-                setPowerupButtonEnabled(false);
-        }
-        else {
-            powerupsTextView.setVisibility(View.VISIBLE);
-            powerupsTextView.setText(""+powerupsLeft);
-            setPowerupButtonEnabled(true);
+            // Update the powerups left
+            int powerupsLeft = game.getPowerupsRemaining();
+            if (powerupsLeft <= 0) {
+                powerupsTextView.setVisibility(View.INVISIBLE);
+                powerupsTextView.setText("");
+                if (powerupsLeft == 0)
+                    setPowerupButtonEnabled(false);
+            } else {
+                powerupsTextView.setVisibility(View.VISIBLE);
+                powerupsTextView.setText("" + powerupsLeft);
+                setPowerupButtonEnabled(true);
+            }
         }
     }
 
     /**
-     * @return the string telling the user the current attack and duraction left
+     * @return the string telling the user the current attack and duration left
      */
     private String getAttackString() {
         int activeGameAttack = game.getActiveAttack();
@@ -889,7 +892,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         return message;
     }
 
-    private void showPowerupDialog() {
+    protected void showPowerupDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         if(! game.lost()) {
@@ -1424,8 +1427,21 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * Undo the game. Currently does not have any animations because it
      * would be difficult to track every tile separately
      */
-    private void undo() {
+    protected void undo() {
         final ImageButton undoButton = (ImageButton) getView().findViewById(R.id.undo_button);
+
+        if(undoButton == null) {
+            game.undo();
+            gameStats.incrementTotalMoves(1);
+            gameStats.incrementUndosUsed(1);
+            if(game.getUseItemInventory())
+                gameStats.decrementUndoInventory();
+            updateGame();
+
+            Games.Events.increment(this.getApiClient(), getString(R.string.event_undos_used), 1);
+            return;
+        }
+
         if(game.getUndosRemaining() == 0)
             setUndoButtonEnabled(false);
         else {
@@ -1684,11 +1700,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private void setUndoButtonEnabled(boolean enabled) {
-        if(game.getGameModeId() != GameModes.MULTIPLAYER_MODE_ID) {
-            // Disable the undo button if there are no undos remaining
-            ImageButton undoButton = (ImageButton) getView().findViewById(R.id.undo_button);
+        // Disable the undo button if there are no undos remaining
+        ImageButton undoButton = (ImageButton) getView().findViewById(R.id.undo_button);
+        if(undoButton != null) {
             undoButton.setEnabled(game.getUndosRemaining() != 0);
-
             undoButton.setBackgroundDrawable(getResources().getDrawable(
                     (enabled) ? R.drawable.undo_button : R.drawable.undo_button_gray));
         }
@@ -1696,10 +1711,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     private void setPowerupButtonEnabled(boolean enabled) {
         ImageButton powerupButton = (ImageButton) getView().findViewById(R.id.powerup_button);
-        powerupButton.setEnabled(enabled);
-
-        powerupButton.setBackgroundDrawable(getResources().getDrawable(
-                (enabled) ? R.drawable.powerup_button : R.drawable.powerup_button_disabled));
+        if(powerupButton != null) {
+            powerupButton.setEnabled(enabled);
+            powerupButton.setBackgroundDrawable(getResources().getDrawable(
+                    (enabled) ? R.drawable.powerup_button : R.drawable.powerup_button_disabled));
+        }
     }
 
     public Game getGame() {

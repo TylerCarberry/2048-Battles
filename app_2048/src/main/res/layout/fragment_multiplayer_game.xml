@@ -92,20 +92,6 @@
         android:orientation="horizontal"
         android:animateLayoutChanges="true"
         android:layout_above="@+id/active_attacks_textview">
-
-        <ImageButton
-            android:id="@+id/powerup_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/powerup_button"/>
-
-        <TextView
-            android:id="@+id/powerups_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/powerups_remaining"
-            android:textSize="20sp" />
-
-        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>
