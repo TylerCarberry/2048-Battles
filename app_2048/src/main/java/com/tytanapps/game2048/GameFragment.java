@@ -1253,7 +1253,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * The grid layout spins 360�, the tiles are shuffled, then it spins
      * back in the opposite direction
      */
-    private void shuffleGame() {
+    protected void shuffleGame() {
 
         // Save the game history before each move
         game.saveGameInHistory();
@@ -1306,7 +1306,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     /**
      * Freezes the game (can not move in a direction for a random amount of turns)
      */
-    private void ice() {
+    protected void ice() {
         // This attack cannot be stacked
         if(game.getAttackDuration() <= 0)
             game.ice();
@@ -1315,7 +1315,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     /**
      * Temporarily adds an X tile to the game for a limited amount of time
      */
-    private void XTileAttack() {
+    protected void XTileAttack() {
         // This attack cannot be stacked
         if(game.getAttackDuration() <= 0) {
             game.XTileAttack();
@@ -1338,7 +1338,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
     }
 
-    private void ghostAttack() {
+    protected void ghostAttack() {
         game.ghostAttack();
 
         List<Location> tileLocs = game.getGrid().getFilledLocations();

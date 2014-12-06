@@ -71,6 +71,11 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     private static final char SEND_REMATCH = 'r';
     private static final char SEND_NAME = 'n';
     private static final char SEND_PIC_URL = 'p';
+    private static final char SEND_ATTACK_SHUFFLE = 'h';
+    private static final char SEND_ATTACK_ICE = 'i';
+    private static final char SEND_ATTACK_GHOST = 'g';
+    private static final char SEND_ATTACK_X = 'x';
+
 
 
     // Client used to interact with Google APIs.
@@ -810,7 +815,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             message += letter;
         }
 
-
         switch(message.charAt(0)) {
             // The score was sent
             case SEND_SCORE:
@@ -827,17 +831,30 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
                 if(findViewById(R.id.multiplayerProgressBar) != null)
                     gameFragment.updateOpponentName();
-
                 break;
             case SEND_PIC_URL:
                 opponentPicUrl = message.substring(1);
-
                 if(findViewById(R.id.multiplayerProgressBar) != null)
                     gameFragment.updateOpponentPic();
                 break;
+            case SEND_ATTACK_SHUFFLE:
+                gameFragment.shuffleGame();
+                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
+                break;
+            case SEND_ATTACK_GHOST:
+                gameFragment.ghostAttack();
+                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
+                break;
+            case SEND_ATTACK_ICE:
+                gameFragment.ghostAttack();
+                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
+                break;
+            case SEND_ATTACK_X:
+                gameFragment.XTileAttack();
+                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
+                break;
             default:
                 Toast.makeText(this, message , Toast.LENGTH_LONG).show();
-
         }
     }
 
@@ -913,8 +930,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
             return rootView;
         }
-
-
     }
 
     public static class DownloadImagesTask extends AsyncTask<ImageView, Void, Bitmap> {
@@ -929,7 +944,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
         @Override
         protected void onPostExecute(Bitmap result) {
-
             new MultiplayerActivity().setImageView(imageView, result);
         }
 
@@ -942,8 +956,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 connection.connect();
                 InputStream input = connection.getInputStream();
                 Bitmap myBitmap = BitmapFactory.decodeStream(input);
-
-                //imageView.setImageBitmap(myBitmap);
 
                 return myBitmap;
             } catch (IOException e) {
