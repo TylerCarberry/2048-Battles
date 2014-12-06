@@ -275,7 +275,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     }
 
     protected void createMultiplayerTimer(final int seconds) {
-
         ((TextView) findViewById(R.id.time_left_textview)).setText(""+seconds);
 
         final Timer t = new Timer();
@@ -405,7 +404,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             addPowerupBonus();
         else
             addUndoBonus();
-
     }
 
     private void addPowerupBonus() {
@@ -454,7 +452,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
         switch (attack){
             case SEND_ATTACK_GHOST:
-                attackButton.setBackgroundResource(R.drawable.tile_question);
+                attackButton.setBackgroundResource(R.drawable.ghost_attack_button);
                 attackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -470,7 +468,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 bonusesLinearLayout.addView(attackButton);
                 break;
             case SEND_ATTACK_SHUFFLE:
-                attackButton.setBackgroundResource(R.drawable.tile_question);
+                attackButton.setBackgroundResource(R.drawable.shuffle_attack_button);
                 attackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -486,7 +484,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 bonusesLinearLayout.addView(attackButton);
                 break;
             case SEND_ATTACK_ICE:
-                attackButton.setBackgroundResource(R.drawable.tile_question);
+                attackButton.setBackgroundResource(R.drawable.ice_attack_button);
                 attackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -502,7 +500,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 bonusesLinearLayout.addView(attackButton);
                 break;
             case SEND_ATTACK_X:
-                attackButton.setBackgroundResource(R.drawable.tile_question);
+                attackButton.setBackgroundResource(R.drawable.x_attack_button);
                 attackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
