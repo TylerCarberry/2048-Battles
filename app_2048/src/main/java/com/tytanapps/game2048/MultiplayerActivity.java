@@ -18,7 +18,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -308,8 +310,12 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
         Log.d(LOG_TAG, "Seconds Left: "+secondsLeft);
 
-        if(secondsLeft == 0)
+        if(secondsLeft <= 0)
             multiplayerTimeUp();
+        else {
+            if(Math.random() < 0.10)
+                addAttackBonus(SEND_ATTACK_GHOST);
+        }
 
         return secondsLeft;
     }
@@ -381,6 +387,78 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         gameFragment.setGame(GameModes.multiplayerMode());
         gameFragment.updateGame();
         createMultiplayerTimer(30);
+    }
+
+    private void addAttackBonus(char attack) {
+        final ImageButton attackButton = new ImageButton(this);
+        final LinearLayout bonusesLinearLayout = (LinearLayout) gameFragment.getView().findViewById(R.id.bonuses_linear_layout);
+
+        switch (attack){
+            case SEND_ATTACK_GHOST:
+                attackButton.setBackgroundResource(R.drawable.games_matches_green);
+                attackButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendMessage(""+SEND_ATTACK_GHOST, true);
+                                bonusesLinearLayout.removeView(attackButton);
+                            }
+                        });
+                    }
+                });
+                bonusesLinearLayout.addView(attackButton);
+                break;
+            case SEND_ATTACK_SHUFFLE:
+                attackButton.setBackgroundResource(R.drawable.games_matches_green);
+                attackButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendMessage(""+SEND_ATTACK_SHUFFLE, true);
+                                bonusesLinearLayout.removeView(attackButton);
+                            }
+                        });
+                    }
+                });
+                bonusesLinearLayout.addView(attackButton);
+                break;
+            case SEND_ATTACK_ICE:
+                attackButton.setBackgroundResource(R.drawable.games_matches_green);
+                attackButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendMessage(""+SEND_ATTACK_ICE, true);
+                                bonusesLinearLayout.removeView(attackButton);
+                            }
+                        });
+                    }
+                });
+                bonusesLinearLayout.addView(attackButton);
+                break;
+            case SEND_ATTACK_X:
+                attackButton.setBackgroundResource(R.drawable.games_matches_green);
+                attackButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendMessage(""+SEND_ATTACK_X, true);
+                                bonusesLinearLayout.removeView(attackButton);
+                            }
+                        });
+                    }
+                });
+                bonusesLinearLayout.addView(attackButton);
+                break;
+        }
     }
 
     protected void setImageView(final ImageView imageView, final Bitmap bitmap) {
@@ -828,7 +906,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 break;
             case SEND_NAME:
                 opponentName = message.substring(1);
-
                 if(findViewById(R.id.multiplayerProgressBar) != null)
                     gameFragment.updateOpponentName();
                 break;
@@ -843,14 +920,17 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 break;
             case SEND_ATTACK_GHOST:
                 gameFragment.ghostAttack();
+                gameFragment.updateTextviews();
                 Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
                 break;
             case SEND_ATTACK_ICE:
-                gameFragment.ghostAttack();
+                gameFragment.ice();
+                gameFragment.updateTextviews();
                 Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
                 break;
             case SEND_ATTACK_X:
                 gameFragment.XTileAttack();
+                gameFragment.updateTextviews();
                 Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
                 break;
             default:

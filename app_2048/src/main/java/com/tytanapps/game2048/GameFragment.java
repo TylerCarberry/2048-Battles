@@ -423,7 +423,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     /**
      * Update the turn number, score, number of undos and powerups left, and the active attack
      */
-    private void updateTextviews() {
+    protected void updateTextviews() {
         TextView turnTextView = (TextView) getView().findViewById(R.id.turn_textview);
         TextView scoreTextView = (TextView) getView().findViewById(R.id.score_textview);
         TextView undosTextView = (TextView) getView().findViewById(R.id.undos_textview);

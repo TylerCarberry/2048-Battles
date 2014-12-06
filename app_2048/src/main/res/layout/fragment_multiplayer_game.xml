@@ -76,29 +76,36 @@
         android:text="Active Attacks"
         android:textSize="20sp" />
 
-    <ImageButton
-        android:id="@+id/powerup_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/powerup_button"
-        android:layout_below="@id/time_left_textview"
-        android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:id="@+id/powerups_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/powerup_button"
-        android:layout_toRightOf="@+id/powerup_button"
-        android:text="@string/powerups_remaining"
-        android:textSize="20sp" />
-
-
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:id="@+id/multiplayerProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/player_name"
+        android:layout_toLeftOf="@id/opponent_name"
+        android:layout_above="@+id/bonuses_linear_layout" />
+
+    <LinearLayout
+        android:id="@+id/bonuses_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/active_attacks_textview" />
+        android:orientation="horizontal"
+        android:animateLayoutChanges="true"
+        android:layout_above="@+id/active_attacks_textview">
+
+        <ImageButton
+            android:id="@+id/powerup_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/powerup_button"/>
+
+        <TextView
+            android:id="@+id/powerups_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/powerups_remaining"
+            android:textSize="20sp" />
+
+        </LinearLayout>
 
 </RelativeLayout>
