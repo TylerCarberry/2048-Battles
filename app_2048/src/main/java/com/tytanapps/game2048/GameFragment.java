@@ -59,11 +59,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     // The time in milliseconds for the animation
     public static final long SHUFFLE_SPEED = 300;
-    // The number of seconds a multiplayer game lasts for
-    public static final int MULTIPLAYER_TIMER_LENGTH = 30; //seconds
+
     // The % chance of a bonus or attack each move in arcade mode
     public static final double CHANCE_OF_ARCADE_BONUS = 0.10;
-
 
     // These values are overridden with the options chosen in the settings
     public static long tileSlideSpeed = 125;
@@ -217,7 +215,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // Start the multiplayer aspects of the game if necessary
         if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
             // Create the game timer
-            ((MultiplayerActivity) getActivity()).createMultiplayerTimer(MULTIPLAYER_TIMER_LENGTH);
+            ((MultiplayerActivity) getActivity()).createMultiplayerTimer(MultiplayerActivity.MULTIPLAYER_GAME_LENGTH);
             // If the user chose to hide their identity do not show them their own identity
             // This confirms the change to the user as they cannot see their opponents screen
             if(! prefs.getBoolean("hideIdentity", false)) {

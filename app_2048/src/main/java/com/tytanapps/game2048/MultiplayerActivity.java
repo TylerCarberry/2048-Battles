@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,6 +81,9 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     // The % chance that a bonus will be received this second
     private final static double BONUS_CHANCE = 0.20;
+
+    // The number of seconds a multiplayer game is played for
+    public static final int MULTIPLAYER_GAME_LENGTH = 60;
 
     // Client used to interact with Google APIs.
     private GoogleApiClient mGoogleApiClient;
@@ -357,7 +361,8 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         // Show the dialog
         dialog.show();
 
-        Games.Events.increment(this.getApiClient(), getString(R.string.event_multiplayer_games_played), 1);
+        if(getApiClient().isConnected())
+            Games.Events.increment(this.getApiClient(), getString(R.string.event_multiplayer_games_played), 1);
     }
 
     private void updateScoreProgressbar() {
@@ -384,7 +389,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
         gameFragment.setGame(GameModes.multiplayerMode());
         gameFragment.updateGame();
-        createMultiplayerTimer(30);
+        createMultiplayerTimer(MULTIPLAYER_GAME_LENGTH);
     }
 
     private void addBonus() {
@@ -1083,7 +1088,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         protected void onPostExecute(Bitmap result) {
             new MultiplayerActivity().setImageView(imageView, result);
         }
-
 
         private Bitmap download_Image(String stringUrl) {
             try {
