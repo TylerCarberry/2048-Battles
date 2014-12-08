@@ -17,35 +17,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:gravity="center_horizontal"
         android:text="@string/turn"
-        android:textSize="25sp" />
+        android:textSize="27sp" />
 
     <TextView
         android:id="@+id/score_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/score"
-        android:textSize="25sp"
+        android:textSize="27sp"
         android:layout_below="@+id/turn_textview"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:id="@+id/opponent_score_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25sp"
-        android:layout_below="@+id/score_textview"
-        android:layout_alignParentLeft="true" />
-
-    <TextView
-        android:id="@+id/time_left_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/opponent_score_textview"
-        android:textSize="25sp"/>
-
-
+        android:layout_alignParentRight="true"
+        android:gravity="center_horizontal"/>
 
     <GridLayout
         android:id="@+id/grid_layout"
@@ -57,6 +43,34 @@
         android:rowOrderPreserved="true"
         android:useDefaultMargins="true" />
 
+    <TextView
+        android:id="@+id/powerups_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/grid_layout"
+        android:layout_alignRight="@+id/grid_layout"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="@string/powerups_remaining"
+        android:textSize="20sp" />
+
+    <ImageButton
+        android:id="@+id/powerup_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/powerup_button"
+        android:layout_toLeftOf="@id/powerups_textview"
+        android:layout_alignBottom="@id/powerups_textview" />
+
+    <TextView
+        android:id="@+id/undos_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/powerups_textview"
+        android:layout_toLeftOf="@+id/powerup_button"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:text="@string/undo_remaining"
+        android:textSize="20sp" />
+
     <ImageButton
         android:id="@+id/undo_button"
         android:layout_width="wrap_content"
@@ -66,8 +80,8 @@
         android:maxWidth="36dp"
         android:minHeight="36dp"
         android:minWidth="36dp"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/undos_textview"/>
+        android:layout_toLeftOf="@+id/undos_textview"
+        android:layout_alignBottom="@+id/powerup_button"/>
 
     <ImageButton
         android:id="@+id/restart_button"
@@ -85,34 +99,6 @@
         android:layout_above="@+id/grid_layout"
         android:layout_alignParentRight="true"
         android:text="Active Attacks"
-        android:textSize="20sp" />
-
-    <ImageButton
-        android:id="@+id/powerup_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/powerup_button"
-        android:layout_below="@+id/undo_button"
-        android:layout_alignLeft="@+id/undo_button" />
-
-    <TextView
-        android:id="@+id/powerups_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/powerup_button"
-        android:layout_toRightOf="@+id/powerup_button"
-        android:text="@string/powerups_remaining"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/undos_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/undo_button"
-        android:layout_alignBottom="@+id/undo_button"
-        android:layout_toLeftOf="@+id/restart_button"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:text="@string/undo_remaining"
         android:textSize="20sp" />
 
 </RelativeLayout>
