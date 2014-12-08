@@ -737,6 +737,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private void lost() {
+        if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
+            Toast.makeText(getActivity(), "You cannot move. Use a powerup to continue", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         // Prevent the notification from appearing multiple times
         if(gameLost)
             return;
@@ -895,10 +900,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     protected void showPowerupDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        if(! game.lost()) {
+        if((!game.lost()) || (game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)) {
             if (game.getPowerupsRemaining() == 0) {
-                builder.setTitle("No More Powerups")
-                        .setMessage("There are no powerups remaining");
+                builder.setTitle("No More Powerups").setMessage("There are no powerups remaining");
             }
             else {
                 builder.setTitle(getString(R.string.prompt_choose_powerup)).setItems(R.array.powerups, new DialogInterface.OnClickListener() {

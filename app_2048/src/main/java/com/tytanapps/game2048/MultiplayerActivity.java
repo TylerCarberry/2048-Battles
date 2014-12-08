@@ -1015,7 +1015,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     protected void sendMessage(String message, boolean reliable) {
 
         if(mRoomId == null) {
-            Toast.makeText(this, "You are not in a game", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "You are not in a game", Toast.LENGTH_SHORT).show();
             return;
         }
 
