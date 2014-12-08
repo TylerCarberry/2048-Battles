@@ -5,6 +5,8 @@ package com.tytanapps.game2048;
  * The main code of the game 2048
  */
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -848,6 +850,12 @@ public class Game implements java.io.Serializable
 	 */
 	public Location addRandomPiece()
 	{
+        Log.d("a", "Entering add random piece: " + turnNumber);
+        Log.d("a", "gameModeId: " + gameModeId);
+
+        if(gameModeId == GameModes.CRAZY_MODE_ID)
+            return addTitleModePiece();
+
         if(dynamicTileSpawning) {
             List<Integer> possibleTiles = getPossibleTilesToAdd();
             int random = (int) (Math.random() * possibleTiles.size());
@@ -1035,6 +1043,14 @@ public class Game implements java.io.Serializable
 		
 		return !(nextMove.equals(this));
 	}
+
+    private Location addTitleModePiece() {
+        Log.d("a", "Entering addTitleModePiece");
+
+        Location loc = GameModes.getTitleModeLocation(turnNumber);
+        board.set(loc, GameModes.getTitleValue(turnNumber));
+        return loc;
+    }
 	
 	/**
 	 * @return The score of the game

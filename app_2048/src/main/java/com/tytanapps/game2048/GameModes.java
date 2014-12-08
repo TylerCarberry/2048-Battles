@@ -1,5 +1,7 @@
 package com.tytanapps.game2048;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,7 @@ public class GameModes
 	public static final int CRAZY_MODE_ID = 12;
     public static final int CUSTOM_MODE_ID = 13;
     public static final int MULTIPLAYER_MODE_ID = 14;
+    public static final int TITLE_MODE_ID = 15;
 
     public static List<Integer> getListOfGameModesIds() {
         List<Integer> gameModes = new ArrayList<Integer>();
@@ -341,7 +344,11 @@ public class GameModes
 	// A 5x5 game with every other mode enabled (except zen)
 	public static Game crazyMode()
 	{
-		Game game = new Game(5,5);
+
+        return createTitleMode();
+
+		/*
+        Game game = new Game(5,5);
 		game.setMoveLimit(-1);
 		game.setUndoLimit(-1);
 		game.setPowerupLimit(5);
@@ -354,6 +361,8 @@ public class GameModes
 		game.setGameModeId(CRAZY_MODE_ID);
 
 		return game;
+
+		*/
 	}
 	
 	// Ghost Mode
@@ -381,4 +390,112 @@ public class GameModes
         game.setGameModeId(MULTIPLAYER_MODE_ID);
         return game;
     }
+
+
+    // Creates 2048
+    public static Game createTitleMode()
+    {
+        Log.d("a", "Entering createTitleMode");
+
+        Game game = new Game();
+        game.setUseItemInventory(false);
+        game.setPowerupLimit(-1);
+        game.setUndoLimit(-1);
+        game.setGameModeId(TITLE_MODE_ID);
+
+        Grid grid = new Grid(4,4);
+        grid.set(new Location(1,1), 2);
+        grid.set(new Location(2,2), 2);
+        game.setGrid(grid);
+
+        return game;
+    }
+
+    // Creates 2048
+    public static Location getTitleModeLocation(int turnNumber)
+    {
+        Log.d("a", "Entering getTitleModeLocation: " + turnNumber);
+
+        switch(turnNumber){
+            case 2:
+                return new Location(2,0);
+            case 3:
+                return new Location(1,2);
+            case 4:
+                return new Location(0,2);
+            case 5:
+                return new Location(3,0);
+            case 6:
+                return new Location(0,1);
+        }
+        return null;
+    }
+
+    // Creates 2048
+    public static int getTitleValue(int turnNumber)
+    {
+        Log.d("a", "Entering getTitleValue: " + turnNumber);
+
+        switch(turnNumber){
+            case 2:
+                return 4;
+            case 3:
+                return 2;
+            case 4:
+                return 2;
+            case 5:
+                return 2;
+            case 6:
+                return -22;
+        }
+        return -1;
+    }
+
+
+
+
+    /*
+
+
+    | | | | |
+    | |2| | |
+    | | |2| |
+    | | | | |
+
+    | |2|2| |
+    | | | | |
+    |4| | | |
+    | | | | |
+
+    | | | |4|
+    | | |2| |
+    | | | |4|
+    | | | | |
+
+    | | |2| |
+    | | | | |
+    | | | | |
+    | | |2|8|
+
+    | | |4|8|
+    | | | | |
+    | | | | |
+    |2| | | |
+
+    |2| |4|8|
+    | | | | |
+    | | | | |
+    | | | | |
+
+    |2|0|4|8|
+    | | | | |
+    | | | | |
+    | | | | |
+
+
+
+
+    */
+
+
 }

@@ -709,7 +709,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 // If I did not create an image for the tile,
                 // default to a question mark
                 default:
-                    return R.drawable.tile_question;
+                    return R.drawable.tile_0;
             }
         }
     }
