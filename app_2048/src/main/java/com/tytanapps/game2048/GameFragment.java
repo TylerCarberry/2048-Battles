@@ -773,6 +773,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)
             ((MultiplayerActivity) getActivity()).sendMessage("Your Opponent Has Lost", true);
+        else
+            ((GameActivity) getActivity()).displayInterstitial();
     }
 
     /**
