@@ -67,7 +67,7 @@ ADDED from AndroidManifest.xml:29:9
 		ADDED from AndroidManifest.xml:31:13
 	android:name
 		ADDED from AndroidManifest.xml:30:13
-activity#com.tytanapps.game2048.MainActivity
+activity#com.tytanapps.game2048.SelectModeActivity
 ADDED from AndroidManifest.xml:33:9
 	android:label
 		ADDED from AndroidManifest.xml:35:13

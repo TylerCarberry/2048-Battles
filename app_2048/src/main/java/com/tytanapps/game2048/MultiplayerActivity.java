@@ -532,7 +532,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     }
 
     private void switchToMainActivity() {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, SelectModeActivity.class));
     }
 
     // Handle the result of the "Select players UI" we launched when the user clicked the

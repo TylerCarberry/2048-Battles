@@ -21,7 +21,7 @@
 	specify an alternate screen name use an <screenName> element, with the name attribute
 	specifying the canonical name, and the value the alias to use instead.
     -->
-    <screenName name="com.tytanapps.game2048.MainActivity">Main Activity</screenName>
+    <screenName name="com.tytanapps.game2048.SelectModeActivity">Main Activity</screenName>
     <screenName name="com.tytanapps.game2048.GameActivity">Game Activity</screenName>
 
 </resources>

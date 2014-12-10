@@ -54,20 +54,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends BaseGameActivity implements View.OnClickListener, QuestUpdateListener
+public class SelectModeActivity extends BaseGameActivity implements View.OnClickListener, QuestUpdateListener
 {
-	private final static String LOG_TAG = MainActivity.class.getSimpleName();
+	private final static String LOG_TAG = SelectModeActivity.class.getSimpleName();
 
     private final static int SEND_REQUEST_CODE = 1001;
     private final static int SEND_GIFT_CODE = 1002;
     private final static int SHOW_INBOX = 1003;
 
-
-
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_select_mode);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -918,7 +916,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            final View rootView = inflater.inflate(R.layout.fragment_select_mode, container, false);
 
             View.OnTouchListener gamesOnClickListener = new View.OnTouchListener() {
                 @Override
@@ -928,7 +926,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
                     }
                     else if (event.getAction() == MotionEvent.ACTION_UP) {
                         view.setBackgroundColor(getResources().getColor(R.color.LightBlue));
-                        ((MainActivity)getActivity()).playGames(view);
+                        ((SelectModeActivity)getActivity()).playGames(view);
                     }
                     return true;
                 }
