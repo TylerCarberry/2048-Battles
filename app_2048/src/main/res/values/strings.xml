@@ -105,5 +105,7 @@
     <string name="title_activity_custom_icon">Customize Tile Icons</string>
     <string name="about">About</string>
     <string name="title_activity_multiplayer">MultiplayerActivity</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
