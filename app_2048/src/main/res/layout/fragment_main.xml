@@ -6,31 +6,100 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.tytanapps.game2048.MainActivity$PlaceholderFragment">
 
-    <ImageView
-        android:id="@+id/logo_imageview"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/ic_launcher"/>
+        android:layout_above="@+id/play_games_layout">
 
-    <ImageButton
-        android:id="@+id/single_player_imagebutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/single_player_icon"
-        android:onClick="onClick"
-        android:layout_above="@+id/multiplayer_imagebutton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+        <ImageView
+            android:id="@+id/logo_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ic_launcher"/>
 
-    <ImageButton
-        android:id="@+id/multiplayer_imagebutton"
-        android:layout_width="wrap_content"
+        <ImageButton
+            android:id="@+id/single_player_imagebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/single_player_icon"
+            android:onClick="onClick"
+            android:layout_above="@+id/multiplayer_imagebutton"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+        <ImageButton
+            android:id="@+id/multiplayer_imagebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/multiplayer_icon"
+            android:onClick="onClick"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/play_games_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/multiplayer_icon"
-        android:onClick="onClick"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="0dp">
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick" />
+        <Button
+            android:id="@+id/sign_out_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="@string/sign_out"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/achievements_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:maxHeight="50dp"
+            android:maxWidth="50dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/games_achievements_green"
+            android:background="@color/LightBlue" />
+
+        <ImageButton
+            android:id="@+id/leaderboards_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:maxHeight="50dp"
+            android:maxWidth="50dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/games_leaderboards_green"
+            android:background="@color/LightBlue" />
+
+        <ImageButton
+            android:id="@+id/quests_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:maxHeight="50dp"
+            android:maxWidth="50dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/games_quests_green"
+            android:background="@color/LightBlue" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>
+
+

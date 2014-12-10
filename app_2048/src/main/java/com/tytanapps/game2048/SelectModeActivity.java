@@ -128,7 +128,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
             addSavedGameView();
 
         addInventoryView();
-        addMultiplayerGameView();
+        //addMultiplayerGameView();
         createListView();
 		super.onStart();
 	}
@@ -296,6 +296,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
         listOfModes.addView(modeDetailLayout);
     }
 
+    /*
     private void addMultiplayerGameView() {
         int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
 
@@ -352,6 +353,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
         // Add the mode to the list
         listOfModes.addView(modeDetailLayout);
     }
+    */
 
     private void addInventoryView() {
         File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
