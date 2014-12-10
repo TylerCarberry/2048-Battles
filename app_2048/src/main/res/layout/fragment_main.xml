@@ -7,7 +7,7 @@
     android:paddingRight="0dp"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.app_2048.MainActivity$PlaceholderFragment"
-    android:background="@color/FloralWhite">
+    android:background="@color/LightBlue">
 
     <RelativeLayout
         android:id="@+id/relativeLayout1"
@@ -42,7 +42,6 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingBottom="@dimen/activity_vertical_margin"
-        android:background="@android:color/white"
         android:layout_marginTop="0dp">
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
@@ -67,7 +66,7 @@
             android:onClick="playGames"
             android:scaleType="fitCenter"
             android:src="@drawable/games_achievements_green"
-            android:background="@color/White" />
+            android:background="@color/LightBlue" />
         
         <ImageButton
             android:id="@+id/leaderboards_button"
@@ -79,7 +78,7 @@
             android:onClick="playGames"
             android:scaleType="fitCenter"
             android:src="@drawable/games_leaderboards_green"
-            android:background="@color/White" />
+            android:background="@color/LightBlue" />
         
         <ImageButton
             android:id="@+id/quests_button"
@@ -91,7 +90,7 @@
             android:onClick="playGames"
             android:scaleType="fitCenter"
             android:src="@drawable/games_quests_green"
-            android:background="@color/White" />
+            android:background="@color/LightBlue" />
 
     </LinearLayout>
 

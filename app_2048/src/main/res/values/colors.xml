@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="white">#FFFFFF</color>
-    <color name="yellow">#FFFF00</color>
-    <color name="fuchsia">#FF00FF</color>
-    <color name="red">#FF0000</color>
-    <color name="silver">#C0C0C0</color>
-    <color name="gray">#808080</color>
-    <color name="olive">#808000</color>
-    <color name="purple">#800080</color>
-    <color name="maroon">#800000</color>
-    <color name="aqua">#00FFFF</color>
-    <color name="lime">#00FF00</color>
-    <color name="teal">#008080</color>
-    <color name="green">#008000</color>
-    <color name="blue">#0000FF</color>
-    <color name="navy">#000080</color>
-    <color name="black">#000000</color>
-    <color name="bright_orange">#ffd402</color>
-	<color name="White">#FFFFFF</color>
+    <color name="White">#FFFFFF</color>
+    <color name="Yellow">#FFFF00</color>
+    <color name="Fuchsia">#FF00FF</color>
+    <color name="Red">#FF0000</color>
+    <color name="Silver">#C0C0C0</color>
+    <color name="Gray">#808080</color>
+    <color name="Olive">#808000</color>
+    <color name="Purple">#800080</color>
+    <color name="Maroon">#800000</color>
+    <color name="Aqua">#00FFFF</color>
+    <color name="Lime">#00FF00</color>
+    <color name="Teal">#008080</color>
+    <color name="Green">#008000</color>
+    <color name="LightBlue">#EAF7FC</color>
+    <color name="Blue">#0000FF</color>
+    <color name="Navy">#000080</color>
+    <color name="Black">#000000</color>
+    <color name="BrightOrange">#ffd402</color>
     <color name="Ivory">#FFFFF0</color>
     <color name="LightYellow">#FFFFE0</color>
-    <color name="Yellow">#FFFF00</color>
     <color name="Orange">#FFBB33</color>
     <color name="Dark_Orange">#FF8800</color>
     <color name="Snow">#FFFAFA</color>
@@ -48,9 +47,7 @@
     <color name="Tomato">#FF6347</color>
     <color name="OrangeRed">#FF4500</color>
     <color name="DeepPink">#FF1493</color>
-    <color name="Fuchsia">#FF00FF</color>
     <color name="Magenta">#FF00FF</color>
-    <color name="Red">#FF0000</color>
     <color name="OldLace">#FDF5E6</color>
     <color name="LightGoldenrodYellow">#FAFAD2</color>
     <color name="Linen">#FAF0E6</color>
@@ -70,7 +67,7 @@
     <color name="PaleGoldenrod">#EEE8AA</color>
     <color name="Violet">#EE82EE</color>
     <color name="DarkSalmon">#E9967A</color>
-    <color name="Lavender">#E6E6FA</color>
+    <color name="Lavender">#E0C4E4</color>
     <color name="LightCyan">#E0FFFF</color>
     <color name="BurlyWood">#DEB887</color>
     <color name="Plum">#DDA0DD</color>
@@ -86,7 +83,6 @@
     <color name="Peru">#CD853F</color>
     <color name="IndianRed">#CD5C5C</color>
     <color name="MediumVioletRed">#C71585</color>
-    <color name="Silver">#C0C0C0</color>
     <color name="DarkKhaki">#BDB76B</color>
     <color name="RosyBrown">#BC8F8F</color>
     <color name="MediumOrchid">#BA55D3</color>
@@ -96,7 +92,6 @@
     <color name="LightSteelBlue">#B0C4DE</color>
     <color name="PaleTurquoise">#AFEEEE</color>
     <color name="GreenYellow">#ADFF2F</color>
-    <color name="LightBlue">#ADD8E6</color>
     <color name="DarkGray">#A9A9A9</color>
     <color name="Brown">#A52A2A</color>
     <color name="Sienna">#A0522D</color>
@@ -113,10 +108,6 @@
     <color name="BlueViolet">#8A2BE2</color>
     <color name="LightSkyBlue">#87CEFA</color>
     <color name="SkyBlue">#87CEEB</color>
-    <color name="Gray">#808080</color>
-    <color name="Olive">#808000</color>
-    <color name="Purple">#800080</color>
-    <color name="Maroon">#800000</color>
     <color name="Aquamarine">#7FFFD4</color>
     <color name="Chartreuse">#7FFF00</color>
     <color name="LawnGreen">#7CFC00</color>
@@ -144,21 +135,13 @@
     <color name="LightSeaGreen">#20B2AA</color>
     <color name="DodgerBlue">#1E90FF</color>
     <color name="MidnightBlue">#191970</color>
-    <color name="Aqua">#00FFFF</color>
-    <color name="Cyan">#00FFFF</color>
     <color name="SpringGreen">#00FF7F</color>
-    <color name="Lime">#00FF00</color>
     <color name="MediumSpringGreen">#00FA9A</color>
     <color name="DarkTurquoise">#00CED1</color>
     <color name="DeepSkyBlue">#00BFFF</color>
     <color name="DarkCyan">#008B8B</color>
-    <color name="Teal">#008080</color>
-    <color name="Green">#008000</color>
     <color name="DarkGreen">#006400</color>
-    <color name="Blue">#0000FF</color>
     <color name="MediumBlue">#0000CD</color>
     <color name="DarkBlue">#00008B</color>
-    <color name="Navy">#000080</color>
-    <color name="Black">#000000</color>
 
 </resources>

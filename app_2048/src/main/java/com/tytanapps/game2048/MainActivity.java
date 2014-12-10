@@ -917,20 +917,17 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            final View rootView = inflater.inflate(R.layout.fragment_main, container,
-                    false);
-
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
             View.OnTouchListener gamesOnClickListener = new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        view.setBackgroundColor(getResources().getColor(R.color.Yellow));
+                        view.setBackgroundColor(getResources().getColor(R.color.PaleTurquoise));
                     }
                     else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        view.setBackgroundColor(getResources().getColor(R.color.white));
+                        view.setBackgroundColor(getResources().getColor(R.color.LightBlue));
                         ((MainActivity)getActivity()).playGames(view);
                     }
                     return true;
