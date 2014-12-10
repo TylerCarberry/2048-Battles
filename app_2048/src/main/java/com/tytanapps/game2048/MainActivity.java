@@ -314,24 +314,14 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         );
         modeDetailLayout.setGravity(Gravity.CENTER_HORIZONTAL);
 
-        // The mode name
-        TextView modeName = new TextView(this);
-        modeName.setText(getString(R.string.mode_multiplayer));
-        modeName.setTextSize(20);
-        modeName.setTypeface(null, Typeface.BOLD);
-        modeName.setLayoutParams(new LinearLayout.LayoutParams(
+
+        ImageButton multiplayerButton = new ImageButton(this);
+        multiplayerButton.setLayoutParams(new LinearLayout.LayoutParams(
                         LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         );
-        modeName.setPadding(0, (int) getResources().getDimension(R.dimen.activity_vertical_margin), 0, 0);
-        modeName.setGravity(Gravity.CENTER_HORIZONTAL);
-
-
-        // The button used to start the game
-        Button quickGameButton = new Button(this);
-        quickGameButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT));
-        quickGameButton.setText("Quick Game");
-        quickGameButton.setOnTouchListener(new View.OnTouchListener() {
+        multiplayerButton.setPadding(0, (int) getResources().getDimension(R.dimen.activity_vertical_margin), 0, (int) getResources().getDimension(R.dimen.activity_vertical_margin));
+        multiplayerButton.setBackgroundResource(R.drawable.multiplayer_icon);
+        multiplayerButton.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -345,54 +335,8 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
             }
         });
 
-        Button sendGiftButton = new Button(this);
-        sendGiftButton.setText("Send Gift");
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.prompt_choose_powerup)).setItems(R.array.gifts, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent ;
-                // The 'which' argument contains the index position
-                // of the selected item
-                switch (which) {
-                    // Powerup
-                    case 0:
-                        intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
-                                "p".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
-                                        R.drawable.powerup_button), "Powerup Desc");
-                        startActivityForResult(intent, SEND_GIFT_CODE);
-                        break;
-                    case 1:
-                        intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
-                                "u".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
-                                        R.drawable.undo_button), "Undo Desc");
-                        startActivityForResult(intent, SEND_GIFT_CODE);
-                        break;
-                }
-            }
-        });
-
-        sendGiftButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                builder.create().show();
-            }
-        });
-
-        Button showInboxButton = new Button(this);
-        showInboxButton.setText("Show Inbox");
-        showInboxButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(Games.Requests.getInboxIntent(getApiClient()), SHOW_INBOX);
-            }
-        });
-
         // Add each item of the mode to the layout
-        modeDetailLayout.addView(modeName);
-        modeDetailLayout.addView(quickGameButton);
-        modeDetailLayout.addView(sendGiftButton);
-        modeDetailLayout.addView(showInboxButton);
+        modeDetailLayout.addView(multiplayerButton);
 
 
         modeDetailLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -439,7 +383,7 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         // The mode name
         TextView modeName = new TextView(this);
         modeName.setText("Inventory");
-        modeName.setTextSize(20);
+        modeName.setTextSize(25);
         modeName.setTypeface(null, Typeface.BOLD);
         modeName.setLayoutParams(new LinearLayout.LayoutParams(
                         LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
@@ -462,13 +406,63 @@ public class MainActivity extends BaseGameActivity implements View.OnClickListen
         undoTextView.setLayoutParams(new LinearLayout.LayoutParams(
                         LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         );
-        undoTextView.setPadding(0, (int) getResources().getDimension(R.dimen.activity_vertical_margin), 0, 0);
+        undoTextView.setPadding(0, (int) getResources().getDimension(R.dimen.activity_vertical_margin),
+                0, (int) getResources().getDimension(R.dimen.activity_vertical_margin));
         undoTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        ImageButton sendGiftButton = new ImageButton(this);
+        sendGiftButton.setBackgroundResource(R.drawable.games_gifts_green);
+        sendGiftButton.setScaleType(ImageView.ScaleType.FIT_XY);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.prompt_choose_powerup)).setItems(R.array.gifts, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent ;
+                // The 'which' argument contains the index position
+                // of the selected item
+                switch (which) {
+                    // Powerup
+                    case 0:
+                        intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
+                                "p".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
+                                        R.drawable.powerup_button), "Powerup Desc");
+                        startActivityForResult(intent, SEND_GIFT_CODE);
+                        break;
+                    case 1:
+                        intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
+                                "u".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
+                                        R.drawable.undo_button), "Undo Desc");
+                        startActivityForResult(intent, SEND_GIFT_CODE);
+                        break;
+                }
+            }
+        });
+
+        sendGiftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builder.create().show();
+            }
+        });
+
+        Button showInboxButton = new Button(this);
+        showInboxButton.setText("Inbox");
+        showInboxButton.setLayoutParams(new LinearLayout.LayoutParams(
+                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        );
+        showInboxButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(Games.Requests.getInboxIntent(getApiClient()), SHOW_INBOX);
+            }
+        });
 
         // Add each item of the mode to the layout
         modeDetailLayout.addView(modeName);
         modeDetailLayout.addView(powerupTextView);
         modeDetailLayout.addView(undoTextView);
+        modeDetailLayout.addView(showInboxButton);
+        modeDetailLayout.addView(sendGiftButton);
 
         modeDetailLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
