@@ -10,10 +10,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
+
+import java.io.File;
+import java.io.IOException;
 
 
 public class MainActivity extends BaseGameActivity {
@@ -52,6 +56,30 @@ public class MainActivity extends BaseGameActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onStart() {
+        updateInventoryTextView();
+
+        super.onStart();
+    }
+
+    public void updateInventoryTextView() {
+        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+        GameData gameData = new GameData();
+        try {
+            gameData = (GameData) Save.load(gameDataFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        TextView inventoryTextView = (TextView) findViewById(R.id.inventory_textview);
+        inventoryTextView.setText("Inventory: " + gameData.getPowerupInventory() + " powerups, " + gameData.getUndoInventory() + " undos");
+
+
+    }
+
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.single_player_imagebutton:
@@ -61,6 +89,9 @@ public class MainActivity extends BaseGameActivity {
                 Intent multiplayerIntent = new Intent(getBaseContext(), MultiplayerActivity.class);
                 multiplayerIntent.putExtra("startMultiplayer", true);
                 startActivity(multiplayerIntent);
+                break;
+            case R.id.help_button:
+                startActivity(new Intent(this, InfoActivity.class));
                 break;
         }
     }

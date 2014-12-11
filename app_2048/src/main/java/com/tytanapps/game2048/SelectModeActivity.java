@@ -167,12 +167,6 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 
-		if (id == R.id.action_how_to_play) {
-			Intent showInfo = new Intent(this, InfoActivity.class);
-			startActivity(showInfo);
-			return true;
-		}
-
 		if (id == R.id.action_stats) {
 			Intent showInfo = new Intent(this, StatsActivity.class);
 			startActivity(showInfo);
