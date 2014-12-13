@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -149,7 +150,16 @@ public class MainActivity extends BaseGameActivity {
 
     @Override
     public void onSignInSucceeded() {
+        // The sign in button is not a normal button, so keep it as a default view
+        View signInButton = findViewById(R.id.sign_in_button);
 
+        // If the user has switched views before the sign in failed then the buttons
+        // are null and this will cause an error
+        if(signInButton != null)
+            signInButton.setVisibility(View.GONE);
+        Button signOutButton = (Button) findViewById(R.id.sign_out_button);
+        if(signOutButton != null)
+            signOutButton.setVisibility(View.VISIBLE);
     }
 
     /**

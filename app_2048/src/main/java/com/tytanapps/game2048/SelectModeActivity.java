@@ -815,7 +815,6 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
 
 	@Override
 	public void onSignInSucceeded() {
-
         // The sign in button is not a normal button, so keep it as a default view
         View signInButton = findViewById(R.id.sign_in_button);
 
