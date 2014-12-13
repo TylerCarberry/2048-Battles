@@ -75,10 +75,11 @@ public class MainActivity extends BaseGameActivity {
             e.printStackTrace();
         }
 
-        TextView inventoryTextView = (TextView) findViewById(R.id.inventory_textview);
-        inventoryTextView.setText("Inventory: " + gameData.getPowerupInventory() + " powerups, " + gameData.getUndoInventory() + " undos");
+        TextView undoTextView = (TextView) findViewById(R.id.undo_inventory);
+        undoTextView.setText(""+gameData.getUndoInventory());
 
-
+        TextView powerupTextView = (TextView) findViewById(R.id.powerup_inventory);
+        powerupTextView.setText(""+gameData.getPowerupInventory());
     }
 
     public void onClick(View view) {

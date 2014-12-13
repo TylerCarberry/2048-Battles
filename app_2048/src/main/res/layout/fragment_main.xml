@@ -72,7 +72,44 @@
             android:id="@+id/inventory_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"/>
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:textSize="25sp"
+            android:text="Inventory:"/>
+
+        <ImageView
+            android:id="@+id/undo_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/undo_button"
+            android:layout_toRightOf="@id/inventory_textview"
+            android:layout_alignBottom="@id/inventory_textview"/>
+
+        <TextView
+            android:id="@+id/undo_inventory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/undo_icon"
+            android:layout_alignBottom="@+id/undo_icon"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:textSize="20sp"/>
+
+        <ImageView
+            android:id="@+id/powerup_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/powerup_button"
+            android:layout_toRightOf="@id/undo_inventory"
+            android:layout_alignBottom="@+id/undo_icon"/>
+
+        <TextView
+            android:id="@+id/powerup_inventory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/powerup_icon"
+            android:layout_alignBottom="@+id/undo_icon"
+            android:textSize="20sp"/>
 
     </RelativeLayout>
 
