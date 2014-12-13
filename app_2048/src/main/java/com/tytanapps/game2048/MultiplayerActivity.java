@@ -532,7 +532,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     }
 
     private void switchToMainActivity() {
-        startActivity(new Intent(this, SelectModeActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     // Handle the result of the "Select players UI" we launched when the user clicked the
@@ -647,9 +647,11 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent e) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(mRoomId == null) {
+                return super.onKeyDown(keyCode, e);
+            }
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Leave Multiplayer Game?");
-            //builder.setMessage("Leave the multiplayer game?");
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -659,9 +661,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             });
             builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
+                public void onClick(DialogInterface dialog, int which) {}
             });
             builder.create().show();
             return true;

@@ -104,8 +104,7 @@
     <string name="start_game">Start Game</string>
     <string name="title_activity_custom_icon">Customize Tile Icons</string>
     <string name="about">About</string>
-    <string name="title_activity_multiplayer">MultiplayerActivity</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_multiplayer">Multiplayer</string>
+    <string name="title_activity_main">2048</string>
 
 </resources>
