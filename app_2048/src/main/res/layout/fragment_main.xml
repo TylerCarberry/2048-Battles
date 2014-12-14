@@ -59,13 +59,13 @@
             android:gravity="center_horizontal"
             android:text="Multiplayer" />
 
-        <Button
+        <ImageButton
             android:id="@+id/help_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:text="Help"
+            android:background="@drawable/help_button"
             android:onClick="onClick"/>
 
         <TextView
