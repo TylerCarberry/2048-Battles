@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -200,9 +199,12 @@ public class MainActivity extends BaseGameActivity {
         // are null and this will cause an error
         if(signInButton != null)
             signInButton.setVisibility(View.GONE);
+
+        /*
         Button signOutButton = (Button) findViewById(R.id.sign_out_button);
         if(signOutButton != null)
             signOutButton.setVisibility(View.VISIBLE);
+            */
     }
 
     /**
