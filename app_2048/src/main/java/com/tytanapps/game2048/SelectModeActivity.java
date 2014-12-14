@@ -127,7 +127,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
         if(isSavedGame())
             addSavedGameView();
 
-        addInventoryView();
+        //addInventoryView();
         //addMultiplayerGameView();
         createListView();
 		super.onStart();

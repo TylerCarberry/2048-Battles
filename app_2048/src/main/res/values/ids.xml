@@ -6,18 +6,32 @@
     <!-- git update-index (dashdash)assume-unchanged path/to/file.txt -->
     <!-- git update-index (dashdash)no-assume-unchanged path/to/file.txt -->
 
-    <string name="app_id">CENSORED</string>
-    <string name="tile_128_achievement">CENSORED</string>
-    <string name="tile_256_achievement">CENSORED</string>
-    <string name="tile_512_achievement">CENSORED</string>
-    <string name="tile_1024_achievement">CENSORED</string>
-    <string name="tile_2048_achievement">CENSORED</string>
-    <string name="leaderboard_classic_mode">CENSORED</string>
-    <string name="leaderboard_arcade_mode">CENSORED</string>
-    <string name="leaderboard_xmode">CENSORED</string>
-    <string name="leaderboard_corner_mode">CENSORED</string>
-    <string name="event_played_game">CENSORED</string>
-    <string name="event_total_moves">CENSORED</string>
-    <string name="event_total_score">CENSORED</string>
+    <string name="app_id" translatable="false">29817271258</string>
+    <string name="achievement_128_tile" translatable="false">CggI2uf9iW8QAhAB</string>
+    <string name="achievement_256_tile" translatable="false">CggI2uf9iW8QAhAC</string>
+    <string name="achievement_512_tile" translatable="false">CggI2uf9iW8QAhAD</string>
+    <string name="achievement_1024_tile" translatable="false">CggI2uf9iW8QAhAE</string>
+    <string name="achievement_2048_tile" translatable="false">CggI2uf9iW8QAhAF</string>
+    <string name="achievement_i_dont_want_any_help" translatable="false">CggI2uf9iW8QAhAU</string>
+    <string name="achievement_brag_to_your_friends" translatable="false">CggI2uf9iW8QAhAV</string>
+    <string name="achievement_worst_player_ever" translatable="false">CggI2uf9iW8QAhAW</string>
+    <string name="achievement_long_time_player" translatable="false">CggI2uf9iW8QAhAX</string>
+    <string name="leaderboard_classic_mode" translatable="false">CggI2uf9iW8QAhAP</string>
+    <string name="leaderboard_arcade_mode" translatable="false">CggI2uf9iW8QAhAO</string>
+    <string name="leaderboard_xmode" translatable="false">CggI2uf9iW8QAhAS</string>
+    <string name="leaderboard_corner_mode" translatable="false">CggI2uf9iW8QAhAT</string>
+    <string name="leaderboard_rush_mode" translatable="false">CggI2uf9iW8QAhAY</string>
+    <string name="event_games_lost">CggI2uf9iW8QAhAH</string>
+    <string name="event_moves">CggI2uf9iW8QAhAJ</string>
+    <string name="event_score">CggI2uf9iW8QAhAK</string>
+    <string name="event_undos_used">CggI2uf9iW8QAhAZ</string>
+    <string name="event_powerups_used">CggI2uf9iW8QAhAa</string>
+    <string name="event_multiplayer_games_played">CggI2uf9iW8QAhAb</string>
+    <string name="event_time_played">CggI2uf9iW8QAhAc</string>
+    <string name="event_tiles_combined">CggI2uf9iW8QAhAd</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-7263631302591177/4002122847</string>
+    <string name="interstitial_ad_unit_id" translatable="false">ca-app-pub-7263631302591177/4464624446</string>
+    <string name="test_device_id" translatable="false">B33B124F3A63B9BF3A724BF18B94382C</string>
+    <string name="android_backup_api_key" translatable="false">AEdPqrEAAAAIgaJ6Ma95NGNAxjNDH-8tNvHvpzA3Kc3WzQ_5eQ</string>
 
 </resources>

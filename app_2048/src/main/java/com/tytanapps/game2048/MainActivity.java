@@ -1,7 +1,10 @@
 package com.tytanapps.game2048;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.request.GameRequest;
+import com.google.android.gms.games.request.Requests;
 import com.google.example.games.basegameutils.BaseGameActivity;
 
 import java.io.File;
@@ -22,6 +27,10 @@ import java.io.IOException;
 
 
 public class MainActivity extends BaseGameActivity {
+
+    private final static int SEND_REQUEST_CODE = 1001;
+    private final static int SEND_GIFT_CODE = 1002;
+    private final static int SHOW_INBOX = 1003;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +123,12 @@ public class MainActivity extends BaseGameActivity {
                 case R.id.leaderboards_button:
                     startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 0);
                     break;
+                case R.id.gifts_button:
+                    sendGift();
+                    break;
+                case R.id.inbox_button:
+                    startActivityForResult(Games.Requests.getInboxIntent(getApiClient()), SHOW_INBOX);
+                    break;
             }
         }
         else {
@@ -142,6 +157,33 @@ public class MainActivity extends BaseGameActivity {
 
         // 0 is an arbitrary integer
         startActivityForResult(questsIntent, 0);
+    }
+
+    protected void sendGift() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.prompt_choose_powerup)).setItems(R.array.gifts, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent ;
+                // The 'which' argument contains the index position
+                // of the selected item
+                switch (which) {
+                    // Powerup
+                    case 0:
+                        intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
+                                "p".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
+                                        R.drawable.powerup_button), "Powerup Desc");
+                        startActivityForResult(intent, SEND_GIFT_CODE);
+                        break;
+                    case 1:
+                        intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
+                                "u".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
+                                        R.drawable.undo_button), "Undo Desc");
+                        startActivityForResult(intent, SEND_GIFT_CODE);
+                        break;
+                }
+            }
+        });
+        builder.create().show();
     }
 
     @Override
@@ -193,12 +235,13 @@ public class MainActivity extends BaseGameActivity {
 
             ImageButton achievementsButton = (ImageButton) rootView.findViewById(R.id.achievements_button);
             ImageButton leaderboardsButton = (ImageButton) rootView.findViewById(R.id.leaderboards_button);
+            ImageButton giftsButton = (ImageButton) rootView.findViewById(R.id.gifts_button);
             ImageButton questsButton = (ImageButton) rootView.findViewById(R.id.quests_button);
 
             achievementsButton.setOnTouchListener(gamesOnClickListener);
             leaderboardsButton.setOnTouchListener(gamesOnClickListener);
+            giftsButton.setOnTouchListener(gamesOnClickListener);
             questsButton.setOnTouchListener(gamesOnClickListener);
-
 
 
             return rootView;

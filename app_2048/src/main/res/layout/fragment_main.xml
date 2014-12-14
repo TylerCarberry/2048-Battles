@@ -68,6 +68,15 @@
             android:background="@drawable/help_button"
             android:onClick="onClick"/>
 
+        <Button
+            android:id="@+id/inbox_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/help_button"
+            android:layout_alignParentRight="true"
+            android:onClick="playGames"
+            android:text="Inbox"/>
+
         <TextView
             android:id="@+id/inventory_textview"
             android:layout_width="wrap_content"
@@ -157,6 +166,17 @@
             android:maxWidth="50dp"
             android:scaleType="fitCenter"
             android:src="@drawable/games_leaderboards_green"
+            android:background="@color/LightBlue" />
+
+        <ImageButton
+            android:id="@+id/gifts_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:maxHeight="50dp"
+            android:maxWidth="50dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/games_gifts_green"
             android:background="@color/LightBlue" />
 
         <ImageButton
