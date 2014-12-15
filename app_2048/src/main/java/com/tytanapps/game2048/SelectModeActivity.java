@@ -31,9 +31,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesActivityResultCodes;
@@ -42,7 +39,6 @@ import com.google.android.gms.games.quest.QuestUpdateListener;
 import com.google.android.gms.games.request.GameRequest;
 import com.google.android.gms.games.request.Requests;
 import com.google.example.games.basegameutils.BaseGameActivity;
-import com.tytanapps.game2048.MainApplication.TrackerName;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -95,8 +91,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
         getApiClient().registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
             @Override
             public void onConnected(Bundle bundle) {
-                ArrayList <GameRequest> gameRequests
-                        = Games.Requests.getGameRequestsFromBundle(bundle);
+                ArrayList <GameRequest> gameRequests = Games.Requests.getGameRequestsFromBundle(bundle);
                 handleInboxResult(gameRequests);
             }
 
@@ -105,38 +100,21 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
 
             }
         });
-
-	    // Get a Tracker (should auto-report)
-	    ((MainApplication) getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
-	    // Get tracker.
-	    Tracker t = ((MainApplication) getApplication()).getTracker(
-	    		TrackerName.APP_TRACKER);
-	    // Set screen name.
-	    t.setScreenName("Main Activity");
-	    // Send a screen view.
-	    t.send(new HitBuilders.AppViewBuilder().build());
 	}
 	
 	@Override
 	protected void onStart() {
-		// Get an Analytics tracker to report app starts & uncaught exceptions etc.
-		GoogleAnalytics.getInstance(this).reportActivityStart(this);
-
-        ((LinearLayout) findViewById(R.id.modeLinearLayout)).removeAllViewsInLayout();
+		((LinearLayout) findViewById(R.id.modeLinearLayout)).removeAllViewsInLayout();
 
         if(isSavedGame())
             addSavedGameView();
 
-        //addInventoryView();
-        //addMultiplayerGameView();
         createListView();
 		super.onStart();
 	}
 	
 	@Override
 	protected void onStop() {
-		// Stop the analytics tracking
-		GoogleAnalytics.getInstance(this).reportActivityStop(this);
 		super.onStop();
 	}
 	

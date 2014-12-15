@@ -8,11 +8,8 @@ import android.widget.ShareActionProvider;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
-import com.tytanapps.game2048.MainApplication.TrackerName;
 
 public class GameActivity extends BaseGameActivity {
 	
@@ -40,13 +37,6 @@ public class GameActivity extends BaseGameActivity {
         if (mHelper == null) {
             getGameHelper();
         }
-        //mHelper.setup(this);
-
-		// Google Analytics
-		((MainApplication) getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
-		Tracker t = ((MainApplication) getApplication()).getTracker(TrackerName.APP_TRACKER);
-		t.setScreenName("Game Activity");
-		t.send(new HitBuilders.AppViewBuilder().build());
 
         // Create the interstitial ad.
         interstitial = new InterstitialAd(this);
@@ -137,22 +127,17 @@ public class GameActivity extends BaseGameActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-
-    // Invoke displayInterstitial() when you are ready to display an interstitial.
+    /**
+     * Display the full screen interstitial ad
+     */
     public void displayInterstitial() {
         if (interstitial.isLoaded()) {
             interstitial.show();
         }
     }
 
-
     @Override
-    public void onSignInFailed() {
-
-    }
-
+    public void onSignInFailed() {}
     @Override
-    public void onSignInSucceeded() {
-
-    }
+    public void onSignInSucceeded() {}
 }
