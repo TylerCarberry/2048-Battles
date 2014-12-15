@@ -912,29 +912,6 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.fragment_select_mode, container, false);
-
-            View.OnTouchListener gamesOnClickListener = new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        view.setBackgroundColor(getResources().getColor(R.color.PaleTurquoise));
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        view.setBackgroundColor(getResources().getColor(R.color.LightBlue));
-                        ((SelectModeActivity)getActivity()).playGames(view);
-                    }
-                    return true;
-                }
-            };
-
-            ImageButton achievementsButton = (ImageButton) rootView.findViewById(R.id.achievements_button);
-            ImageButton leaderboardsButton = (ImageButton) rootView.findViewById(R.id.leaderboards_button);
-            ImageButton questsButton = (ImageButton) rootView.findViewById(R.id.quests_button);
-
-            achievementsButton.setOnTouchListener(gamesOnClickListener);
-            leaderboardsButton.setOnTouchListener(gamesOnClickListener);
-            questsButton.setOnTouchListener(gamesOnClickListener);
-
             return rootView;
         }
     }
