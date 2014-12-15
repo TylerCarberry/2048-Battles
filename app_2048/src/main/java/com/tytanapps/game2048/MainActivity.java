@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +17,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.quest.Quests;
 import com.google.android.gms.games.request.GameRequest;
 import com.google.android.gms.games.request.Requests;
 import com.google.example.games.basegameutils.BaseGameActivity;
@@ -69,7 +73,28 @@ public class MainActivity extends BaseGameActivity {
     public void onStart() {
         updateInventoryTextView();
 
+        PendingResult<Quests.LoadQuestsResult> s = Games.Quests.load(getApiClient(),
+                new int[]{Games.Quests.SELECT_OPEN, Quests.SELECT_ACCEPTED},
+                Quests.SORT_ORDER_ENDING_SOON_FIRST, false);
+
+        s.setResultCallback(new ResultCallback<Quests.LoadQuestsResult>() {
+            @Override
+            public void onResult(Quests.LoadQuestsResult loadQuestsResult) {
+                if(loadQuestsResult.getQuests().getCount() > 0) {
+                    Log.d("a", "Active Quest");
+                    questIsActive();
+                }
+                else
+                    Log.d("a", "No Active Quest");
+            }
+        });
+
         super.onStart();
+    }
+
+    public void questIsActive() {
+        ImageButton questsButton = (ImageButton) findViewById(R.id.quests_button);
+        questsButton.setImageResource(R.drawable.games_quests_green);
     }
 
     public void updateInventoryTextView() {
