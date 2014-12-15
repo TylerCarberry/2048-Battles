@@ -1,18 +1,19 @@
 package com.tytanapps.game2048;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.quest.Quests;
 import com.google.android.gms.games.request.GameRequest;
 import com.google.android.gms.games.request.Requests;
@@ -27,6 +29,7 @@ import com.google.example.games.basegameutils.BaseGameActivity;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class MainActivity extends BaseGameActivity {
@@ -72,22 +75,8 @@ public class MainActivity extends BaseGameActivity {
     @Override
     public void onStart() {
         updateInventoryTextView();
-
-        PendingResult<Quests.LoadQuestsResult> s = Games.Quests.load(getApiClient(),
-                new int[]{Games.Quests.SELECT_OPEN, Quests.SELECT_ACCEPTED},
-                Quests.SORT_ORDER_ENDING_SOON_FIRST, false);
-
-        s.setResultCallback(new ResultCallback<Quests.LoadQuestsResult>() {
-            @Override
-            public void onResult(Quests.LoadQuestsResult loadQuestsResult) {
-                if(loadQuestsResult.getQuests().getCount() > 0) {
-                    Log.d("a", "Active Quest");
-                    questIsActive();
-                }
-                else
-                    Log.d("a", "No Active Quest");
-            }
-        });
+        checkIfQuestActive();
+        checkPendingPlayGifts();
 
         super.onStart();
     }
@@ -210,6 +199,34 @@ public class MainActivity extends BaseGameActivity {
         builder.create().show();
     }
 
+    protected void checkIfQuestActive() {
+        PendingResult<Quests.LoadQuestsResult> s = Games.Quests.load(getApiClient(),
+                new int[]{Games.Quests.SELECT_OPEN, Quests.SELECT_ACCEPTED},
+                Quests.SORT_ORDER_ENDING_SOON_FIRST, false);
+
+        s.setResultCallback(new ResultCallback<Quests.LoadQuestsResult>() {
+            @Override
+            public void onResult(Quests.LoadQuestsResult loadQuestsResult) {
+                if(loadQuestsResult.getQuests().getCount() > 0)
+                    questIsActive();
+            }
+        });
+    }
+
+    protected void checkPendingPlayGifts() {
+        PendingResult<Requests.LoadRequestsResult> pendingGifts = Games.Requests.loadRequests(getApiClient(), Requests.REQUEST_DIRECTION_INBOUND,
+                GameRequest.TYPE_GIFT, Requests.SORT_ORDER_EXPIRING_SOON_FIRST);
+        pendingGifts.setResultCallback(new ResultCallback<Requests.LoadRequestsResult>() {
+            @Override
+            public void onResult(Requests.LoadRequestsResult loadRequestsResult) {
+                if(loadRequestsResult.getRequests(GameRequest.TYPE_GIFT).getCount() > 0) {
+                    Button inboxButton = (Button) findViewById(R.id.inbox_button);
+                    inboxButton.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
     @Override
     public void onSignInFailed() {
 
@@ -230,6 +247,76 @@ public class MainActivity extends BaseGameActivity {
         if(signOutButton != null)
             signOutButton.setVisibility(View.VISIBLE);
             */
+    }
+
+    private void handleInboxResult(ArrayList<GameRequest> gameRequests) {
+        for(GameRequest request : gameRequests) {
+            String message = request.getSender().getDisplayName() + " sent you ";
+            if(new String(request.getData()).equals("p")) {
+                message += "a powerup";
+                try {
+                    incrementPowerupInventory(1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                message += "an undo";
+                try {
+                    incrementUndoInventory(1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            Games.Requests.acceptRequest(getApiClient(), request.getRequestId());
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void incrementPowerupInventory(int amount) throws IOException, ClassNotFoundException {
+        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+        GameData gameData = (GameData) Save.load(gameDataFile);
+        gameData.incrementPowerupInventory(amount);
+        Save.save(gameData, gameDataFile);
+    }
+
+    private void incrementUndoInventory(int amount) throws IOException, ClassNotFoundException {
+        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+        GameData gameData = (GameData) Save.load(gameDataFile);
+        gameData.incrementUndoInventory(amount);
+        Save.save(gameData, gameDataFile);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SEND_REQUEST_CODE:
+                if (resultCode == GamesActivityResultCodes.RESULT_SEND_REQUEST_FAILED) {
+                    Toast.makeText(this, "FAILED TO SEND REQUEST!", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case SEND_GIFT_CODE:
+                if (resultCode == GamesActivityResultCodes.RESULT_SEND_REQUEST_FAILED) {
+                    Toast.makeText(this, "FAILED TO SEND GIFT!", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case SHOW_INBOX:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    handleInboxResult(Games.Requests
+                            .getGameRequestsFromInboxResponse(data));
+                } else {
+                    // handle failure to process inbox result
+                    if(resultCode != Activity.RESULT_CANCELED)
+                        Toast.makeText(this, "Unable to claim reward", Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
