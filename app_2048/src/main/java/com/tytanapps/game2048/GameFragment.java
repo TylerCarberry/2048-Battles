@@ -777,7 +777,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
 
         if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)
-            ((MultiplayerActivity) getActivity()).sendMessage("Your Opponent Has Lost", true);
+            ((MultiplayerActivity) getActivity()).sendMessage(getString(R.string.opponent_lost), true);
         else
             ((GameActivity) getActivity()).displayInterstitial();
     }
@@ -855,9 +855,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
             for (int i=0; i < eb.getCount(); i++) {
                 Event e = eb.get(i);
-
-                //Log.d(LOG_TAG, ""+e.toString());
-
                 Toast.makeText(getActivity(), "" + e.getValue(), Toast.LENGTH_SHORT).show();
             }
             eb.close();
@@ -905,7 +902,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 builder.setTitle("No More Powerups").setMessage("There are no powerups remaining");
             }
             else {
-                builder.setTitle(getString(R.string.prompt_choose_powerup)).setItems(R.array.powerups, new DialogInterface.OnClickListener() {
+                builder.setTitle(getString(R.string.prompt_choose_gift)).setItems(R.array.powerups, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Games.Events.increment(getApiClient(), getString(R.string.event_powerups_used), 1);
                         // The 'which' argument contains the index position
@@ -1160,7 +1157,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 XTileAttack();
             else {
                 shuffleGame();
-                Toast.makeText(getActivity(), "Random Shuffle", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.random_shuffle), Toast.LENGTH_SHORT).show();
             }
 
             updateTextviews();
@@ -1169,12 +1166,12 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             if(rand < 0.75) {
                 game.incrementUndosRemaining();
                 setUndoButtonEnabled(true);
-                item = "Undo";
+                item = getString(R.string.undo);
             }
             else {
                 game.incrementPowerupsRemaining();
                 setPowerupButtonEnabled(true);
-                item = "Powerup";
+                item = getString(R.string.powerup);
             }
 
             Toast.makeText(getActivity(), "Bonus! +1 " + item, Toast.LENGTH_SHORT).show();

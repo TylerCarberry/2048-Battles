@@ -3,11 +3,9 @@ package com.tytanapps.game2048;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -22,7 +20,6 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Space;
@@ -37,7 +34,6 @@ import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.quest.Quest;
 import com.google.android.gms.games.quest.QuestUpdateListener;
 import com.google.android.gms.games.request.GameRequest;
-import com.google.android.gms.games.request.Requests;
 import com.google.example.games.basegameutils.BaseGameActivity;
 
 import java.io.File;
@@ -68,9 +64,6 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
         // The number of days since the epoch
         long lastDatePlayed = prefs.getLong("lastDatePlayed", -1);
         long currentDate = TimeUnit.MILLISECONDS.toDays(Calendar.getInstance().getTimeInMillis());
-
-        //Toast.makeText(this, "last date played " +lastDatePlayed, Toast.LENGTH_LONG).show();
-        //Toast.makeText(this, "current date " +currentDate, Toast.LENGTH_LONG).show();
 
         if (currentDate > lastDatePlayed) {
             addWelcomeBackBonus();
@@ -109,7 +102,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
         if(isSavedGame())
             addSavedGameView();
 
-        createListView();
+        createListOfModes();
 		super.onStart();
 	}
 	
@@ -162,7 +155,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
         }
 
         if (id == R.id.action_about) {
-            Toast.makeText(this, "Made By Tyler Carberry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.intro_creator_name), Toast.LENGTH_SHORT).show();
             return true;
         }
 
@@ -268,194 +261,8 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
         listOfModes.addView(modeDetailLayout);
     }
 
-    /*
-    private void addMultiplayerGameView() {
+    private void createListOfModes() {
         int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
-
-        LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
-
-        // The layout the contains all info for that mode
-        LinearLayout modeDetailLayout = new LinearLayout(this);
-        modeDetailLayout.setPadding((int) getResources().getDimension(R.dimen.activity_horizontal_margin),
-                0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin), 0);
-
-        modeDetailLayout.setOrientation(LinearLayout.VERTICAL);
-        modeDetailLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                        width / 2, LayoutParams.WRAP_CONTENT)
-        );
-        modeDetailLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-
-
-        ImageButton multiplayerButton = new ImageButton(this);
-        multiplayerButton.setLayoutParams(new LinearLayout.LayoutParams(
-                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-        );
-        multiplayerButton.setPadding(0, (int) getResources().getDimension(R.dimen.activity_vertical_margin), 0, (int) getResources().getDimension(R.dimen.activity_vertical_margin));
-        multiplayerButton.setBackgroundResource(R.drawable.multiplayer_icon);
-        multiplayerButton.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    Intent multiplayerIntent = new Intent(getBaseContext(), MultiplayerActivity.class);
-                    multiplayerIntent.putExtra("startMultiplayer", true);
-                    startActivity(multiplayerIntent);
-                    return true;
-                }
-                return true;
-            }
-        });
-
-        // Add each item of the mode to the layout
-        modeDetailLayout.addView(multiplayerButton);
-
-
-        modeDetailLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    Intent multiplayerIntent = new Intent(getBaseContext(), MultiplayerActivity.class);
-                    multiplayerIntent.putExtra("startMultiplayer", true);
-                    startActivity(multiplayerIntent);
-                }
-                return true;
-            }
-        });
-
-        // Add the mode to the list
-        listOfModes.addView(modeDetailLayout);
-    }
-    */
-
-    private void addInventoryView() {
-        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
-        GameData gameData = new GameData();
-        try {
-            gameData = (GameData) Save.load(gameDataFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
-
-        LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
-
-        // The layout the contains all info for that mode
-        LinearLayout modeDetailLayout = new LinearLayout(this);
-        modeDetailLayout.setPadding((int) getResources().getDimension(R.dimen.activity_horizontal_margin),
-                0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin), 0);
-
-        modeDetailLayout.setOrientation(LinearLayout.VERTICAL);
-        modeDetailLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                        width / 2, LayoutParams.WRAP_CONTENT));
-        modeDetailLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        // The mode name
-        TextView modeName = new TextView(this);
-        modeName.setText("Inventory");
-        modeName.setTextSize(25);
-        modeName.setTypeface(null, Typeface.BOLD);
-        modeName.setLayoutParams(new LinearLayout.LayoutParams(
-                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        modeName.setPadding(0, (int) getResources().getDimension(R.dimen.activity_vertical_margin), 0, 0);
-        modeName.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        // Powerups
-        TextView powerupTextView = new TextView(this);
-        powerupTextView.setText("Powerups: " + gameData.getPowerupInventory());
-        powerupTextView.setTextSize(20);
-        powerupTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        powerupTextView.setPadding(0, (int) getResources().getDimension(R.dimen.activity_vertical_margin), 0, 0);
-        powerupTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        // Undos
-        TextView undoTextView = new TextView(this);
-        undoTextView.setText("Undos: " + gameData.getUndoInventory());
-        undoTextView.setTextSize(20);
-        undoTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-        );
-        undoTextView.setPadding(0, (int) getResources().getDimension(R.dimen.activity_vertical_margin),
-                0, (int) getResources().getDimension(R.dimen.activity_vertical_margin));
-        undoTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        ImageButton sendGiftButton = new ImageButton(this);
-        sendGiftButton.setBackgroundResource(R.drawable.games_gifts_green);
-        sendGiftButton.setScaleType(ImageView.ScaleType.FIT_XY);
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.prompt_choose_powerup)).setItems(R.array.gifts, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent ;
-                // The 'which' argument contains the index position
-                // of the selected item
-                switch (which) {
-                    // Powerup
-                    case 0:
-                        intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
-                                "p".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
-                                        R.drawable.powerup_button), "Powerup Desc");
-                        startActivityForResult(intent, SEND_GIFT_CODE);
-                        break;
-                    case 1:
-                        intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
-                                "u".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
-                                        R.drawable.undo_button), "Undo Desc");
-                        startActivityForResult(intent, SEND_GIFT_CODE);
-                        break;
-                }
-            }
-        });
-
-        sendGiftButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                builder.create().show();
-            }
-        });
-
-        Button showInboxButton = new Button(this);
-        showInboxButton.setText("Inbox");
-        showInboxButton.setLayoutParams(new LinearLayout.LayoutParams(
-                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-        );
-        showInboxButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(Games.Requests.getInboxIntent(getApiClient()), SHOW_INBOX);
-            }
-        });
-
-        // Add each item of the mode to the layout
-        modeDetailLayout.addView(modeName);
-        modeDetailLayout.addView(powerupTextView);
-        modeDetailLayout.addView(undoTextView);
-        modeDetailLayout.addView(showInboxButton);
-        modeDetailLayout.addView(sendGiftButton);
-
-        modeDetailLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    Intent multiplayerIntent = new Intent(getBaseContext(), MultiplayerActivity.class);
-                    multiplayerIntent.putExtra("startMultiplayer", true);
-                    startActivity(multiplayerIntent);
-                }
-                return true;
-            }
-        });
-
-        // Add the mode to the list
-        listOfModes.addView(modeDetailLayout);
-    }
-
-    private void createListView() {
-
-        int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
-
         LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
 
         GameData gameStats = new GameData();
@@ -480,13 +287,11 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
         }
 
         Space marginStart = new Space(this);
-        marginStart.setLayoutParams(new LinearLayout.LayoutParams(
-                        (int) getResources().getDimension(R.dimen.activity_horizontal_margin), LayoutParams.MATCH_PARENT)
-        );
+        marginStart.setLayoutParams(new LinearLayout.LayoutParams((int) getResources()
+                .getDimension(R.dimen.activity_horizontal_margin), LayoutParams.MATCH_PARENT));
 
         // Loop through every game mode and add it to the list
         for(int id : GameModes.getListOfGameModesIds()) {
-
             // The layout the contains all info for that mode
             LinearLayout modeDetailLayout = new LinearLayout(this);
             modeDetailLayout.setOrientation(LinearLayout.VERTICAL);
@@ -569,9 +374,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
             modeDetailLayout.addView(startGameButton);
 
             // Add the mode to the list
-            //listOfModes.addView(marginStart);
             listOfModes.addView(modeDetailLayout);
-            //listOfModes.addView(marginEnd);
         }
     }
 
@@ -601,7 +404,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
     private void addWelcomeBackBonus() {
         // Create a new dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Welcome Back");
+        builder.setTitle(getString(R.string.welcome_back));
 
         // Add either 1 or 2 bonus items
         int bonusAmount = (int) (Math.random() * 2 + 1);
@@ -621,7 +424,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Unable to add random bonus", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.error_claim_bonus), Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, "Unable to access save file to add random bonus", Toast.LENGTH_LONG).show();
@@ -699,9 +502,6 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
         GameData gameData = (GameData) Save.load(gameDataFile);
         gameData.incrementPowerupInventory(amount);
         Save.save(gameData, gameDataFile);
-
-        //Toast.makeText(this, "Your powerups: " + gameData.getPowerupInventory(), Toast.LENGTH_LONG).show();
-        //Toast.makeText(this, "Your undos: " + gameData.getUndoInventory(), Toast.LENGTH_LONG).show();
     }
 
     private void incrementUndoInventory(int amount) throws IOException, ClassNotFoundException {
@@ -716,12 +516,12 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
         switch (requestCode) {
             case SEND_REQUEST_CODE:
                 if (resultCode == GamesActivityResultCodes.RESULT_SEND_REQUEST_FAILED) {
-                    Toast.makeText(this, "FAILED TO SEND REQUEST!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.error_send_request), Toast.LENGTH_LONG).show();
                 }
                 break;
             case SEND_GIFT_CODE:
                 if (resultCode == GamesActivityResultCodes.RESULT_SEND_REQUEST_FAILED) {
-                    Toast.makeText(this, "FAILED TO SEND GIFT!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.error_send_gift), Toast.LENGTH_LONG).show();
                 }
                 break;
             case SHOW_INBOX:
@@ -731,7 +531,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
                 } else {
                     // handle failure to process inbox result
                     if(resultCode != Activity.RESULT_CANCELED)
-                        Toast.makeText(this, "Unable to claim reward", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, getString(R.string.error_claim_gift), Toast.LENGTH_LONG).show();
                 }
                 break;
         }
@@ -763,13 +563,9 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
             }
 
             Games.Requests.acceptRequest(getApiClient(), request.getRequestId());
-
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-
         }
-
     }
-
 
     /**
 	 *  Sign in has failed. Show the user the sign-in button.
@@ -788,7 +584,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
 	    if(signOutButton != null)
 	    	signOutButton.setVisibility(View.GONE);
 	    
-	    Log.d(LOG_TAG, "login failed");
+	    Log.d(LOG_TAG, getString(R.string.error_login));
 	}
 
 	@Override
@@ -827,9 +623,8 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
 	@Override
 	public void onQuestCompleted(Quest quest) {
 
-        Toast.makeText(this, "Quest Completed", Toast.LENGTH_SHORT).show();
-		Log.d(LOG_TAG, "in onQuestCompleted");
-		
+        Toast.makeText(this, getString(R.string.quest_completed), Toast.LENGTH_SHORT).show();
+
 	    // Claim the quest reward.
 	    Games.Quests.claim(this.getApiClient(), quest.getQuestId(),
                 quest.getCurrentMilestone().getMilestoneId());

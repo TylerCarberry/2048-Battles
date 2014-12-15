@@ -60,6 +60,7 @@
     <string name="turn">Turn</string>
     <string name="score">Score</string>
     <string name="undo">Undo</string>
+    <string name="powerup">Powerup</string>
     <string name="shuffle">Shuffle</string>
     <string name="undo_remaining">Undos Left</string>
     <string name="move_remaining">Moves Left</string>
@@ -88,7 +89,7 @@
     <string name="new_low_score">New Lowest Score: %1$d</string>
     <string name="final_score">Final Score: %1$d</string>
     <string name="share_intent_message">I am playing 2048. My high score is %1$d. Try to beat me!</string>
-    <string name="prompt_choose_powerup">Choose Powerup</string>
+    <string name="prompt_choose_gift">Choose Gift</string>
     <string name="not_signed_in_error">You must be signed in to access Play Games</string>
     <string name="continue_game">Continue Game</string>
     <string name="share">Share</string>
@@ -106,5 +107,16 @@
     <string name="about">About</string>
     <string name="title_activity_multiplayer">Multiplayer</string>
     <string name="title_activity_main">2048</string>
+    <string name="powerup_gift_received">%1$s sent you a powerup</string>
+    <string name="undo_gift_received">%1$s sent you an undo</string>
+    <string name="error_claim_gift">Unable to claim gift. Try again later.</string>
+    <string name="error_send_gift">Unable to send gift. Try again later.</string>
+    <string name="error_send_request">Unable to send request. Try again later.</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="error_claim_bonus">Unable to claim bonus. Try again later.</string>
+    <string name="error_login">Unable to login</string>
+    <string name="quest_completed">Quest Completed</string>
+    <string name="opponent_lost">Your opponent has lost</string>
+    <string name="random_shuffle">Random Shuffle</string>
 
 </resources>

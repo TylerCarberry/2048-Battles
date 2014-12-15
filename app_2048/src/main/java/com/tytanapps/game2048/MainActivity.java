@@ -174,7 +174,7 @@ public class MainActivity extends BaseGameActivity {
 
     protected void sendGift() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.prompt_choose_powerup)).setItems(R.array.gifts, new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.prompt_choose_gift)).setItems(R.array.gifts, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent ;
                 // The 'which' argument contains the index position
@@ -184,13 +184,13 @@ public class MainActivity extends BaseGameActivity {
                     case 0:
                         intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
                                 "p".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
-                                        R.drawable.powerup_button), "Powerup Desc");
+                                        R.drawable.powerup_button), getString(R.string.powerup));
                         startActivityForResult(intent, SEND_GIFT_CODE);
                         break;
                     case 1:
                         intent = Games.Requests.getSendIntent(getApiClient(), GameRequest.TYPE_GIFT,
                                 "u".getBytes(), Requests.REQUEST_DEFAULT_LIFETIME_DAYS, BitmapFactory.decodeResource(getResources(),
-                                        R.drawable.undo_button), "Undo Desc");
+                                        R.drawable.undo_button), getString(R.string.undo));
                         startActivityForResult(intent, SEND_GIFT_CODE);
                         break;
                 }
@@ -219,7 +219,7 @@ public class MainActivity extends BaseGameActivity {
         pendingGifts.setResultCallback(new ResultCallback<Requests.LoadRequestsResult>() {
             @Override
             public void onResult(Requests.LoadRequestsResult loadRequestsResult) {
-                if(loadRequestsResult.getRequests(GameRequest.TYPE_GIFT).getCount() > 0) {
+                if (loadRequestsResult.getRequests(GameRequest.TYPE_GIFT).getCount() > 0) {
                     Button inboxButton = (Button) findViewById(R.id.inbox_button);
                     inboxButton.setVisibility(View.VISIBLE);
                 }
@@ -251,9 +251,11 @@ public class MainActivity extends BaseGameActivity {
 
     private void handleInboxResult(ArrayList<GameRequest> gameRequests) {
         for(GameRequest request : gameRequests) {
-            String message = request.getSender().getDisplayName() + " sent you ";
+            String senderName = request.getSender().getDisplayName();
+            String message;
+
             if(new String(request.getData()).equals("p")) {
-                message += "a powerup";
+                message = String.format(getString(R.string.powerup_gift_received), senderName);
                 try {
                     incrementPowerupInventory(1);
                 } catch (IOException e) {
@@ -263,7 +265,7 @@ public class MainActivity extends BaseGameActivity {
                 }
             }
             else {
-                message += "an undo";
+                message = String.format(getString(R.string.undo_gift_received), senderName);
                 try {
                     incrementUndoInventory(1);
                 } catch (IOException e) {
@@ -297,12 +299,12 @@ public class MainActivity extends BaseGameActivity {
         switch (requestCode) {
             case SEND_REQUEST_CODE:
                 if (resultCode == GamesActivityResultCodes.RESULT_SEND_REQUEST_FAILED) {
-                    Toast.makeText(this, "FAILED TO SEND REQUEST!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.error_send_request, Toast.LENGTH_LONG).show();
                 }
                 break;
             case SEND_GIFT_CODE:
                 if (resultCode == GamesActivityResultCodes.RESULT_SEND_REQUEST_FAILED) {
-                    Toast.makeText(this, "FAILED TO SEND GIFT!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.error_send_gift), Toast.LENGTH_LONG).show();
                 }
                 break;
             case SHOW_INBOX:
@@ -312,7 +314,7 @@ public class MainActivity extends BaseGameActivity {
                 } else {
                     // handle failure to process inbox result
                     if(resultCode != Activity.RESULT_CANCELED)
-                        Toast.makeText(this, "Unable to claim reward", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, getString(R.string.error_claim_gift), Toast.LENGTH_LONG).show();
                 }
                 break;
         }
