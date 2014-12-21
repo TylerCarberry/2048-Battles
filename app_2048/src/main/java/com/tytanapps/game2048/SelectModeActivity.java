@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SelectModeActivity extends BaseGameActivity implements View.OnClickListener, QuestUpdateListener
 {
@@ -264,8 +265,11 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
         marginStart.setLayoutParams(new LinearLayout.LayoutParams((int) getResources()
                 .getDimension(R.dimen.activity_horizontal_margin), LayoutParams.MATCH_PARENT));
 
-        // Loop through every game mode and add it to the list
-        for(int id : GameModes.getListOfGameModesIds()) {
+
+        List<Integer> gameModes = GameModes.getListOfGameModesIds();
+
+        int mode = 0;
+        while(mode < gameModes.size()){
             // The layout the contains all info for that mode
             LinearLayout modeDetailLayout = new LinearLayout(this);
             modeDetailLayout.setOrientation(LinearLayout.VERTICAL);
@@ -276,71 +280,84 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
             modeDetailLayout.setGravity(Gravity.CENTER_HORIZONTAL);
             modeDetailLayout.setPadding(0, 0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin), 0);
 
+            for(int i = 0; i < 2 && mode < gameModes.size(); i++){
+                int id = gameModes.get(mode);
 
-            // The mode name
-            TextView modeName = new TextView(this);
-            modeName.setText(getString(GameModes.getGameTitleById(id)));
-            modeName.setTextSize(25);
-            modeName.setTypeface(null, Typeface.BOLD);
-            modeName.setLayoutParams(new LinearLayout.LayoutParams(
-                            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            );
+                LinearLayout itemLayout = new LinearLayout(this);
+                itemLayout.setOrientation(LinearLayout.VERTICAL);
 
-            // The mode description
-            TextView modeDesc = new TextView(this);
-            modeDesc.setText(getString(GameModes.getGameDescById(id)));
-            modeDesc.setTextSize(20);
-            modeDesc.setLayoutParams(new LinearLayout.LayoutParams(
-                            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            );
-            modeDesc.setGravity(Gravity.CENTER_HORIZONTAL);
+                // The mode name
+                TextView modeName = new TextView(this);
+                modeName.setText(getString(GameModes.getGameTitleById(id)));
+                modeName.setTextSize(25);
+                modeName.setTypeface(null, Typeface.BOLD);
+                modeName.setLayoutParams(new LinearLayout.LayoutParams(
+                                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+                );
+                modeName.setGravity(Gravity.CENTER_HORIZONTAL);
 
-            // High score of that mode
-            TextView highScoreTextView = new TextView(this);
-            highScoreTextView.setText(String.format(getString(R.string.high_score), gameStats.getHighScore(id)));
-            highScoreTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            );
+                // The mode description
+                TextView modeDesc = new TextView(this);
+                modeDesc.setText(getString(GameModes.getGameDescById(id)));
+                modeDesc.setTextSize(20);
+                modeDesc.setLayoutParams(new LinearLayout.LayoutParams(
+                                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+                );
+                modeDesc.setGravity(Gravity.CENTER_HORIZONTAL);
 
-            // There is a 50 dp margin between the description and high score
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)highScoreTextView.getLayoutParams();
-            params.setMargins(0, 50, 0, 0);
-            highScoreTextView.setLayoutParams(params);
+                // High score of that mode
+                TextView highScoreTextView = new TextView(this);
+                highScoreTextView.setText(String.format(getString(R.string.high_score), gameStats.getHighScore(id)));
+                highScoreTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+                );
+                highScoreTextView.setGravity(Gravity.CENTER_HORIZONTAL);
 
-            // Highest tile of that mode
-            TextView highTileTextView = new TextView(this);
-            highTileTextView.setText(String.format(getString(R.string.highest_tile), gameStats.getHighestTile(id)));
-            highTileTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            );
+                // There is a 50 dp margin between the description and high score
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)highScoreTextView.getLayoutParams();
+                params.setMargins(0, 50, 0, 0);
+                highScoreTextView.setLayoutParams(params);
 
-            // Add each item of the mode to the layout
-            modeDetailLayout.addView(modeName);
-            modeDetailLayout.addView(modeDesc);
-            modeDetailLayout.addView(highScoreTextView);
-            modeDetailLayout.addView(highTileTextView);
+                // Highest tile of that mode
+                TextView highTileTextView = new TextView(this);
+                highTileTextView.setText(String.format(getString(R.string.highest_tile), gameStats.getHighestTile(id)));
+                highTileTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+                );
+                highTileTextView.setGravity(Gravity.CENTER_HORIZONTAL);
 
-            final int gameId = id;
-            modeDetailLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+                // Add each item of the mode to the layout
+                itemLayout.addView(modeName);
+                itemLayout.addView(modeDesc);
+                itemLayout.addView(highScoreTextView);
+                itemLayout.addView(highTileTextView);
 
-                    Game game = GameModes.newGameFromId(gameId);
-                    game.setGameModeId(gameId);
+                final int gameId = id;
+                itemLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
-                    File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
-                    try {
-                        Save.save(game, currentGameFile);
+                        Game game = GameModes.newGameFromId(gameId);
+                        game.setGameModeId(gameId);
+
+                        File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+                        try {
+                            Save.save(game, currentGameFile);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        // Switch to the game activity
+                        startGameActivity();
                     }
-                    catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                });
 
-                    // Switch to the game activity
-                    startGameActivity();
-                }
-            });
+                itemLayout.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin));
+                modeDetailLayout.addView(itemLayout);
 
+                mode++;
+            }
             // Add the mode to the list
             listOfModes.addView(modeDetailLayout);
         }
