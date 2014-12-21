@@ -89,7 +89,7 @@
     <string name="new_low_score">New Lowest Score: %1$d</string>
     <string name="final_score">Final Score: %1$d</string>
     <string name="share_intent_message">I am playing 2048. My high score is %1$d. Try to beat me!</string>
-    <string name="prompt_choose_gift">Choose Gift</string>
+    <string name="prompt_choose_gift">Send Gift</string>
     <string name="not_signed_in_error">You must be signed in to access Play Games</string>
     <string name="continue_game">Continue Game</string>
     <string name="share">Share</string>
