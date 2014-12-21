@@ -314,16 +314,17 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
                             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             );
 
-            // The button used to start the game
-            final int gameId = id;
-            Button startGameButton = new Button(this);
-            startGameButton.setText(getString(R.string.start_game));
-            startGameButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT));
+            // Add each item of the mode to the layout
+            modeDetailLayout.addView(modeName);
+            modeDetailLayout.addView(modeDesc);
+            modeDetailLayout.addView(highScoreTextView);
+            modeDetailLayout.addView(highTileTextView);
 
-            startGameButton.setOnClickListener(new View.OnClickListener() {
+            final int gameId = id;
+            modeDetailLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     Game game = GameModes.newGameFromId(gameId);
                     game.setGameModeId(gameId);
 
@@ -339,13 +340,6 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
                     startGameActivity();
                 }
             });
-
-            // Add each item of the mode to the layout
-            modeDetailLayout.addView(modeName);
-            modeDetailLayout.addView(modeDesc);
-            modeDetailLayout.addView(highScoreTextView);
-            modeDetailLayout.addView(highTileTextView);
-            modeDetailLayout.addView(startGameButton);
 
             // Add the mode to the list
             listOfModes.addView(modeDetailLayout);
