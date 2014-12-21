@@ -426,6 +426,51 @@ public class MainActivity extends BaseGameActivity {
             giftsButton.setOnTouchListener(gamesOnClickListener);
             questsButton.setOnTouchListener(gamesOnClickListener);
 
+
+            rootView.findViewById(R.id.single_player_imagebutton).setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        view.setBackgroundResource(R.drawable.single_player_icon_pressed);
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        view.setBackgroundResource(R.drawable.single_player_icon);
+                        ((MainActivity)getActivity()).onClick(view);
+                    }
+                    return true;
+                }
+            });
+            rootView.findViewById(R.id.multiplayer_imagebutton).setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        view.setBackgroundResource(R.drawable.multiplayer_icon_pressed);
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        view.setBackgroundResource(R.drawable.multiplayer_icon);
+                        ((MainActivity)getActivity()).onClick(view);
+                    }
+                    return true;
+                }
+            });
+            rootView.findViewById(R.id.help_button).setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        view.setBackgroundResource(R.drawable.help_button_pressed);
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        view.setBackgroundResource(R.drawable.help_button);
+                        ((MainActivity)getActivity()).onClick(view);
+                    }
+                    return true;
+                }
+            });
+
+
+
+
+
             return rootView;
         }
     }
