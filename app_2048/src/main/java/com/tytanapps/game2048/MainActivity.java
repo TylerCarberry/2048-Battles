@@ -81,9 +81,9 @@ public class MainActivity extends BaseGameActivity {
         super.onStart();
     }
 
-    public void questIsActive() {
+    public void setQuestButtonEnabled(boolean enabled) {
         ImageButton questsButton = (ImageButton) findViewById(R.id.quests_button);
-        questsButton.setImageResource(R.drawable.games_quests_green);
+        questsButton.setImageResource((enabled) ? R.drawable.games_quests_green : R.drawable.games_quests);
     }
 
     public void updateInventoryTextView() {
@@ -207,8 +207,7 @@ public class MainActivity extends BaseGameActivity {
         s.setResultCallback(new ResultCallback<Quests.LoadQuestsResult>() {
             @Override
             public void onResult(Quests.LoadQuestsResult loadQuestsResult) {
-                if(loadQuestsResult.getQuests().getCount() > 0)
-                    questIsActive();
+                setQuestButtonEnabled(loadQuestsResult.getQuests().getCount() > 0);
             }
         });
     }
@@ -359,7 +358,7 @@ public class MainActivity extends BaseGameActivity {
             leaderboardsButton.setOnTouchListener(gamesOnClickListener);
             giftsButton.setOnTouchListener(gamesOnClickListener);
             questsButton.setOnTouchListener(gamesOnClickListener);
-            
+
             return rootView;
         }
     }
