@@ -285,6 +285,7 @@ public class MainActivity extends BaseGameActivity {
         GameData gameData = (GameData) Save.load(gameDataFile);
         gameData.incrementPowerupInventory(amount);
         Save.save(gameData, gameDataFile);
+        updateInventoryTextView();
     }
 
     private void incrementUndoInventory(int amount) throws IOException, ClassNotFoundException {
@@ -292,6 +293,7 @@ public class MainActivity extends BaseGameActivity {
         GameData gameData = (GameData) Save.load(gameDataFile);
         gameData.incrementUndoInventory(amount);
         Save.save(gameData, gameDataFile);
+        updateInventoryTextView();
     }
 
     @Override
@@ -334,7 +336,6 @@ public class MainActivity extends BaseGameActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-
             View.OnTouchListener gamesOnClickListener = new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent event) {
@@ -358,8 +359,7 @@ public class MainActivity extends BaseGameActivity {
             leaderboardsButton.setOnTouchListener(gamesOnClickListener);
             giftsButton.setOnTouchListener(gamesOnClickListener);
             questsButton.setOnTouchListener(gamesOnClickListener);
-
-
+            
             return rootView;
         }
     }
