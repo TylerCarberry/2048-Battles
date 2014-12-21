@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +32,8 @@ import com.google.example.games.basegameutils.BaseGameActivity;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends BaseGameActivity {
@@ -74,11 +78,75 @@ public class MainActivity extends BaseGameActivity {
 
     @Override
     public void onStart() {
+        // Give the user a bonus if a day has past since they last played
+        addWelcomeBackBonus();
+
         updateInventoryTextView();
         checkIfQuestActive();
         checkPendingPlayGifts();
 
         super.onStart();
+    }
+
+    /**
+     * Adds a power up or undo to the user's inventory if a day has passed since they last played
+     * If the user changed the date to cheat they must wait 3 days
+     */
+    public void addWelcomeBackBonus() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // The number of days since the epoch
+        long lastDatePlayed = prefs.getLong("lastDatePlayed", -1);
+        long currentDate = TimeUnit.MILLISECONDS.toDays(Calendar.getInstance().getTimeInMillis());
+
+        if (currentDate > lastDatePlayed) {
+            displayWelcomeBackBonus();
+        }
+        else
+            // The time was changed
+            if (currentDate < lastDatePlayed) {
+                Toast.makeText(this, "You changed the date", Toast.LENGTH_LONG).show();
+
+                // The user must wait another 3 days
+                currentDate = lastDatePlayed + 3;
+            }
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong("lastDatePlayed", currentDate);
+        editor.commit();
+    }
+
+    private void displayWelcomeBackBonus() {
+        // Create a new dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.welcome_back));
+
+        // Add either 1 or 2 bonus items
+        int bonusAmount = (int) (Math.random() * 2 + 1);
+
+        try {
+            if (Math.random() < 0.5) {
+                //Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
+                incrementPowerupInventory(bonusAmount);
+                builder.setMessage("You Gained " + bonusAmount + " Powerup!\n" +
+                        "Come back tomorrow for more.");
+            }
+            else {
+                //Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
+                incrementUndoInventory(bonusAmount);
+                builder.setMessage("You Gained " + bonusAmount + " Undo!\n" +
+                        "Come back tomorrow for more.");
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(this, getString(R.string.error_claim_bonus), Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Unable to access save file to add random bonus", Toast.LENGTH_LONG).show();
+        }
+
+        // Show the message to the player
+        builder.create().show();
     }
 
     public void setQuestButtonEnabled(boolean enabled) {
