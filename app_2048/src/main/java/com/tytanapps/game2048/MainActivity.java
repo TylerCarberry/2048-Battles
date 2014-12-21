@@ -8,8 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,8 +22,10 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -184,7 +189,7 @@ public class MainActivity extends BaseGameActivity {
                 startActivity(multiplayerIntent);
                 break;
             case R.id.help_button:
-                startActivity(new Intent(this, InfoActivity.class));
+                showHelpDialog();
                 break;
             case R.id.settings_button:
                 Intent showSettings = new Intent(this, SettingsActivity.class);
@@ -243,6 +248,41 @@ public class MainActivity extends BaseGameActivity {
 
         // 0 is an arbitrary integer
         startActivityForResult(questsIntent, 0);
+    }
+
+    protected void showHelpDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("How To Play");
+
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        TextView textView = new TextView(this);
+        textView.setText(getString(R.string.how_to_play));
+        textView.setTextSize(20);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        textView.setPadding(0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin),
+                0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin));
+
+
+        VideoView videoview = new VideoView(this);
+        Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.how_to_play_2048);
+
+        videoview.setVideoURI(uri);
+        videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+            }
+        });
+        videoview.setZOrderOnTop(true);
+        videoview.start();
+
+        linearLayout.addView(textView);
+        linearLayout.addView(videoview);
+
+        builder.setView(linearLayout);
+        builder.create().show();
     }
 
     protected void sendGift() {

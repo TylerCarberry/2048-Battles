@@ -126,41 +126,43 @@ ADDED from AndroidManifest.xml:66:9
 	android:label
 		ADDED from AndroidManifest.xml:68:13
 	android:parentActivityName
+		ADDED from AndroidManifest.xml:70:13
+	android:theme
 		ADDED from AndroidManifest.xml:69:13
 	android:name
 		ADDED from AndroidManifest.xml:67:13
 activity#com.tytanapps.game2048.StatsActivity
-ADDED from AndroidManifest.xml:71:9
+ADDED from AndroidManifest.xml:72:9
 	android:label
-		ADDED from AndroidManifest.xml:73:13
-	android:parentActivityName
 		ADDED from AndroidManifest.xml:74:13
+	android:parentActivityName
+		ADDED from AndroidManifest.xml:75:13
 	android:name
-		ADDED from AndroidManifest.xml:72:13
+		ADDED from AndroidManifest.xml:73:13
 activity#com.tytanapps.game2048.CustomIconActivity
-ADDED from AndroidManifest.xml:79:9
+ADDED from AndroidManifest.xml:80:9
 	android:label
-		ADDED from AndroidManifest.xml:81:13
-	android:parentActivityName
 		ADDED from AndroidManifest.xml:82:13
-	android:name
-		ADDED from AndroidManifest.xml:80:13
-activity#com.google.android.gms.ads.AdActivity
-ADDED from AndroidManifest.xml:88:9
-	android:configChanges
-		ADDED from AndroidManifest.xml:90:13
-	android:theme
-		ADDED from AndroidManifest.xml:91:13
-	android:name
-		ADDED from AndroidManifest.xml:89:13
-activity#com.tytanapps.game2048.MultiplayerActivity
-ADDED from AndroidManifest.xml:92:9
-	android:label
-		ADDED from AndroidManifest.xml:94:13
 	android:parentActivityName
-		ADDED from AndroidManifest.xml:95:13
+		ADDED from AndroidManifest.xml:83:13
 	android:name
-		ADDED from AndroidManifest.xml:93:13
+		ADDED from AndroidManifest.xml:81:13
+activity#com.google.android.gms.ads.AdActivity
+ADDED from AndroidManifest.xml:89:9
+	android:configChanges
+		ADDED from AndroidManifest.xml:91:13
+	android:theme
+		ADDED from AndroidManifest.xml:92:13
+	android:name
+		ADDED from AndroidManifest.xml:90:13
+activity#com.tytanapps.game2048.MultiplayerActivity
+ADDED from AndroidManifest.xml:93:9
+	android:label
+		ADDED from AndroidManifest.xml:95:13
+	android:parentActivityName
+		ADDED from AndroidManifest.xml:96:13
+	android:name
+		ADDED from AndroidManifest.xml:94:13
 uses-sdk
 INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
 MERGED from App_2048:baseGameUtils:unspecified:22:5
