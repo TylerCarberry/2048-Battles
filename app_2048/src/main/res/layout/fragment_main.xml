@@ -62,11 +62,21 @@
             android:textSize="@dimen/multiplayer_text_size"/>
 
         <ImageButton
-            android:id="@+id/help_button"
+            android:id="@+id/settings_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:background="@drawable/settings_button"/>
+
+        <ImageButton
+            android:id="@+id/help_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/settings_button"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:background="@drawable/help_button"/>
 
         <Button

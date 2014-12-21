@@ -1,5 +1,6 @@
 package com.tytanapps.game2048;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -183,6 +185,10 @@ public class MainActivity extends BaseGameActivity {
                 break;
             case R.id.help_button:
                 startActivity(new Intent(this, InfoActivity.class));
+                break;
+            case R.id.settings_button:
+                Intent showSettings = new Intent(this, SettingsActivity.class);
+                startActivity(showSettings);
                 break;
         }
     }
@@ -467,9 +473,27 @@ public class MainActivity extends BaseGameActivity {
                 }
             });
 
+            ImageButton settingsButton = (ImageButton) rootView.findViewById(R.id.settings_button);
+            settingsButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        view.setBackgroundResource(R.drawable.settings_button_pressed);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        view.setBackgroundResource(R.drawable.settings_button);
+                        ((MainActivity) getActivity()).onClick(view);
+                    }
+                    return true;
+                }
+            });
 
 
+            ObjectAnimator spinAnimation = ObjectAnimator.ofFloat(settingsButton, View.ROTATION, 360);
+            spinAnimation.setDuration(7000);
+            spinAnimation.setRepeatMode(Animation.REVERSE);
+            spinAnimation.setRepeatCount(Animation.INFINITE);
 
+            spinAnimation.start();
 
             return rootView;
         }
