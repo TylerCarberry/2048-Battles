@@ -111,12 +111,6 @@ public class GameActivity extends BaseGameActivity {
 		// Handle action bar item clicks here
 		int id = item.getItemId();
 
-		// When the how to play menu item is pressed switch to InfoActivity
-		if (id == R.id.action_how_to_play) {
-			Intent showInfo = new Intent(this, com.tytanapps.game2048.InfoActivity.class);
-			startActivity(showInfo);
-			return true;
-		}
 		// When the settings menu item is pressed switch to SettingsActivity
 		if(id == R.id.action_settings) {
 			Intent showSettings = new Intent(this, com.tytanapps.game2048.SettingsActivity.class);

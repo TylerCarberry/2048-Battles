@@ -62,11 +62,8 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
                 ArrayList <GameRequest> gameRequests = Games.Requests.getGameRequestsFromBundle(bundle);
                 handleInboxResult(gameRequests);
             }
-
             @Override
-            public void onConnectionSuspended(int i) {
-
-            }
+            public void onConnectionSuspended(int i) {}
         });
 	}
 	
@@ -79,11 +76,6 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
 
         createListOfModes();
 		super.onStart();
-	}
-	
-	@Override
-	protected void onStop() {
-		super.onStop();
 	}
 	
 	@Override
@@ -356,52 +348,6 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
             listOfModes.addView(modeDetailLayout);
         }
     }
-
-	/**
-	 * Display all quests
-	 */
-	protected void showQuests() {
-		// In the developer tutorial they use Quests.SELECT_ALL_QUESTS
-		// but that is not valid for me. That may require an update
-		// but for now selecting all possibilities works the same way
-		int[] questParams = new int[8];
-		questParams[0] = Games.Quests.SELECT_ACCEPTED;
-        questParams[1] = Games.Quests.SELECT_OPEN;
-        questParams[2] = Games.Quests.SELECT_ENDING_SOON;
-        questParams[3] = Games.Quests.SELECT_UPCOMING;
-		questParams[4] = Games.Quests.SELECT_COMPLETED;
-		questParams[5] = Games.Quests.SELECT_COMPLETED_UNCLAIMED;
-		questParams[6] = Games.Quests.SELECT_FAILED;
-        questParams[7] = Games.Quests.SELECT_EXPIRED;
-
-        Intent questsIntent = Games.Quests.getQuestsIntent(getApiClient(), questParams);
-	    
-	    // 0 is an arbitrary integer
-	    startActivityForResult(questsIntent, 0);
-	}
-
-    /**
-     * Called when either the achievements, leaderboards, or quests buttons are pressed
-     * @param view The button that was pressed
-     */
-	public void playGames(View view) {
-		if(getApiClient().isConnected()) {
-			switch (view.getId()) {
-			case R.id.achievements_button:
-				startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 1);
-				break;
-			case R.id.quests_button:
-				showQuests();
-				break;
-			case R.id.leaderboards_button:
-				startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 0);
-				break;
-			}
-		}
-		else {
-			Toast.makeText(this, getString(R.string.not_signed_in_error), Toast.LENGTH_SHORT).show();
-		}
-	}
 	
 	/**
 	 * Switches to the game activity
@@ -518,34 +464,11 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
 	 */
     @Override
 	public void onSignInFailed() {
-	    
-		// The sign in button is not a normal button, so keep it as a default view
-		View signInButton = findViewById(R.id.sign_in_button);
-	    
-		// If the user has switched views before the sign in failed then the buttons
-		// are null and this will cause an error
-		if(signInButton != null)
-	    	signInButton.setVisibility(View.VISIBLE);
-	    Button signOutButton = (Button) findViewById(R.id.sign_out_button);
-	    if(signOutButton != null)
-	    	signOutButton.setVisibility(View.GONE);
-	    
 	    Log.d(LOG_TAG, getString(R.string.error_login));
 	}
 
 	@Override
 	public void onSignInSucceeded() {
-        // The sign in button is not a normal button, so keep it as a default view
-        View signInButton = findViewById(R.id.sign_in_button);
-
-        // If the user has switched views before the sign in failed then the buttons
-        // are null and this will cause an error
-        if(signInButton != null)
-            signInButton.setVisibility(View.GONE);
-        Button signOutButton = (Button) findViewById(R.id.sign_out_button);
-        if(signOutButton != null)
-            signOutButton.setVisibility(View.VISIBLE);
-
 	    // Start the Quest listener.
 	    Games.Quests.registerQuestUpdateListener(this.getApiClient(), this);
 	}

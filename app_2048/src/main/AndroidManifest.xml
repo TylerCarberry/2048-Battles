@@ -64,12 +64,6 @@
             android:parentActivityName=".MainActivity" >
         </activity>
         <activity
-            android:name=".InfoActivity"
-            android:label="@string/title_activity_info"
-            android:theme="@android:style/Theme.Holo.Light.Dialog"
-            android:parentActivityName=".SelectModeActivity" >
-        </activity>
-        <activity
             android:name=".StatsActivity"
             android:label="@string/title_activity_stats"
             android:parentActivityName=".SelectModeActivity" >
