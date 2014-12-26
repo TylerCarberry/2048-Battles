@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -252,7 +253,7 @@ public class MainActivity extends BaseGameActivity {
 
     protected void showHelpDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("How To Play");
+        builder.setTitle(getString(R.string.how_to_play));
 
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -527,15 +528,20 @@ public class MainActivity extends BaseGameActivity {
                 }
             });
 
-
-            ObjectAnimator spinAnimation = ObjectAnimator.ofFloat(settingsButton, View.ROTATION, 360);
-            spinAnimation.setDuration(7000);
-            spinAnimation.setRepeatMode(Animation.REVERSE);
-            spinAnimation.setRepeatCount(Animation.INFINITE);
-
-            spinAnimation.start();
+            animateSettingsButton(settingsButton);
 
             return rootView;
+        }
+
+        private void animateSettingsButton(ImageButton settingsButton) {
+            ObjectAnimator spinAnimation = ObjectAnimator.ofFloat(settingsButton, View.ROTATION, 360);
+
+            spinAnimation.setDuration(7000);
+            spinAnimation.setRepeatMode(Animation.RESTART);
+            spinAnimation.setRepeatCount(Animation.INFINITE);
+            spinAnimation.setInterpolator(new LinearInterpolator());
+
+            spinAnimation.start();
         }
     }
 }
