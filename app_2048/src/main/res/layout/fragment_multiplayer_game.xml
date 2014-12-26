@@ -9,6 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:clipChildren="false"
     tools:context="com.example.app_2048.GameFragment" >
 
     <TextView
@@ -93,6 +94,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:animateLayoutChanges="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:layout_above="@+id/active_attacks_textview">
     </LinearLayout>
 

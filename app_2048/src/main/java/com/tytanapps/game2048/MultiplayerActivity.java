@@ -1,5 +1,7 @@
 package com.tytanapps.game2048;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -457,69 +459,111 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         switch (attack){
             case SEND_ATTACK_GHOST:
                 attackButton.setBackgroundResource(R.drawable.ghost_attack_button);
+                bonusesLinearLayout.addView(attackButton);
                 attackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                animateAttackUsed(attackButton);
                                 sendMessage(""+SEND_ATTACK_GHOST, true);
-                                bonusesLinearLayout.removeView(attackButton);
                             }
                         });
                     }
                 });
-                bonusesLinearLayout.addView(attackButton);
                 break;
             case SEND_ATTACK_SHUFFLE:
                 attackButton.setBackgroundResource(R.drawable.shuffle_attack_button);
+                bonusesLinearLayout.addView(attackButton);
                 attackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                animateAttackUsed(attackButton);
                                 sendMessage(""+SEND_ATTACK_SHUFFLE, true);
-                                bonusesLinearLayout.removeView(attackButton);
                             }
                         });
                     }
                 });
-                bonusesLinearLayout.addView(attackButton);
                 break;
             case SEND_ATTACK_ICE:
                 attackButton.setBackgroundResource(R.drawable.ice_attack_button);
+                bonusesLinearLayout.addView(attackButton);
                 attackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                animateAttackUsed(attackButton);
                                 sendMessage(""+SEND_ATTACK_ICE, true);
-                                bonusesLinearLayout.removeView(attackButton);
                             }
                         });
                     }
                 });
-                bonusesLinearLayout.addView(attackButton);
                 break;
             case SEND_ATTACK_X:
                 attackButton.setBackgroundResource(R.drawable.x_attack_button);
+                bonusesLinearLayout.addView(attackButton);
                 attackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                animateAttackUsed(attackButton);
                                 sendMessage(""+SEND_ATTACK_X, true);
-                                bonusesLinearLayout.removeView(attackButton);
                             }
                         });
                     }
                 });
-                bonusesLinearLayout.addView(attackButton);
                 break;
         }
+    }
+
+    private void animateAttackUsed(final View view) {
+        final LinearLayout bonusesLinearLayout = (LinearLayout) gameFragment.getView().findViewById(R.id.bonuses_linear_layout);
+        bonusesLinearLayout.bringToFront();
+        bonusesLinearLayout.setClipChildren(false);
+
+        int[] positionOpponent = new int[2];
+        findViewById(R.id.opponent_imageview).getLocationInWindow(positionOpponent);
+
+        int[] positionAttack = new int[2];
+        view.getLocationInWindow(positionAttack);
+
+        int deltaX = positionOpponent[0] - positionAttack[0];
+        int deltaY = 0 - (positionAttack[1] - positionOpponent[1]);
+
+        //Toast.makeText(this, positionOpponent[0] + "," + positionOpponent[1], Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, positionAttack[0] + "," + positionAttack[1], Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, deltaX + " " + deltaY, Toast.LENGTH_LONG).show();
+
+        ObjectAnimator translateX = ObjectAnimator.ofFloat(view, "translationX", deltaX);
+        ObjectAnimator translateY = ObjectAnimator.ofFloat(view, "translationY", deltaY);
+
+        translateX.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                bonusesLinearLayout.removeView(view);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                bonusesLinearLayout.removeView(view);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {}
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
+
+        translateX.start();
+        translateY.start();
     }
 
     protected void setImageView(final ImageView imageView, final Bitmap bitmap) {
