@@ -259,7 +259,7 @@ public class MainActivity extends BaseGameActivity {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
         TextView textView = new TextView(this);
-        textView.setText(getString(R.string.how_to_play));
+        textView.setText(getString(R.string.instructions_to_play));
         textView.setTextSize(20);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         textView.setPadding(0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin),

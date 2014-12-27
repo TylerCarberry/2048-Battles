@@ -902,7 +902,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 builder.setTitle("No More Powerups").setMessage("There are no powerups remaining");
             }
             else {
-                builder.setTitle(getString(R.string.prompt_choose_gift)).setItems(R.array.powerups, new DialogInterface.OnClickListener() {
+                builder.setTitle(getString(R.string.prompt_choose_powerup)).setItems(R.array.powerups, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Games.Events.increment(getApiClient(), getString(R.string.event_powerups_used), 1);
                         // The 'which' argument contains the index position

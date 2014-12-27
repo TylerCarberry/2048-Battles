@@ -5,13 +5,13 @@
     <string name="intro">Welcome to 2048!</string>
     <string name="intro_creator_name">By Tyler Carberry</string>
     <string name="action_settings">Settings</string>
-    <string name="action_how_to_play">How To Play</string>
+    <string name="how_to_play">How To Play</string>
     <string name="action_stats">Game Stats</string>
     <string name="action_powerups">Powerups</string>
     <string name="action_achievements">Achievements</string>
     <string name="action_leaderboards">Leaderboards</string>
     <string name="action_quests">Quests</string>
-    <string name="how_to_play">Swipe to move the board.\nTiles with the same value combine.\nReach a 2048 tile to win.</string>
+    <string name="instructions_to_play">Swipe to move the board.\nTiles with the same value combine.\nReach a 2048 tile to win.</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="pause">Pause</string>
@@ -89,6 +89,7 @@
     <string name="new_low_score">New Lowest Score: %1$d</string>
     <string name="final_score">Final Score: %1$d</string>
     <string name="share_intent_message">I am playing 2048. My high score is %1$d. Try to beat me!</string>
+    <string name="prompt_choose_powerup">Choose Powerup</string>
     <string name="prompt_choose_gift">Send Gift</string>
     <string name="not_signed_in_error">You must be signed in to access Play Games</string>
     <string name="continue_game">Continue Game</string>
