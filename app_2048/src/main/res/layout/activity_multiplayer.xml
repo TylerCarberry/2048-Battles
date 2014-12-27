@@ -1,9 +1,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+    android:id="@+id/multiplayer_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MyActivity"
     tools:ignore="MergeRootFrame" >
+
+    <FrameLayout
+        android:id="@+id/multiplayer_frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 
 </FrameLayout>

@@ -132,7 +132,12 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_multiplayer);
+        setContentView(R.layout.activity_multiplayer);
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.multiplayer_frame_layout, new PlaceholderFragment())
+                    .commit();
+        }
 
         // Create the Google Api Client with access to Plus and Games
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -149,7 +154,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
         // If the room should be created automatically
         if(intent.getExtras().getBoolean("startMultiplayer", false)) {
-
             mGoogleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                 @Override
                 public void onConnected(Bundle bundle) {
@@ -197,10 +201,12 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             e.printStackTrace();
         }
 
-        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         gameFragment = new GameFragment();
-        ft.replace(R.id.multiplayer_activity, gameFragment, "NewFragmentTag");
+
+        ft.replace(R.id.multiplayer_frame_layout, gameFragment);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack(null);
         ft.commit();
 
@@ -905,7 +911,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             return;
         }
         updateRoom(room);
-        //switchToGame();
     }
 
     @Override
