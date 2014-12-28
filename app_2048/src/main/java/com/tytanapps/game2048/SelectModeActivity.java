@@ -116,12 +116,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
             return true;
         }
 
-        if (id == R.id.action_about) {
-            Toast.makeText(this, getString(R.string.intro_creator_name), Toast.LENGTH_SHORT).show();
-            return true;
-        }
-		
-		return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
 	}
 
     /**

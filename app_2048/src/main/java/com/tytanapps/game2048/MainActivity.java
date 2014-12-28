@@ -260,11 +260,10 @@ public class MainActivity extends BaseGameActivity {
 
         TextView textView = new TextView(this);
         textView.setText(getString(R.string.instructions_to_play));
-        textView.setTextSize(20);
+        textView.setTextSize(22);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         textView.setPadding(0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin),
                 0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin));
-
 
         VideoView videoview = new VideoView(this);
         Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.how_to_play_2048);
@@ -279,8 +278,15 @@ public class MainActivity extends BaseGameActivity {
         videoview.setZOrderOnTop(true);
         videoview.start();
 
+        TextView creatorName = new TextView(this);
+        creatorName.setText(getString(R.string.creator_name));
+        creatorName.setTextSize(17);
+        int padding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
+        creatorName.setPadding(padding, padding, padding, padding);
+
         linearLayout.addView(textView);
         linearLayout.addView(videoview);
+        linearLayout.addView(creatorName);
 
         builder.setView(linearLayout);
         builder.create().show();
