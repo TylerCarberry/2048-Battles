@@ -353,7 +353,7 @@ public class GameModes
 		game.cornerMode();
 		game.setXMode();
 		game.setDynamicTileSpawning(true);
-		//game.setSpeedMode(true);
+		game.setSpeedMode(true);
 		game.setGameModeId(CRAZY_MODE_ID);
 
 		return game;
