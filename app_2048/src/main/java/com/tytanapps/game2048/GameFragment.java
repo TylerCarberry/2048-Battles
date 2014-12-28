@@ -48,6 +48,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * The only fragment in the activity. Has the game board and the
@@ -62,6 +64,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     // The % chance of a bonus or attack each move in arcade mode
     public static final double CHANCE_OF_ARCADE_BONUS = 0.10;
+
+    // The time in milliseconds before a new tile appears in speed mode
+    public static final int SPEED_MODE_DELAY = 1000;
 
     // These values are overridden with the options chosen in the settings
     public static long tileSlideSpeed = 125;
@@ -167,6 +172,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 getActivity().getActionBar().setTitle(R.string.app_name);
             }
 
+
+        if(game.getSpeedMode()) {
+            activateSpeedMode();
+        }
+
         // Disable the undo and powerup buttons based on the undos/powerups remaining
         if(! game.getMultiplayerActive()) {
             setUndoButtonEnabled(game.getUndosRemaining() != 0);
@@ -223,7 +233,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         game.resetTilesCombined();
 
         // Only save a game that is still in progress and not a multiplayer game
-        if(!game.lost() && game.getGameModeId() != GameModes.MULTIPLAYER_MODE_ID)
+        if(!game.lost() && !gameLost && game.getGameModeId() != GameModes.MULTIPLAYER_MODE_ID)
             save();
         super.onPause();
     }
@@ -747,8 +757,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         setUndoButtonEnabled(false);
         setPowerupButtonEnabled(false);
 
-        showLoseDialog();
-
         gameStats.updateGameRecords(game.getGameModeId(), game);
 
         // Save the updated gameStats and delete the current game save file.
@@ -756,6 +764,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         save();
         File currentGameFile = new File(getActivity().getFilesDir(), getString(R.string.file_current_game));
         currentGameFile.delete();
+
+        showLoseDialog();
 
         updateLeaderboards(game.getScore(), game.getGameModeId());
         submitEvents(game);
@@ -996,7 +1006,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * It fades in while expanding from half its size.
      */
     private void addTile() {
-
         // Add a new tile to the game object
         Location loc = game.addRandomPiece();
 
@@ -1381,6 +1390,32 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
     }
 
+    private void activateSpeedMode() {
+        final Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if(game.getGrid().getEmptyLocations().isEmpty()) {
+                    timer.cancel();
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            lost();
+                        }
+                    });
+                }
+                else {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            addTile();
+                        }
+                    });
+                }}
+        }, SPEED_MODE_DELAY, SPEED_MODE_DELAY);
+    }
+
     /**
      * Warn the user about moving in that direction
      * @return True if the user decided to move in that direction anyway
@@ -1518,6 +1553,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // Create a new game
         game = GameModes.newGameFromId(game.getGameModeId());
 
+        // Activate speed mode if necessary
+        if(game.getSpeedMode())
+            activateSpeedMode();
+
         // Disable the undo button and powerup button if necessary
         setUndoButtonEnabled(game.getUndosRemaining() != 0);
         setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
@@ -1563,7 +1602,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         try {
             game = (Game) Save.load(currentGameFile);
-
             gameStats = (GameData) Save.load(gameStatsFile);
         } catch (ClassNotFoundException e) {
             Log.e(LOG_TAG, "Class not found exception in load");

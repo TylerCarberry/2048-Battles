@@ -531,7 +531,8 @@ public class Game implements java.io.Serializable
 	public void setSpeedMode(boolean enabled)
 	{
 		speedMode = enabled;
-		
+
+        /*
 		// Add a piece every 2 seconds
 		final int UPDATESPEED = 2;
 		
@@ -561,6 +562,7 @@ public class Game implements java.io.Serializable
 		}; // end thread
 		
 		T.start();
+		*/
 	}
 	
 	public boolean getSurvivalMode() {

@@ -45,7 +45,7 @@
     <string name="mode_desc_survival">30 seconds time limit, combine tiles for more time **Coming Soon**</string>
     <string name="mode_desc_x">X tile cannot be combined</string>
     <string name="mode_desc_corner">Immovable tiles in the corner</string>
-    <string name="mode_desc_speed">Limited moves and time **Coming Soon**</string>
+    <string name="mode_desc_speed">Tiles appear every second. If the board fills, you lose</string>
     <string name="mode_desc_zen">All tiles combine. Impossible to lose. **Coming Soon**</string>
     <string name="mode_desc_crazy">A 5x5 grid with every other mode enabled</string>
     <string name="mode_desc_ghost">All tiles appear as ?</string>
