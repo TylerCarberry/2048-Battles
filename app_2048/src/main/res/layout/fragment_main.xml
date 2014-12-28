@@ -89,6 +89,12 @@
             android:visibility="gone"
             android:text="Inbox"/>
 
+        <ImageButton
+            android:id="@+id/themes_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tile_2"/>
+
         <TextView
             android:id="@+id/inventory_textview"
             android:layout_width="wrap_content"

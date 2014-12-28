@@ -111,11 +111,6 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
 			return true;
 		}
 
-        if (id == R.id.action_set_icons) {
-            startActivity(new Intent(this, CustomIconActivity.class));
-            return true;
-        }
-
         if (id == R.id.action_reset_game) {
             resetGame();
             return true;

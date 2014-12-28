@@ -286,6 +286,32 @@ public class MainActivity extends BaseGameActivity {
         builder.create().show();
     }
 
+    protected void showThemesDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Themes");
+
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        //Button defaultTheme = new Button(this);
+        //defaultTheme.setText("Default");
+
+        Button customTheme = new Button(this);
+        customTheme.setText("Custom");
+        customTheme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), CustomIconActivity.class));
+            }
+        });
+
+        //linearLayout.addView(defaultTheme);
+        linearLayout.addView(customTheme);
+
+        builder.setView(linearLayout);
+        builder.create().show();
+    }
+
     protected void sendGift() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.prompt_choose_gift)).setItems(R.array.gifts, new DialogInterface.OnClickListener() {
@@ -467,6 +493,8 @@ public class MainActivity extends BaseGameActivity {
             ImageButton leaderboardsButton = (ImageButton) rootView.findViewById(R.id.leaderboards_button);
             ImageButton giftsButton = (ImageButton) rootView.findViewById(R.id.gifts_button);
             ImageButton questsButton = (ImageButton) rootView.findViewById(R.id.quests_button);
+            ImageButton themesButton = (ImageButton) rootView.findViewById(R.id.themes_button);
+
 
             achievementsButton.setOnTouchListener(gamesOnClickListener);
             leaderboardsButton.setOnTouchListener(gamesOnClickListener);
@@ -525,6 +553,13 @@ public class MainActivity extends BaseGameActivity {
                         ((MainActivity) getActivity()).onClick(view);
                     }
                     return true;
+                }
+            });
+
+            themesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((MainActivity)getActivity()).showThemesDialog();
                 }
             });
 
