@@ -131,19 +131,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         else
             rootView = inflater.inflate(R.layout.fragment_multiplayer_game, container, false);
 
-        // Add blank tiles to every position on the grid
-        for(int row = 0; row < 4; row++) {
-            for(int col = 0; col < 4; col++) {
-                GridLayout.Spec specRow = GridLayout.spec(row, 1);
-                GridLayout.Spec specCol = GridLayout.spec(col, 1);
-                GridLayout.LayoutParams gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
-
-                ImageView tile = new ImageView(getActivity());
-                tile.setImageResource(R.drawable.tile_blank);
-                ((GridLayout) rootView.findViewById(R.id.grid_layout)).addView(tile, gridLayoutParam);
-            }
-        }
-
         // Start listening for swipes
         rootView.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -518,6 +505,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             specRow = GridLayout.spec(tileLoc.getRow(), 1);
             specCol = GridLayout.spec(tileLoc.getCol(), 1);
             gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
+
+            // Add a blank tile to that spot on the grid
+            ImageView blankTile = new ImageView(getActivity());
+            blankTile.setImageResource(R.drawable.tile_blank);
+            ((GridLayout) getActivity().findViewById(R.id.grid_layout)).addView(blankTile, gridLayoutParam);
 
             // Check if that tile already exists
             existingTile = findTileByLocation(tileLoc);

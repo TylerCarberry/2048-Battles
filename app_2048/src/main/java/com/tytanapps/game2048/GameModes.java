@@ -344,25 +344,19 @@ public class GameModes
 	// A 5x5 game with every other mode enabled (except zen)
 	public static Game crazyMode()
 	{
-
-        return createTitleMode();
-
-		/*
         Game game = new Game(5,5);
 		game.setMoveLimit(-1);
 		game.setUndoLimit(-1);
 		game.setPowerupLimit(5);
 		game.setTimeLimit(30);
-		game.setSurvivalMode();
+		//game.setSurvivalMode();
 		game.cornerMode();
 		game.setXMode();
 		game.setDynamicTileSpawning(true);
-		game.setSpeedMode(true);
+		//game.setSpeedMode(true);
 		game.setGameModeId(CRAZY_MODE_ID);
 
 		return game;
-
-		*/
 	}
 	
 	// Ghost Mode
@@ -451,11 +445,7 @@ public class GameModes
         return -1;
     }
 
-
-
-
     /*
-
 
     | | | | |
     | |2| | |
@@ -492,10 +482,5 @@ public class GameModes
     | | | | |
     | | | | |
 
-
-
-
     */
-
-
 }

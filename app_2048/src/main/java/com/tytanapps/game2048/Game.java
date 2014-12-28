@@ -850,11 +850,8 @@ public class Game implements java.io.Serializable
 	 */
 	public Location addRandomPiece()
 	{
-        Log.d("a", "Entering add random piece: " + turnNumber);
-        Log.d("a", "gameModeId: " + gameModeId);
-
-        if(gameModeId == GameModes.CRAZY_MODE_ID)
-            return addTitleModePiece();
+        //if(gameModeId == GameModes.CRAZY_MODE_ID)
+        //    return addTitleModePiece();
 
         if(dynamicTileSpawning) {
             List<Integer> possibleTiles = getPossibleTilesToAdd();
