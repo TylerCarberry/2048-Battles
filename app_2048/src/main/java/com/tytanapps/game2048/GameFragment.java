@@ -934,16 +934,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                                     gameStats.decrementPowerupInventory();
                                 updateTextviews();
                                 break;
-                            // Debug option, I change this to test the code
-                            // Currently doubles all tiles
-                            case 4:
-                                Grid newGrid = game.getGrid();
-                                List<Location> tiles = newGrid.toList();
-                                for (Location tile : tiles)
-                                    newGrid.set(tile, newGrid.get(tile) * 2);
-                                game.setGrid(newGrid);
-                                updateGame();
-                                break;
                         }
                         setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
                     }

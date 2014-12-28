@@ -15,7 +15,6 @@
         <item>0</item>
     </string-array>
 
-
     <string-array name="swipeSensitivity">
         <item>Low</item>
         <item>Medium</item>
@@ -32,8 +31,7 @@
         <item>Shuffle</item>
         <item>Remove A Tile</item>
         <item>Remove All Low Tiles</item>
-        <item>Genie</item>
-        <item>(Debug) Double tiles</item>
+        <item>Warn Before Losing</item>
     </string-array>
 
     <string-array name="gifts">
