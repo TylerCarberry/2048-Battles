@@ -110,6 +110,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     // The game helper object.
     protected GameHelper mHelper;
 
+    private int secondsRemaining = 30;
+
     public GameFragment() { }
 
     @Override
@@ -176,6 +178,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(game.getSpeedMode()) {
             activateSpeedMode();
         }
+        if(game.getSurvivalMode()) {
+            activateSurvivalMode();
+        }
 
         // Disable the undo and powerup buttons based on the undos/powerups remaining
         if(! game.getMultiplayerActive()) {
@@ -229,8 +234,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     @Override
     public void onPause() {
-        Games.Events.increment(this.getApiClient(), getString(R.string.event_tiles_combined), game.getTilesCombined());
-        game.resetTilesCombined();
+
+        if (getApiClient().isConnected()) {
+            Games.Events.increment(this.getApiClient(), getString(R.string.event_tiles_combined), game.getTilesCombined());
+            game.resetTilesCombined();
+        }
 
         // Only save a game that is still in progress and not a multiplayer game
         if(!game.lost() && !gameLost && game.getGameModeId() != GameModes.MULTIPLAYER_MODE_ID)
@@ -617,6 +625,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         int tileValue = game.getGrid().get(tileLoc);
         tile.setTag(tileValue);
+
+        if(game.getSurvivalMode() && tileValue >= 16)
+            incrementTimeLeft(tileValue / 4);
 
         Drawable[] layers = new Drawable[2];
 
@@ -1406,6 +1417,57 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }, SPEED_MODE_DELAY, SPEED_MODE_DELAY);
     }
 
+    private void activateSurvivalMode() {
+        final Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if(getSecondsRemaining() == 0) {
+                    timer.cancel();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            lost();
+                        }
+                    });
+                }
+                else {
+                    decrementTimeLeft(1);
+                }
+            Log.d(LOG_TAG, ""+getSecondsRemaining());
+
+            }
+        }, 1000, 1000);
+    }
+
+    public int getSecondsRemaining() {
+        return secondsRemaining;
+    }
+
+    public int decrementTimeLeft(int seconds) {
+        secondsRemaining -= seconds;
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateTextviews();
+            }
+        });
+
+        return secondsRemaining;
+    }
+
+    public int incrementTimeLeft(int seconds) {
+        secondsRemaining += seconds;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateTextviews();
+            }
+        });
+        return secondsRemaining;
+    }
+
     /**
      * Warn the user about moving in that direction
      * @return True if the user decided to move in that direction anyway
@@ -1543,9 +1605,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // Create a new game
         game = GameModes.newGameFromId(game.getGameModeId());
 
-        // Activate speed mode if necessary
+        // Activate speed or survival mode if necessary
         if(game.getSpeedMode())
             activateSpeedMode();
+        if(game.getSurvivalMode())
+            activateSurvivalMode();
 
         // Disable the undo button and powerup button if necessary
         setUndoButtonEnabled(game.getUndosRemaining() != 0);
