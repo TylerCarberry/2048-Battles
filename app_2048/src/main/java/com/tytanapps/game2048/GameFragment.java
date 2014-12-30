@@ -40,7 +40,6 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.games.event.Event;
 import com.google.android.gms.games.event.Events;
 import com.google.example.games.basegameutils.BaseGameActivity;
-import com.google.example.games.basegameutils.GameHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -107,8 +106,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     // Stores custom tile icons
     private Map<Integer, Drawable> customTileIcon = new HashMap<Integer, Drawable>();
 
-    // The game helper object.
-    protected GameHelper mHelper;
+    private List<Timer> activeTimers = new ArrayList<Timer>();
 
     private int secondsRemaining = 30;
 
@@ -252,7 +250,12 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // Stop all active animations. If this is not done the game will crash
         for(ObjectAnimator animation : activeAnimations)
             animation.end();
+        activeAnimations.clear();
         animationInProgress = false;
+
+        for(Timer t : activeTimers)
+            t.cancel();
+        activeTimers.clear();
 
         // The achievement long time player is unlocked after 2048 moves are made. The game will
         // still call the api every time afterwards but for now this is not a major issue
@@ -1411,6 +1414,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                         @Override
                         public void run() {
                             lost();
+                            activeTimers.remove(timer);
                         }
                     });
                 }
@@ -1423,6 +1427,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                     });
                 }}
         }, SPEED_MODE_DELAY, SPEED_MODE_DELAY);
+        activeTimers.add(timer);
     }
 
     private void activateSurvivalMode() {
@@ -1442,6 +1447,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                         @Override
                         public void run() {
                             lost();
+                            activeTimers.remove(timer);
                         }
                     });
                     }
@@ -1452,6 +1458,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
             }
         }, 1000, 1000);
+        activeTimers.add(timer);
     }
 
     public int getSecondsRemaining() {
@@ -1612,6 +1619,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         if(animationInProgress)
             clearTileListeners();
+
+        for(Timer t : activeTimers)
+                t.cancel();
+        activeTimers.clear();
 
         // Save any new records
         gameStats.updateGameRecords(game.getGameModeId(), game);
