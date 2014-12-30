@@ -1,5 +1,6 @@
 package com.tytanapps.game2048;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +13,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +25,9 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -41,6 +45,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 
@@ -179,6 +185,118 @@ public class MainActivity extends BaseGameActivity {
         powerupTextView.setText(""+gameData.getPowerupInventory());
     }
 
+    public void animateFlyingTiles(final int amount, final int delay) {
+        final Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            int times = 0;
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        animateFlyingTile();
+                    }
+                });
+                times++;
+                if(times > amount)
+                    timer.cancel();
+
+
+            }
+        }, delay, delay);
+    }
+
+    public void animateFlyingTile() {
+        final RelativeLayout mainFragment = (RelativeLayout) findViewById(R.id.main_fragment);
+
+        final ImageView tile = new ImageView(this);
+
+        double rand = Math.random();
+        if(rand < 0.1)
+            tile.setBackgroundResource(R.drawable.tile_2);
+        else if(rand < 0.2)
+            tile.setBackgroundResource(R.drawable.tile_4);
+        else if(rand < 0.3)
+            tile.setBackgroundResource(R.drawable.tile_8);
+        else if(rand < 0.4)
+            tile.setBackgroundResource(R.drawable.tile_16);
+        else if(rand < 0.5)
+            tile.setBackgroundResource(R.drawable.tile_32);
+        else if(rand < 0.6)
+            tile.setBackgroundResource(R.drawable.tile_64);
+        else if(rand < 0.7)
+            tile.setBackgroundResource(R.drawable.tile_256);
+        else if(rand < 0.8)
+            tile.setBackgroundResource(R.drawable.tile_512);
+        else if(rand < 0.9)
+            tile.setBackgroundResource(R.drawable.tile_1024);
+        else
+            tile.setBackgroundResource(R.drawable.tile_2048);
+
+        Display display = getWindowManager().getDefaultDisplay();
+
+        int startingX, startingY, endingX, endingY;
+
+        if(Math.random() > 0.5) {
+            startingX = (int) (Math.random() * display.getWidth()) - 200;
+            startingY = -200;
+        }
+        else {
+            startingX = -200;
+            startingY = (int) (Math.random() * display.getHeight()) - 200;
+        }
+
+        if(Math.random() > 0.5) {
+            endingX = (int) (Math.random() * display.getWidth()) + 200;
+            endingY = display.getHeight() + 200;
+        }
+        else {
+            endingX = display.getWidth() + 200;
+            endingY = (int) (Math.random() * display.getHeight() + 200);
+        }
+
+        if(Math.random() > 0.5) {
+            int temp = startingX;
+            startingX = endingX;
+            endingX = temp;
+
+            temp = startingY;
+            startingY = endingY;
+            endingY = temp;
+        }
+
+        ObjectAnimator animatorX = ObjectAnimator.ofFloat(tile, View.TRANSLATION_X, endingX - startingX);
+        ObjectAnimator animatorY = ObjectAnimator.ofFloat(tile, View.TRANSLATION_Y, endingY - startingY);
+
+        animatorX.setDuration(1000);
+        animatorY.setDuration(1000);
+
+        animatorX.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {}
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mainFragment.removeView(tile);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
+
+        RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(startingX, startingY, 0, 0);
+        tile.setLayoutParams(layoutParams);
+
+        mainFragment.addView(tile);
+
+        animatorX.start();
+        animatorY.start();
+    }
+
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.single_player_imagebutton:
@@ -195,6 +313,9 @@ public class MainActivity extends BaseGameActivity {
             case R.id.settings_button:
                 Intent showSettings = new Intent(this, SettingsActivity.class);
                 startActivity(showSettings);
+                break;
+            case R.id.logo_imageview:
+                animateFlyingTiles(150, 10);
                 break;
         }
     }
@@ -322,7 +443,7 @@ public class MainActivity extends BaseGameActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.prompt_choose_gift)).setItems(R.array.gifts, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent ;
+                Intent intent;
                 // The 'which' argument contains the index position
                 // of the selected item
                 switch (which) {
@@ -566,6 +687,14 @@ public class MainActivity extends BaseGameActivity {
                 @Override
                 public void onClick(View v) {
                     ((MainActivity)getActivity()).showThemesDialog();
+                }
+            });
+
+            ImageView appLogo = (ImageView) rootView.findViewById(R.id.logo_imageview);
+            appLogo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((MainActivity) getActivity()).onClick(view);
                 }
             });
 
