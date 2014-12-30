@@ -33,6 +33,13 @@
         android:layout_alignParentRight="true"
         android:gravity="center_horizontal"/>
 
+    <TextView
+        android:id="@+id/time_left_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:visibility="invisible"/>
+
     <GridLayout
         android:id="@+id/grid_layout"
         android:layout_width="wrap_content"

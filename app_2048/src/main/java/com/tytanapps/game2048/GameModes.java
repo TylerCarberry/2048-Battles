@@ -349,7 +349,7 @@ public class GameModes
 		game.setUndoLimit(-1);
 		game.setPowerupLimit(5);
 		game.setTimeLimit(30);
-		//game.setSurvivalMode();
+		game.setSurvivalMode();
 		game.cornerMode();
 		game.setXMode();
 		game.setDynamicTileSpawning(true);

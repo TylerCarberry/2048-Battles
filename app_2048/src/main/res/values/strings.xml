@@ -42,7 +42,7 @@
     <string name="mode_desc_practice">Unlimited undos and powerups. Warns you before you lose.</string>
     <string name="mode_desc_pro">No Undos\nNo Powerups</string>
     <string name="mode_desc_rush">Higher value tiles appear</string>
-    <string name="mode_desc_survival">30 seconds time limit, combine tiles for more time **Coming Soon**</string>
+    <string name="mode_desc_survival">30 seconds time limit, combine tiles for more time</string>
     <string name="mode_desc_x">X tile cannot be combined</string>
     <string name="mode_desc_corner">Immovable tiles in the corner</string>
     <string name="mode_desc_speed">Tiles appear every second. If the board fills, you lose</string>

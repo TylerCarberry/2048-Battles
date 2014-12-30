@@ -432,6 +432,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     protected void updateTextviews() {
         TextView turnTextView = (TextView) getView().findViewById(R.id.turn_textview);
         TextView scoreTextView = (TextView) getView().findViewById(R.id.score_textview);
+        TextView timeLeftTextView = (TextView) getView().findViewById(R.id.time_left_textview);
         TextView undosTextView = (TextView) getView().findViewById(R.id.undos_textview);
         TextView powerupsTextView = (TextView) getView().findViewById(R.id.powerups_textview);
         TextView activeAttacksTextView = (TextView) getView().findViewById(R.id.active_attacks_textview);
@@ -445,6 +446,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
             // Update the score
             scoreTextView.setText(getString(R.string.score) + ": " + game.getScore());
+
+            timeLeftTextView.setVisibility((game.getSurvivalMode() ? View.VISIBLE : View.INVISIBLE));
+            timeLeftTextView.setText(""+getSecondsRemaining());
 
             // Update the undos left
             int undosLeft = game.getUndosRemaining();
