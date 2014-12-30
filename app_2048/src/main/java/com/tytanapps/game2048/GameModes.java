@@ -227,8 +227,6 @@ public class GameModes
 	public static Game rushMode()
 	{
 		Game game = new Game();
-        game.setUndoLimit(5);
-		game.setPowerupLimit(3);
 		game.setDynamicTileSpawning(true);
 		game.setGameModeId(RUSH_MODE_ID);
         game.setUseItemInventory(true);
@@ -244,10 +242,9 @@ public class GameModes
 	{
 		Game game = new Game();
 		game.setMoveLimit(-1);
-		game.setUndoLimit(-1);
 		game.setTimeLimit(30);
-		game.setPowerupLimit(5);
 		game.setSurvivalMode();
+        game.setUseItemInventory(true);
 		game.setGameModeId(SURVIVAL_MODE_ID);
 
 		return game;
@@ -261,8 +258,6 @@ public class GameModes
 	{
 		Game game = new Game();
 		game.setMoveLimit(-1);
-		game.setUndoLimit(5);
-		game.setPowerupLimit(3);
 		game.setTimeLimit(-1);
 		game.setXMode();
 		game.setGameModeId(X_MODE_ID);
@@ -279,8 +274,6 @@ public class GameModes
 	{
 		Game game = new Game();
 		game.setMoveLimit(-1);
-		game.setUndoLimit(5);
-		game.setPowerupLimit(3);
 		game.setTimeLimit(-1);
 		game.cornerMode();
 		game.setGameModeId(CORNER_MODE_ID);
@@ -297,10 +290,9 @@ public class GameModes
 	{
 		Game game = new Game();
 		game.setMoveLimit(-1);
-		game.setUndoLimit(-1);
-		game.setPowerupLimit(5);
 		game.setTimeLimit(-1);
 		game.setSpeedMode(true);
+        game.setUseItemInventory(true);
 		game.setGameModeId(SPEED_MODE_ID);
 
 		return game;
@@ -346,14 +338,13 @@ public class GameModes
 	{
         Game game = new Game(5,5);
 		game.setMoveLimit(-1);
-		game.setUndoLimit(-1);
-		game.setPowerupLimit(5);
 		game.setTimeLimit(30);
 		game.setSurvivalMode();
 		game.cornerMode();
 		game.setXMode();
 		game.setDynamicTileSpawning(true);
 		game.setSpeedMode(true);
+        game.setUseItemInventory(true);
 		game.setGameModeId(CRAZY_MODE_ID);
 
 		return game;
@@ -365,8 +356,6 @@ public class GameModes
 	{
 		Game game = new Game();
 		game.setMoveLimit(-1);
-		game.setUndoLimit(5);
-        game.setPowerupLimit(3);
         game.setGameModeId(GHOST_MODE_ID);
         game.setUseItemInventory(true);
 

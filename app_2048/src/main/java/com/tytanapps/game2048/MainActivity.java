@@ -94,6 +94,19 @@ public class MainActivity extends BaseGameActivity {
         // Give the user a bonus if a day has past since they last played
         addWelcomeBackBonus();
 
+        // Used to debug only
+        if(false) {
+            try {
+                incrementPowerupInventory(5);
+                incrementUndoInventory(5);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         updateInventoryTextView();
         checkIfQuestActive();
         checkPendingPlayGifts();
