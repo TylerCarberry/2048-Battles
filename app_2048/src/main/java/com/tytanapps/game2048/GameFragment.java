@@ -630,8 +630,12 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         int tileValue = game.getGrid().get(tileLoc);
         tile.setTag(tileValue);
 
+        // Increment the time left on survival mode when tiles 8 or higher combine
+        // 8's combine --> +2 seconds
+        // 16's --> +3 seconds
+        // 32's --> +4 seconds ...
         if(game.getSurvivalMode() && tileValue >= 16)
-            incrementTimeLeft(tileValue / 4);
+            incrementTimeLeft((int) (Math.log10(tileValue/4)/Math.log10(2)));
 
         Drawable[] layers = new Drawable[2];
 
@@ -1422,19 +1426,25 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private void activateSurvivalMode() {
+        secondsRemaining = 30;
+
         final Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if(getSecondsRemaining() == 0) {
+
+                if(game.lost())
                     timer.cancel();
-                    getActivity().runOnUiThread(new Runnable() {
+                else
+                    if(getSecondsRemaining() == 0) {
+                        timer.cancel();
+                        getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             lost();
                         }
                     });
-                }
+                    }
                 else {
                     decrementTimeLeft(1);
                 }
