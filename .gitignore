@@ -22,3 +22,7 @@ app_2048/build/outputs/lint-results-release-fatal.html
 app_2048/build/outputs/lint-results-release-fatal.xml
 
 app_2048/manifest-merger-release-report.txt
+
+baseGameUtils/build/outputs/aar/baseGameUtils-debug.aar
+
+baseGameUtils/build/outputs/aar/baseGameUtils-release.aar

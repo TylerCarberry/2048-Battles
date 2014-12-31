@@ -13,6 +13,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,6 +37,8 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesActivityResultCodes;
+import com.google.android.gms.games.quest.Quest;
+import com.google.android.gms.games.quest.QuestUpdateListener;
 import com.google.android.gms.games.quest.Quests;
 import com.google.android.gms.games.request.GameRequest;
 import com.google.android.gms.games.request.Requests;
@@ -50,11 +53,14 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 
-public class MainActivity extends BaseGameActivity {
+public class MainActivity extends BaseGameActivity implements QuestUpdateListener {
+
+    private final static String LOG_TAG = MainActivity.class.getSimpleName();
 
     private final static int SEND_REQUEST_CODE = 1001;
     private final static int SEND_GIFT_CODE = 1002;
     private final static int SHOW_INBOX = 1003;
+    private final static int QUEST_CODE = 1004;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,12 +112,16 @@ public class MainActivity extends BaseGameActivity {
             }
         }
 
-
         updateInventoryTextView();
-        checkIfQuestActive();
-        checkPendingPlayGifts();
 
         super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        checkIfQuestActive();
+        checkPendingPlayGifts();
+        super.onResume();
     }
 
     /**
@@ -382,7 +392,7 @@ public class MainActivity extends BaseGameActivity {
         Intent questsIntent = Games.Quests.getQuestsIntent(getApiClient(), questParams);
 
         // 0 is an arbitrary integer
-        startActivityForResult(questsIntent, 0);
+        startActivityForResult(questsIntent, QUEST_CODE);
     }
 
     protected void showHelpDialog() {
@@ -481,7 +491,7 @@ public class MainActivity extends BaseGameActivity {
 
     protected void checkIfQuestActive() {
         PendingResult<Quests.LoadQuestsResult> s = Games.Quests.load(getApiClient(),
-                new int[]{Games.Quests.SELECT_OPEN, Quests.SELECT_ACCEPTED},
+                new int[]{Games.Quests.SELECT_OPEN, Quests.SELECT_ACCEPTED, Quests.SELECT_COMPLETED_UNCLAIMED},
                 Quests.SORT_ORDER_ENDING_SOON_FIRST, false);
 
         s.setResultCallback(new ResultCallback<Quests.LoadQuestsResult>() {
@@ -507,6 +517,51 @@ public class MainActivity extends BaseGameActivity {
     }
 
     @Override
+    public void onQuestCompleted(Quest quest) {
+
+        Toast.makeText(this, getString(R.string.quest_completed), Toast.LENGTH_SHORT).show();
+
+        // Claim the quest reward.
+        Games.Quests.claim(this.getApiClient(), quest.getQuestId(),
+                quest.getCurrentMilestone().getMilestoneId());
+
+        // Process the RewardData to provision a specific reward.
+        try {
+            // The reward will be in the form [integer][character]
+            // The integer is the number of items gained
+            // The character is either u or p for undos or powerups
+            String rewardRaw = new
+                    String(quest.getCurrentMilestone().getCompletionRewardData(), "UTF-8");
+
+            int rewardAmount = Character.getNumericValue(rewardRaw.charAt(0));
+            String reward = "";
+
+            if(rewardRaw.charAt(1) == 'p') {
+                reward = "Powerup";
+                incrementPowerupInventory(rewardAmount);
+            }
+
+            else {
+                if(rewardRaw.charAt(1) == 'u') {
+                    reward = "Undo";
+                    incrementUndoInventory(rewardAmount);
+                }
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Quest Completed");
+            builder.setMessage("You gained " + rewardAmount + " " + reward);
+            builder.create().show();
+
+            animateFlyingTiles(150, 10);
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Unable to claim quest reward", Toast.LENGTH_LONG).show();
+            Log.w(LOG_TAG, e.toString());
+        }
+    }
+
+    @Override
     public void onSignInFailed() {
 
     }
@@ -526,6 +581,9 @@ public class MainActivity extends BaseGameActivity {
         if(signOutButton != null)
             signOutButton.setVisibility(View.VISIBLE);
             */
+
+        // Start the Quest listener.
+        Games.Quests.registerQuestUpdateListener(this.getApiClient(), this);
     }
 
     private void handleInboxResult(ArrayList<GameRequest> gameRequests) {
@@ -534,6 +592,9 @@ public class MainActivity extends BaseGameActivity {
             String message;
 
             if(new String(request.getData()).equals("p")) {
+
+                animateFlyingTiles(150, 10);
+
                 message = String.format(getString(R.string.powerup_gift_received), senderName);
                 try {
                     incrementPowerupInventory(1);
@@ -544,6 +605,9 @@ public class MainActivity extends BaseGameActivity {
                 }
             }
             else {
+
+                animateFlyingTiles(150, 10);
+
                 message = String.format(getString(R.string.undo_gift_received), senderName);
                 try {
                     incrementUndoInventory(1);
@@ -596,6 +660,15 @@ public class MainActivity extends BaseGameActivity {
                     // handle failure to process inbox result
                     if(resultCode != Activity.RESULT_CANCELED)
                         Toast.makeText(this, getString(R.string.error_claim_gift), Toast.LENGTH_LONG).show();
+                }
+                break;
+            case QUEST_CODE:
+                //Toast.makeText(this, "Quest code", Toast.LENGTH_LONG).show();
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    Quest quest = data.getParcelableExtra(Quests.EXTRA_QUEST);
+
+                    if(quest.getState() == Quest.STATE_COMPLETED)
+                        onQuestCompleted(quest);
                 }
                 break;
         }
