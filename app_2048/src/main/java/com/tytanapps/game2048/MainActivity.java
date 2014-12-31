@@ -1,6 +1,7 @@
 package com.tytanapps.game2048;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -523,10 +524,47 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         pendingGifts.setResultCallback(new ResultCallback<Requests.LoadRequestsResult>() {
             @Override
             public void onResult(Requests.LoadRequestsResult loadRequestsResult) {
+                final ImageButton inboxButton = (ImageButton) findViewById(R.id.inbox_button);
+
                 if (loadRequestsResult.getRequests(GameRequest.TYPE_GIFT).getCount() > 0) {
-                    Button inboxButton = (Button) findViewById(R.id.inbox_button);
+                    if(inboxButton.getVisibility() == View.VISIBLE)
+                        return;
+
                     inboxButton.setVisibility(View.VISIBLE);
+
+                    inboxButton.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+
+                            switch(event.getAction()){
+                                case MotionEvent.ACTION_UP:
+                                    inboxButton.setImageResource(R.drawable.inbox_button);
+                                    break;
+                                case MotionEvent.ACTION_DOWN:
+                                    inboxButton.setImageResource(R.drawable.inbox_button_pressed);
+                                    break;
+                            }
+
+                            return false;
+                        }
+                    });
+
+                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(inboxButton, View.SCALE_X, 0.90f);
+                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(inboxButton, View.SCALE_Y, 0.90f);
+
+                    scaleX.setDuration(1000);
+                    scaleY.setDuration(1000);
+                    scaleX.setRepeatCount(ObjectAnimator.INFINITE);
+                    scaleX.setRepeatMode(ObjectAnimator.REVERSE);
+                    scaleY.setRepeatCount(ObjectAnimator.INFINITE);
+                    scaleY.setRepeatMode(ObjectAnimator.REVERSE);
+
+                    AnimatorSet scaleDown = new AnimatorSet();
+                    scaleDown.play(scaleX).with(scaleY);
+                    scaleDown.start();
                 }
+                else
+                    inboxButton.setVisibility(View.GONE);
             }
         });
     }
@@ -703,31 +741,68 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            View.OnTouchListener gamesOnClickListener = new View.OnTouchListener() {
+            final ImageButton achievementsButton = (ImageButton) rootView.findViewById(R.id.achievements_button);
+            final ImageButton leaderboardsButton = (ImageButton) rootView.findViewById(R.id.leaderboards_button);
+            final ImageButton giftsButton = (ImageButton) rootView.findViewById(R.id.gifts_button);
+            final ImageButton questsButton = (ImageButton) rootView.findViewById(R.id.quests_button);
+            ImageButton themesButton = (ImageButton) rootView.findViewById(R.id.themes_button);
+
+
+            achievementsButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        view.setBackgroundColor(getResources().getColor(R.color.PaleTurquoise));
+                        achievementsButton.setImageResource(R.drawable.games_achievements_pressed);
                     }
                     else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        view.setBackgroundColor(getResources().getColor(R.color.LightBlue));
+                        achievementsButton.setImageResource(R.drawable.games_achievements);
                         ((MainActivity)getActivity()).playGames(view);
                     }
                     return true;
                 }
-            };
+            });
 
-            ImageButton achievementsButton = (ImageButton) rootView.findViewById(R.id.achievements_button);
-            ImageButton leaderboardsButton = (ImageButton) rootView.findViewById(R.id.leaderboards_button);
-            ImageButton giftsButton = (ImageButton) rootView.findViewById(R.id.gifts_button);
-            ImageButton questsButton = (ImageButton) rootView.findViewById(R.id.quests_button);
-            ImageButton themesButton = (ImageButton) rootView.findViewById(R.id.themes_button);
+            leaderboardsButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        leaderboardsButton.setImageResource(R.drawable.games_leaderboards_pressed);
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        leaderboardsButton.setImageResource(R.drawable.games_leaderboards);
+                        ((MainActivity)getActivity()).playGames(view);
+                    }
+                    return true;
+                }
+            });
 
+            giftsButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        giftsButton.setImageResource(R.drawable.games_gifts_pressed);
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        giftsButton.setImageResource(R.drawable.games_gifts);
+                        ((MainActivity)getActivity()).playGames(view);
+                    }
+                    return true;
+                }
+            });
 
-            achievementsButton.setOnTouchListener(gamesOnClickListener);
-            leaderboardsButton.setOnTouchListener(gamesOnClickListener);
-            giftsButton.setOnTouchListener(gamesOnClickListener);
-            questsButton.setOnTouchListener(gamesOnClickListener);
+            questsButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        questsButton.setImageResource(R.drawable.games_quests_pressed);
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        questsButton.setImageResource(R.drawable.games_quests);
+                        ((MainActivity)getActivity()).playGames(view);
+                    }
+                    return true;
+                }
+            });
 
 
             rootView.findViewById(R.id.single_player_imagebutton).setOnTouchListener(new View.OnTouchListener() {

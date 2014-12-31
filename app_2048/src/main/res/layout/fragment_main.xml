@@ -80,16 +80,6 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:background="@drawable/help_button"/>
 
-        <Button
-            android:id="@+id/inbox_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/help_button"
-            android:layout_alignParentRight="true"
-            android:onClick="playGames"
-            android:visibility="gone"
-            android:text="Inbox"/>
-
         <ImageButton
             android:id="@+id/themes_button"
             android:layout_width="wrap_content"
@@ -196,6 +186,17 @@
             android:layout_weight="1"
             android:src="@drawable/games_quests"
             android:background="@color/LightBlue" />
+
+        <ImageButton
+            android:id="@+id/inbox_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/inbox_button"
+            android:onClick="playGames"
+            android:background="@color/LightBlue"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"/>
 
     </LinearLayout>
 
