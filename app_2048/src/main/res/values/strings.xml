@@ -3,7 +3,7 @@
 
     <string name="app_name">2048</string>
     <string name="intro">Welcome to 2048!</string>
-    <string name="creator_name">By Tyler Carberry</string>
+    <string name="creator_name">Made By Tyler Carberry</string>
     <string name="action_settings">Settings</string>
     <string name="how_to_play">How To Play</string>
     <string name="action_stats">Game Stats</string>
@@ -119,5 +119,6 @@
     <string name="quest_completed">Quest Completed</string>
     <string name="opponent_lost">Your opponent has lost</string>
     <string name="random_shuffle">Random Shuffle</string>
+    <string name="open_source">This app is open source. Tap to see the code.</string>
 
 </resources>

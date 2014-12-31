@@ -57,6 +57,9 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
 
+    public static final String GITHUB_URL = "https://github.com/TylerCarberry/2048-for-Android";
+    public static final String APP_URL = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
+
     private final static int SEND_REQUEST_CODE = 1001;
     private final static int SEND_GIFT_CODE = 1002;
     private final static int SHOW_INBOX = 1003;
@@ -402,13 +405,16 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
+        int padding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
+
+        // The text instructions
         TextView textView = new TextView(this);
         textView.setText(getString(R.string.instructions_to_play));
         textView.setTextSize(22);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
-        textView.setPadding(0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin),
-                0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin));
+        textView.setPadding(0, padding, 0, padding);
 
+        // VideoView with game animation how to play
         VideoView videoview = new VideoView(this);
         Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.how_to_play_2048);
 
@@ -422,15 +428,24 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         videoview.setZOrderOnTop(true);
         videoview.start();
 
-        TextView creatorName = new TextView(this);
-        creatorName.setText(getString(R.string.creator_name));
-        creatorName.setTextSize(17);
-        int padding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
-        creatorName.setPadding(padding, padding, padding, padding);
+
+        TextView openSource = new TextView(this);
+        openSource.setText(getString(R.string.open_source) + " " + getString(R.string.creator_name));
+        openSource.setTextSize(17);
+        openSource.setPadding(padding, padding, padding, padding);
+
+        openSource.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(GITHUB_URL));
+                startActivity(i);
+            }
+        });
 
         linearLayout.addView(textView);
         linearLayout.addView(videoview);
-        linearLayout.addView(creatorName);
+        linearLayout.addView(openSource);
 
         builder.setView(linearLayout);
         builder.create().show();

@@ -15,7 +15,8 @@ public class GameActivity extends BaseGameActivity {
 	
 	private final static String LOG_TAG = GameActivity.class.getSimpleName();
 
-	public static final String APP_URL = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
+    public static final String GITHUB_URL = "https://github.com/TylerCarberry/2048-for-Android";
+    public static final String APP_URL = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
 
     // Handles the share button in the menu bar
     ShareActionProvider mShareActionProvider;
