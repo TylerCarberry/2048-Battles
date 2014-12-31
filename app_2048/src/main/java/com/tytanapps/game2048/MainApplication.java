@@ -1,8 +1,10 @@
 package com.tytanapps.game2048;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
 
 import java.util.HashMap;
@@ -10,8 +12,54 @@ import java.util.HashMap;
 public class MainApplication extends Application{
 
 	private static final String PROPERTY_ID = "UA-53962546-1";
-	
-	/**
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        getTracker(TrackerName.APP_TRACKER);
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+        analytics.setLogger(new Logger() {
+            @Override
+            public void verbose(String s) {
+                Log.v("a",s);
+            }
+
+            @Override
+            public void info(String s) {
+                Log.i("a",s);
+            }
+
+            @Override
+            public void warn(String s) {
+                Log.w("a",s);
+            }
+
+            @Override
+            public void error(String s) {
+                Log.e("a",s);
+            }
+
+            @Override
+            public void error(Exception e) {
+                Log.v("a",e.toString());
+            }
+
+            @Override
+            public void setLogLevel(int i) {
+
+            }
+
+            @Override
+            public int getLogLevel() {
+                return 0;
+            }
+        });
+        analytics.enableAutoActivityReports(this);
+    }
+
+
+
+    /**
 	 * Enum used to identify the tracker that needs to be used for tracking.
 	 *
 	 * A single tracker is usually enough for most purposes. In case you do need multiple trackers,
@@ -30,7 +78,7 @@ public class MainApplication extends Application{
 		if (!mTrackers.containsKey(trackerId)) {
 			GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
             analytics.enableAutoActivityReports(this);
-			Tracker t = (trackerId == TrackerName.APP_TRACKER) ? analytics.newTracker(R.xml.app_tracker)
+            Tracker t = (trackerId == TrackerName.APP_TRACKER) ? analytics.newTracker(R.xml.app_tracker)
 					: analytics.newTracker(PROPERTY_ID);
 			mTrackers.put(trackerId, t);
 		}

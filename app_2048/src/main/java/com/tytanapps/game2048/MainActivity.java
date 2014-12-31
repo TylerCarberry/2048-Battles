@@ -34,6 +34,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
@@ -450,6 +452,20 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         builder.setView(linearLayout);
         builder.create().show();
+
+        sendAnalyticsEvent("MainActivity", "Button Press", "Help");
+    }
+
+    private void sendAnalyticsEvent(String categoryId, String actionId, String labelId) {
+        Log.d(LOG_TAG, "Sent analyticsEvent");
+
+        // Get tracker.
+        Tracker t = ((MainApplication)getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
+        // Build and send an Event.
+        t.send(new HitBuilders.EventBuilder()
+                .setCategory(categoryId)
+                .setAction(actionId)
+                .setLabel(labelId).build());
     }
 
     protected void showThemesDialog() {
