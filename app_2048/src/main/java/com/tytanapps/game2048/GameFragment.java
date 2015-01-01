@@ -214,8 +214,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         // Start the multiplayer aspects of the game if necessary
         if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
-            // Create the game timer
-            ((MultiplayerActivity) getActivity()).createMultiplayerTimer(MultiplayerActivity.MULTIPLAYER_GAME_LENGTH);
+
+            createCountdown(3000);
+
             // If the user chose to hide their identity do not show them their own identity
             // This confirms the change to the user as they cannot see their opponents screen
             if(! prefs.getBoolean("hideIdentity", false)) {
@@ -1682,6 +1683,15 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         try {
             game = (Game) Save.load(currentGameFile);
             gameStats = (GameData) Save.load(gameStatsFile);
+
+            if(game.getUseItemInventory()) {
+                game.setUndoLimit(gameStats.getUndoInventory());
+                game.setPowerupLimit(gameStats.getPowerupInventory());
+            }
+
+            if(game != null)
+                updateGame();
+
         } catch (ClassNotFoundException e) {
             Log.e(LOG_TAG, "Class not found exception in load");
             game = new Game();
@@ -1690,14 +1700,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             game = new Game();
             gameStats = new GameData();
         }
-
-        if(game.getUseItemInventory()) {
-            game.setUndoLimit(gameStats.getUndoInventory());
-            game.setPowerupLimit(gameStats.getPowerupInventory());
-        }
-
-
-        updateGame();
     }
 
     /**
@@ -1734,6 +1736,56 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             ((TextView) getView().findViewById(R.id.opponent_name)).setText(opponentName);
 
     }
+
+    private void setCountdown(double countdownMilliseconds) {
+        Log.d(LOG_TAG, "countdown milliseconds " + countdownMilliseconds);
+
+        TextView countdownTextView = ((TextView) getView().findViewById(R.id.countdown_textview));
+        countdownTextView.setText(""+((int)countdownMilliseconds/1000));
+        countdownTextView.setVisibility(View.VISIBLE);
+    }
+
+    protected void createCountdown(final double milliseconds) {
+
+        game.setGrid(new Grid(4,4));
+        updateGame();
+
+        final Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            int times = 0;
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setCountdown(milliseconds - times++ * 1000);
+                    }
+                });
+                if(times >= milliseconds / 1000) {
+                    timer.cancel();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            endCountdown();
+                        }
+                    });
+                }
+
+            }
+        }, 0, 1000);
+    }
+
+    private void endCountdown() {
+        getView().findViewById(R.id.countdown_textview).setVisibility(View.GONE);
+
+        // Create the game timer
+        ((MultiplayerActivity) getActivity()).createMultiplayerTimer(MultiplayerActivity.MULTIPLAYER_GAME_LENGTH);
+
+        game = GameModes.multiplayerMode();
+        updateGame();
+    }
+
+
 
     public static Bitmap loadBitmapFromView(View v, int width, int height) {
         Bitmap b = Bitmap.createBitmap(width , height, Bitmap.Config.ARGB_8888);

@@ -210,6 +210,8 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         ft.addToBackStack(null);
         ft.commit();
 
+        //gameFragment.createCountdown(3000);
+
         multiplayerActive = true;
 
         if(! hideIdentity) {
