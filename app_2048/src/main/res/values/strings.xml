@@ -120,5 +120,6 @@
     <string name="opponent_lost">Your opponent has lost</string>
     <string name="random_shuffle">Random Shuffle</string>
     <string name="open_source">This app is open source. Tap to see the code.</string>
+    <string name="congratulations">Congratulations</string>
 
 </resources>

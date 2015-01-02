@@ -9,6 +9,7 @@ import android.app.Fragment;
 import android.app.backup.BackupManager;
 import android.app.backup.RestoreObserver;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,20 +21,27 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
+import android.view.Display;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
@@ -122,6 +130,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             final ImageButton undoButton = (ImageButton) rootView.findViewById(R.id.undo_button);
             undoButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    //showCongratulationsDialog(2048);
                     undo();
                 }
             });
@@ -129,6 +138,15 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             final ImageButton restartButton = (ImageButton) rootView.findViewById(R.id.restart_button);
             restartButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    /*
+                    Grid newGrid = game.getGrid();
+                    List<Location> tiles = newGrid.toList();
+                    for (Location tile : tiles)
+                        newGrid.set(tile, newGrid.get(tile) * 2);
+                    game.setGrid(newGrid);
+                    updateGame();
+                    */
+
                     restartGame();
                 }
             });
@@ -414,10 +432,12 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
 
         // If a new highest tile is created this move unlock an achievement
-        if(game.highestPiece() > highestTile && game.getGameModeId() == GameModes.NORMAL_MODE_ID)
-            if(game.highestPiece() >= 128)
+        if(game.highestPiece() > highestTile) {
+            if (game.highestPiece() >= 128 && game.getGameModeId() == GameModes.NORMAL_MODE_ID)
                 unlockAchievementNewHighestTile(game.highestPiece());
-
+            if(game.highestPiece() == 2048)
+                showCongratulationsDialog(game.highestPiece());
+        }
 
         if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
                 ((MultiplayerActivity) getActivity()).sendMessage("s" + game.getScore(), false);
@@ -809,6 +829,184 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             ((GameActivity) getActivity()).displayInterstitial();
     }
 
+    private void showCongratulationsDialog(final int tile) {
+        animateFlyingTiles(150,15);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getString(R.string.congratulations));
+
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        int padding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
+
+        // The text instructions
+        TextView textView = new TextView(getActivity());
+
+        // TODO: use strings.xml
+        textView.setText(tile + " tile reached!");
+
+        textView.setTextSize(22);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        textView.setPadding(0, padding, 0, padding);
+
+        ImageView tileImageView = new ImageView(getActivity());
+        tileImageView.setPadding(padding, padding, padding, padding);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER;
+        tileImageView.setLayoutParams(layoutParams);
+        tileImageView.setImageResource(getTileIconResource(tile));
+
+
+        Button continuePlayingButton = new Button(getActivity());
+        continuePlayingButton.setText("Continue Playing");
+
+
+        Button shareButton = new Button(getActivity());
+        shareButton.setText("Brag");
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "I just reached a " + tile + " tile in 2048 Battles! Try to beat me! " + MainActivity.APP_URL);
+                shareIntent.setType("text/plain");
+                startActivity(shareIntent);
+
+                sendAnalyticsEvent("GameFragment", "Congratulations Dialog", "Share Button");
+                if(getApiClient().isConnected())
+                    Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_brag_to_your_friends));
+            }
+        });
+
+        linearLayout.addView(textView);
+        linearLayout.addView(tileImageView);
+        linearLayout.addView(continuePlayingButton);
+        linearLayout.addView(shareButton);
+
+        builder.setView(linearLayout);
+
+        final AlertDialog alertDialog = builder.create();
+
+        continuePlayingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
+    }
+
+    public void animateFlyingTiles(final int amount, final int delay) {
+        final Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            int times = 0;
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        animateFlyingTile();
+                    }
+                });
+                times++;
+                if(times > amount)
+                    timer.cancel();
+            }
+        }, delay, delay);
+    }
+
+    public void animateFlyingTile() {
+        final RelativeLayout mainFragment = (RelativeLayout) getView().findViewById(R.id.game_fragment);
+        final ImageView tile = new ImageView(getActivity());
+
+        double rand = Math.random();
+        if(rand < 0.1)
+            tile.setBackgroundResource(R.drawable.tile_2);
+        else if(rand < 0.2)
+            tile.setBackgroundResource(R.drawable.tile_4);
+        else if(rand < 0.3)
+            tile.setBackgroundResource(R.drawable.tile_8);
+        else if(rand < 0.4)
+            tile.setBackgroundResource(R.drawable.tile_16);
+        else if(rand < 0.5)
+            tile.setBackgroundResource(R.drawable.tile_32);
+        else if(rand < 0.6)
+            tile.setBackgroundResource(R.drawable.tile_64);
+        else if(rand < 0.7)
+            tile.setBackgroundResource(R.drawable.tile_256);
+        else if(rand < 0.8)
+            tile.setBackgroundResource(R.drawable.tile_512);
+        else if(rand < 0.9)
+            tile.setBackgroundResource(R.drawable.tile_1024);
+        else
+            tile.setBackgroundResource(R.drawable.tile_2048);
+
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+
+        int startingX, startingY, endingX, endingY;
+
+        if(Math.random() > 0.5) {
+            startingX = (int) (Math.random() * display.getWidth()) - 200;
+            startingY = -200;
+        }
+        else {
+            startingX = -200;
+            startingY = (int) (Math.random() * display.getHeight()) - 200;
+        }
+
+        if(Math.random() > 0.5) {
+            endingX = (int) (Math.random() * display.getWidth()) + 200;
+            endingY = display.getHeight() + 200;
+        }
+        else {
+            endingX = display.getWidth() + 200;
+            endingY = (int) (Math.random() * display.getHeight() + 200);
+        }
+
+        if(Math.random() > 0.5) {
+            int temp = startingX;
+            startingX = endingX;
+            endingX = temp;
+
+            temp = startingY;
+            startingY = endingY;
+            endingY = temp;
+        }
+
+        ObjectAnimator animatorX = ObjectAnimator.ofFloat(tile, View.TRANSLATION_X, endingX - startingX);
+        ObjectAnimator animatorY = ObjectAnimator.ofFloat(tile, View.TRANSLATION_Y, endingY - startingY);
+
+        animatorX.setDuration(1000);
+        animatorY.setDuration(1000);
+
+        animatorX.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mainFragment.removeView(tile);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {}
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
+
+        RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(startingX, startingY, 0, 0);
+        tile.setLayoutParams(layoutParams);
+
+        mainFragment.addView(tile);
+
+        animatorX.start();
+        animatorY.start();
+    }
+
     /**
      * Updates the leaderboards with the new score
      * @param score The final score of the game
@@ -1114,7 +1312,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
 
 
-        View gameActivity = getView().findViewById(R.id.game_activity);
+        View gameActivity = getView().findViewById(R.id.game_fragment);
         gameActivity.setOnTouchListener(new View.OnTouchListener(){
 
             @Override
@@ -1129,7 +1327,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     private void clearTileListeners() {
         animationInProgress = false;
-        (getView().findViewById(R.id.game_activity)).setOnTouchListener(new View.OnTouchListener() {
+        (getView().findViewById(R.id.game_fragment)).setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 return onTouchEvent(event);
             }
@@ -1787,8 +1985,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         updateGame();
     }
 
-
-
     public static Bitmap loadBitmapFromView(View v, int width, int height) {
         Bitmap b = Bitmap.createBitmap(width , height, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
@@ -1943,6 +2139,16 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         Log.w(LOG_TAG, "GameFragment is not a member of an activity that extends BaseGameActivity");
 
         return null;
+    }
+
+    private void sendAnalyticsEvent(String categoryId, String actionId, String labelId) {
+        // Get tracker.
+        Tracker t = ((MainApplication)getActivity().getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
+        // Build and send an Event.
+        t.send(new HitBuilders.EventBuilder()
+                .setCategory(categoryId)
+                .setAction(actionId)
+                .setLabel(labelId).build());
     }
 
     /*

@@ -229,15 +229,12 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 times++;
                 if(times > amount)
                     timer.cancel();
-
-
             }
         }, delay, delay);
     }
 
     public void animateFlyingTile() {
         final RelativeLayout mainFragment = (RelativeLayout) findViewById(R.id.main_fragment);
-
         final ImageView tile = new ImageView(this);
 
         double rand = Math.random();
@@ -302,16 +299,14 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         animatorX.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) {}
-
-            @Override
             public void onAnimationEnd(Animator animation) {
                 mainFragment.removeView(tile);
             }
 
             @Override
+            public void onAnimationStart(Animator animation) {}
+            @Override
             public void onAnimationCancel(Animator animation) {}
-
             @Override
             public void onAnimationRepeat(Animator animation) {}
         });
@@ -457,8 +452,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     }
 
     private void sendAnalyticsEvent(String categoryId, String actionId, String labelId) {
-        Log.d(LOG_TAG, "Sent analyticsEvent");
-
         // Get tracker.
         Tracker t = ((MainApplication)getApplication()).getTracker(MainApplication.TrackerName.APP_TRACKER);
         // Build and send an Event.
