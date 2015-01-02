@@ -306,11 +306,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // Calculate the distance that tiles should move when the game is swiped
         calculateDistances();
 
+        final Game lastGame = game.clone();
+
         // This is compared to the highest tile after the move in order to unlock achievements
         int highestTile = game.highestPiece();
-
-        // Save the game history before each move
-        game.saveGameInHistory();
 
         // An list of the move animations to play
         ArrayList<ObjectAnimator> translateAnimations = new ArrayList<ObjectAnimator>();
@@ -390,6 +389,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 }
 
                 addTile();
+
+                // Save the game history before each move
+                game.saveLastGameToHistory(lastGame);
 
                 if(game.lost())
                     lost();

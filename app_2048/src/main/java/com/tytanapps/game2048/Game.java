@@ -343,6 +343,10 @@ public class Game implements java.io.Serializable
 	public void saveGameInHistory() {
 		history.push(board.clone(), score);
 	}
+
+    public void saveLastGameToHistory(Game game) {
+        history.push(game.getGrid().clone(), game.getScore());
+    }
 	
 	
 	/**
