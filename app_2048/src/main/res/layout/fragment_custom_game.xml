@@ -61,6 +61,36 @@
         android:layout_below="@id/xmode_checkbox"
         android:layout_alignParentRight="true" />
 
+    <CheckBox
+        android:id="@+id/arcade_mode_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Arcade Mode"
+        android:layout_below="@+id/corner_mode_checkbox"
+        android:layout_alignParentRight="true" />
 
+    <CheckBox
+        android:id="@+id/speed_mode_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Speed Mode"
+        android:layout_below="@+id/arcade_mode_checkbox"
+        android:layout_alignParentRight="true" />
+
+    <CheckBox
+        android:id="@+id/survival_mode_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Survival Mode"
+        android:layout_below="@+id/speed_mode_checkbox"
+        android:layout_alignParentRight="true" />
+
+    <CheckBox
+        android:id="@+id/rush_mode_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rush Mode"
+        android:layout_below="@+id/survival_mode_checkbox"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

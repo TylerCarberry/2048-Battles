@@ -243,7 +243,7 @@ public class GameModes
 		Game game = new Game();
 		game.setMoveLimit(-1);
 		game.setTimeLimit(30);
-		game.setSurvivalMode();
+		game.enableSurvivalMode();
         game.setUseItemInventory(true);
 		game.setGameModeId(SURVIVAL_MODE_ID);
 
@@ -339,7 +339,7 @@ public class GameModes
         Game game = new Game(5,5);
 		game.setMoveLimit(-1);
 		game.setTimeLimit(30);
-		game.setSurvivalMode();
+		game.enableSurvivalMode();
 		game.enableCornerMode();
 		game.enableXMode();
 		game.setDynamicTileSpawning(true);

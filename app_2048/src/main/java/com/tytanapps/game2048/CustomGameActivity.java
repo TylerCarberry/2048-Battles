@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,17 +72,23 @@ public class CustomGameActivity extends Activity {
         int height = ((NumberPicker)findViewById(R.id.height_number_picker)).getValue();
         boolean xmode = ((CheckBox)findViewById(R.id.xmode_checkbox)).isChecked();
         boolean cornerMode = ((CheckBox)findViewById(R.id.corner_mode_checkbox)).isChecked();
+        boolean speedMode = ((CheckBox)findViewById(R.id.speed_mode_checkbox)).isChecked();
+        boolean surivalMode = ((CheckBox)findViewById(R.id.survival_mode_checkbox)).isChecked();
+        boolean rushMode = ((CheckBox)findViewById(R.id.rush_mode_checkbox)).isChecked();
 
+        if(! isCustomGameValid(width, height, xmode, cornerMode, speedMode, surivalMode, rushMode))
+            return;
 
         Game game = new Game(width, height);
 
         if(xmode)
             game.enableXMode();
-
         if(cornerMode)
             game.enableCornerMode();
-
-
+        if(surivalMode)
+            game.enableSurvivalMode();
+        game.setSpeedMode(speedMode);
+        game.setDynamicTileSpawning(rushMode);
 
         File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
         try {
@@ -95,6 +102,34 @@ public class CustomGameActivity extends Activity {
         startActivity(new Intent(this, GameActivity.class));
 
 
+    }
+
+    private boolean isCustomGameValid(int width, int height, boolean xmode, boolean cornerMode,
+                                      boolean speedMode, boolean surivalMode, boolean rushMode) {
+
+        if(width == 1 && height == 1) {
+            Toast.makeText(this, "The width and height can't both be 1", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        // If corner mode is enabled the width and height must be >2 and cannot both be 2
+        if(cornerMode && ((width == 2 && height == 2) || (width < 2 || height < 2))) {
+            Toast.makeText(this, "Corner Mode will not fit on that grid size", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if(xmode && width * height <= 2) {
+            Toast.makeText(this, "XMode cannot fit on that grid size", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if(xmode && cornerMode && width * height <= 7) {
+            Toast.makeText(this, "XMode and Corner Mode cannot fit on that grid size", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+
+        return true;
     }
 
     /**

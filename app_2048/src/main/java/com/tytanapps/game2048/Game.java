@@ -501,7 +501,7 @@ public class Game implements java.io.Serializable
 	/**
 	 *  The game increases the time limit when tiles >= 8 combine
 	 */
-	public void setSurvivalMode()
+	public void enableSurvivalMode()
 	{
 		survivalMode = true;
 		
