@@ -1,0 +1,66 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.tytanapps.game2048.CustomGameActivity$PlaceholderFragment">
+
+    <TextView
+        android:id="@+id/grid_size_prompt"
+        android:text="Grid Size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/width_number_picker"
+        android:layout_alignEnd="@+id/width_number_picker"
+        android:gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Game"
+        android:id="@+id/create_game_button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="onClick" />
+
+    <NumberPicker
+        android:id="@+id/height_number_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_below="@+id/grid_size_prompt"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <NumberPicker
+        android:id="@+id/width_number_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_below="@+id/grid_size_prompt"
+        android:layout_toRightOf="@+id/height_number_picker"
+        android:layout_toEndOf="@+id/height_number_picker" />
+
+    <CheckBox
+        android:id="@+id/xmode_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="XMode"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true" />
+
+    <CheckBox
+        android:id="@+id/corner_mode_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Corner Mode"
+        android:layout_below="@id/xmode_checkbox"
+        android:layout_alignParentRight="true" />
+
+
+
+</RelativeLayout>

@@ -341,6 +341,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             case R.id.logo_imageview:
                 animateFlyingTiles(150, 10);
                 break;
+            case R.id.custom_game_button:
+                startActivity(new Intent(this, CustomGameActivity.class));
         }
     }
 

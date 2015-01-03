@@ -121,5 +121,6 @@
     <string name="random_shuffle">Random Shuffle</string>
     <string name="open_source">This app is open source. Tap to see the code.</string>
     <string name="congratulations">Congratulations</string>
+    <string name="title_activity_custom_game">CustomGameActivity</string>
 
 </resources>

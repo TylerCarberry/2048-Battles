@@ -460,7 +460,7 @@ public class Game implements java.io.Serializable
 	 * This will bump existing pieces in the corners of the board
 	 * to random free locations
 	 */
-	public void cornerMode()
+	public void enableCornerMode()
 	{
 		int previousValue;
 		
@@ -484,7 +484,7 @@ public class Game implements java.io.Serializable
 	/**
 	 * Places an X on the board that can move but not combine 
 	 */
-	public void setXMode()
+	public void enableXMode()
 	{
 		List<Location> empty = board.getEmptyLocations();
 
@@ -1107,7 +1107,7 @@ public class Game implements java.io.Serializable
 
     /**
 	 * Changing this value does not affect the game. It is only for reference.
-	 * Use the methods such as cornerMode() or XMode() in addition
+	 * Use the methods such as enableCornerMode() or enableXMode() in addition
 	 * @param mode The game mode. Should use the GameModes class
 	 */
 	public void setGameModeId(int mode) {

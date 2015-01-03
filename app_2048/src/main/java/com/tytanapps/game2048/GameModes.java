@@ -259,7 +259,7 @@ public class GameModes
 		Game game = new Game();
 		game.setMoveLimit(-1);
 		game.setTimeLimit(-1);
-		game.setXMode();
+		game.enableXMode();
 		game.setGameModeId(X_MODE_ID);
         game.setUseItemInventory(true);
 
@@ -275,7 +275,7 @@ public class GameModes
 		Game game = new Game();
 		game.setMoveLimit(-1);
 		game.setTimeLimit(-1);
-		game.cornerMode();
+		game.enableCornerMode();
 		game.setGameModeId(CORNER_MODE_ID);
         game.setUseItemInventory(true);
 
@@ -340,8 +340,8 @@ public class GameModes
 		game.setMoveLimit(-1);
 		game.setTimeLimit(30);
 		game.setSurvivalMode();
-		game.cornerMode();
-		game.setXMode();
+		game.enableCornerMode();
+		game.enableXMode();
 		game.setDynamicTileSpawning(true);
 		game.setSpeedMode(true);
         game.setUseItemInventory(true);

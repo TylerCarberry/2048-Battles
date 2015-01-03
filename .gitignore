@@ -26,3 +26,5 @@ app_2048/manifest-merger-release-report.txt
 baseGameUtils/build/outputs/aar/baseGameUtils-debug.aar
 
 baseGameUtils/build/outputs/aar/baseGameUtils-release.aar
+
+app_2048/build/outputs/apk/manifest-merger-debug-report.txt
