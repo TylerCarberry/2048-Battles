@@ -5,4 +5,5 @@
     android:layout_height="match_parent"
     tools:context="com.tytanapps.game2048.MainActivity"
     tools:ignore="MergeRootFrame"
-    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+    android:background="@color/PrimaryBackground"/>

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+
+    <!-- These are the only two colors that are currently used in the app. -->
+    <color name="PrimaryBackground">#EAF7FC</color>
+    <color name="SecondaryBackground">#BDE6F6</color>
+
+
     <color name="White">#FFFFFF</color>
     <color name="Yellow">#FFFF00</color>
     <color name="Fuchsia">#FF00FF</color>
@@ -67,7 +73,7 @@
     <color name="PaleGoldenrod">#EEE8AA</color>
     <color name="Violet">#EE82EE</color>
     <color name="DarkSalmon">#E9967A</color>
-    <color name="Lavender">#E0C4E4</color>
+    <color name="Lavender">#EAF7FC</color>
     <color name="LightCyan">#E0FFFF</color>
     <color name="BurlyWood">#DEB887</color>
     <color name="Plum">#DDA0DD</color>

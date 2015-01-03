@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MyActivity"
-    tools:ignore="MergeRootFrame" >
+    tools:ignore="MergeRootFrame"
+    android:background="@color/PrimaryBackground">
 
     <fragment
         android:name="com.tytanapps.game2048.SelectModeActivity$PlaceholderFragment"

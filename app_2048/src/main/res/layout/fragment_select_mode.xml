@@ -6,8 +6,7 @@
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.app_2048.MainActivity$PlaceholderFragment"
-    android:background="@color/LightBlue">
+    tools:context="com.example.app_2048.MainActivity$PlaceholderFragment">
 
     <RelativeLayout
         android:id="@+id/relativeLayout1"

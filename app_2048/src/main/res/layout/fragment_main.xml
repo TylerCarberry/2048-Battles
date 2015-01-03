@@ -149,7 +149,7 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:layout_marginTop="0dp"
-        android:background="@color/LightBlue"
+        android:background="@color/SecondaryBackground"
         android:layout_alignParentBottom="true">
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
@@ -170,7 +170,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/games_achievements"
-            android:background="@color/LightBlue" />
+            android:background="@color/SecondaryBackground" />
 
         <ImageButton
             android:id="@+id/leaderboards_button"
@@ -178,7 +178,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/games_leaderboards"
-            android:background="@color/LightBlue" />
+            android:background="@color/SecondaryBackground" />
 
         <ImageButton
             android:id="@+id/gifts_button"
@@ -186,7 +186,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/games_gifts"
-            android:background="@color/LightBlue" />
+            android:background="@color/SecondaryBackground" />
 
         <ImageButton
             android:id="@+id/quests_button"
@@ -194,7 +194,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/games_quests"
-            android:background="@color/LightBlue" />
+            android:background="@color/SecondaryBackground" />
 
         <ImageButton
             android:id="@+id/inbox_button"
