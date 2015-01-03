@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/grid_size_prompt"
-        android:text="Grid Size"
+        android:text="@string/grid_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -21,7 +21,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Game"
+        android:text="@string/create_game"
         android:id="@+id/create_game_button"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
@@ -49,7 +49,7 @@
         android:id="@+id/xmode_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="XMode"
+        android:text="@string/mode_x"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true" />
 
@@ -57,7 +57,7 @@
         android:id="@+id/corner_mode_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Corner Mode"
+        android:text="@string/mode_corner"
         android:layout_below="@id/xmode_checkbox"
         android:layout_alignParentRight="true" />
 
@@ -65,7 +65,7 @@
         android:id="@+id/arcade_mode_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Arcade Mode"
+        android:text="@string/mode_arcade"
         android:layout_below="@+id/corner_mode_checkbox"
         android:layout_alignParentRight="true" />
 
@@ -73,7 +73,7 @@
         android:id="@+id/speed_mode_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Speed Mode"
+        android:text="@string/mode_speed"
         android:layout_below="@+id/arcade_mode_checkbox"
         android:layout_alignParentRight="true" />
 
@@ -81,7 +81,7 @@
         android:id="@+id/survival_mode_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Survival Mode"
+        android:text="@string/mode_survival"
         android:layout_below="@+id/speed_mode_checkbox"
         android:layout_alignParentRight="true" />
 
@@ -89,7 +89,7 @@
         android:id="@+id/rush_mode_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rush Mode"
+        android:text="@string/mode_rush"
         android:layout_below="@+id/survival_mode_checkbox"
         android:layout_alignParentRight="true" />
 

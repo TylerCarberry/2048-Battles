@@ -19,7 +19,7 @@ public class GameActivity extends BaseGameActivity {
     public static final String APP_URL = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
 
     // Handles the share button in the menu bar
-    ShareActionProvider mShareActionProvider;
+    private ShareActionProvider mShareActionProvider;
 
     // A full screen ad that is show after the game is lost
     private InterstitialAd interstitial;
@@ -47,7 +47,7 @@ public class GameActivity extends BaseGameActivity {
                 .addTestDevice(getString(R.string.test_device_id))
                 .build();
 
-        // Begin loading the interstitial ad. It is not show until the game is lost.
+        // Begin loading the interstitial ad. It is not show until the game is isGameLost.
         interstitial.loadAd(adRequest);
 	}
 

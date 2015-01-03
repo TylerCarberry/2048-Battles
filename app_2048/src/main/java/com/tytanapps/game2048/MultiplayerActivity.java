@@ -818,7 +818,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 // retrieve and cache the invitation ID
                 Log.d(LOG_TAG,"onConnected: connection hint has a room invite!");
                 acceptInviteToRoom(inv.getInvitationId());
-                return;
             }
         }
     }
@@ -1146,9 +1145,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 connection.setDoInput(true);
                 connection.connect();
                 InputStream input = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(input);
-
-                return myBitmap;
+                return BitmapFactory.decodeStream(input);
             } catch (IOException e) {
                 // Log exception
                 return null;

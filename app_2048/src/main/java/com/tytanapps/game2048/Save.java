@@ -68,7 +68,7 @@ public class Save
 		fop.close();
 	}
 
-    public static void saveBitmap(Bitmap bitmap, File file) throws IOException
+    public static void saveBitmap(Bitmap bitmap, File file)
     {
         FileOutputStream outputStream = null;
         try {

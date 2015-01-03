@@ -11,7 +11,7 @@
         android:id="@+id/quick_game_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Quick Game"
+        android:text="@string/multiplayer_quick_game"
         android:onClick="onClick"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true" />
@@ -47,7 +47,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="50dp"
+        android:textSize="50sp"
         android:text="Starting Multiplayer Game"
         android:id="@+id/textView"
         android:gravity="center_horizontal"

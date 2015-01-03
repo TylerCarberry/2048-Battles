@@ -64,7 +64,7 @@ public class CustomGameActivity extends Activity {
         }
     }
 
-    public void createGame() {
+    private void createGame() {
 
         Log.d("a", "Entering creategame");
 
@@ -107,8 +107,8 @@ public class CustomGameActivity extends Activity {
     private boolean isCustomGameValid(int width, int height, boolean xmode, boolean cornerMode,
                                       boolean speedMode, boolean surivalMode, boolean rushMode) {
 
-        if(width == 1 && height == 1) {
-            Toast.makeText(this, "The width and height can't both be 1", Toast.LENGTH_LONG).show();
+        if(width * height < 1) {
+            Toast.makeText(this, getString(R.string.error_grid_small), Toast.LENGTH_LONG).show();
             return false;
         }
 
@@ -127,7 +127,6 @@ public class CustomGameActivity extends Activity {
             Toast.makeText(this, "XMode and Corner Mode cannot fit on that grid size", Toast.LENGTH_LONG).show();
             return false;
         }
-
 
         return true;
     }

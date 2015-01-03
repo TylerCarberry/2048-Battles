@@ -180,8 +180,7 @@ public class Grid implements Cloneable, java.io.Serializable
 		int[][] temp = new int[board.length][board[0].length];
 		
 		for(int row = 0; row < board.length; row++)
-			for(int col = 0; col < board[0].length; col++)
-				temp[row][col] = board[row][col];
+            System.arraycopy(board[row], 0, temp[row], 0, board[0].length);
 		
 		return new Grid(temp);
 	}

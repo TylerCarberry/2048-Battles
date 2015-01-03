@@ -229,13 +229,13 @@ public class CustomIconActivity extends Activity {
         }
     }
 
-    public void clearSaveFile(int tile) {
+    private void clearSaveFile(int tile) {
         // Delete the custom icon for this tile
         File customIconFile = getIconFile(tile);
         customIconFile.delete();
     }
 
-    public File getIconFile(int tile) {
+    private File getIconFile(int tile) {
         return new File(getFilesDir(), getString(R.string.file_custom_tile_icons) + tile);
     }
 

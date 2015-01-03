@@ -76,8 +76,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     public static final int SPEED_MODE_DELAY = 1000;
 
     // These values are overridden with the options chosen in the settings
-    public static long tileSlideSpeed = 125;
-    public static long swipeSensitivity = 75;
+    private static long tileSlideSpeed = 125;
+    private static long swipeSensitivity = 75;
 
     private static boolean boardCreated = false;
     private static Game game;
@@ -258,7 +258,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
 
         // Only save a game that is still in progress and not a multiplayer game
-        if(!game.lost() && !gameLost && game.getGameModeId() != GameModes.MULTIPLAYER_MODE_ID)
+        if(!game.isGameLost() && !gameLost && game.getGameModeId() != GameModes.MULTIPLAYER_MODE_ID)
             save();
         super.onPause();
     }
@@ -371,7 +371,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(translateAnimations.isEmpty()) {
             animationInProgress = false;
 
-            if(game.lost())
+            if(game.isGameLost())
                 lost();
 
             return;
@@ -411,7 +411,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 // Save the game history before each move
                 game.saveLastGameToHistory(lastGame);
 
-                if(game.lost())
+                if(game.isGameLost())
                     lost();
             }
 
@@ -502,31 +502,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 setPowerupButtonEnabled(true);
             }
         }
-    }
-
-    /**
-     * @return the string telling the user the current attack and duration left
-     */
-    private String getAttackString() {
-        int activeGameAttack = game.getActiveAttack();
-        String resultString = "";
-
-        switch(activeGameAttack) {
-            case Game.X_ATTACK:
-                resultString += String.format(getString(R.string.x_attack_active), game.getAttackDuration());
-                break;
-            case Game.GHOST_ATTACK:
-                resultString += String.format(getString(R.string.ghost_attack_active), game.getAttackDuration());
-                break;
-            case Game.ICE_ATTACK:
-                resultString += String.format(getString(R.string.ice_attack_active),
-                        Location.directionToString(game.getIceDirection()),
-                        game.getAttackDuration());
-                break;
-            default:
-                return "";
-        }
-        return resultString;
     }
 
     /**
@@ -645,7 +620,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         for(Location combinedLoc : game.getDestinationLocations())
             animateTileCombine(findTileByLocation(combinedLoc));
 
-        if(game.lost())
+        if(game.isGameLost())
             lost();
     }
 
@@ -783,6 +758,31 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         return new File(getActivity().getFilesDir(), getString(R.string.file_custom_tile_icons) + tile);
     }
 
+    /**
+     * @return the string telling the user the current attack and duration left
+     */
+    private String getAttackString() {
+        int activeGameAttack = game.getActiveAttack();
+        String resultString = "";
+
+        switch(activeGameAttack) {
+            case Game.X_ATTACK:
+                resultString += String.format(getString(R.string.x_attack_active), game.getAttackDuration());
+                break;
+            case Game.GHOST_ATTACK:
+                resultString += String.format(getString(R.string.ghost_attack_active), game.getAttackDuration());
+                break;
+            case Game.ICE_ATTACK:
+                resultString += String.format(getString(R.string.ice_attack_active),
+                        Location.directionToString(game.getIceDirection()),
+                        game.getAttackDuration());
+                break;
+            default:
+                return "";
+        }
+        return resultString;
+    }
+
     private void lost() {
         if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
             Toast.makeText(getActivity(), "You cannot move. Use a powerup to continue", Toast.LENGTH_LONG).show();
@@ -827,6 +827,39 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             ((MultiplayerActivity) getActivity()).sendMessage(getString(R.string.opponent_lost), true);
         else
             ((GameActivity) getActivity()).displayInterstitial();
+    }
+
+    /** Create the message that is shown to the user after they lose.
+     * @param myGame The game that was currently played
+     * @param myGameStats The game stats of the game
+     * @return The message to display
+     */
+    private String createLoseMessage(Game myGame, GameData myGameStats) {
+        String message = "";
+        // Notify if there is a new high score
+        if(myGame.getScore() > myGameStats.getHighScore(myGame.getGameModeId())) {
+            message += String.format(getString(R.string.new_high_score), myGame.getScore());
+        }
+
+        // Notify if there is a new highest tile
+        if(myGame.highestPiece() > myGameStats.getHighestTile(myGame.getGameModeId())) {
+            if(! message.equals(""))
+                message += "\n";
+            message += String.format(getString(R.string.new_high_tile), myGame.highestPiece());
+        }
+
+        // Only notify if there is a new low score if there are no other records.
+        if(myGameStats.getLowestScore(game.getGameModeId()) < 0 ||
+                myGame.getScore() < myGameStats.getLowestScore(game.getGameModeId())) {
+
+            if(message.equals(""))
+                message += String.format(getString(R.string.new_low_score), myGame.getScore());
+        }
+
+        // If there are no records then just show the score
+        if(message.equals(""))
+            message += String.format(getString(R.string.final_score), myGame.getScore());
+        return message;
     }
 
     private void showCongratulationsDialog(final int tile) {
@@ -1086,43 +1119,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
     }
 
-    /** Create the message that is shown to the user after they lose.
-     * @param myGame The game that was currently played
-     * @param myGameStats The game stats of the game
-     * @return The message to display
-     */
-    private String createLoseMessage(Game myGame, GameData myGameStats) {
-        String message = "";
-        // Notify if there is a new high score
-        if(myGame.getScore() > myGameStats.getHighScore(myGame.getGameModeId())) {
-            message += String.format(getString(R.string.new_high_score), myGame.getScore());
-        }
-
-        // Notify if there is a new highest tile
-        if(myGame.highestPiece() > myGameStats.getHighestTile(myGame.getGameModeId())) {
-            if(! message.equals(""))
-                message += "\n";
-            message += String.format(getString(R.string.new_high_tile), myGame.highestPiece());
-        }
-
-        // Only notify if there is a new low score if there are no other records.
-        if(myGameStats.getLowestScore(game.getGameModeId()) < 0 ||
-                myGame.getScore() < myGameStats.getLowestScore(game.getGameModeId())) {
-
-            if(message.equals(""))
-                message += String.format(getString(R.string.new_low_score), myGame.getScore());
-        }
-
-        // If there are no records then just show the score
-        if(message.equals(""))
-            message += String.format(getString(R.string.final_score), myGame.getScore());
-        return message;
-    }
-
     protected void showPowerupDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        if((!game.lost()) || (game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)) {
+        if((!game.isGameLost()) || (game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)) {
             if (game.getPowerupsRemaining() == 0) {
                 builder.setTitle("No More Powerups").setMessage("There are no powerups remaining");
             }
@@ -1183,8 +1183,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         });
 
         // Create the message to show the player
-        String message = "";
-        message = createLoseMessage(game, gameStats);
+        String message = createLoseMessage(game, gameStats);
         builder.setMessage(message);
         AlertDialog dialog = builder.create();
 
@@ -1294,7 +1293,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
                         @Override
                         public void onClick(View view) {
-
                             // Create and start an animation of the tile fading away
                             (ObjectAnimator.ofFloat(view, View.ALPHA, 0)
                                     .setDuration(tileSlideSpeed)).start();
@@ -1311,7 +1309,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             }
         }
 
-
         View gameActivity = getView().findViewById(R.id.game_fragment);
         gameActivity.setOnTouchListener(new View.OnTouchListener(){
 
@@ -1322,7 +1319,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 return true;
             }
         });
-
     }
 
     private void clearTileListeners() {
@@ -1639,7 +1635,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             @Override
             public void run() {
 
-                if(game.lost())
+                if(game.isGameLost())
                     timer.cancel();
                 else
                     if(getSecondsRemaining() == 0) {
@@ -1692,7 +1688,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     /**
      * Warn the user about moving in that direction
-     * @return True if the user decided to move in that direction anyway
      */
     private void warnAboutMove(final int direction) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -1937,16 +1932,17 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     }
 
+    /**
+     * Creates the coundown before the multiplayer game starts
+     * @param countdownMilliseconds The number of milliseconds before a multiplayer game starts
+     */
     private void setCountdown(double countdownMilliseconds) {
-        Log.d(LOG_TAG, "countdown milliseconds " + countdownMilliseconds);
-
         TextView countdownTextView = ((TextView) getView().findViewById(R.id.countdown_textview));
         countdownTextView.setText(""+((int)countdownMilliseconds/1000));
         countdownTextView.setVisibility(View.VISIBLE);
     }
 
     protected void createCountdown(final double milliseconds) {
-
         game.setGrid(new Grid(4,4));
         updateGame();
 
@@ -1975,6 +1971,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }, 0, 1000);
     }
 
+    /**
+     * Stop the countdown before the multiplayer game starts and start the game
+     */
     private void endCountdown() {
         getView().findViewById(R.id.countdown_textview).setVisibility(View.GONE);
 
@@ -1985,7 +1984,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         updateGame();
     }
 
-    public static Bitmap loadBitmapFromView(View v, int width, int height) {
+    private static Bitmap loadBitmapFromView(View v, int width, int height) {
         Bitmap b = Bitmap.createBitmap(width , height, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
         v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
@@ -1998,8 +1997,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         bm.dataChanged();
     }
 
-    public void requestRestore()
-    {
+    public void requestRestore() {
         Log.d(LOG_TAG, "request restore");
 
         BackupManager bm = new BackupManager(getActivity());
@@ -2137,7 +2135,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             return ((BaseGameActivity) getActivity()).getApiClient();
 
         Log.w(LOG_TAG, "GameFragment is not a member of an activity that extends BaseGameActivity");
-
         return null;
     }
 
@@ -2151,35 +2148,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 .setLabel(labelId).build());
     }
 
-    /*
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch(keyCode){
-            case KeyEvent.KEYCODE_DPAD_UP:
-                act(Location.UP);
-                return true;
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                act(Location.LEFT);
-                return true;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                act(Location.RIGHT);
-                return true;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                act(Location.DOWN);
-                return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-    */
-
-
-    //@Override
-    public boolean onTouchEvent(MotionEvent event){
+    public boolean onTouchEvent(MotionEvent event) {
         this.mDetector.onTouchEvent(event);
-        //return super.onTouchEvent(event);
         return true;
     }
-
 
     @Override
     public boolean onDown(MotionEvent event) {
@@ -2195,7 +2167,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                             float distanceX, float distanceY) {
 
         if(listenForSwipe && !animationInProgress) {
-
             float totalDistanceX = Math.abs(initialEvent.getX() - currentEvent.getX());
             float totalDistanceY = Math.abs(initialEvent.getY() - currentEvent.getY());
 

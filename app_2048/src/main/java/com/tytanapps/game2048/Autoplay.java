@@ -14,7 +14,7 @@ public class Autoplay
 	// Moves up, left, down, right until it loses and returns the final score
 	public static int circlePlay(Game game)
 	{
-		while(!(game.lost()))
+		while(!(game.isGameLost()))
 		{
 			System.out.println(game);
 			System.out.println("Moving up");
@@ -37,7 +37,7 @@ public class Autoplay
 	public static int randomPlay(Game game)
 	{
 		double num;
-		while(!(game.lost()))
+		while(!(game.isGameLost()))
 		{
 			num = Math.random();
 
@@ -76,7 +76,7 @@ public class Autoplay
 	// then goes right, if still can't move goes down
 	public static int cornerPlay(Game game)
 	{
-		while(!(game.lost()))
+		while(!(game.isGameLost()))
 		{
 			while(game.canMove(Location.RIGHT) || game.canMove(Location.UP) ||
 					game.canMove(Location.LEFT))
@@ -116,7 +116,7 @@ public class Autoplay
 	{
 		System.out.println(game);
 
-		if(game.won(tile))
+		if(game.hasUserWon(tile))
 			return true;
 
 		Game lastTurn = game.clone();
@@ -142,12 +142,12 @@ public class Autoplay
 		if(upFirst)
 		{
 			game.act(Location.UP);
-			if(! (game.lost() || game.equals(lastTurn)))
+			if(! (game.isGameLost() || game.equals(lastTurn)))
 				if(recursivePlay(game.clone(), original, tile, !upFirst))
 					return true;
 
 			game.act(Location.LEFT);
-			if(! (game.lost() || game.equals(lastTurn)))
+			if(! (game.isGameLost() || game.equals(lastTurn)))
 				if(recursivePlay(game.clone(), original, tile, !upFirst))
 					return true;
 
@@ -155,24 +155,24 @@ public class Autoplay
 		else
 		{
 			game.act(Location.LEFT);
-			if(! (game.lost() || game.equals(lastTurn)))
+			if(! (game.isGameLost() || game.equals(lastTurn)))
 				if(recursivePlay(game.clone(), original, tile, !upFirst))
 					return true;
 
 			game.act(Location.UP);
-			if(! (game.lost() || game.equals(lastTurn)))
+			if(! (game.isGameLost() || game.equals(lastTurn)))
 				if(recursivePlay(game.clone(), original, tile, !upFirst))
 					return true;
 		}
 
 
 		game.act(Location.RIGHT);
-		if(! (game.lost() || game.equals(lastTurn)))
+		if(! (game.isGameLost() || game.equals(lastTurn)))
 			if(recursivePlay(game.clone(), original, tile, false))
 				return true;
 
 		game.act(Location.DOWN);
-		if(! (game.lost() || game.equals(lastTurn)))
+		if(! (game.isGameLost() || game.equals(lastTurn)))
 			if(recursivePlay(game.clone(), original, tile, false))
 				return true;
 

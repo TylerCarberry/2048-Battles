@@ -104,8 +104,7 @@ public class Game implements java.io.Serializable
 	 * @param rows The number of rows in the game
 	 * @param cols The number of columns in the game
 	 */
-	public Game(int rows, int cols)
-	{	
+	public Game(int rows, int cols) {
 		// The main board the game is played on
 		board = new Grid(rows,cols);
 		
@@ -125,8 +124,7 @@ public class Game implements java.io.Serializable
 	 * Only used by the clone method
 	 * @param toClone The game to clone
 	 */
-	private Game(Game toClone)
-	{
+	private Game(Game toClone) {
 		board = toClone.board.clone();
 		turnNumber = toClone.turnNumber;
 		score = toClone.score;
@@ -148,10 +146,9 @@ public class Game implements java.io.Serializable
 	 * Moves the entire board in the given direction
 	 * @param direction Called using a final variable in the location class
 	*/
-	public void act(int direction)
-	{
+	public void act(int direction) {
 		// Don't move if the game is already lost or quit
-		if(lost())
+		if(isGameLost())
 			return;
 		
 		// If this is the game's first move, keep track of
@@ -187,8 +184,7 @@ public class Game implements java.io.Serializable
 	 * @param direction Called using a final variable in the location class
 	 * @return The number of tiles moved
 	 */
-	public int move(Location from, int direction)
-	{
+	public int move(Location from, int direction) {
 		int distance = 0;
 		
 		// Do not move X spaces or 0 spaces
@@ -231,8 +227,7 @@ public class Game implements java.io.Serializable
 	 * @param from The piece to move
 	 * @param to The destination of the piece
 	*/
-	private void add(Location from, Location to)
-	{
+	private void add(Location from, Location to) {
 		if(survivalMode && board.get(from) >= 8)
 			timeLeft += board.get(from) / 4;
 		
@@ -270,12 +265,8 @@ public class Game implements java.io.Serializable
 	 * Stores the starting game time and activates the time limit after
 	 * the first move instead of when the game is created
 	 */
-	private void madeFirstMove()
-	{
+	private void madeFirstMove() {
 		d1 = new Date();
-		if(timeLeft > 0)
-			activateTimeLimit();
-		
 		newGame = false;
 	}
 	
@@ -283,8 +274,7 @@ public class Game implements java.io.Serializable
 	 * Undo the game 1 turn 
 	 * Uses a stack to store previous moves
 	 */
-	public void undo()
-	{
+	public void undo() {
 		if(turnNumber > 1 && undosRemaining != 0)
 		{
 			// Undo the score, board, and turn #
@@ -302,8 +292,7 @@ public class Game implements java.io.Serializable
 	/**
 	 * Shuffle the board
 	 */
-	public void shuffle()
-	{
+	public void shuffle() {
 		// If this is the game's first move, keep track of
 		// the starting time and activate the time limit
 		if(newGame)
@@ -352,8 +341,7 @@ public class Game implements java.io.Serializable
 	/**
 	 * Remove all 2's and 4's from the board
 	 */
-	public void removeLowTiles()
-	{
+	public void removeLowTiles() {
 		List<Location> filledTiles = board.getFilledLocations();
 		
 		// Remove all low tiles (2 and 4) from the board
@@ -393,58 +381,9 @@ public class Game implements java.io.Serializable
 	 * Stop the game automatically after a time limit
 	 * @param seconds The time limit in seconds
 	 */
-	public void setTimeLimit(double seconds)
-	{
+	public void setTimeLimit(double seconds) {
 		if(seconds > 0)
 			timeLeft = seconds;
-	}
-	
-	/**
-	 * Starts the time limit
-	 * Is called after the first move
-	 * */
-	private void activateTimeLimit()
-	{	
-		// How often to update the time left
-		// Smaller = update more often
-		final double UPDATESPEED = 1;
-		
-		// Create a new thread to quit the game
-		final Thread T = new Thread() {
-			public void run()
-			{
-				while(timeLeft > 0 && !lost())
-				{
-					try
-					{
-						// Pause the thread for x milliseconds
-						// The game continues to run
-						Thread.sleep((long) (UPDATESPEED * 1000.0));
-					}
-					catch (Exception e)
-					{
-						System.err.println(e);
-						System.err.println(Thread.currentThread().getStackTrace());
-					}
-					
-					timeLeft -= UPDATESPEED;
-					
-					// Round the time to the second decimal place
-					// The number of 0's = number of decimal places
-					timeLeft = (double)Math.round(timeLeft * 10) / 10;
-				}
-				
-				// After the time limit is up, quit the game
-				
-				if(! lost())
-				{
-					System.out.println("Time Limit Reached");
-					quitGame = true;   
-				}
-			}
-		}; // end thread
-
-		T.start();
 	}
 	
 	/**
@@ -460,8 +399,7 @@ public class Game implements java.io.Serializable
 	 * This will bump existing pieces in the corners of the board
 	 * to random free locations
 	 */
-	public void enableCornerMode()
-	{
+	public void enableCornerMode() {
 		int previousValue;
 		
 		previousValue = board.set(new Location(0,0), CORNER_TILE_VALUE);
@@ -484,8 +422,7 @@ public class Game implements java.io.Serializable
 	/**
 	 * Places an X on the board that can move but not combine 
 	 */
-	public void enableXMode()
-	{
+	public void enableXMode() {
 		List<Location> empty = board.getEmptyLocations();
 
 		if(empty.isEmpty())
@@ -501,8 +438,7 @@ public class Game implements java.io.Serializable
 	/**
 	 *  The game increases the time limit when tiles >= 8 combine
 	 */
-	public void enableSurvivalMode()
-	{
+	public void enableSurvivalMode() {
 		survivalMode = true;
 		
 		// If no time limit is in effect, set it to 30 seconds
@@ -514,8 +450,7 @@ public class Game implements java.io.Serializable
 		arcadeMode = enabled;
 	}
 	
-	public void setZenMode(boolean enabled)
-	{
+	public void setZenMode(boolean enabled) {
 		zenMode = enabled;
 		setDynamicTileSpawning(enabled);
 	}
@@ -535,38 +470,6 @@ public class Game implements java.io.Serializable
 	public void setSpeedMode(boolean enabled)
 	{
 		speedMode = enabled;
-
-        /*
-		// Add a piece every 2 seconds
-		final int UPDATESPEED = 2;
-		
-		// Create a new thread to add the pieces
-		final Thread T = new Thread() {
-			public void run()
-			{
-				while(speedMode)
-				{
-					try
-					{
-						// Pause the thread for x milliseconds
-						// The game continues to run
-						Thread.sleep((long) (UPDATESPEED * 1000.0));
-					}
-					catch (Exception e)
-					{
-						System.out.println(e);
-						e.printStackTrace();
-					}
-
-					addRandomPiece();
-					
-					printGame();
-				}
-			}
-		}; // end thread
-		
-		T.start();
-		*/
 	}
 	
 	public boolean getSurvivalMode() {
@@ -627,7 +530,6 @@ public class Game implements java.io.Serializable
 	 * @return If the game will be lost moving in that direction
 	 */
 	public boolean causeGameToLose(int direction) {
-		
 		if(board.getEmptyLocations().size() > 1)
 			return false;
 		
@@ -647,20 +549,18 @@ public class Game implements java.io.Serializable
 			nextGame.addRandomPiece(tile);
 			
 			// There is a chance that the game might lose
-			if(nextGame.lost())
+			if(nextGame.isGameLost())
 				return true;
 		}
 		// The game can move there without losing
 		return false;
 	}
-	
-	
+
 	/**
 	 * You can not move in a random direction for a random
 	 * amount of time (currently between 3 and 10)
 	 */
 	public void ice() {
-		
 		activeAttack = ICE_ATTACK;
 		
 		double randomDirection = Math.random();
@@ -688,7 +588,6 @@ public class Game implements java.io.Serializable
 	 * @return The location where it was added
 	 */
 	public Location XTileAttack() {
-		
 		activeAttack = X_ATTACK;
 		
 		// Between 5 and 10 moves
@@ -698,7 +597,6 @@ public class Game implements java.io.Serializable
 	}
 	
 	public Location endXTileAttack() {
-		
 		Location XTile = board.find(X_TILE_VALUE);
 		
 		if(XTile != null)
@@ -708,11 +606,9 @@ public class Game implements java.io.Serializable
 	}
 	
 	/**
-	 * Temporarily add an XTile to the board
-	 * @return The location where it was added
+	 * Enable ghost attack for between 5 and 10 turns
 	 */
 	public void ghostAttack() {
-		
 		activeAttack = GHOST_ATTACK;
 		
 		// Between 5 and 10 moves
@@ -819,13 +715,12 @@ public class Game implements java.io.Serializable
     public void resetTilesCombined() {
         tilesCombined = 0;
     }
-	
-	
+
 	/**
 	 * 
 	 * @return A list of the possible tiles to be added to the board
 	 */
-	public List<Integer> getPossibleTilesToAdd() {
+	private List<Integer> getPossibleTilesToAdd() {
 		
 		// All powers of 2 less that the highest tile
 		ArrayList<Integer> possibleTiles = new ArrayList<Integer>();
@@ -833,8 +728,7 @@ public class Game implements java.io.Serializable
 		possibleTiles.add(4);
 
 		// See addRandomPiece() for description of dynamicTileSpawning
-		if(dynamicTileSpawning)
-		{
+		if(dynamicTileSpawning) {
 			// The highest tile on the board
 			int highest = highestPiece();
 
@@ -854,8 +748,7 @@ public class Game implements java.io.Serializable
 	 * Ex. If the highest piece is 32 then a 2,4,8, or 16 can appear
 	 * All possible tiles have an equal chance of appearing
 	 */
-	public Location addRandomPiece()
-	{
+	public Location addRandomPiece() {
         //if(gameModeId == GameModes.CRAZY_MODE_ID)
         //    return addTitleModePiece();
 
@@ -872,8 +765,7 @@ public class Game implements java.io.Serializable
 	 * Adds a specified tile to the board in a random location
 	 * @param tile The number tile to add
 	 */
-	private Location addRandomPiece(int tile)
-	{
+	private Location addRandomPiece(int tile) {
 		// A list of the empty spaces on the board
 		List<Location> empty = board.getEmptyLocations();
 
@@ -892,17 +784,16 @@ public class Game implements java.io.Serializable
 	 * @return Whether or not the game is won
 	 * A game is won if there is a 2048 tile or greater
 	 */
-	public boolean won()
+	public boolean hasUserWon()
 	{
-		return won(2048);
+		return hasUserWon(2048);
 	}
 	
 	/**
 	 * @param winningTile The target tile
 	 * @return If a tile is >= winningTile
 	 */
-	public boolean won(int winningTile)
-	{
+	public boolean hasUserWon(int winningTile) {
 		Location loc;
 		for(int col = 0; col < board.getNumCols(); col++)
 		{
@@ -919,8 +810,7 @@ public class Game implements java.io.Serializable
 	/**
 	 * @return If the game is lost
 	 */
-	public boolean lost()
-	{
+	public boolean isGameLost() {
 		// If the game is quit then the game is lost
 		if(quitGame || movesRemaining == 0)
 			return true;
@@ -972,8 +862,7 @@ public class Game implements java.io.Serializable
 	/**
 	 * @return the number of seconds the game was played for
 	 */
-	public double timePlayed()
-	{
+	public double timePlayed() {
 		// If no move has been made yet
 		if(d1 == null)
 			return 0;
@@ -993,8 +882,7 @@ public class Game implements java.io.Serializable
 	/**
 	 * @return The highest piece on the board
 	 */
-	public int highestPiece()
-	{
+	public int highestPiece() {
 		int highest = 0;
 		for(int col = 0; col < board.getNumCols(); col++)
 			for(int row = 0; row < board.getNumRows(); row++)
@@ -1012,8 +900,7 @@ public class Game implements java.io.Serializable
 	 * Games are equal if they have the same board and score, 
 	 * even if their history is different.
 	 */
-	public boolean equals(Game otherGame)
-	{
+	public boolean equals(Game otherGame) {
 		return board.equals(otherGame.getGrid()) && score == otherGame.getScore();
 	}
 	
@@ -1030,8 +917,7 @@ public class Game implements java.io.Serializable
 	 * @param direction Called using the final variables in the location class
 	 * @return If the game can move in the given direction
 	 */
-	public boolean canMove(int direction)
-	{
+	public boolean canMove(int direction) {
 		if(attackDuration > 0 && iceDirection == direction)
 			return false;
 		
@@ -1174,8 +1060,7 @@ public class Game implements java.io.Serializable
 	| 4  |    |    |    |
 	| 2  |    |    | 2  |
 	|    |    |    |    |		*/
-	public String toString()
-	{
+	public String toString() {
 		String output = "---------------------------------------------\n";
 		output += "||  Turn #" + turnNumber + "  Score: " + score + "\n";
 		output += "||  Moves Left:";

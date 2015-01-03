@@ -155,7 +155,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong("lastDatePlayed", currentDate);
-        editor.commit();
+        editor.apply();
     }
 
     private void displayWelcomeBackBonus() {
