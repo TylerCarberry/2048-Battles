@@ -68,6 +68,10 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     private final static int SHOW_INBOX = 1003;
     private final static int QUEST_CODE = 1004;
 
+    private final static int FLYING_TILE_SPEED = 3000;
+
+    private static boolean activityIsVisible = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +107,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
     @Override
     public void onStart() {
+        activityIsVisible = true;
+
         // Give the user a bonus if a day has past since they last played
         addWelcomeBackBonus();
 
@@ -125,9 +131,16 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
     @Override
     public void onResume() {
+        animateFlyingTiles(500, 200);
         checkIfQuestActive();
         checkPendingPlayGifts();
         super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        activityIsVisible = false;
+        super.onStop();
     }
 
     /**
@@ -227,14 +240,14 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                     }
                 });
                 times++;
-                if(times > amount)
+                if(times > amount || !activityIsVisible)
                     timer.cancel();
             }
         }, delay, delay);
     }
 
     public void animateFlyingTile() {
-        final RelativeLayout mainFragment = (RelativeLayout) findViewById(R.id.main_fragment);
+        final RelativeLayout mainFragment = (RelativeLayout) findViewById(R.id.main_fragment_background);
         final ImageView tile = new ImageView(this);
 
         double rand = Math.random();
@@ -294,8 +307,13 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         ObjectAnimator animatorX = ObjectAnimator.ofFloat(tile, View.TRANSLATION_X, endingX - startingX);
         ObjectAnimator animatorY = ObjectAnimator.ofFloat(tile, View.TRANSLATION_Y, endingY - startingY);
 
-        animatorX.setDuration(1000);
-        animatorY.setDuration(1000);
+        float[] rotateAmount = {(float) (2 * (Math.random() - 0.5) * 360), (float) (2 * (Math.random() - 0.5) * 360)};
+        ObjectAnimator rotateAnimation = ObjectAnimator.ofFloat(tile, View.ROTATION, rotateAmount);
+
+        animatorX.setDuration(FLYING_TILE_SPEED);
+        animatorY.setDuration(FLYING_TILE_SPEED);
+        rotateAnimation.setDuration(FLYING_TILE_SPEED);
+
 
         animatorX.addListener(new Animator.AnimatorListener() {
             @Override
@@ -319,6 +337,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         animatorX.start();
         animatorY.start();
+        rotateAnimation.start();
     }
 
     public void onClick(View view) {
@@ -339,7 +358,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 startActivity(showSettings);
                 break;
             case R.id.logo_imageview:
-                animateFlyingTiles(150, 10);
+                animateFlyingTiles(150, 100);
                 break;
             case R.id.custom_game_button:
                 startActivity(new Intent(this, CustomGameActivity.class));
