@@ -347,9 +347,16 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         mainFragment.addView(tile);
 
-        animatorX.start();
-        animatorY.start();
-        rotateAnimation.start();
+        float[] scaleSize = {(float) (Math.random()/2+.5), (float) (Math.random()/2+.5)};
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(tile, View.SCALE_X, scaleSize);
+        scaleX.setDuration(FLYING_TILE_SPEED);
+
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(tile, View.SCALE_Y, scaleSize);
+        scaleY.setDuration(FLYING_TILE_SPEED);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(animatorX).with(animatorY).with(rotateAnimation).with(scaleX).with(scaleY);
+        animatorSet.start();
     }
 
     public void onClick(View view) {
