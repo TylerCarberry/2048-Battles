@@ -71,8 +71,8 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
 	protected void onStart() {
 		((LinearLayout) findViewById(R.id.modeLinearLayout)).removeAllViewsInLayout();
 
-        if(isSavedGame())
-            addSavedGameView();
+        //if(isSavedGame())
+        //    addSavedGameView();
 
         createListOfModes();
 		super.onStart();
@@ -123,7 +123,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
      * Adds the continue game listview to the screen
      * Contains the game mode and screenshot of the game
      */
-    private void addSavedGameView() {
+    private void getSavedGameView() {
 
         File savedGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
         Game savedGame;
@@ -141,8 +141,6 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
             return;
 
         int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
-
-        LinearLayout listOfModes = (LinearLayout) findViewById(R.id.modeLinearLayout);
 
         File savedGameBitmapFile = new File(getFilesDir(), "CURRENT_GAME_SCREENSHOT");
         Bitmap savedGameBitmap = Save.loadBitmap(savedGameBitmapFile);
@@ -208,8 +206,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
             }
         });
 
-        // Add the mode to the list
-        listOfModes.addView(modeDetailLayout);
+        //return modeDetailLayout;
     }
 
     private void createListOfModes() {

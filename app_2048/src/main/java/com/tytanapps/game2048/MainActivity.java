@@ -9,7 +9,9 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -51,6 +53,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -149,6 +152,13 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         super.onWindowFocusChanged(hasFocus);
         //if (hasFocus)
         //    hideSystemUI();
+    }
+
+    /**
+     * Switches to the game activity
+     */
+    private void startGameActivity() {
+        startActivity(new Intent(this, GameActivity.class));
     }
 
     /**
@@ -366,7 +376,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.single_player_imagebutton:
-                startActivity(new Intent(this, SelectModeActivity.class));
+                showSinglePlayerDialog();
+                //startActivity(new Intent(this, SelectModeActivity.class));
                 break;
             case R.id.multiplayer_imagebutton:
                 Intent multiplayerIntent = new Intent(getBaseContext(), MultiplayerActivity.class);
@@ -389,6 +400,155 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             case R.id.custom_game_button:
                 startActivity(new Intent(this, CustomGameActivity.class));
         }
+    }
+
+    private void showSinglePlayerDialog() {
+        LinearLayout verticalLinearLayout = new LinearLayout(this);
+        verticalLinearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout topHorizontalLinearLayout = new LinearLayout(this);
+        topHorizontalLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        topHorizontalLinearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        View savedGameView = getSavedGameView();
+        if(savedGameView != null)
+            topHorizontalLinearLayout.addView(savedGameView);
+
+        View customGameView = getCustomGameView();
+        if(savedGameView != null)
+            topHorizontalLinearLayout.addView(customGameView);
+
+        verticalLinearLayout.addView(topHorizontalLinearLayout);
+
+        final List<Integer> gameModes= GameModes.getListOfGameModesIds();
+
+        for(int modeIndex = 0; modeIndex < gameModes.size();) {
+
+            LinearLayout horizontalLinearLayout = new LinearLayout(this);
+            horizontalLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            horizontalLinearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+
+            for(int j = 0; j < 3 && modeIndex < gameModes.size(); j++) {
+
+                final int gameId = gameModes.get(modeIndex);
+
+                Button button = new Button(this);
+                button.setText(GameModes.getGameTitleById(gameModes.get(modeIndex)));
+
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Game game = GameModes.newGameFromId(gameId);
+                        game.setGameModeId(gameId);
+
+                        File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+                        try {
+                            Save.save(game, currentGameFile);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        // Switch to the game activity
+                        startGameActivity();
+                    }
+                });
+
+                horizontalLinearLayout.addView(button);
+
+                modeIndex++;
+            }
+
+            verticalLinearLayout.addView(horizontalLinearLayout);
+        }
+
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //builder.setTitle("Single Player");
+
+        builder.setView(verticalLinearLayout);
+        builder.create().show();
+
+
+    }
+
+    private View getCustomGameView() {
+        Button customGameButton = new Button(this);
+        customGameButton.setText(getString(R.string.mode_custom));
+        customGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), CustomGameActivity.class));
+            }
+        });
+        return customGameButton;
+    }
+
+    /**
+     * Adds the continue game listview to the screen
+     * Contains the game mode and screenshot of the game
+     */
+    private View getSavedGameView() {
+        File savedGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+        Game savedGame;
+        try {
+            savedGame = (Game) Save.load(savedGameFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        if(savedGame == null)
+            return null;
+
+        File savedGameBitmapFile = new File(getFilesDir(), "CURRENT_GAME_SCREENSHOT");
+        Bitmap savedGameBitmap = Save.loadBitmap(savedGameBitmapFile);
+
+        // The layout the contains all info for that mode
+        LinearLayout savedGameLayout = new LinearLayout(this);
+        savedGameLayout.setOrientation(LinearLayout.VERTICAL);
+
+        TextView continueGameTextView = new TextView(this);
+        continueGameTextView.setText(R.string.continue_game);
+        continueGameTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+        continueGameTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        );
+        continueGameTextView.setTypeface(null, Typeface.BOLD);
+
+        // The mode name
+        TextView modeName = new TextView(this);
+        modeName.setText(getString(GameModes.getGameTitleById((savedGame.getGameModeId()))));
+        modeName.setTextSize(20);
+        modeName.setTypeface(null, Typeface.BOLD);
+        modeName.setLayoutParams(new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        );
+        modeName.setGravity(Gravity.CENTER_HORIZONTAL);
+
+
+        ImageView currentGameImageView = new ImageView(this);
+        currentGameImageView.setImageBitmap(Bitmap.createScaledBitmap(savedGameBitmap, 400, 400, false));
+
+        // Add each item of the mode to the layout
+        savedGameLayout.addView(continueGameTextView);
+        savedGameLayout.addView(modeName);
+        savedGameLayout.addView(currentGameImageView);
+
+        savedGameLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP)
+                    startGameActivity();
+                return true;
+            }
+        });
+
+        return savedGameLayout;
     }
 
     /**

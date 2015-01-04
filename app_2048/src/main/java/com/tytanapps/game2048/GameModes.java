@@ -27,19 +27,11 @@ public class GameModes
         List<Integer> gameModes = new ArrayList<Integer>();
         gameModes.add(PRACTICE_MODE_ID);
         gameModes.add(NORMAL_MODE_ID);
-        //gameModes.add(PRO_MODE_ID);
         gameModes.add(ARCADE_MODE_ID);
         gameModes.add(RUSH_MODE_ID);
         gameModes.add(X_MODE_ID);
         gameModes.add(CORNER_MODE_ID);
         gameModes.add(GHOST_MODE_ID);
-
-        // I commented out multiplayer mode so it does not appear in the list of game modes twice
-        // If I change the way new games are created it may be used again
-        //gameModes.add(MULTIPLAYER_MODE_ID);
-
-        // The following modes are coming soon
-        gameModes.add(ZEN_MODE_ID);
         gameModes.add(SPEED_MODE_ID);
         gameModes.add(SURVIVAL_MODE_ID);
         gameModes.add(CRAZY_MODE_ID);
