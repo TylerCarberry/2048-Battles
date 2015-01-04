@@ -233,6 +233,9 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             int times = 0;
             @Override
             public void run() {
+                if(times > amount || !activityIsVisible)
+                    timer.cancel();
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -240,14 +243,16 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                     }
                 });
                 times++;
-                if(times > amount || !activityIsVisible)
-                    timer.cancel();
+
             }
         }, delay, delay);
     }
 
     public void animateFlyingTile() {
         final RelativeLayout mainFragment = (RelativeLayout) findViewById(R.id.main_fragment_background);
+        if(mainFragment == null)
+            return;
+
         final ImageView tile = new ImageView(this);
 
         double rand = Math.random();
