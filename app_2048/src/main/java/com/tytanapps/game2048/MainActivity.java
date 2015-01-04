@@ -68,7 +68,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     private final static int SHOW_INBOX = 1003;
     private final static int QUEST_CODE = 1004;
 
-    private final static int FLYING_TILE_SPEED = 3000;
+    // The tiles that fly across the background travel for between 3 and 6 seconds
+    private final static int FLYING_TILE_SPEED = 6000;
 
     private static boolean activityIsVisible = false;
 
@@ -131,7 +132,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
     @Override
     public void onResume() {
-        animateFlyingTiles(500, 200);
+        animateFlyingTiles(-1, 300);
         checkIfQuestActive();
         checkPendingPlayGifts();
         super.onResume();
@@ -240,16 +241,17 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             int times = 0;
             @Override
             public void run() {
-                if(times > amount || !activityIsVisible)
-                    timer.cancel();
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        animateFlyingTile();
-                    }
-                });
-                times++;
+                if(activityIsVisible && (times > amount || amount < 0)) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            animateFlyingTile();
+                        }
+                    });
+                    times++;
+                }
+                else
+                   timer.cancel();
 
             }
         }, delay, delay);
@@ -259,6 +261,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         final RelativeLayout mainFragment = (RelativeLayout) findViewById(R.id.main_fragment_background);
         if(mainFragment == null)
             return;
+
+        int randomFlyingSpeed = (int) (Math.random() * FLYING_TILE_SPEED/2 + FLYING_TILE_SPEED/2);
 
         final ImageView tile = new ImageView(this);
 
@@ -322,9 +326,9 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         float[] rotateAmount = {(float) (2 * (Math.random() - 0.5) * 360), (float) (2 * (Math.random() - 0.5) * 360)};
         ObjectAnimator rotateAnimation = ObjectAnimator.ofFloat(tile, View.ROTATION, rotateAmount);
 
-        animatorX.setDuration(FLYING_TILE_SPEED);
-        animatorY.setDuration(FLYING_TILE_SPEED);
-        rotateAnimation.setDuration(FLYING_TILE_SPEED);
+        animatorX.setDuration(randomFlyingSpeed);
+        animatorY.setDuration(randomFlyingSpeed);
+        rotateAnimation.setDuration(randomFlyingSpeed);
 
 
         animatorX.addListener(new Animator.AnimatorListener() {
@@ -349,10 +353,10 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         float[] scaleSize = {(float) (Math.random()/2+.5), (float) (Math.random()/2+.5)};
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(tile, View.SCALE_X, scaleSize);
-        scaleX.setDuration(FLYING_TILE_SPEED);
+        scaleX.setDuration(randomFlyingSpeed);
 
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(tile, View.SCALE_Y, scaleSize);
-        scaleY.setDuration(FLYING_TILE_SPEED);
+        scaleY.setDuration(randomFlyingSpeed);
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(animatorX).with(animatorY).with(rotateAnimation).with(scaleX).with(scaleY);
@@ -377,7 +381,10 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 startActivity(showSettings);
                 break;
             case R.id.logo_imageview:
-                animateFlyingTiles(150, 100);
+                view.setRotation(0);
+                Animator animator = ObjectAnimator.ofFloat(view, View.ROTATION, 360);
+                animator.setDuration(2000);
+                animator.start();
                 break;
             case R.id.custom_game_button:
                 startActivity(new Intent(this, CustomGameActivity.class));
