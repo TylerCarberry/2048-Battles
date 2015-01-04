@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.backup.BackupManager;
@@ -187,7 +188,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 getActivity().getActionBar().setTitle(gameTitleId);
             }
             catch (NullPointerException e) {
-                getActivity().getActionBar().setTitle(R.string.app_name);
+                ActionBar actionBar = getActivity().getActionBar();
+                if(actionBar != null)
+                    getActivity().getActionBar().setTitle(R.string.app_name);
             }
 
 
@@ -1938,7 +1941,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      */
     private void setCountdown(double countdownMilliseconds) {
         TextView countdownTextView = ((TextView) getView().findViewById(R.id.countdown_textview));
-        countdownTextView.setText(""+((int)countdownMilliseconds/1000));
+        countdownTextView.setText("" + ((int) countdownMilliseconds / 1000));
         countdownTextView.setVisibility(View.VISIBLE);
     }
 
@@ -1949,6 +1952,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         final Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             int times = 0;
+
             @Override
             public void run() {
                 getActivity().runOnUiThread(new Runnable() {
@@ -1957,7 +1961,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                         setCountdown(milliseconds - times++ * 1000);
                     }
                 });
-                if(times >= milliseconds / 1000) {
+                if (times >= milliseconds / 1000) {
                     timer.cancel();
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -1985,7 +1989,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private static Bitmap loadBitmapFromView(View v, int width, int height) {
-        Bitmap b = Bitmap.createBitmap(width , height, Bitmap.Config.ARGB_8888);
+        Bitmap b = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
         v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
         v.draw(c);
@@ -2006,14 +2010,14 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                     @Override
                     public void restoreStarting(int numPackages) {
                         Log.d(LOG_TAG, "Restore from cloud starting.");
-                        Log.d(LOG_TAG, ""+gameStats.getTotalMoves());
+                        Log.d(LOG_TAG, "" + gameStats.getTotalMoves());
 
                         super.restoreStarting(numPackages);
                     }
 
                     @Override
                     public void onUpdate(int nowBeingRestored, String currentPackage) {
-                        Log.d(LOG_TAG, "Restoring "+currentPackage);
+                        Log.d(LOG_TAG, "Restoring " + currentPackage);
                         super.onUpdate(nowBeingRestored, currentPackage);
                     }
 
@@ -2022,7 +2026,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                         Log.d(LOG_TAG, "Restore from cloud finished.");
 
                         super.restoreFinished(error);
-                        Log.d(LOG_TAG, ""+gameStats.getTotalMoves());
+                        Log.d(LOG_TAG, "" + gameStats.getTotalMoves());
 
                         Log.d(LOG_TAG, "calling load");
                         load();
