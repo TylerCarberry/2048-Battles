@@ -87,7 +87,6 @@ public class Game implements java.io.Serializable
     private boolean useItemInventory = false;
 
     private boolean genie_enabled = false;
-    private boolean multiplayerActive = false;
 
     // This must be updated manually by the driver
     private int opponentScore = -1;
@@ -981,15 +980,6 @@ public class Game implements java.io.Serializable
     public void setGenieEnabled(boolean isGenieEnabled) {
         genie_enabled = isGenieEnabled;
     }
-
-    public boolean getMultiplayerActive() {
-        return multiplayerActive;
-    }
-
-    public void setMultiplayerActive(boolean isMultiplayerActive) {
-        multiplayerActive = isMultiplayerActive;
-    }
-
 
     /**
 	 * Changing this value does not affect the game. It is only for reference.

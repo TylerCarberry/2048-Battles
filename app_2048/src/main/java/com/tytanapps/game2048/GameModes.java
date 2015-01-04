@@ -21,7 +21,6 @@ public class GameModes
 	public static final int GHOST_MODE_ID = 11;
 	public static final int CRAZY_MODE_ID = 12;
     public static final int CUSTOM_MODE_ID = 13;
-    public static final int MULTIPLAYER_MODE_ID = 14;
     public static final int TITLE_MODE_ID = 15;
 
     public static List<Integer> getListOfGameModesIds() {
@@ -75,8 +74,6 @@ public class GameModes
 			return ghostMode();
         case CRAZY_MODE_ID:
             return crazyMode();
-        case MULTIPLAYER_MODE_ID:
-            return multiplayerMode();
         default:
 			return normalMode();
 		}
@@ -115,8 +112,6 @@ public class GameModes
 			return R.string.mode_crazy;
         case CUSTOM_MODE_ID:
             return R.string.mode_custom;
-        case MULTIPLAYER_MODE_ID:
-            return R.string.mode_multiplayer;
         default:
 			return R.string.app_name;
 		}
@@ -156,8 +151,6 @@ public class GameModes
 			return R.string.mode_desc_crazy;
 		case CUSTOM_MODE_ID:
 			return R.string.mode_desc_custom;
-        case MULTIPLAYER_MODE_ID:
-            return R.string.mode_desc_multiplayer;
 		default:
 			return -1;
 		}
@@ -361,19 +354,6 @@ public class GameModes
 
 		return game;
 	}
-
-    // Multiplayer Mode
-    public static Game multiplayerMode()
-    {
-        Game game = new Game();
-        game.setUseItemInventory(false);
-        game.setPowerupLimit(-1);
-        game.setUndoLimit(-1);
-        game.setMultiplayerActive(true);
-        game.setGameModeId(MULTIPLAYER_MODE_ID);
-        return game;
-    }
-
 
     // Creates 2048
     public static Game createTitleMode()

@@ -119,6 +119,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     private int secondsRemaining = 30;
 
+    private boolean multiplayerActive = false;
+
     public GameFragment() { }
 
     @Override
@@ -126,6 +128,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // The game has a different layout for single and multiplayer games
         View rootView;
         if(container.getId() == R.id.container) {
+            multiplayerActive = false;
+
             rootView = inflater.inflate(R.layout.fragment_game, container, false);
 
             final ImageButton undoButton = (ImageButton) rootView.findViewById(R.id.undo_button);
@@ -152,8 +156,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 }
             });
         }
-        else
+        else {
+            multiplayerActive = true;
             rootView = inflater.inflate(R.layout.fragment_multiplayer_game, container, false);
+        }
 
         // Start listening for swipes
         rootView.setOnTouchListener(new View.OnTouchListener() {
@@ -202,7 +208,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
 
         // Disable the undo and powerup buttons based on the undos/powerups remaining
-        if(! game.getMultiplayerActive()) {
+        if(! multiplayerActive) {
             setUndoButtonEnabled(game.getUndosRemaining() != 0);
             setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
 
@@ -234,7 +240,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         GoogleAnalytics.getInstance(getActivity()).reportActivityStart(getActivity());
 
         // Start the multiplayer aspects of the game if necessary
-        if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
+        if(multiplayerActive) {
 
             createCountdown(3000);
 
@@ -261,7 +267,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
 
         // Only save a game that is still in progress and not a multiplayer game
-        if(!game.isGameLost() && !gameLost && game.getGameModeId() != GameModes.MULTIPLAYER_MODE_ID)
+        if(! (game.isGameLost() || gameLost || multiplayerActive))
             save();
         super.onPause();
     }
@@ -442,7 +448,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 showCongratulationsDialog(game.highestPiece());
         }
 
-        if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
+        if(multiplayerActive) {
                 ((MultiplayerActivity) getActivity()).sendMessage("s" + game.getScore(), false);
         }
     }
@@ -469,7 +475,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // Update attacks
         activeAttacksTextView.setText(getAttackString());
 
-        if(! game.getMultiplayerActive()) {
+        if(! multiplayerActive) {
             // Update the turn number
             turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
 
@@ -787,7 +793,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private void lost() {
-        if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID) {
+        if(multiplayerActive) {
             Toast.makeText(getActivity(), "You cannot move. Use a powerup to continue", Toast.LENGTH_LONG).show();
             return;
         }
@@ -826,7 +832,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_i_dont_want_any_help));
         }
 
-        if(game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)
+        if(multiplayerActive)
             ((MultiplayerActivity) getActivity()).sendMessage(getString(R.string.opponent_lost), true);
         else
             ((GameActivity) getActivity()).displayInterstitial();
@@ -1125,7 +1131,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     protected void showPowerupDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        if((!game.isGameLost()) || (game.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)) {
+        if((!game.isGameLost()) || multiplayerActive) {
             if (game.getPowerupsRemaining() == 0) {
                 builder.setTitle("No More Powerups").setMessage("There are no powerups remaining");
             }
@@ -1858,9 +1864,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             Save.save(gameStats, gameStatsFile);
 
             View currentGame = getView().findViewById(R.id.grid_layout);
-            Bitmap currentGameBitmap = loadBitmapFromView(currentGame, currentGame.getWidth(), currentGame.getHeight());
-            Save.saveBitmap(currentGameBitmap, currentGameScreenshotFile);
-
+            if(currentGame != null) {
+                Bitmap currentGameBitmap = loadBitmapFromView(currentGame, currentGame.getWidth(), currentGame.getHeight());
+                Save.saveBitmap(currentGameBitmap, currentGameScreenshotFile);
+            }
             //Save.save(gameStats, gameStatsFile);
         } catch (IOException e) {
             e.printStackTrace();
@@ -1882,13 +1889,15 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             game = (Game) Save.load(currentGameFile);
             gameStats = (GameData) Save.load(gameStatsFile);
 
-            if(game.getUseItemInventory()) {
-                game.setUndoLimit(gameStats.getUndoInventory());
-                game.setPowerupLimit(gameStats.getPowerupInventory());
-            }
+            if(game != null) {
+                if(game.getUseItemInventory()) {
+                    game.setUndoLimit(gameStats.getUndoInventory());
+                    game.setPowerupLimit(gameStats.getPowerupInventory());
+                }
 
-            if(game != null)
-                updateGame();
+                if(! (getActivity() instanceof MultiplayerActivity))
+                    updateGame();
+            }
 
         } catch (ClassNotFoundException e) {
             Log.e(LOG_TAG, "Class not found exception in load");
@@ -1984,7 +1993,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // Create the game timer
         ((MultiplayerActivity) getActivity()).createMultiplayerTimer(MultiplayerActivity.MULTIPLAYER_GAME_LENGTH);
 
-        game = GameModes.multiplayerMode();
+        game = GameModes.practiceMode();
         updateGame();
     }
 

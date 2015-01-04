@@ -46,7 +46,6 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.example.games.basegameutils.BaseGameActivity;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -192,25 +191,13 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     }
 
     private void switchToGame() {
-        Game game = GameModes.multiplayerMode();
-        File saveGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
-
-        try {
-            Save.save(game, saveGameFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-
         gameFragment = new GameFragment();
 
         ft.replace(R.id.multiplayer_frame_layout, gameFragment);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack(null);
         ft.commit();
-
-        //gameFragment.createCountdown(3000);
 
         multiplayerActive = true;
 
@@ -396,7 +383,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         opponentRequestedRematch = false;
         iRequestedRematch = false;
 
-        gameFragment.setGame(GameModes.multiplayerMode());
+        gameFragment.setGame(GameModes.practiceMode());
         gameFragment.updateGame();
         createMultiplayerTimer(MULTIPLAYER_GAME_LENGTH);
     }

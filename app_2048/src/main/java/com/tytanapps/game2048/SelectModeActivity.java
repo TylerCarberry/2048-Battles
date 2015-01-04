@@ -137,7 +137,7 @@ public class SelectModeActivity extends BaseGameActivity implements View.OnClick
             return;
         }
 
-        if(savedGame == null || savedGame.getGameModeId() == GameModes.MULTIPLAYER_MODE_ID)
+        if(savedGame == null)
             return;
 
         int width = (int) getResources().getDimension(R.dimen.game_mode_item_width);
