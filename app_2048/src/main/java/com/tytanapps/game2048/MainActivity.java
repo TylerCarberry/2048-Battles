@@ -173,7 +173,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         long lastDatePlayed = prefs.getLong("lastDatePlayed", -1);
         long currentDate = TimeUnit.MILLISECONDS.toDays(Calendar.getInstance().getTimeInMillis());
 
-        if (currentDate > lastDatePlayed) {
+        if (currentDate > lastDatePlayed && lastDatePlayed != -1) {
             displayWelcomeBackBonus();
         }
         else
@@ -234,7 +234,14 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         try {
             gameData = (GameData) Save.load(gameDataFile);
         } catch (IOException e) {
-            e.printStackTrace();
+
+            try {
+                Save.save(new GameData(), gameDataFile);
+            } catch (IOException e1) {
+                Toast.makeText(this, "Error: Unable to create save game file", Toast.LENGTH_LONG).show();
+            }
+
+            //e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -542,12 +549,15 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
 
         ImageView currentGameImageView = new ImageView(this);
-        currentGameImageView.setImageBitmap(Bitmap.createScaledBitmap(savedGameBitmap, 400, 400, false));
+
+        if(savedGameBitmap != null) {
+            currentGameImageView.setImageBitmap(Bitmap.createScaledBitmap(savedGameBitmap, 400, 400, false));
+            savedGameLayout.addView(currentGameImageView);
+        }
 
         // Add each item of the mode to the layout
         savedGameLayout.addView(continueGameTextView);
         savedGameLayout.addView(modeName);
-        savedGameLayout.addView(currentGameImageView);
 
         savedGameLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -985,8 +995,15 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
         currentGameFile.delete();
 
-        File currentStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
-        currentStatsFile.delete();
+
+
+        GameData gameData = new GameData();
+        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+        try {
+            Save.save(gameData, gameDataFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
