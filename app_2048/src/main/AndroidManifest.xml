@@ -43,21 +43,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".SelectModeActivity"
-            android:label="@string/app_name"
+            android:name=".GameActivity"
+            android:label="@string/title_activity_game"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
-        </activity>
-        <activity
-            android:name=".GameActivity"
-            android:label="@string/title_activity_game"
-            android:parentActivityName=".SelectModeActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SelectModeActivity" />
         </activity>
         <activity
             android:name=".SettingsActivity"
@@ -67,10 +60,10 @@
         <activity
             android:name=".StatsActivity"
             android:label="@string/title_activity_stats"
-            android:parentActivityName=".SelectModeActivity" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SelectModeActivity" />
+                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".CustomIconActivity"
@@ -91,7 +84,7 @@
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SelectModeActivity" />
+                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".CustomGameActivity"

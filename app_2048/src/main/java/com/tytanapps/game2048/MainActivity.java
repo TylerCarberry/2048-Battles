@@ -130,12 +130,13 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         updateInventoryTextView();
 
+        animateFlyingTiles(-1, 300);
+
         super.onStart();
     }
 
     @Override
     public void onResume() {
-        animateFlyingTiles(-1, 300);
         checkIfQuestActive();
         checkPendingPlayGifts();
         super.onResume();
@@ -392,31 +393,39 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 startActivity(showSettings);
                 break;
             case R.id.logo_imageview:
-                view.setRotation(0);
-                Animator animator = ObjectAnimator.ofFloat(view, View.ROTATION, 360);
-                animator.setDuration(2000);
-                animator.start();
+                if(view.getRotation() % 360 == 0) {
+                    view.setRotation(0);
+                    Animator animator = ObjectAnimator.ofFloat(view, View.ROTATION, 360);
+                    animator.setDuration(1500);
+                    animator.start();
+                }
                 break;
-            case R.id.custom_game_button:
-                startActivity(new Intent(this, CustomGameActivity.class));
+            case R.id.reset_game_button:
+                resetGame();
         }
     }
 
     private void showSinglePlayerDialog() {
         LinearLayout verticalLinearLayout = new LinearLayout(this);
         verticalLinearLayout.setOrientation(LinearLayout.VERTICAL);
+        int padding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
+        verticalLinearLayout.setPadding(padding, padding, padding, padding);
 
         LinearLayout topHorizontalLinearLayout = new LinearLayout(this);
         topHorizontalLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        topHorizontalLinearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+        topHorizontalLinearLayout.setGravity(Gravity.CENTER);
 
         View savedGameView = getSavedGameView();
-        if(savedGameView != null)
+        if(savedGameView != null) {
+            savedGameView.setPadding(0, 0, padding, 0);
             topHorizontalLinearLayout.addView(savedGameView);
+        }
 
         View customGameView = getCustomGameView();
-        if(savedGameView != null)
+        if(customGameView != null) {
             topHorizontalLinearLayout.addView(customGameView);
+        }
+        topHorizontalLinearLayout.setPadding(0,0,0,(int) getResources().getDimension(R.dimen.activity_vertical_margin));
 
         verticalLinearLayout.addView(topHorizontalLinearLayout);
 
@@ -514,6 +523,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         TextView continueGameTextView = new TextView(this);
         continueGameTextView.setText(R.string.continue_game);
+        continueGameTextView.setTextSize(20);
         continueGameTextView.setGravity(Gravity.CENTER_HORIZONTAL);
         continueGameTextView.setLayoutParams(new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -524,7 +534,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         TextView modeName = new TextView(this);
         modeName.setText(getString(GameModes.getGameTitleById((savedGame.getGameModeId()))));
         modeName.setTextSize(20);
-        modeName.setTypeface(null, Typeface.BOLD);
+        //modeName.setTypeface(null, Typeface.BOLD);
         modeName.setLayoutParams(new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         );
@@ -547,6 +557,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 return true;
             }
         });
+
 
         return savedGameLayout;
     }
@@ -965,6 +976,17 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    }
+
+    /**
+     * Delete the current game file and overall game statistics file
+     */
+    private void resetGame() {
+        File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+        currentGameFile.delete();
+
+        File currentStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+        currentStatsFile.delete();
     }
 
     /**
