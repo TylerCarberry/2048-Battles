@@ -363,6 +363,19 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             public void onAnimationRepeat(Animator animation) {}
         });
 
+        tile.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    tile.setImageDrawable(getResources().getDrawable(R.drawable.tile_2048));
+                    if (getApiClient().isConnected())
+                        Games.Events.increment(getApiClient(), getString(R.string.event_tap_on_flying_tile), 1);
+                }
+                return true;
+            }
+        });
+
         RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(startingX, startingY, 0, 0);
         tile.setLayoutParams(layoutParams);
@@ -994,8 +1007,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     private void resetGame() {
         File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
         currentGameFile.delete();
-
-
 
         GameData gameData = new GameData();
         File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
