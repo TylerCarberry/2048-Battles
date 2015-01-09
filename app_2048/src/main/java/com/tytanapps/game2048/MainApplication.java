@@ -76,9 +76,12 @@ public class MainApplication extends Application{
 		if (!mTrackers.containsKey(trackerId)) {
 			GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
             analytics.enableAutoActivityReports(this);
-            Tracker t = (trackerId == TrackerName.APP_TRACKER) ? analytics.newTracker(R.xml.app_tracker)
-					: null;
-			mTrackers.put(trackerId, t);
+
+            if(trackerId == TrackerName.APP_TRACKER) {
+                Tracker t = analytics.newTracker(R.xml.app_tracker);
+                t.enableAdvertisingIdCollection(true);
+                mTrackers.put(trackerId, t);
+            }
 		}
 		return mTrackers.get(trackerId);
 	}
