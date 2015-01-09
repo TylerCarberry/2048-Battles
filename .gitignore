@@ -28,3 +28,9 @@ baseGameUtils/build/outputs/aar/baseGameUtils-debug.aar
 baseGameUtils/build/outputs/aar/baseGameUtils-release.aar
 
 app_2048/build/outputs/apk/manifest-merger-debug-report.txt
+
+app_2048/build/outputs/lint-results-release-fatal_files/hololike.css
+
+app_2048/src/main/res/values/ids.xml
+
+app_2048/src/main/res/xml/app_tracker.xml

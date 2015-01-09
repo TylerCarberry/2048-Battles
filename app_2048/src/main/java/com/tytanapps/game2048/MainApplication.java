@@ -11,9 +11,7 @@ import java.util.HashMap;
 
 public class MainApplication extends Application{
 
-	private static final String PROPERTY_ID = "UA-53962546-1";
-
-    @Override
+	@Override
     public void onCreate() {
         super.onCreate();
         getTracker(TrackerName.APP_TRACKER);
@@ -79,7 +77,7 @@ public class MainApplication extends Application{
 			GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
             analytics.enableAutoActivityReports(this);
             Tracker t = (trackerId == TrackerName.APP_TRACKER) ? analytics.newTracker(R.xml.app_tracker)
-					: analytics.newTracker(PROPERTY_ID);
+					: null;
 			mTrackers.put(trackerId, t);
 		}
 		return mTrackers.get(trackerId);
