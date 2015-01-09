@@ -36,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.HitBuilders;
@@ -425,6 +426,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 break;
             case R.id.reset_game_button:
                 resetGame();
+                break;
+            default: playGames(view);
         }
     }
 
@@ -621,9 +624,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
      * Display all quests
      */
     protected void showQuests() {
-        // In the developer tutorial they use Quests.SELECT_ALL_QUESTS
-        // but that is not valid for me. That may require an update
-        // but for now selecting all possibilities works the same way
+        // In the developer tutorial they use Quests.SELECT_ALL_QUESTS but that is not valid for me.
+        // That may require an update but for now selecting all possibilities works the same way
         int[] questParams = new int[8];
         questParams[0] = Games.Quests.SELECT_ACCEPTED;
         questParams[1] = Games.Quests.SELECT_OPEN;
@@ -635,8 +637,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         questParams[7] = Games.Quests.SELECT_EXPIRED;
 
         Intent questsIntent = Games.Quests.getQuestsIntent(getApiClient(), questParams);
-
-        // 0 is an arbitrary integer
         startActivityForResult(questsIntent, QUEST_CODE);
     }
 
@@ -1033,123 +1033,41 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            final ImageButton achievementsButton = (ImageButton) rootView.findViewById(R.id.achievements_button);
-            final ImageButton leaderboardsButton = (ImageButton) rootView.findViewById(R.id.leaderboards_button);
-            final ImageButton giftsButton = (ImageButton) rootView.findViewById(R.id.gifts_button);
-            final ImageButton questsButton = (ImageButton) rootView.findViewById(R.id.quests_button);
+            ImageButton achievementsButton = (ImageButton) rootView.findViewById(R.id.achievements_button);
+            ImageButton leaderboardsButton = (ImageButton) rootView.findViewById(R.id.leaderboards_button);
+            ImageButton giftsButton = (ImageButton) rootView.findViewById(R.id.gifts_button);
+            ImageButton questsButton = (ImageButton) rootView.findViewById(R.id.quests_button);
+            ImageButton settingsButton = (ImageButton) rootView.findViewById(R.id.settings_button);
+            ImageButton helpButton = (ImageButton) rootView.findViewById(R.id.help_button);
+            ImageButton singlePlayerButton = (ImageButton) rootView.findViewById(R.id.single_player_imagebutton);
+            ImageButton multiplayerButton = (ImageButton) rootView.findViewById(R.id.multiplayer_imagebutton);
+
             ImageButton themesButton = (ImageButton) rootView.findViewById(R.id.themes_button);
 
 
-            achievementsButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        achievementsButton.setImageResource(R.drawable.games_achievements_pressed);
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        achievementsButton.setImageResource(R.drawable.games_achievements);
-                        ((MainActivity)getActivity()).playGames(view);
-                    }
-                    return true;
-                }
-            });
+            achievementsButton.setOnTouchListener(createOnTouchListener
+                    (achievementsButton, R.drawable.games_achievements, R.drawable.games_achievements_pressed));
 
-            leaderboardsButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        leaderboardsButton.setImageResource(R.drawable.games_leaderboards_pressed);
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        leaderboardsButton.setImageResource(R.drawable.games_leaderboards);
-                        ((MainActivity)getActivity()).playGames(view);
-                    }
-                    return true;
-                }
-            });
+            leaderboardsButton.setOnTouchListener(createOnTouchListener
+                    (leaderboardsButton, R.drawable.games_leaderboards, R.drawable.games_leaderboards_pressed));
 
-            giftsButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        giftsButton.setImageResource(R.drawable.games_gifts_pressed);
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        giftsButton.setImageResource(R.drawable.games_gifts);
-                        ((MainActivity)getActivity()).playGames(view);
-                    }
-                    return true;
-                }
-            });
+            giftsButton.setOnTouchListener(createOnTouchListener
+                    (giftsButton, R.drawable.games_gifts, R.drawable.games_gifts_pressed));
 
-            questsButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        questsButton.setImageResource(R.drawable.games_quests_pressed);
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        questsButton.setImageResource(R.drawable.games_quests);
-                        ((MainActivity)getActivity()).playGames(view);
-                    }
-                    return true;
-                }
-            });
+            questsButton.setOnTouchListener(createOnTouchListener
+                    (questsButton, R.drawable.games_quests, R.drawable.games_quests_pressed));
 
+            helpButton.setOnTouchListener(createOnTouchListener
+                    (helpButton, R.drawable.help_button, R.drawable.help_button_pressed));
 
-            rootView.findViewById(R.id.single_player_imagebutton).setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        view.setBackgroundResource(R.drawable.single_player_icon_pressed);
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        view.setBackgroundResource(R.drawable.single_player_icon);
-                        ((MainActivity)getActivity()).onClick(view);
-                    }
-                    return true;
-                }
-            });
-            rootView.findViewById(R.id.multiplayer_imagebutton).setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        view.setBackgroundResource(R.drawable.multiplayer_icon_pressed);
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        view.setBackgroundResource(R.drawable.multiplayer_icon);
-                        ((MainActivity)getActivity()).onClick(view);
-                    }
-                    return true;
-                }
-            });
-            rootView.findViewById(R.id.help_button).setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        view.setBackgroundResource(R.drawable.help_button_pressed);
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        view.setBackgroundResource(R.drawable.help_button);
-                        ((MainActivity)getActivity()).onClick(view);
-                    }
-                    return true;
-                }
-            });
+            singlePlayerButton.setOnTouchListener(createOnTouchListener
+                    (singlePlayerButton, R.drawable.single_player_icon, R.drawable.single_player_icon_pressed));
 
-            ImageButton settingsButton = (ImageButton) rootView.findViewById(R.id.settings_button);
-            settingsButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        view.setBackgroundResource(R.drawable.settings_button_pressed);
-                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        view.setBackgroundResource(R.drawable.settings_button);
-                        ((MainActivity) getActivity()).onClick(view);
-                    }
-                    return true;
-                }
-            });
+            multiplayerButton.setOnTouchListener(createOnTouchListener
+                    (multiplayerButton, R.drawable.multiplayer_icon, R.drawable.multiplayer_icon_pressed));
+
+            settingsButton.setOnTouchListener(createOnTouchListener
+                    (settingsButton, R.drawable.settings_button, R.drawable.settings_button_pressed));
 
             themesButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1162,7 +1080,12 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             appLogo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ((MainActivity) getActivity()).onClick(view);
+                    if(view.getRotation() % 360 == 0) {
+                        view.setRotation(0);
+                        Animator animator = ObjectAnimator.ofFloat(view, View.ROTATION, 360);
+                        animator.setDuration(1500);
+                        animator.start();
+                    }
                 }
             });
 
@@ -1180,6 +1103,27 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             spinAnimation.setInterpolator(new LinearInterpolator());
 
             spinAnimation.start();
+        }
+
+        private View.OnTouchListener createOnTouchListener(final ImageView view, final int defaultResource, final int pressedResource) {
+            View.OnTouchListener onTouchListener = new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        view.setImageResource(pressedResource);
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        view.setImageResource(defaultResource);
+
+                        if(event.getX() > 0 && event.getX() < view.getWidth() &&
+                                event.getY() > 0 && event.getY() < view.getHeight())
+                            ((MainActivity)getActivity()).onClick(view);
+                    }
+                    return true;
+                }
+            };
+
+            return onTouchListener;
         }
     }
 
@@ -1205,6 +1149,13 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
             // Start loading the ad in the background.
             mAdView.loadAd(adRequest);
+            mAdView.setAdListener(new AdListener() {
+                @Override
+                public void onAdFailedToLoad(int errorCode) {
+                    mAdView.setVisibility(View.GONE);
+                    super.onAdFailedToLoad(errorCode);
+                }
+            });
         }
 
         @Override
