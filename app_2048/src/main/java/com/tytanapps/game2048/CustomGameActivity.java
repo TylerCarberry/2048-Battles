@@ -75,6 +75,8 @@ public class CustomGameActivity extends Activity {
         boolean speedMode = ((CheckBox)findViewById(R.id.speed_mode_checkbox)).isChecked();
         boolean surivalMode = ((CheckBox)findViewById(R.id.survival_mode_checkbox)).isChecked();
         boolean rushMode = ((CheckBox)findViewById(R.id.rush_mode_checkbox)).isChecked();
+        boolean ghostMode = ((CheckBox)findViewById(R.id.ghost_mode_checkbox)).isChecked();
+
 
         if(! isCustomGameValid(width, height, xmode, cornerMode, speedMode, surivalMode, rushMode))
             return;
@@ -89,6 +91,7 @@ public class CustomGameActivity extends Activity {
             game.enableSurvivalMode();
         game.setSpeedMode(speedMode);
         game.setDynamicTileSpawning(rushMode);
+        game.setGhostMode(ghostMode);
         game.finishedCreatingGame();
 
         File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));

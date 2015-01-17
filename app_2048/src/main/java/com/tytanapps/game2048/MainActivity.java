@@ -552,27 +552,15 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         );
         continueGameTextView.setTypeface(null, Typeface.BOLD);
 
-        // The mode name
-        TextView modeName = new TextView(this);
-        modeName.setText(getString(GameModes.getGameTitleById((savedGame.getGameModeId()))));
-        modeName.setTextSize(20);
-        //modeName.setTypeface(null, Typeface.BOLD);
-        modeName.setLayoutParams(new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        );
-        modeName.setGravity(Gravity.CENTER_HORIZONTAL);
-
 
         ImageView currentGameImageView = new ImageView(this);
 
+        // Add each item of the mode to the layout
+        savedGameLayout.addView(continueGameTextView);
         if(savedGameBitmap != null) {
             currentGameImageView.setImageBitmap(Bitmap.createScaledBitmap(savedGameBitmap, 400, 400, false));
             savedGameLayout.addView(currentGameImageView);
         }
-
-        // Add each item of the mode to the layout
-        savedGameLayout.addView(continueGameTextView);
-        savedGameLayout.addView(modeName);
 
         savedGameLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override

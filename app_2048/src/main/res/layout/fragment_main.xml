@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:paddingTop="0dp"
     android:paddingBottom="0dp"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     tools:context="com.tytanapps.game2048.MainActivity$PlaceholderFragment">
 
     <RelativeLayout
@@ -22,7 +24,9 @@
         android:layout_above="@+id/play_games_layout"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin">
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <ImageView
             android:id="@+id/logo_imageview"

@@ -72,6 +72,7 @@ public class Game implements java.io.Serializable
 	private boolean speedMode = false;
 	private boolean zenMode = false;
 	private boolean arcadeMode = false;
+    private boolean ghostMode = false;
 	
 	// If true, any tile less than the max tile can spawn
 	// Ex. If the highest piece is 32 then a 2,4,8, or 16 can appear
@@ -442,6 +443,14 @@ public class Game implements java.io.Serializable
 		zenMode = enabled;
 		setDynamicTileSpawning(enabled);
 	}
+
+    public void setGhostMode(boolean enabled) {
+        ghostMode = enabled;
+    }
+
+    public boolean getGhostMode() {
+        return ghostMode;
+    }
 	
 	/**
 	 * Higher value tiles appear
@@ -913,10 +922,13 @@ public class Game implements java.io.Serializable
         clonedGame.quitGame = quitGame;
         clonedGame.newGame = newGame;
 
+        clonedGame.XMode = XMode;
+        clonedGame.cornerMode = cornerMode;
         clonedGame.survivalMode = survivalMode;
         clonedGame.speedMode = speedMode;
         clonedGame.zenMode = zenMode;
         clonedGame.arcadeMode = arcadeMode;
+        clonedGame.ghostMode = ghostMode;
 
         clonedGame.activeAttack = activeAttack;
         clonedGame.attackDuration = attackDuration;

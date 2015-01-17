@@ -352,6 +352,7 @@ public class GameModes
 	{
 		Game game = new Game();
 		game.setMoveLimit(-1);
+        game.setGhostMode(true);
         game.setGameModeId(GHOST_MODE_ID);
         game.setUseItemInventory(true);
         game.finishedCreatingGame();

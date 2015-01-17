@@ -687,8 +687,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private Drawable getTileIconDrawable(int tileValue) {
-        if(game.getGameModeId() == GameModes.GHOST_MODE_ID ||
-                game.getActiveAttack() == Game.GHOST_ATTACK || ghostAttackActive)
+        if(game.getGhostMode() || game.getActiveAttack() == Game.GHOST_ATTACK || ghostAttackActive)
             tileValue = Game.GHOST_TILE_VALUE;
 
         if(customTileIcon.containsKey(tileValue))

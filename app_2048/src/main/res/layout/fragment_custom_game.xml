@@ -93,4 +93,12 @@
         android:layout_below="@+id/survival_mode_checkbox"
         android:layout_alignParentRight="true" />
 
+    <CheckBox
+        android:id="@+id/ghost_mode_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mode_ghost"
+        android:layout_below="@+id/rush_mode_checkbox"
+        android:layout_alignParentRight="true" />
+
 </RelativeLayout>
