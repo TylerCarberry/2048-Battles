@@ -18,6 +18,9 @@ public class Game implements java.io.Serializable
 	
 	private final static String LOG_TAG = Game.class.getSimpleName();
 
+    // The chance of a 2 appearing
+    public static final double CHANCE_OF_2 = .90;
+
     public static final int GHOST_TILE_VALUE = -3;
     public static final int X_TILE_VALUE = -2;
 	public static final int CORNER_TILE_VALUE = -1;
@@ -31,9 +34,8 @@ public class Game implements java.io.Serializable
 	
 	// Stores the previous boards and scores
 	private Stack history;
-	
-	// The chance of a 2 appearing
-	public static final double CHANCE_OF_2 = .90;
+
+    private Game originalGame;
 	
 	private int score = 0;
 	private int turnNumber = 1;
@@ -62,8 +64,11 @@ public class Game implements java.io.Serializable
     // The time limit in seconds before the game automatically quits
 	// The timer starts immediately after the first move
 	private double timeLeft = -1;
-	
-	private boolean survivalMode = false;
+
+
+    private boolean XMode = false;
+    private boolean cornerMode = false;
+    private boolean survivalMode = false;
 	private boolean speedMode = false;
 	private boolean zenMode = false;
 	private boolean arcadeMode = false;
@@ -85,8 +90,7 @@ public class Game implements java.io.Serializable
 	private int gameModeId;
 
     private boolean useItemInventory = false;
-
-    private boolean genie_enabled = false;
+    private boolean genieEnabled = false;
 
     // This must be updated manually by the driver
     private int opponentScore = -1;
@@ -96,10 +100,11 @@ public class Game implements java.io.Serializable
 	 */
 	public Game()
 	{
-		this(4,4);
+		this(4, 4);
 	}
 	
 	/**
+     * Call finishedCreatingGame() before starting the game
 	 * @param rows The number of rows in the game
 	 * @param cols The number of columns in the game
 	 */
@@ -112,34 +117,18 @@ public class Game implements java.io.Serializable
 		
 		// Store the move history
 		history = new Stack();
-		
-		// Adds 2 pieces to the board
-		addRandomPiece();
-		addRandomPiece();
 	}
-	
-	/**
-	 * Creates a new game as a clone. 
-	 * Only used by the clone method
-	 * @param toClone The game to clone
-	 */
-	private Game(Game toClone) {
-		board = toClone.board.clone();
-		turnNumber = toClone.turnNumber;
-		score = toClone.score;
-		history = toClone.history.clone();
-		
-		movesRemaining = toClone.movesRemaining;
-		undosRemaining = toClone.undosRemaining;
-		timeLeft = toClone.timeLeft;
-		d1 = toClone.d1;
-		
-		quitGame = toClone.quitGame;
-		newGame = toClone.newGame;
-		survivalMode = toClone.survivalMode;
-		speedMode = toClone.speedMode;
-		zenMode = toClone.zenMode;
-	}
+
+    /**
+     * Needs to be called after the game is created
+     */
+    public void finishedCreatingGame() {
+        originalGame = clone();
+
+        // Adds 2 pieces to the board
+        addRandomPiece();
+        addRandomPiece();
+    }
 	
 	/**
 	 * Moves the entire board in the given direction
@@ -872,12 +861,14 @@ public class Game implements java.io.Serializable
 	/**
 	 *  Quit the game
 	 */
-	public void quit()
-	{
-		quitGame = true;
-	}
-	
-	
+	public void quit() {
+        quitGame = true;
+    }
+
+    public Game getOriginalGame() {
+        return originalGame;
+    }
+
 	/**
 	 * @return The highest piece on the board
 	 */
@@ -909,7 +900,36 @@ public class Game implements java.io.Serializable
 	 */
 	public Game clone()
 	{
-		return new Game(this);
+        Game clonedGame = new Game();
+        clonedGame.setGrid(getGrid().clone());
+        clonedGame.turnNumber = turnNumber;
+        clonedGame.score = score;
+        clonedGame.history = history.clone();
+
+        clonedGame.movesRemaining = movesRemaining;
+        clonedGame.undosRemaining = undosRemaining;
+        clonedGame.timeLeft = timeLeft;
+        clonedGame.d1 = d1;
+        clonedGame.quitGame = quitGame;
+        clonedGame.newGame = newGame;
+
+        clonedGame.survivalMode = survivalMode;
+        clonedGame.speedMode = speedMode;
+        clonedGame.zenMode = zenMode;
+        clonedGame.arcadeMode = arcadeMode;
+
+        clonedGame.activeAttack = activeAttack;
+        clonedGame.attackDuration = attackDuration;
+        clonedGame.iceDirection = iceDirection;
+        clonedGame.dynamicTileSpawning = dynamicTileSpawning;
+
+        clonedGame.undosUsed = undosUsed;
+        clonedGame.powerupsUsed = powerupsUsed;
+        clonedGame.gameModeId = gameModeId;
+        clonedGame.useItemInventory = useItemInventory;
+        clonedGame.genieEnabled = genieEnabled;
+
+        return clonedGame;
 	}
 
 	/**
@@ -974,11 +994,11 @@ public class Game implements java.io.Serializable
 	}
 
     public boolean getGenieEnabled() {
-        return genie_enabled;
+        return genieEnabled;
     }
 
     public void setGenieEnabled(boolean isGenieEnabled) {
-        genie_enabled = isGenieEnabled;
+        genieEnabled = isGenieEnabled;
     }
 
     /**

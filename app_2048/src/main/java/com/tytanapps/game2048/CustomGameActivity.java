@@ -89,6 +89,7 @@ public class CustomGameActivity extends Activity {
             game.enableSurvivalMode();
         game.setSpeedMode(speedMode);
         game.setDynamicTileSpawning(rushMode);
+        game.finishedCreatingGame();
 
         File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
         try {

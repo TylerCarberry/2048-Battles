@@ -1833,7 +1833,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         gameStats.updateGameRecords(game.getGameModeId(), game);
 
         // Create a new game
-        game = GameModes.newGameFromId(game.getGameModeId());
+        game = game.getOriginalGame();
+        game.finishedCreatingGame();
 
         // Activate speed or survival mode if necessary
         if(game.getSpeedMode())

@@ -159,6 +159,7 @@ public class GameModes
 		game.setPowerupLimit(-1);
         game.setGenieEnabled(true);
 		game.setGameModeId(PRACTICE_MODE_ID);
+        game.finishedCreatingGame();
 
 		return game;
 	}
@@ -173,6 +174,7 @@ public class GameModes
 		game.setTimeLimit(-1);
         game.setUseItemInventory(true);
 		game.setGameModeId(NORMAL_MODE_ID);
+        game.finishedCreatingGame();
 
 		return game;
 	}
@@ -188,6 +190,7 @@ public class GameModes
 		game.setTimeLimit(-1);
 		game.setPowerupLimit(0);
 		game.setGameModeId(PRO_MODE_ID);
+        game.finishedCreatingGame();
 
 		return game;
 	}
@@ -203,6 +206,7 @@ public class GameModes
 		game.setArcadeMode(true);
 		game.setPowerupLimit(0);
 		game.setGameModeId(ARCADE_MODE_ID);
+        game.finishedCreatingGame();
 
 		return game;
 	}
@@ -215,6 +219,7 @@ public class GameModes
 		game.setDynamicTileSpawning(true);
 		game.setGameModeId(RUSH_MODE_ID);
         game.setUseItemInventory(true);
+        game.finishedCreatingGame();
 
 		return game;
 	}
@@ -231,6 +236,7 @@ public class GameModes
 		game.enableSurvivalMode();
         game.setUseItemInventory(true);
 		game.setGameModeId(SURVIVAL_MODE_ID);
+        game.finishedCreatingGame();
 
 		return game;
 	}
@@ -247,6 +253,7 @@ public class GameModes
 		game.enableXMode();
 		game.setGameModeId(X_MODE_ID);
         game.setUseItemInventory(true);
+        game.finishedCreatingGame();
 
 		return game;
 	}
@@ -263,6 +270,7 @@ public class GameModes
 		game.enableCornerMode();
 		game.setGameModeId(CORNER_MODE_ID);
         game.setUseItemInventory(true);
+        game.finishedCreatingGame();
 
 		return game;
 	}
@@ -279,6 +287,7 @@ public class GameModes
 		game.setSpeedMode(true);
         game.setUseItemInventory(true);
 		game.setGameModeId(SPEED_MODE_ID);
+        game.finishedCreatingGame();
 
 		return game;
 	}
@@ -312,6 +321,7 @@ public class GameModes
             }
 
         game.setGameModeId(ZEN_MODE_ID);
+        game.finishedCreatingGame();
 		
 		return game;
 	}
@@ -331,6 +341,7 @@ public class GameModes
 		game.setSpeedMode(true);
         game.setUseItemInventory(true);
 		game.setGameModeId(CRAZY_MODE_ID);
+        game.finishedCreatingGame();
 
 		return game;
 	}
@@ -343,6 +354,7 @@ public class GameModes
 		game.setMoveLimit(-1);
         game.setGameModeId(GHOST_MODE_ID);
         game.setUseItemInventory(true);
+        game.finishedCreatingGame();
 
 		return game;
 	}
@@ -362,6 +374,7 @@ public class GameModes
         grid.set(new Location(1,1), 2);
         grid.set(new Location(2,2), 2);
         game.setGrid(grid);
+        game.finishedCreatingGame();
 
         return game;
     }

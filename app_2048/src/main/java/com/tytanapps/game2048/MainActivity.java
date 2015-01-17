@@ -1008,6 +1008,9 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         currentGameFile.delete();
 
         GameData gameData = new GameData();
+        gameData.incrementUndoInventory(5);
+        gameData.incrementPowerupInventory(3);
+
         File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
         try {
             Save.save(gameData, gameDataFile);
