@@ -127,7 +127,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // The game has a different layout for single and multiplayer games
         View rootView;
-        if(container.getId() == R.id.container) {
+        if(container == null) {
             multiplayerActive = false;
 
             rootView = inflater.inflate(R.layout.fragment_game, container, false);
@@ -182,7 +182,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         gridLayout = (GridLayout) getView().findViewById(R.id.grid_layout);
 
         // Load the custom tiles and place them in the Map customTileIcon to be accessed later
-        loadCustomTileIcons();
+        //loadCustomTileIcons();
 
         // Load the saved file containing the game. This also updates the screen.
         load();
