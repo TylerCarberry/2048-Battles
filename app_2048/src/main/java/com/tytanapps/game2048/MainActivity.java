@@ -74,6 +74,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     // The tiles that fly across the background travel for between 3 and 6 seconds
     private final static int FLYING_TILE_SPEED = 6000;
 
+    private static GameData gameData;
+
     private static boolean activityIsVisible = false;
 
     @Override
@@ -85,6 +87,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                     .add(R.id.activity_main_top, new PlaceholderFragment())
                     .commit();
         }
+
     }
 
     @Override
@@ -229,22 +232,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     }
 
     public void updateInventoryTextView() {
-        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
-        GameData gameData = new GameData();
-        try {
-            gameData = (GameData) Save.load(gameDataFile);
-        } catch (IOException e) {
-
-            try {
-                Save.save(new GameData(), gameDataFile);
-            } catch (IOException e1) {
-                Toast.makeText(this, "Error: Unable to create save game file", Toast.LENGTH_LONG).show();
-            }
-
-            //e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        if(gameData == null)
+            readGameData();
 
         TextView undoTextView = (TextView) findViewById(R.id.undo_inventory);
         undoTextView.setText(""+gameData.getUndoInventory());
@@ -298,13 +287,13 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         else if(rand < 0.6)
             tile.setBackgroundResource(R.drawable.tile_64);
         else if(rand < 0.7)
-            tile.setBackgroundResource(R.drawable.tile_256);
+            tile.setBackgroundResource(R.drawable.tile_128);
         else if(rand < 0.8)
-            tile.setBackgroundResource(R.drawable.tile_512);
+            tile.setBackgroundResource(R.drawable.tile_256);
         else if(rand < 0.9)
-            tile.setBackgroundResource(R.drawable.tile_1024);
+            tile.setBackgroundResource(R.drawable.tile_512);
         else
-            tile.setBackgroundResource(R.drawable.tile_2048);
+            tile.setBackgroundResource(R.drawable.tile_1024);
 
         Display display = getWindowManager().getDefaultDisplay();
 
@@ -354,7 +343,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             public void onAnimationEnd(Animator animation) {
                 mainFragment.removeView(tile);
             }
-
             @Override
             public void onAnimationStart(Animator animation) {}
             @Override
@@ -366,12 +354,22 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         tile.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
                     tile.setImageDrawable(getResources().getDrawable(R.drawable.tile_2048));
-                    if (getApiClient().isConnected())
+                    if (getApiClient().isConnected()) {
                         Games.Events.increment(getApiClient(), getString(R.string.event_tap_on_flying_tile), 1);
+                        Games.Achievements.increment(getApiClient(), getString(R.string.achievement_tile_tapper), 1);
+                    }
+                    saveGameData();
                 }
+
+                tile.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return false;
+                    }
+                });
+
                 return true;
             }
         });
@@ -806,6 +804,35 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         });
     }
 
+    private void readGameData() {
+        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+        gameData = new GameData();
+        try {
+            gameData = (GameData) Save.load(gameDataFile);
+        } catch (IOException e) {
+
+            try {
+                Save.save(new GameData(), gameDataFile);
+            } catch (IOException e1) {
+                Toast.makeText(this, "Error: Unable to create save game file", Toast.LENGTH_LONG).show();
+            }
+
+            //e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveGameData() {
+        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+        try {
+            Save.save(gameData, gameDataFile);
+        } catch (IOException e) {
+            Toast.makeText(this, "Error: Unable to save game data", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onQuestCompleted(Quest quest) {
 
@@ -914,18 +941,18 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     }
 
     private void incrementPowerupInventory(int amount) throws IOException, ClassNotFoundException {
-        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
-        GameData gameData = (GameData) Save.load(gameDataFile);
+        if(gameData == null)
+            readGameData();
         gameData.incrementPowerupInventory(amount);
-        Save.save(gameData, gameDataFile);
+        saveGameData();
         updateInventoryTextView();
     }
 
     private void incrementUndoInventory(int amount) throws IOException, ClassNotFoundException {
-        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
-        GameData gameData = (GameData) Save.load(gameDataFile);
+        if(gameData == null)
+            readGameData();
         gameData.incrementUndoInventory(amount);
-        Save.save(gameData, gameDataFile);
+        saveGameData();
         updateInventoryTextView();
     }
 
@@ -995,16 +1022,11 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
         currentGameFile.delete();
 
-        GameData gameData = new GameData();
+        gameData = new GameData();
         gameData.incrementUndoInventory(5);
         gameData.incrementPowerupInventory(3);
 
-        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
-        try {
-            Save.save(gameData, gameDataFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        saveGameData();
     }
 
     /**
