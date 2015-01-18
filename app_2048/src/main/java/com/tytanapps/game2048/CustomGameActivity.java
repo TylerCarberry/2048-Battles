@@ -3,6 +3,8 @@ package com.tytanapps.game2048;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -154,13 +156,29 @@ public class CustomGameActivity extends Activity {
         GridLayout gridLayout = new GridLayout(this);
         gridLayout.setColumnCount(width);
         gridLayout.setRowCount(height);
-        gridLayout.setUseDefaultMargins(true);
 
+        final int SPACING = 20;
+
+
+        FrameLayout gamePreviewFrame = (FrameLayout) findViewById(R.id.game_preview_game_layout);
+        //Point size = new Point();
+        //gamePreviewFrame.getSize(size);
+        int previewWidth = gamePreviewFrame.getMeasuredWidth();
+        int previewHeight = gamePreviewFrame.getMeasuredHeight();
+
+        int tileHeight = previewHeight / height - SPACING;
+        int tileWidth = previewWidth / width - SPACING;
+
+        int tileLength = (tileWidth < tileHeight) ? tileWidth : tileHeight;
+
+        Bitmap blankTileBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.tile_blank);
+        blankTileBitmap = (Bitmap.createScaledBitmap(blankTileBitmap, tileLength, tileLength, false));
 
         for(int x = 0; x < width; x++) {
             for(int y = 0; y < height; y++) {
                 ImageView tileBackground = new ImageView(this);
-                tileBackground.setImageResource(R.drawable.tile_blank);
+                tileBackground.setImageBitmap(blankTileBitmap);
+                tileBackground.setPadding(SPACING, SPACING, 0, 0);
                 gridLayout.addView(tileBackground);
 
             }
@@ -169,9 +187,18 @@ public class CustomGameActivity extends Activity {
         int cornerTileResource = (modes.contains(Mode.GHOST)) ? R.drawable.tile_question : R.drawable.tile_corner;
         int xTileResource = (modes.contains(Mode.GHOST)) ? R.drawable.tile_question : R.drawable.tile_x;
 
+        Bitmap xTileBitmap = BitmapFactory.decodeResource(getResources(), xTileResource);
+        xTileBitmap = (Bitmap.createScaledBitmap(xTileBitmap, tileLength, tileLength, false));
+
+        Bitmap cornerTileBitmap = BitmapFactory.decodeResource(getResources(), cornerTileResource);
+        cornerTileBitmap = (Bitmap.createScaledBitmap(cornerTileBitmap, tileLength, tileLength, false));
+
+
+
         if(modes.contains(Mode.XMODE)) {
             ImageView XTile = new ImageView(this);
-            XTile.setImageResource(xTileResource);
+            XTile.setImageBitmap(xTileBitmap);
+            XTile.setPadding(SPACING, SPACING, 0, 0);
             GridLayout.Spec specRow, specCol;
 
             if (height >= 2 && width >= 2) {
@@ -204,25 +231,29 @@ public class CustomGameActivity extends Activity {
 
             // Add a blank tile to that spot on the grid
             ImageView cornerTile = new ImageView(this);
-            cornerTile.setImageResource(cornerTileResource);
+            cornerTile.setImageBitmap(cornerTileBitmap);
+            cornerTile.setPadding(SPACING, SPACING, 0, 0);
             gridLayout.addView(cornerTile, gridLayoutParam);
 
             cornerTile = new ImageView(this);
-            cornerTile.setImageResource(cornerTileResource);
+            cornerTile.setImageBitmap(cornerTileBitmap);
+            cornerTile.setPadding(SPACING, SPACING, 0, 0);
             specRow = GridLayout.spec(height - 1, 1);
             specCol = GridLayout.spec(0, 1);
             gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
             gridLayout.addView(cornerTile, gridLayoutParam);
 
             cornerTile = new ImageView(this);
-            cornerTile.setImageResource(cornerTileResource);
+            cornerTile.setImageBitmap(cornerTileBitmap);
+            cornerTile.setPadding(SPACING, SPACING, 0, 0);
             specRow = GridLayout.spec(height - 1, 1);
             specCol = GridLayout.spec(width - 1, 1);
             gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
             gridLayout.addView(cornerTile, gridLayoutParam);
 
             cornerTile = new ImageView(this);
-            cornerTile.setImageResource(cornerTileResource);
+            cornerTile.setImageBitmap(cornerTileBitmap);
+            cornerTile.setPadding(SPACING, SPACING, 0, 0);
             specRow = GridLayout.spec(0, 1);
             specCol = GridLayout.spec(width - 1, 1);
             gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
