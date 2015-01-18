@@ -3,25 +3,19 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tytanapps.game2048.MainActivity"
-    tools:ignore="MergeRootFrame"
-    android:background="@color/PrimaryBackground">
+    tools:context=".MainActivity"
+    tools:ignore="MergeRootFrame" >
 
-    <FrameLayout
-        android:id="@+id/activity_main_top"
-        android:layout_height="wrap_content"
+    <fragment android:name="com.tytanapps.game2048.MainActivity$PlaceholderFragment"
         android:layout_width="match_parent"
-        android:layout_above="@+id/activity_main_bottom"
-        />
-    <FrameLayout
-        android:id="@+id/activity_main_bottom"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/adFragment" />
+
+    <fragment
+        android:id="@+id/adFragment"
+        android:name="com.tytanapps.game2048.MainActivity$AdFragment"
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-        />
-
-
-
-
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

@@ -36,6 +36,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.PendingResult;
@@ -82,12 +85,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.activity_main_top, new PlaceholderFragment())
-                    .commit();
-        }
-
     }
 
     @Override
@@ -1136,69 +1133,74 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         }
     }
 
-//
-//    public static class AdFragment extends Fragment {
-//        private AdView mAdView;
-//
-//        public AdFragment() {
-//        }
-//
-//        @Override
-//        public void onActivityCreated(Bundle bundle) {
-//            super.onActivityCreated(bundle);
-//
-//            // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
-//            // values/strings.xml.
-//            mAdView = (AdView) getView().findViewById(R.id.adView);
-//
-//            // Create an ad request.
-//            AdRequest adRequest = new AdRequest.Builder()
-//                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-//                    .addTestDevice(getString(R.string.test_device_id))
-//                    .build();
-//
-//            // Start loading the ad in the background.
-//            mAdView.loadAd(adRequest);
-//            mAdView.setAdListener(new AdListener() {
-//                @Override
-//                public void onAdFailedToLoad(int errorCode) {
-//                    mAdView.setVisibility(View.GONE);
-//                    super.onAdFailedToLoad(errorCode);
-//                }
-//            });
-//        }
-//
-//        @Override
-//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                                 Bundle savedInstanceState) {
-//            return inflater.inflate(R.layout.fragment_ad, container, false);
-//        }
-//
-//        /** Called when leaving the activity */
-//        @Override
-//        public void onPause() {
-//            if (mAdView != null) {
-//                mAdView.pause();
-//            }
-//            super.onPause();
-//        }
-//
-//        /** Called when returning to the activity */
-//        @Override
-//        public void onResume() {
-//            super.onResume();
-//            if (mAdView != null) {
-//                mAdView.resume();
-//            }
-//        }
-//
-//        /** Called before the activity is destroyed */
-//        @Override
-//        public void onDestroy() {
-//            if (mAdView != null) {
-//                mAdView.destroy();
-//            }
-//            super.onDestroy();
-//        }
-//    }
+
+    public static class AdFragment extends Fragment {
+        private AdView mAdView;
+
+        public AdFragment() {
+        }
+
+        @Override
+        public void onActivityCreated(Bundle bundle) {
+            super.onActivityCreated(bundle);
+
+            // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
+            // values/strings.xml.
+            mAdView = (AdView) getView().findViewById(R.id.adView);
+
+            // The current version of AdMob breaks rotation animations on some devices.
+            // Setting the layer type of the ad to Software or Hardware fixes it.
+            // https://code.google.com/p/android/issues/detail?id=70914
+            mAdView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+            // Create an ad request.
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .addTestDevice(getString(R.string.test_device_id))
+                    .build();
+
+            // Start loading the ad in the background.
+            mAdView.loadAd(adRequest);
+            mAdView.setAdListener(new AdListener() {
+                @Override
+                public void onAdFailedToLoad(int errorCode) {
+                    mAdView.setVisibility(View.GONE);
+                    super.onAdFailedToLoad(errorCode);
+                }
+            });
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_ad, container, false);
+        }
+
+        /** Called when leaving the activity */
+        @Override
+        public void onPause() {
+            if (mAdView != null) {
+                mAdView.pause();
+            }
+            super.onPause();
+        }
+
+        /** Called when returning to the activity */
+        @Override
+        public void onResume() {
+            super.onResume();
+            if (mAdView != null) {
+                mAdView.resume();
+            }
+        }
+
+        /** Called before the activity is destroyed */
+        @Override
+        public void onDestroy() {
+            if (mAdView != null) {
+                mAdView.destroy();
+            }
+            super.onDestroy();
+        }
+    }
 }
