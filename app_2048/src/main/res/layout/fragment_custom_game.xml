@@ -101,4 +101,22 @@
         android:layout_below="@+id/rush_mode_checkbox"
         android:layout_alignParentRight="true" />
 
+    <FrameLayout
+        android:id="@+id/game_preview_game_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/height_number_picker"
+        android:layout_above="@+id/create_game_button" >
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/preview_game_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Preview"
+        android:layout_toRightOf="@id/create_game_button"
+        android:layout_alignParentBottom="true"
+        android:onClick="onClick"/>
+
 </RelativeLayout>

@@ -11,14 +11,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
+import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class CustomGameActivity extends Activity {
+
+    private enum Mode {XMODE, CORNER, ARCADE, SURVIVAL, SPEED, RUSH, GHOST}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +68,9 @@ public class CustomGameActivity extends Activity {
         switch(view.getId()) {
             case R.id.create_game_button:
                 createGame();
+                break;
+            case R.id.preview_game_button:
+                updateGamePreview();
         }
     }
 
@@ -104,8 +114,92 @@ public class CustomGameActivity extends Activity {
 
         // Switch to the game activity
         startActivity(new Intent(this, GameActivity.class));
+    }
+
+    private void updateGamePreview() {
+        int width = ((NumberPicker)findViewById(R.id.width_number_picker)).getValue();
+        int height = ((NumberPicker)findViewById(R.id.height_number_picker)).getValue();
+        boolean xmode = ((CheckBox)findViewById(R.id.xmode_checkbox)).isChecked();
+        boolean cornerMode = ((CheckBox)findViewById(R.id.corner_mode_checkbox)).isChecked();
+        boolean speedMode = ((CheckBox)findViewById(R.id.speed_mode_checkbox)).isChecked();
+        boolean surivalMode = ((CheckBox)findViewById(R.id.survival_mode_checkbox)).isChecked();
+        boolean rushMode = ((CheckBox)findViewById(R.id.rush_mode_checkbox)).isChecked();
+        boolean ghostMode = ((CheckBox)findViewById(R.id.ghost_mode_checkbox)).isChecked();
+
+        List<Mode> gameModes = new ArrayList<Mode>();
+
+        if(xmode)
+            gameModes.add(Mode.XMODE);
+        if(cornerMode)
+            gameModes.add(Mode.CORNER);
+        if(speedMode)
+            gameModes.add(Mode.SPEED);
+        if(surivalMode)
+            gameModes.add(Mode.SURVIVAL);
+        if(rushMode)
+            gameModes.add(Mode.RUSH);
+        if(ghostMode)
+            gameModes.add(Mode.GHOST);
+
+        View gamePreview =  generateGamePreview(width, height, gameModes);
+
+        FrameLayout gamePreviewFrame = (FrameLayout) findViewById(R.id.game_preview_game_layout);
+        gamePreviewFrame.removeAllViews();
+        gamePreviewFrame.addView(gamePreview);
+
+    }
+
+    private View generateGamePreview(int width, int height, List<Mode> modes) {
+        GridLayout gridLayout = new GridLayout(this);
+        gridLayout.setColumnCount(width);
+        gridLayout.setRowCount(height);
+        gridLayout.setUseDefaultMargins(true);
 
 
+        for(int x = 0; x < width; x++) {
+            for(int y = 0; y < height; y++) {
+                ImageView tileBackground = new ImageView(this);
+                tileBackground.setImageResource(R.drawable.tile_blank);
+                gridLayout.addView(tileBackground);
+
+            }
+        }
+
+        if(modes.contains(Mode.CORNER)) {
+            GridLayout.Spec specRow = GridLayout.spec(0, 1);
+            GridLayout.Spec specCol = GridLayout.spec(0, 1);
+            GridLayout.LayoutParams gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
+
+            // Add a blank tile to that spot on the grid
+            ImageView cornerTile = new ImageView(this);
+            cornerTile.setImageResource(R.drawable.tile_corner);
+            gridLayout.addView(cornerTile, gridLayoutParam);
+
+            cornerTile = new ImageView(this);
+            cornerTile.setImageResource(R.drawable.tile_corner);
+            specRow = GridLayout.spec(height - 1, 1);
+            specCol = GridLayout.spec(0, 1);
+            gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
+            gridLayout.addView(cornerTile, gridLayoutParam);
+
+            cornerTile = new ImageView(this);
+            cornerTile.setImageResource(R.drawable.tile_corner);
+            specRow = GridLayout.spec(height - 1, 1);
+            specCol = GridLayout.spec(width - 1, 1);
+            gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
+            gridLayout.addView(cornerTile, gridLayoutParam);
+
+            cornerTile = new ImageView(this);
+            cornerTile.setImageResource(R.drawable.tile_corner);
+            specRow = GridLayout.spec(0, 0);
+            specCol = GridLayout.spec(width - 1, 1);
+            gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
+            gridLayout.addView(cornerTile, gridLayoutParam);
+
+
+        }
+
+        return gridLayout;
     }
 
     private boolean isCustomGameValid(int width, int height, boolean xmode, boolean cornerMode,
