@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -80,28 +81,22 @@ public class CustomGameActivity extends Activity {
 
         int width = ((NumberPicker)findViewById(R.id.width_number_picker)).getValue();
         int height = ((NumberPicker)findViewById(R.id.height_number_picker)).getValue();
-        boolean xmode = ((CheckBox)findViewById(R.id.xmode_checkbox)).isChecked();
-        boolean cornerMode = ((CheckBox)findViewById(R.id.corner_mode_checkbox)).isChecked();
-        boolean speedMode = ((CheckBox)findViewById(R.id.speed_mode_checkbox)).isChecked();
-        boolean surivalMode = ((CheckBox)findViewById(R.id.survival_mode_checkbox)).isChecked();
-        boolean rushMode = ((CheckBox)findViewById(R.id.rush_mode_checkbox)).isChecked();
-        boolean ghostMode = ((CheckBox)findViewById(R.id.ghost_mode_checkbox)).isChecked();
 
-
-        if(! isCustomGameValid(width, height, xmode, cornerMode, speedMode, surivalMode, rushMode))
+        List<Mode> gameModes = getSelectedGameModes();
+        if(! isCustomGameValid(width, height, gameModes))
             return;
 
         Game game = new Game(width, height);
 
-        if(xmode)
+        if(gameModes.contains(Mode.XMODE))
             game.enableXMode();
-        if(cornerMode)
+        if(gameModes.contains(Mode.CORNER))
             game.enableCornerMode();
-        if(surivalMode)
+        if(gameModes.contains(Mode.SURVIVAL))
             game.enableSurvivalMode();
-        game.setSpeedMode(speedMode);
-        game.setDynamicTileSpawning(rushMode);
-        game.setGhostMode(ghostMode);
+        game.setSpeedMode(gameModes.contains(Mode.SPEED));
+        game.setDynamicTileSpawning(gameModes.contains(Mode.RUSH));
+        game.setGhostMode(gameModes.contains(Mode.GHOST));
         game.finishedCreatingGame();
 
         File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
@@ -116,9 +111,7 @@ public class CustomGameActivity extends Activity {
         startActivity(new Intent(this, GameActivity.class));
     }
 
-    private void updateGamePreview() {
-        int width = ((NumberPicker)findViewById(R.id.width_number_picker)).getValue();
-        int height = ((NumberPicker)findViewById(R.id.height_number_picker)).getValue();
+    private List<Mode> getSelectedGameModes() {
         boolean xmode = ((CheckBox)findViewById(R.id.xmode_checkbox)).isChecked();
         boolean cornerMode = ((CheckBox)findViewById(R.id.corner_mode_checkbox)).isChecked();
         boolean speedMode = ((CheckBox)findViewById(R.id.speed_mode_checkbox)).isChecked();
@@ -141,6 +134,14 @@ public class CustomGameActivity extends Activity {
         if(ghostMode)
             gameModes.add(Mode.GHOST);
 
+        return gameModes;
+    }
+
+    private void updateGamePreview() {
+        int width = ((NumberPicker)findViewById(R.id.width_number_picker)).getValue();
+        int height = ((NumberPicker)findViewById(R.id.height_number_picker)).getValue();
+
+        List<Mode> gameModes = getSelectedGameModes();
         View gamePreview =  generateGamePreview(width, height, gameModes);
 
         FrameLayout gamePreviewFrame = (FrameLayout) findViewById(R.id.game_preview_game_layout);
@@ -165,6 +166,37 @@ public class CustomGameActivity extends Activity {
             }
         }
 
+        int cornerTileResource = (modes.contains(Mode.GHOST)) ? R.drawable.tile_question : R.drawable.tile_corner;
+        int xTileResource = (modes.contains(Mode.GHOST)) ? R.drawable.tile_question : R.drawable.tile_x;
+
+        if(modes.contains(Mode.XMODE)) {
+            ImageView XTile = new ImageView(this);
+            XTile.setImageResource(xTileResource);
+            GridLayout.Spec specRow, specCol;
+
+            if (height >= 2 && width >= 2) {
+                specCol = GridLayout.spec(1, 1);
+                specRow = GridLayout.spec(1, 1);
+            }
+            else {
+                if (modes.contains(Mode.CORNER) && (height >= 3 || width >= 3)) {
+                    if (width > 2) {
+                        specCol = GridLayout.spec(1, 1);
+                        specRow = GridLayout.spec(0, 1);
+                    } else {
+                        specCol = GridLayout.spec(0, 1);
+                        specRow = GridLayout.spec(1, 1);
+                    }
+                }
+                else {
+                    specCol = GridLayout.spec(0, 1);
+                    specRow = GridLayout.spec(0, 1);
+                }
+            }
+            GridLayout.LayoutParams gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
+            gridLayout.addView(XTile, gridLayoutParam);
+        }
+
         if(modes.contains(Mode.CORNER)) {
             GridLayout.Spec specRow = GridLayout.spec(0, 1);
             GridLayout.Spec specCol = GridLayout.spec(0, 1);
@@ -172,38 +204,35 @@ public class CustomGameActivity extends Activity {
 
             // Add a blank tile to that spot on the grid
             ImageView cornerTile = new ImageView(this);
-            cornerTile.setImageResource(R.drawable.tile_corner);
+            cornerTile.setImageResource(cornerTileResource);
             gridLayout.addView(cornerTile, gridLayoutParam);
 
             cornerTile = new ImageView(this);
-            cornerTile.setImageResource(R.drawable.tile_corner);
+            cornerTile.setImageResource(cornerTileResource);
             specRow = GridLayout.spec(height - 1, 1);
             specCol = GridLayout.spec(0, 1);
             gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
             gridLayout.addView(cornerTile, gridLayoutParam);
 
             cornerTile = new ImageView(this);
-            cornerTile.setImageResource(R.drawable.tile_corner);
+            cornerTile.setImageResource(cornerTileResource);
             specRow = GridLayout.spec(height - 1, 1);
             specCol = GridLayout.spec(width - 1, 1);
             gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
             gridLayout.addView(cornerTile, gridLayoutParam);
 
             cornerTile = new ImageView(this);
-            cornerTile.setImageResource(R.drawable.tile_corner);
-            specRow = GridLayout.spec(0, 0);
+            cornerTile.setImageResource(cornerTileResource);
+            specRow = GridLayout.spec(0, 1);
             specCol = GridLayout.spec(width - 1, 1);
             gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
             gridLayout.addView(cornerTile, gridLayoutParam);
-
-
         }
 
         return gridLayout;
     }
 
-    private boolean isCustomGameValid(int width, int height, boolean xmode, boolean cornerMode,
-                                      boolean speedMode, boolean surivalMode, boolean rushMode) {
+    private boolean isCustomGameValid(int width, int height, List<Mode> modes) {
 
         if(width * height < 1) {
             Toast.makeText(this, getString(R.string.error_grid_small), Toast.LENGTH_LONG).show();
@@ -211,17 +240,17 @@ public class CustomGameActivity extends Activity {
         }
 
         // If corner mode is enabled the width and height must be >2 and cannot both be 2
-        if(cornerMode && ((width == 2 && height == 2) || (width < 2 || height < 2))) {
+        if(modes.contains(Mode.CORNER) && ((width == 2 && height == 2) || (width < 2 || height < 2))) {
             Toast.makeText(this, "Corner Mode will not fit on that grid size", Toast.LENGTH_LONG).show();
             return false;
         }
 
-        if(xmode && width * height <= 2) {
+        if(modes.contains(Mode.XMODE) && width * height <= 2) {
             Toast.makeText(this, "XMode cannot fit on that grid size", Toast.LENGTH_LONG).show();
             return false;
         }
 
-        if(xmode && cornerMode && width * height <= 7) {
+        if(modes.contains(Mode.XMODE) && modes.contains(Mode.CORNER) && width * height <= 7) {
             Toast.makeText(this, "XMode and Corner Mode cannot fit on that grid size", Toast.LENGTH_LONG).show();
             return false;
         }
@@ -260,6 +289,46 @@ public class CustomGameActivity extends Activity {
             heightNumberPicker.setMaxValue(5);
             heightNumberPicker.setMinValue(1);
             heightNumberPicker.setDisplayedValues(values);
+
+
+            widthNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    ((CustomGameActivity)getActivity()).updateGamePreview();
+                }
+            });
+
+            heightNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    ((CustomGameActivity) getActivity()).updateGamePreview();
+                }
+            });
+
+            CheckBox xModeCheckbox = (CheckBox) rootView.findViewById(R.id.xmode_checkbox);
+            CheckBox cornerCheckbox = (CheckBox) rootView.findViewById(R.id.corner_mode_checkbox);
+            CheckBox arcadeCheckbox = (CheckBox) rootView.findViewById(R.id.arcade_mode_checkbox);
+            CheckBox speedCheckbox = (CheckBox) rootView.findViewById(R.id.speed_mode_checkbox);
+            CheckBox survivalCheckbox = (CheckBox) rootView.findViewById(R.id.survival_mode_checkbox);
+            CheckBox rushCheckbox = (CheckBox) rootView.findViewById(R.id.rush_mode_checkbox);
+            CheckBox ghostCheckbox = (CheckBox) rootView.findViewById(R.id.ghost_mode_checkbox);
+
+
+            CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    ((CustomGameActivity)getActivity()).updateGamePreview();
+                }
+            };
+
+            xModeCheckbox.setOnCheckedChangeListener(onCheckedChangeListener);
+            cornerCheckbox.setOnCheckedChangeListener(onCheckedChangeListener);
+            arcadeCheckbox.setOnCheckedChangeListener(onCheckedChangeListener);
+            speedCheckbox.setOnCheckedChangeListener(onCheckedChangeListener);
+            survivalCheckbox.setOnCheckedChangeListener(onCheckedChangeListener);
+            rushCheckbox.setOnCheckedChangeListener(onCheckedChangeListener);
+            ghostCheckbox.setOnCheckedChangeListener(onCheckedChangeListener);
+
 
 
             return rootView;
