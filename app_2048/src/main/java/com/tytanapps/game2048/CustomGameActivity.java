@@ -28,8 +28,6 @@ import java.util.List;
 
 public class CustomGameActivity extends Activity {
 
-    private enum Mode {XMODE, CORNER, ARCADE, SURVIVAL, SPEED, RUSH, GHOST}
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,21 +80,21 @@ public class CustomGameActivity extends Activity {
         int width = ((NumberPicker)findViewById(R.id.width_number_picker)).getValue();
         int height = ((NumberPicker)findViewById(R.id.height_number_picker)).getValue();
 
-        List<Mode> gameModes = getSelectedGameModes();
+        List<Game.Mode> gameModes = getSelectedGameModes();
         if(! isCustomGameValid(width, height, gameModes))
             return;
 
         Game game = new Game(width, height);
 
-        if(gameModes.contains(Mode.XMODE))
+        if(gameModes.contains(Game.Mode.XMODE))
             game.enableXMode();
-        if(gameModes.contains(Mode.CORNER))
+        if(gameModes.contains(Game.Mode.CORNER))
             game.enableCornerMode();
-        if(gameModes.contains(Mode.SURVIVAL))
+        if(gameModes.contains(Game.Mode.SURVIVAL))
             game.enableSurvivalMode();
-        game.setSpeedMode(gameModes.contains(Mode.SPEED));
-        game.setDynamicTileSpawning(gameModes.contains(Mode.RUSH));
-        game.setGhostMode(gameModes.contains(Mode.GHOST));
+        game.setSpeedMode(gameModes.contains(Game.Mode.SPEED));
+        game.setDynamicTileSpawning(gameModes.contains(Game.Mode.RUSH));
+        game.setGhostMode(gameModes.contains(Game.Mode.GHOST));
         game.finishedCreatingGame();
 
         File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
@@ -111,7 +109,7 @@ public class CustomGameActivity extends Activity {
         startActivity(new Intent(this, GameActivity.class));
     }
 
-    private List<Mode> getSelectedGameModes() {
+    private List<Game.Mode> getSelectedGameModes() {
         boolean xmode = ((CheckBox)findViewById(R.id.xmode_checkbox)).isChecked();
         boolean cornerMode = ((CheckBox)findViewById(R.id.corner_mode_checkbox)).isChecked();
         boolean speedMode = ((CheckBox)findViewById(R.id.speed_mode_checkbox)).isChecked();
@@ -119,20 +117,20 @@ public class CustomGameActivity extends Activity {
         boolean rushMode = ((CheckBox)findViewById(R.id.rush_mode_checkbox)).isChecked();
         boolean ghostMode = ((CheckBox)findViewById(R.id.ghost_mode_checkbox)).isChecked();
 
-        List<Mode> gameModes = new ArrayList<Mode>();
+        List<Game.Mode> gameModes = new ArrayList<Game.Mode>();
 
         if(xmode)
-            gameModes.add(Mode.XMODE);
+            gameModes.add(Game.Mode.XMODE);
         if(cornerMode)
-            gameModes.add(Mode.CORNER);
+            gameModes.add(Game.Mode.CORNER);
         if(speedMode)
-            gameModes.add(Mode.SPEED);
+            gameModes.add(Game.Mode.SPEED);
         if(surivalMode)
-            gameModes.add(Mode.SURVIVAL);
+            gameModes.add(Game.Mode.SURVIVAL);
         if(rushMode)
-            gameModes.add(Mode.RUSH);
+            gameModes.add(Game.Mode.RUSH);
         if(ghostMode)
-            gameModes.add(Mode.GHOST);
+            gameModes.add(Game.Mode.GHOST);
 
         return gameModes;
     }
@@ -141,7 +139,7 @@ public class CustomGameActivity extends Activity {
         int width = ((NumberPicker)findViewById(R.id.width_number_picker)).getValue();
         int height = ((NumberPicker)findViewById(R.id.height_number_picker)).getValue();
 
-        List<Mode> gameModes = getSelectedGameModes();
+        List<Game.Mode> gameModes = getSelectedGameModes();
         View gamePreview =  generateGamePreview(height, width, gameModes);
 
         FrameLayout gamePreviewFrame = (FrameLayout) findViewById(R.id.game_preview_game_layout);
@@ -150,7 +148,7 @@ public class CustomGameActivity extends Activity {
 
     }
 
-    private View generateGamePreview(int width, int height, List<Mode> modes) {
+    private View generateGamePreview(int width, int height, List<Game.Mode> modes) {
         GridLayout gridLayout = new GridLayout(this);
         gridLayout.setColumnCount(width);
         gridLayout.setRowCount(height);
@@ -182,8 +180,8 @@ public class CustomGameActivity extends Activity {
             }
         }
 
-        int cornerTileResource = (modes.contains(Mode.GHOST)) ? R.drawable.tile_question : R.drawable.tile_corner;
-        int xTileResource = (modes.contains(Mode.GHOST)) ? R.drawable.tile_question : R.drawable.tile_x;
+        int cornerTileResource = (modes.contains(Game.Mode.GHOST)) ? R.drawable.tile_question : R.drawable.tile_corner;
+        int xTileResource = (modes.contains(Game.Mode.GHOST)) ? R.drawable.tile_question : R.drawable.tile_x;
 
         Bitmap xTileBitmap = BitmapFactory.decodeResource(getResources(), xTileResource);
         xTileBitmap = (Bitmap.createScaledBitmap(xTileBitmap, tileLength, tileLength, false));
@@ -193,7 +191,7 @@ public class CustomGameActivity extends Activity {
 
 
 
-        if(modes.contains(Mode.XMODE)) {
+        if(modes.contains(Game.Mode.XMODE)) {
             ImageView XTile = new ImageView(this);
             XTile.setImageBitmap(xTileBitmap);
             XTile.setPadding(SPACING, SPACING, 0, 0);
@@ -204,7 +202,7 @@ public class CustomGameActivity extends Activity {
                 specRow = GridLayout.spec(1, 1);
             }
             else {
-                if (modes.contains(Mode.CORNER) && (height >= 3 || width >= 3)) {
+                if (modes.contains(Game.Mode.CORNER) && (height >= 3 || width >= 3)) {
                     if (width > 2) {
                         specCol = GridLayout.spec(1, 1);
                         specRow = GridLayout.spec(0, 1);
@@ -222,7 +220,7 @@ public class CustomGameActivity extends Activity {
             gridLayout.addView(XTile, gridLayoutParam);
         }
 
-        if(modes.contains(Mode.CORNER)) {
+        if(modes.contains(Game.Mode.CORNER)) {
             GridLayout.Spec specRow = GridLayout.spec(0, 1);
             GridLayout.Spec specCol = GridLayout.spec(0, 1);
             GridLayout.LayoutParams gridLayoutParam = new GridLayout.LayoutParams(specRow, specCol);
@@ -261,14 +259,14 @@ public class CustomGameActivity extends Activity {
         return gridLayout;
     }
 
-    private boolean isCustomGameValid(int width, int height, List<Mode> modes) {
+    private boolean isCustomGameValid(int width, int height, List<Game.Mode> modes) {
 
         int availableTiles = width * height;
 
-        if(modes.contains(Mode.XMODE))
+        if(modes.contains(Game.Mode.XMODE))
             availableTiles--;
 
-        if(modes.contains(Mode.CORNER)) {
+        if(modes.contains(Game.Mode.CORNER)) {
             if(width >= 2 && height >= 2)
                 availableTiles -= 4;
             else

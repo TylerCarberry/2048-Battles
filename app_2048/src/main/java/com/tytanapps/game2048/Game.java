@@ -9,8 +9,10 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class Game implements java.io.Serializable
 {
@@ -28,6 +30,8 @@ public class Game implements java.io.Serializable
 	public static final int ICE_ATTACK = 1;
 	public static final int X_ATTACK = 2;
 	public static final int GHOST_ATTACK = 3;
+
+    public static enum Mode {XMODE, CORNER, ARCADE, SURVIVAL, SPEED, RUSH, GHOST}
 	
 	// The main board the game is played on
 	private Grid board;
@@ -65,14 +69,7 @@ public class Game implements java.io.Serializable
 	// The timer starts immediately after the first move
 	private double timeLeft = -1;
 
-
-    private boolean XMode = false;
-    private boolean cornerMode = false;
-    private boolean survivalMode = false;
-	private boolean speedMode = false;
-	private boolean zenMode = false;
-	private boolean arcadeMode = false;
-    private boolean ghostMode = false;
+    private Set<Mode> activeModes = new LinkedHashSet<>();
 	
 	// If true, any tile less than the max tile can spawn
 	// Ex. If the highest piece is 32 then a 2,4,8, or 16 can appear
@@ -196,7 +193,7 @@ public class Game implements java.io.Serializable
 				else
 				{
 					// If they have the same value or if zenMode is enabled, combine
-					if(!destinationLocations.contains(to) && (board.get(from) == board.get(to) || zenMode))
+					if(!destinationLocations.contains(to) && (board.get(from) == board.get(to)))
 					{
 						distance++;
 						add(from, to);
@@ -217,7 +214,7 @@ public class Game implements java.io.Serializable
 	 * @param to The destination of the piece
 	*/
 	private void add(Location from, Location to) {
-		if(survivalMode && board.get(from) >= 8)
+		if(activeModes.contains(Mode.SURVIVAL) && board.get(from) >= 8)
 			timeLeft += board.get(from) / 4;
 		
 		score += board.get(to) + board.get(from);
@@ -428,7 +425,7 @@ public class Game implements java.io.Serializable
 	 *  The game increases the time limit when tiles >= 8 combine
 	 */
 	public void enableSurvivalMode() {
-		survivalMode = true;
+        activeModes.add(Mode.SURVIVAL);
 		
 		// If no time limit is in effect, set it to 30 seconds
 		if(timeLeft <= 0)
@@ -436,20 +433,28 @@ public class Game implements java.io.Serializable
 	}
 	
 	public void setArcadeMode(boolean enabled) {
-		arcadeMode = enabled;
+		if(enabled)
+            activeModes.add(Mode.SURVIVAL);
+        else
+            activeModes.remove(Mode.SURVIVAL);
 	}
-	
+
+    /*
 	public void setZenMode(boolean enabled) {
 		zenMode = enabled;
 		setDynamicTileSpawning(enabled);
 	}
+	*/
 
     public void setGhostMode(boolean enabled) {
-        ghostMode = enabled;
+        if(enabled)
+            activeModes.add(Mode.GHOST);
+        else
+            activeModes.remove(Mode.GHOST);
     }
 
     public boolean getGhostMode() {
-        return ghostMode;
+        return activeModes.contains(Mode.GHOST);
     }
 	
 	/**
@@ -464,25 +469,29 @@ public class Game implements java.io.Serializable
 	 * Add a piece automatically every 2 seconds even if no move was made
 	 * @param enabled Turn speed mode on or off
 	 */
-	public void setSpeedMode(boolean enabled)
-	{
-		speedMode = enabled;
+	public void setSpeedMode(boolean enabled) {
+        if(enabled)
+            activeModes.add(Mode.SPEED);
+        else
+            activeModes.remove(Mode.SPEED);
 	}
 	
 	public boolean getSurvivalMode() {
-		return survivalMode;
+		return activeModes.contains(Mode.SURVIVAL);
 	}
 	
 	public boolean getSpeedMode() {
-		return speedMode;
+        return activeModes.contains(Mode.SPEED);
 	}
-	
+
+    /*
 	public boolean getZenMode() {
-		return zenMode;
+		return activeModes.contains(Mode.ZEN);
 	}
+	*/
 	
 	public boolean getArcadeMode() {
-		return arcadeMode;
+		return activeModes.contains(Mode.ARCADE);
 	}
 	
 	/**
@@ -922,13 +931,7 @@ public class Game implements java.io.Serializable
         clonedGame.quitGame = quitGame;
         clonedGame.newGame = newGame;
 
-        clonedGame.XMode = XMode;
-        clonedGame.cornerMode = cornerMode;
-        clonedGame.survivalMode = survivalMode;
-        clonedGame.speedMode = speedMode;
-        clonedGame.zenMode = zenMode;
-        clonedGame.arcadeMode = arcadeMode;
-        clonedGame.ghostMode = ghostMode;
+        clonedGame.activeModes = new LinkedHashSet<Mode>(activeModes);
 
         clonedGame.activeAttack = activeAttack;
         clonedGame.attackDuration = attackDuration;

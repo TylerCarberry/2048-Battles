@@ -117,7 +117,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     // Stores custom tile icons
     private Map<Integer, Drawable> customTileIcon = new HashMap<Integer, Drawable>();
 
-    // Stores custom tile icons
+    // Stores a cache of the scaled tiles
     private SparseArray<Drawable> tileIcons = new SparseArray<Drawable>();
 
     private List<Timer> activeTimers = new ArrayList<Timer>();
