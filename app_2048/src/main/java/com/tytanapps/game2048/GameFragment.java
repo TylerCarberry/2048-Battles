@@ -217,7 +217,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             setUndoButtonEnabled(game.getUndosRemaining() != 0);
             setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
 
-
             // When the powerup button is pressed it switches its background to one suppressed
             // When it is released its background changes back and the powerup dialog is shown
             ImageButton powerupButton = (ImageButton) getView().findViewById(R.id.powerup_button);
@@ -260,6 +259,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             updateOpponentName();
             updateOpponentPic();
         }
+
         super.onStart();
     }
 
@@ -712,7 +712,16 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         return resultDrawable;
     }
 
+    /**
+     * Calculate the size of a tile on the board.
+     * Assume that the screen width is the same distance as
+     * from the bottom of the power up button to the top of the ad.
+     * @param rows The number of rows in the game
+     * @param columns The number of columns in the game
+     * @return The dimension of one side of the tile in pixels
+     */
     private int calculateTileSize(int rows, int columns) {
+        final int TILE_MARGIN = 25;
 
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -721,11 +730,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         int height = size.y;
 
         width -= getResources().getDimension(R.dimen.activity_horizontal_margin) * 2;
+        height -= getResources().getDimension(R.dimen.activity_vertical_margin) * 2;
 
-        Log.d(LOG_TAG, "Screen Width: " + width);
-
-
-        return width / columns - 25;
+        if(columns > rows)
+            return width / columns - TILE_MARGIN;
+        return width / rows - TILE_MARGIN;
     }
 
     /**

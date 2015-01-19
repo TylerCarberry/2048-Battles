@@ -105,8 +105,11 @@
         android:id="@+id/game_preview_game_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/height_number_picker"
-        android:layout_above="@+id/create_game_button" >
+        android:layout_below="@+id/ghost_mode_checkbox"
+        android:layout_above="@+id/create_game_button"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:foregroundGravity="center_horizontal">
 
     </FrameLayout>
 
