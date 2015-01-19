@@ -692,15 +692,13 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private Drawable getTileIconDrawable(int tileValue) {
-        if(game.getGhostMode() || game.getActiveAttack() == Game.GHOST_ATTACK || ghostAttackActive)
+        if(tileValue != 0 && (game.getGhostMode() || game.getActiveAttack() == Game.GHOST_ATTACK
+                || ghostAttackActive))
             tileValue = Game.GHOST_TILE_VALUE;
 
         Drawable cachedDrawable = tileIcons.get(tileValue);
         if(cachedDrawable != null)
             return cachedDrawable;
-
-        Log.d(LOG_TAG, "Making drawable: " + tileValue);
-
 
         int tileSize = calculateTileSize(game.getGrid().getNumRows(), game.getGrid().getNumCols());
         Bitmap tileDrawable = BitmapFactory.decodeResource(getResources(), getTileIconResource(tileValue));
@@ -742,7 +740,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * @param tileValue The numerical value of the tile
      */
     private int getTileIconResource(int tileValue) {
-        if(game.getGameModeId() == GameModes.GHOST_MODE_ID || ghostAttackActive)
+        if(tileValue != 0 && (game.getGameModeId() == GameModes.GHOST_MODE_ID || ghostAttackActive))
             return R.drawable.tile_question;
         else {
             switch(tileValue) {
