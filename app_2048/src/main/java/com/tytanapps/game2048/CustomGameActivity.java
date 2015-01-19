@@ -72,8 +72,6 @@ public class CustomGameActivity extends Activity {
             case R.id.create_game_button:
                 createGame();
                 break;
-            case R.id.preview_game_button:
-                updateGamePreview();
         }
     }
 

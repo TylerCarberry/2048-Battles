@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -115,6 +116,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     // Stores custom tile icons
     private Map<Integer, Drawable> customTileIcon = new HashMap<Integer, Drawable>();
+
+    // Stores custom tile icons
+    private SparseArray<Drawable> tileIcons = new SparseArray<Drawable>();
 
     private List<Timer> activeTimers = new ArrayList<Timer>();
 
@@ -691,16 +695,21 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(game.getGhostMode() || game.getActiveAttack() == Game.GHOST_ATTACK || ghostAttackActive)
             tileValue = Game.GHOST_TILE_VALUE;
 
-        //if(customTileIcon.containsKey(tileValue))
-        //    return customTileIcon.get(tileValue);
+        Drawable cachedDrawable = tileIcons.get(tileValue);
+        if(cachedDrawable != null)
+            return cachedDrawable;
+
+        Log.d(LOG_TAG, "Making drawable: " + tileValue);
 
 
         int tileSize = calculateTileSize(game.getGrid().getNumRows(), game.getGrid().getNumCols());
-
-
         Bitmap tileDrawable = BitmapFactory.decodeResource(getResources(), getTileIconResource(tileValue));
         Bitmap tileBitmap = Bitmap.createScaledBitmap(tileDrawable, tileSize, tileSize, false);
-        return new BitmapDrawable(getResources(), tileBitmap);
+        Drawable resultDrawable = new BitmapDrawable(getResources(), tileBitmap);
+
+        tileIcons.put(tileValue, resultDrawable);
+
+        return resultDrawable;
     }
 
     private int calculateTileSize(int rows, int columns) {
@@ -724,7 +733,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * @param tileValue The numerical value of the tile
      */
     private int getTileIconResource(int tileValue) {
-
         if(game.getGameModeId() == GameModes.GHOST_MODE_ID || ghostAttackActive)
             return R.drawable.tile_question;
         else {
