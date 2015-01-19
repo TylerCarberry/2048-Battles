@@ -3,6 +3,7 @@
     android:id="@+id/main_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/PrimaryBackground"
     android:paddingTop="0dp"
     android:paddingBottom="0dp"
     android:clipChildren="false"
