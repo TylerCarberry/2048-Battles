@@ -334,7 +334,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                         Games.Events.increment(getApiClient(), getString(R.string.event_tap_on_flying_tile), 1);
                         Games.Achievements.increment(getApiClient(), getString(R.string.achievement_tile_tapper), 1);
                     }
-                    saveGameData();
                 }
 
                 tile.setOnTouchListener(new View.OnTouchListener() {
@@ -865,6 +864,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
 
         int padding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
 
@@ -873,28 +873,33 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         textView.setText("You are signed into Google Play Games");
         textView.setTextSize(22);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
-        textView.setPadding(0, padding, 0, padding);
-
-
-
+        textView.setPadding(padding, padding, padding, padding);
 
         final Button signoutButton = new Button(this);
         signoutButton.setText("Sign Out");
-        signoutButton.setTextSize(17);
+        signoutButton.setTextSize(20);
         signoutButton.setPadding(padding, padding, padding, padding);
 
-        signoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signOut();
-            }
-        });
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        signoutButton.setLayoutParams(layoutParams);
 
         linearLayout.addView(textView);
         linearLayout.addView(signoutButton);
 
         builder.setView(linearLayout);
-        builder.create().show();
+        final AlertDialog dialog = builder.create();
+
+        signoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
 
         sendAnalyticsEvent("MainActivity", "Google Play Games", "Sign Out");
     }

@@ -160,7 +160,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onClick"
-            android:src="@drawable/g_64"
+            android:src="@drawable/g_plus_logo"
             android:background="@color/PrimaryBackground"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
