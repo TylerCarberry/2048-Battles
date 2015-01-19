@@ -144,7 +144,7 @@ public class CustomGameActivity extends Activity {
         int height = ((NumberPicker)findViewById(R.id.height_number_picker)).getValue();
 
         List<Mode> gameModes = getSelectedGameModes();
-        View gamePreview =  generateGamePreview(width, height, gameModes);
+        View gamePreview =  generateGamePreview(height, width, gameModes);
 
         FrameLayout gamePreviewFrame = (FrameLayout) findViewById(R.id.game_preview_game_layout);
         gamePreviewFrame.removeAllViews();
@@ -305,7 +305,7 @@ public class CustomGameActivity extends Activity {
             NumberPicker widthNumberPicker = (NumberPicker) rootView.findViewById(R.id.width_number_picker);
             NumberPicker heightNumberPicker = (NumberPicker) rootView.findViewById(R.id.height_number_picker);
 
-            String[] values=new String[5];
+            String[] values=new String[20];
             for(int i = 0; i < values.length; i++){
                 values[i] = ""+(i+1);
             }
@@ -313,11 +313,11 @@ public class CustomGameActivity extends Activity {
             for(String s : values)
                 Log.d("a", s);
 
-            widthNumberPicker.setMaxValue(5);
+            widthNumberPicker.setMaxValue(20);
             widthNumberPicker.setMinValue(1);
             widthNumberPicker.setDisplayedValues(values);
 
-            heightNumberPicker.setMaxValue(5);
+            heightNumberPicker.setMaxValue(20);
             heightNumberPicker.setMinValue(1);
             heightNumberPicker.setDisplayedValues(values);
 

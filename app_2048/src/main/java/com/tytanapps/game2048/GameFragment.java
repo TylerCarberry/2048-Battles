@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -540,7 +541,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
             // Add a blank tile to that spot on the grid
             ImageView blankTile = new ImageView(getActivity());
-            blankTile.setImageResource(R.drawable.tile_blank);
+            setIcon(blankTile, 0);
             ((GridLayout) getActivity().findViewById(R.id.grid_layout)).addView(blankTile, gridLayoutParam);
 
             // Check if that tile already exists
@@ -690,10 +691,32 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(game.getGhostMode() || game.getActiveAttack() == Game.GHOST_ATTACK || ghostAttackActive)
             tileValue = Game.GHOST_TILE_VALUE;
 
-        if(customTileIcon.containsKey(tileValue))
-            return customTileIcon.get(tileValue);
+        //if(customTileIcon.containsKey(tileValue))
+        //    return customTileIcon.get(tileValue);
 
-        return getResources().getDrawable(getTileIconResource(tileValue));
+
+        int tileSize = calculateTileSize(game.getGrid().getNumRows(), game.getGrid().getNumCols());
+
+
+        Bitmap tileDrawable = BitmapFactory.decodeResource(getResources(), getTileIconResource(tileValue));
+        Bitmap tileBitmap = Bitmap.createScaledBitmap(tileDrawable, tileSize, tileSize, false);
+        return new BitmapDrawable(getResources(), tileBitmap);
+    }
+
+    private int calculateTileSize(int rows, int columns) {
+
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+
+        width -= getResources().getDimension(R.dimen.activity_horizontal_margin) * 2;
+
+        Log.d(LOG_TAG, "Screen Width: " + width);
+
+
+        return width / columns - 25;
     }
 
     /**
@@ -897,7 +920,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
         tileImageView.setLayoutParams(layoutParams);
-        tileImageView.setImageResource(getTileIconResource(tile));
+        setIcon(tileImageView, tile);
 
 
         Button continuePlayingButton = new Button(getActivity());
