@@ -146,6 +146,27 @@
             android:layout_alignBottom="@+id/undo_icon"
             android:textSize="20sp"/>
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:onClick="onClick" />
+
+        <ImageButton
+            android:id="@+id/sign_out_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:src="@drawable/g_64"
+            android:background="@color/PrimaryBackground"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:visibility="gone" />
+
     </RelativeLayout>
 
     <LinearLayout
@@ -159,18 +180,6 @@
         android:layout_marginTop="0dp"
         android:background="@color/SecondaryBackground"
         android:layout_alignParentBottom="true">
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClick" />
-        <Button
-            android:id="@+id/sign_out_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClick"
-            android:text="@string/sign_out"
-            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/achievements_button"

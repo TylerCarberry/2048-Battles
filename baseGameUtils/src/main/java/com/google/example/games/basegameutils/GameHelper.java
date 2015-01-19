@@ -16,8 +16,6 @@
 
 package com.google.example.games.basegameutils;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -44,6 +42,8 @@ import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
 import com.google.android.gms.games.request.GameRequest;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.Plus.PlusOptions;
+
+import java.util.ArrayList;
 
 public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -182,7 +182,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
     // Should we start the flow to sign the user in automatically on startup? If
     // so, up to
     // how many times in the life of the application?
-    static final int DEFAULT_MAX_SIGN_IN_ATTEMPTS = 3;
+    static final int DEFAULT_MAX_SIGN_IN_ATTEMPTS = 2;
     int mMaxAutoSignInAttempts = DEFAULT_MAX_SIGN_IN_ATTEMPTS;
 
     /**

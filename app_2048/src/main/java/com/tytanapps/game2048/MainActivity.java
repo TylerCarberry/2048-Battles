@@ -395,6 +395,9 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             case R.id.reset_game_button:
                 resetGame();
                 break;
+            case R.id.sign_out_button:
+                showSignOutDialog();
+                break;
             default: playGames(view);
         }
     }
@@ -852,9 +855,78 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         }
     }
 
+    public void signIn() {
+        beginUserInitiatedSignIn();
+    }
+
+    public void showSignOutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Google Play Games");
+
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        int padding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
+
+        // The text instructions
+        TextView textView = new TextView(this);
+        textView.setText("You are signed into Google Play Games");
+        textView.setTextSize(22);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        textView.setPadding(0, padding, 0, padding);
+
+
+
+
+        final Button signoutButton = new Button(this);
+        signoutButton.setText("Sign Out");
+        signoutButton.setTextSize(17);
+        signoutButton.setPadding(padding, padding, padding, padding);
+
+        signoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+            }
+        });
+
+        linearLayout.addView(textView);
+        linearLayout.addView(signoutButton);
+
+        builder.setView(linearLayout);
+        builder.create().show();
+
+        sendAnalyticsEvent("MainActivity", "Google Play Games", "Sign Out");
+    }
+
+    @Override
+    public void signOut() {
+        super.signOut();
+
+        // The sign in button is not a normal button, so keep it as a default view
+        View signInButton = findViewById(R.id.sign_in_button);
+
+        // If the user has switched views before the sign in completed the buttons are null
+        if(signInButton != null)
+            signInButton.setVisibility(View.VISIBLE);
+
+        View signOutButton = findViewById(R.id.sign_out_button);
+        if(signOutButton != null)
+            signOutButton.setVisibility(View.GONE);
+    }
+
     @Override
     public void onSignInFailed() {
+        // The sign in button is not a normal button, so keep it as a default view
+        View signInButton = findViewById(R.id.sign_in_button);
 
+        // If the user has switched views before the sign in completed the buttons are null
+        if(signInButton != null)
+            signInButton.setVisibility(View.VISIBLE);
+
+        View signOutButton = findViewById(R.id.sign_out_button);
+        if(signOutButton != null)
+            signOutButton.setVisibility(View.GONE);
     }
 
     @Override
@@ -862,16 +934,14 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         // The sign in button is not a normal button, so keep it as a default view
         View signInButton = findViewById(R.id.sign_in_button);
 
-        // If the user has switched views before the sign in failed then the buttons
-        // are null and this will cause an error
+        // If the user has switched views before the sign in completed the buttons are null
         if(signInButton != null)
             signInButton.setVisibility(View.GONE);
 
-        /*
-        Button signOutButton = (Button) findViewById(R.id.sign_out_button);
+
+        View signOutButton = findViewById(R.id.sign_out_button);
         if(signOutButton != null)
             signOutButton.setVisibility(View.VISIBLE);
-            */
 
         // Start the Quest listener.
         Games.Quests.registerQuestUpdateListener(this.getApiClient(), this);
@@ -1073,6 +1143,14 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             });
 
             animateSettingsButton(settingsButton);
+
+            View signInButton = rootView.findViewById(R.id.sign_in_button);
+            signInButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((MainActivity)getActivity()).signIn();
+                }
+            });
 
             return rootView;
         }

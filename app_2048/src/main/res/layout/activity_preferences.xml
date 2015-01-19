@@ -19,20 +19,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/google_sign_in_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="You are signed into Google Play Games"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <Button
-            android:id="@+id/sign_out_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClick"
-            android:text="@string/sign_out"/>
-
         <Button
             android:id="@+id/reset_game_button"
             android:layout_width="wrap_content"
