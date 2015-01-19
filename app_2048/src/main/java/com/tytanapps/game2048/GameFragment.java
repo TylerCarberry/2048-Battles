@@ -1339,6 +1339,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
                         @Override
                         public void onClick(View view) {
+                            clearTileListeners();
                             // Create and start an animation of the tile fading away
                             (ObjectAnimator.ofFloat(view, View.ALPHA, 0)
                                     .setDuration(tileSlideSpeed)).start();
@@ -1348,16 +1349,14 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                                 gameStats.decrementPowerupInventory();
                             setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
                             updateTextviews();
-                            clearTileListeners();
                         }
                     });
                 }
             }
         }
 
-        View gameActivity = getView().findViewById(R.id.game_fragment);
+        View gameActivity = getView();
         gameActivity.setOnTouchListener(new View.OnTouchListener(){
-
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 clearTileListeners();
@@ -1369,7 +1368,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     private void clearTileListeners() {
         animationInProgress = false;
-        (getView().findViewById(R.id.game_fragment)).setOnTouchListener(new View.OnTouchListener() {
+        getView().setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 return onTouchEvent(event);
             }
@@ -1377,7 +1376,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         for(int row = 0; row < game.getGrid().getNumRows(); row++) {
             for(int col = 0; col < game.getGrid().getNumCols(); col++) {
-                ImageView tile = (ImageView) getView().findViewById(row * 100 + col);
+                ImageView tile = (ImageView) getView().findViewById(getTileIdByLocation(new Location(row, col)));
                 tile.setOnClickListener(null);
                 tile.clearAnimation();
             }
