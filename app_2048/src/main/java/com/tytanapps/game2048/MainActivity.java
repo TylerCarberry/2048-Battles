@@ -104,6 +104,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             }
         }
 
+        readGameData();
         updateInventoryTextView();
 
         animateFlyingTiles(-1, 300);

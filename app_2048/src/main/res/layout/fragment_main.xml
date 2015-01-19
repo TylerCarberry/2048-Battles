@@ -99,25 +99,18 @@
             android:layout_height="wrap_content"
             android:background="@drawable/tile_2"/>
 
-        <Button
-            android:id="@+id/reset_game_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reset Game"
-            android:onClick="onClick"
-            android:layout_alignBottom="@+id/undo_icon"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
         <TextView
             android:id="@+id/inventory_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_above="@+id/powerup_icon"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:textSize="22sp"
-            android:text="Inventory"/>
+            android:gravity="center_horizontal"
+            android:textSize="20sp"
+            android:text="Inventory"
+            android:layout_alignRight="@+id/powerup_inventory"
+            android:layout_alignEnd="@+id/powerup_inventory"
+            android:layout_above="@+id/undo_icon"
+            android:layout_alignLeft="@+id/undo_icon"
+            android:layout_alignStart="@+id/undo_icon" />
 
         <ImageView
             android:id="@+id/undo_icon"

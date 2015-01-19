@@ -1,6 +1,8 @@
 package com.tytanapps.game2048;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +11,11 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -34,7 +41,21 @@ public class SettingsActivity extends PreferenceActivity {
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_preferences);
+
 		setupSimplePreferencesScreen();
+
+
+        /*
+        ListView v = getListView();
+
+
+
+        Button button = new Button(this);
+        button.setText("Button");
+
+        v.addFooterView(button);
+        */
 	}
 
 	/**
@@ -53,13 +74,59 @@ public class SettingsActivity extends PreferenceActivity {
 		// Add 'general' preferences.
 		addPreferencesFromResource(R.xml.prefs);
 
-
-
 		// Bind the summaries of the preferences to
 		// their values. When their values change, their summaries are updated
 		// to reflect the new value, per the Android Design guidelines.
 		bindPreferenceSummaryToValue(findPreference("speed"));
         bindPreferenceSummaryToValue(findPreference("swipeSensitivity"));
+    }
+
+
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.sign_out_button:
+                //Games.signOut(getApiClient());
+                break;
+            case R.id.reset_game_button:
+                resetGame();
+        }
+    }
+
+    /**
+     * Delete the current game file and overall game statistics file
+     */
+    private void resetGame() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(getString(R.string.reset_game)).setMessage(getString(R.string.reset_warning));
+
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+                currentGameFile.delete();
+                GameData gameData = new GameData();
+                gameData.incrementUndoInventory(5);
+                gameData.incrementPowerupInventory(3);
+                saveGameData(gameData);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {}
+        });
+
+        builder.create().show();
+    }
+
+    private void saveGameData(GameData gameData) {
+        File gameDataFile = new File(getFilesDir(), getString(R.string.file_game_stats));
+        try {
+            Save.save(gameData, gameDataFile);
+        } catch (IOException e) {
+            Toast.makeText(this, getString(R.string.error_can_not_save), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
     }
 
 	/** {@inheritDoc} */
@@ -105,9 +172,7 @@ public class SettingsActivity extends PreferenceActivity {
 				int index = listPreference.findIndexOfValue(stringValue);
 
 				// Set the summary to reflect the new value.
-				preference
-						.setSummary(index >= 0 ? listPreference.getEntries()[index]
-								: null);
+				preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);
 
 			} else {
 				// For all other preferences, set the summary to the value's
@@ -129,15 +194,12 @@ public class SettingsActivity extends PreferenceActivity {
 	 */
 	private static void bindPreferenceSummaryToValue(Preference preference) {
 		// Set the listener to watch for value changes.
-		preference
-				.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
 		// Trigger the listener immediately with the preference's
 		// current value.
-		sBindPreferenceSummaryToValueListener.onPreferenceChange(
-				preference,
-				PreferenceManager.getDefaultSharedPreferences(
-						preference.getContext()).getString(preference.getKey(),
-						""));
+		sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+                PreferenceManager.getDefaultSharedPreferences(
+						preference.getContext()).getString(preference.getKey(), ""));
 	}
 }
