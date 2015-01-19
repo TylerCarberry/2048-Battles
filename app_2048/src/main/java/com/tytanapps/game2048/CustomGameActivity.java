@@ -263,24 +263,21 @@ public class CustomGameActivity extends Activity {
 
     private boolean isCustomGameValid(int width, int height, List<Mode> modes) {
 
-        if(width * height < 1) {
+        int availableTiles = width * height;
+
+        if(modes.contains(Mode.XMODE))
+            availableTiles--;
+
+        if(modes.contains(Mode.CORNER)) {
+            if(width >= 2 && height >= 2)
+                availableTiles -= 4;
+            else
+                availableTiles -= 2;
+        }
+
+
+        if(availableTiles < 2) {
             Toast.makeText(this, getString(R.string.error_grid_small), Toast.LENGTH_LONG).show();
-            return false;
-        }
-
-        // If corner mode is enabled the width and height must be >2 and cannot both be 2
-        if(modes.contains(Mode.CORNER) && ((width == 2 && height == 2) || (width < 2 || height < 2))) {
-            Toast.makeText(this, "Corner Mode will not fit on that grid size", Toast.LENGTH_LONG).show();
-            return false;
-        }
-
-        if(modes.contains(Mode.XMODE) && width * height <= 2) {
-            Toast.makeText(this, "XMode cannot fit on that grid size", Toast.LENGTH_LONG).show();
-            return false;
-        }
-
-        if(modes.contains(Mode.XMODE) && modes.contains(Mode.CORNER) && width * height <= 7) {
-            Toast.makeText(this, "XMode and Corner Mode cannot fit on that grid size", Toast.LENGTH_LONG).show();
             return false;
         }
 

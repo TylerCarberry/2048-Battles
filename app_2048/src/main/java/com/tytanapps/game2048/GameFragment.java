@@ -122,7 +122,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     private List<Timer> activeTimers = new ArrayList<Timer>();
 
-    private int secondsRemaining = 30;
+    private int secondsRemaining = GameModes.SURVIVAL_MODE_TIME;
 
     private boolean multiplayerActive = false;
 
@@ -1676,7 +1676,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private void activateSurvivalMode() {
-        secondsRemaining = 30;
+
+        secondsRemaining = GameModes.SURVIVAL_MODE_TIME;
 
         final Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {

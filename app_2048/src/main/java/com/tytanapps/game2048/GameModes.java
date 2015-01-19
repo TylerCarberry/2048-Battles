@@ -23,6 +23,9 @@ public class GameModes
     public static final int CUSTOM_MODE_ID = 13;
     public static final int TITLE_MODE_ID = 15;
 
+
+    public static final int SURVIVAL_MODE_TIME = 15; // seconds
+
     public static List<Integer> getListOfGameModesIds() {
         List<Integer> gameModes = new ArrayList<Integer>();
         gameModes.add(PRACTICE_MODE_ID);
