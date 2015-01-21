@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -402,30 +401,24 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     }
 
     private void showSinglePlayerDialog() {
-        LinearLayout verticalLinearLayout = new LinearLayout(this);
-        verticalLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        int padding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
-        verticalLinearLayout.setPadding(padding, padding, padding, padding);
-
-        LinearLayout topHorizontalLinearLayout = new LinearLayout(this);
-        topHorizontalLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        topHorizontalLinearLayout.setGravity(Gravity.CENTER);
-
-        View savedGameView = getSavedGameView();
-        if(savedGameView != null) {
-            savedGameView.setPadding(0, 0, padding, 0);
-            topHorizontalLinearLayout.addView(savedGameView);
+        AlertDialog continueGameDialog = getContinueGameDialog();
+        if(continueGameDialog != null) {
+            continueGameDialog.show();
         }
-
-        View customGameView = getCustomGameView();
-        if(customGameView != null) {
-            topHorizontalLinearLayout.addView(customGameView);
+        else {
+            getNewSinglePlayerGameDialog().show();
         }
-        topHorizontalLinearLayout.setPadding(0,0,0,(int) getResources().getDimension(R.dimen.activity_vertical_margin));
+    }
 
-        verticalLinearLayout.addView(topHorizontalLinearLayout);
+    private AlertDialog getNewSinglePlayerGameDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("New Game");
 
         final List<Integer> gameModes= GameModes.getListOfGameModesIds();
+
+        LinearLayout verticalLinearLayout = new LinearLayout(this);
+        verticalLinearLayout.setOrientation(LinearLayout.VERTICAL);
+        verticalLinearLayout.addView(getCustomGameView());
 
         for(int modeIndex = 0; modeIndex < gameModes.size();) {
 
@@ -469,13 +462,10 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
 
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        //builder.setTitle("Single Player");
-
         builder.setView(verticalLinearLayout);
-        builder.create().show();
 
 
+        return builder.create();
     }
 
     private View getCustomGameView() {
@@ -494,7 +484,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
      * Adds the continue game listview to the screen
      * Contains the game mode and screenshot of the game
      */
-    private View getSavedGameView() {
+    private AlertDialog getContinueGameDialog() {
         File savedGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
         Game savedGame;
         try {
@@ -510,43 +500,53 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         if(savedGame == null)
             return null;
 
-        File savedGameBitmapFile = new File(getFilesDir(), "CURRENT_GAME_SCREENSHOT");
-        Bitmap savedGameBitmap = Save.loadBitmap(savedGameBitmapFile);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Continue Game?");
 
-        // The layout the contains all info for that mode
-        LinearLayout savedGameLayout = new LinearLayout(this);
-        savedGameLayout.setOrientation(LinearLayout.VERTICAL);
-
-        TextView continueGameTextView = new TextView(this);
-        continueGameTextView.setText(R.string.continue_game);
-        continueGameTextView.setTextSize(20);
-        continueGameTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-        continueGameTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        );
-        continueGameTextView.setTypeface(null, Typeface.BOLD);
-
-
-        ImageView currentGameImageView = new ImageView(this);
-
-        // Add each item of the mode to the layout
-        savedGameLayout.addView(continueGameTextView);
+        LinearLayout dialogLayout = new LinearLayout(this);
+        dialogLayout.setOrientation(LinearLayout.VERTICAL);
+        Bitmap savedGameBitmap = getSavedGameBitmap();
         if(savedGameBitmap != null) {
-            currentGameImageView.setImageBitmap(Bitmap.createScaledBitmap(savedGameBitmap, 400, 400, false));
-            savedGameLayout.addView(currentGameImageView);
+            ImageView savedGameImageView = new ImageView(this);
+            savedGameImageView.setImageBitmap(savedGameBitmap);
+            dialogLayout.addView(savedGameImageView);
         }
 
-        savedGameLayout.setOnTouchListener(new View.OnTouchListener() {
+        Button yes = new Button(this);
+        yes.setText("Yes");
+
+        Button no = new Button(this);
+        no.setText("No");
+
+        dialogLayout.addView(yes);
+        dialogLayout.addView(no);
+
+        dialogBuilder.setView(dialogLayout);
+
+        final AlertDialog alertDialog = dialogBuilder.create();
+
+        yes.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP)
-                    startGameActivity();
-                return true;
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                startGameActivity();
             }
         });
 
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                getNewSinglePlayerGameDialog().show();
+            }
+        });
 
-        return savedGameLayout;
+        return alertDialog;
+    }
+
+    private Bitmap getSavedGameBitmap() {
+        File savedGameBitmapFile = new File(getFilesDir(), "CURRENT_GAME_SCREENSHOT");
+        return Save.loadBitmap(savedGameBitmapFile);
     }
 
     /**
