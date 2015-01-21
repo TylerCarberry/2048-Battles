@@ -410,6 +410,10 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         }
     }
 
+    /**
+     *
+     * @return
+     */
     private AlertDialog getNewSinglePlayerGameDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("New Game");
@@ -424,14 +428,24 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
             LinearLayout horizontalLinearLayout = new LinearLayout(this);
             horizontalLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-            horizontalLinearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-
+            
             for(int j = 0; j < 3 && modeIndex < gameModes.size(); j++) {
+
+                LinearLayout modeVerticalLayout = new LinearLayout(this);
+                modeVerticalLayout.setOrientation(LinearLayout.VERTICAL);
+                modeVerticalLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+                modeVerticalLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+                int padding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin) / 2;
+                modeVerticalLayout.setPadding(padding, padding, padding, padding);
+
 
                 final int gameId = gameModes.get(modeIndex);
 
                 Button button = new Button(this);
+                button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
                 button.setText(GameModes.getGameTitleById(gameModes.get(modeIndex)));
+                button.setGravity(Gravity.CENTER_HORIZONTAL);
 
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -452,7 +466,14 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                     }
                 });
 
-                horizontalLinearLayout.addView(button);
+                modeVerticalLayout.addView(button);
+
+                TextView modeDescription = new TextView(this);
+                modeDescription.setText(GameModes.getGameDescById(gameId));
+                modeDescription.setGravity(Gravity.CENTER_HORIZONTAL);
+
+                modeVerticalLayout.addView(modeDescription);
+                horizontalLinearLayout.addView(modeVerticalLayout);
 
                 modeIndex++;
             }
