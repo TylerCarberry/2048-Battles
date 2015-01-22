@@ -566,6 +566,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                     e.printStackTrace();
                 }
 
+                sendAnalyticsEvent("Main Activity", "Game", "Mode Id: " + gameMode);
+
                 // Switch to the game activity
                 startGameActivity();
             }
@@ -637,6 +639,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+                sendAnalyticsEvent("Main Activity", "Game", "Continue");
                 startGameActivity();
             }
         });
@@ -665,18 +668,23 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         if(getApiClient().isConnected()) {
             switch (view.getId()) {
                 case R.id.achievements_button:
+                    sendAnalyticsEvent("Main Activity", "Google Play Games", "Achievements Button Press");
                     startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 1);
                     break;
                 case R.id.quests_button:
+                    sendAnalyticsEvent("Main Activity", "Google Play Games", "Quests Button Press");
                     showQuests();
                     break;
                 case R.id.leaderboards_button:
+                    sendAnalyticsEvent("Main Activity", "Google Play Games", "Leaderboards Button Press");
                     startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 0);
                     break;
                 case R.id.gifts_button:
+                    sendAnalyticsEvent("Main Activity", "Google Play Games", "Gifts Button Press");
                     sendGift();
                     break;
                 case R.id.inbox_button:
+                    sendAnalyticsEvent("Main Activity", "Google Play Games", "Inbox Button Press");
                     startActivityForResult(Games.Requests.getInboxIntent(getApiClient()), SHOW_INBOX);
                     break;
             }

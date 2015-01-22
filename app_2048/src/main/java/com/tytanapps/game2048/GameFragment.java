@@ -869,10 +869,14 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_i_dont_want_any_help));
         }
 
-        if(multiplayerActive)
+        if(multiplayerActive) {
             ((MultiplayerActivity) getActivity()).sendMessage(getString(R.string.opponent_lost), true);
-        else
+            sendAnalyticsEvent("Game Fragment", "Game Lost", "Multiplayer");
+        }
+        else {
             ((GameActivity) getActivity()).displayInterstitial();
+            sendAnalyticsEvent("Game Fragment", "Game Lost", "Single Player");
+        }
     }
 
     /** Create the message that is shown to the user after they lose.
@@ -954,7 +958,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 shareIntent.setType("text/plain");
                 startActivity(shareIntent);
 
-                sendAnalyticsEvent("GameFragment", "Congratulations Dialog", "Share Button");
+                sendAnalyticsEvent("Game Fragment", "Congratulations Dialog", "Share Button");
                 if(getApiClient().isConnected())
                     Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_brag_to_your_friends));
             }
@@ -977,6 +981,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         });
 
         alertDialog.show();
+
+        sendAnalyticsEvent("Game Fragment", "Congratulations Dialog", "Tile: " + tile);
     }
 
     public void animateFlyingTiles(final int amount, final int delay) {
@@ -1202,6 +1208,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                                 if(game.getUseItemInventory())
                                     gameStats.decrementPowerupInventory();
                                 updateTextviews();
+                                sendAnalyticsEvent("Game Fragment", "Item Used", "Genie");
                                 break;
                         }
                         setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
@@ -1349,6 +1356,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                                 gameStats.decrementPowerupInventory();
                             setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
                             updateTextviews();
+
+                            sendAnalyticsEvent("Game Fragment", "Item Used", "Remove Tile");
                         }
                     });
                 }
@@ -1487,6 +1496,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 updateGame();
                 activeAnimations.clear();
                 animationInProgress = false;
+
+                sendAnalyticsEvent("Game Fragment", "Item Used", "Remove Low Tiles");
             }
 
             @Override
@@ -1513,7 +1524,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * back in the opposite direction
      */
     protected void shuffleGame() {
-
         // Save the game history before each move
         game.saveGameInHistory();
 
@@ -1560,6 +1570,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         activeAnimations.add(rotateAnimation);
         rotateAnimation.start();
+
+        sendAnalyticsEvent("Game Fragment", "Item Used", "Shuffle");
     }
 
     /**
@@ -1782,6 +1794,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             updateGame();
 
             Games.Events.increment(this.getApiClient(), getString(R.string.event_undos_used), 1);
+            sendAnalyticsEvent("Game Fragment", "Item Used", "Undo");
             return;
         }
 
