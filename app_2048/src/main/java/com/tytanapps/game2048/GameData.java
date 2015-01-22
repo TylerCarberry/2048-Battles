@@ -44,8 +44,9 @@ public class GameData implements java.io.Serializable {
         totalUndosUsed = 0;
         totalShufflesUsed = 0;
         totalMoves = 0;
-        powerupInventory = 0;
-        undoInventory = 0;
+
+        powerupInventory = 3;
+        undoInventory = 5;
 
         highScores = new HashMap<Integer, Integer>();
         lowScores = new HashMap<Integer, Integer>();

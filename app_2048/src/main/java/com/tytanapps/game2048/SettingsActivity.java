@@ -106,8 +106,6 @@ public class SettingsActivity extends PreferenceActivity {
                 File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
                 currentGameFile.delete();
                 GameData gameData = new GameData();
-                gameData.incrementUndoInventory(5);
-                gameData.incrementPowerupInventory(3);
                 saveGameData(gameData);
             }
         });
