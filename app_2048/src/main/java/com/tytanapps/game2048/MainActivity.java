@@ -29,6 +29,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -209,19 +211,20 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             readGameData();
 
         TextView undoTextView = (TextView) findViewById(R.id.undo_inventory);
-        undoTextView.setText(""+gameData.getUndoInventory());
+        undoTextView.setText("" + gameData.getUndoInventory());
 
         TextView powerupTextView = (TextView) findViewById(R.id.powerup_inventory);
-        powerupTextView.setText(""+gameData.getPowerupInventory());
+        powerupTextView.setText("" + gameData.getPowerupInventory());
     }
 
     public void animateFlyingTiles(final int amount, final int delay) {
         final Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             int times = 0;
+
             @Override
             public void run() {
-                if(activityIsVisible && (times > amount || amount < 0)) {
+                if (activityIsVisible && (times > amount || amount < 0)) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -229,9 +232,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                         }
                     });
                     times++;
-                }
-                else
-                   timer.cancel();
+                } else
+                    timer.cancel();
 
             }
         }, delay, delay);
@@ -420,6 +422,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         final List<Integer> gameModes= GameModes.getListOfGameModesIds();
 
+        /*
+
         LinearLayout verticalLinearLayout = new LinearLayout(this);
         verticalLinearLayout.setOrientation(LinearLayout.VERTICAL);
         verticalLinearLayout.addView(getCustomGameView());
@@ -428,7 +432,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
             LinearLayout horizontalLinearLayout = new LinearLayout(this);
             horizontalLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-            
+
             for(int j = 0; j < 3 && modeIndex < gameModes.size(); j++) {
 
                 LinearLayout modeVerticalLayout = new LinearLayout(this);
@@ -441,6 +445,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
                 final int gameId = gameModes.get(modeIndex);
 
+                /*
                 Button button = new Button(this);
                 button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
@@ -466,6 +471,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                     }
                 });
 
+
                 modeVerticalLayout.addView(button);
 
                 TextView modeDescription = new TextView(this);
@@ -473,7 +479,13 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 modeDescription.setGravity(Gravity.CENTER_HORIZONTAL);
 
                 modeVerticalLayout.addView(modeDescription);
+
+
                 horizontalLinearLayout.addView(modeVerticalLayout);
+
+                   */ /*
+
+                horizontalLinearLayout.addView(getGameModeButton(gameId));
 
                 modeIndex++;
             }
@@ -485,8 +497,83 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         builder.setView(verticalLinearLayout);
 
+                */
+
+
+        TableLayout tableLayout = new TableLayout(this);
+        tableLayout.setStretchAllColumns(true);
+
+        int padding = (int) getResources().getDimension(R.dimen.activity_vertical_margin) / 2;
+
+        TableRow tableRow = new TableRow(this);
+        tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+
+
+        for(int i = 0; i < gameModes.size(); i++) {
+            if(i > 0 && i % 3 == 0) {
+                tableLayout.addView(tableRow);
+                tableRow = new TableRow(this);
+                tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+                //TableLayout.LayoutParams layoutParams = new TableLayout.LayoutParams();
+                //layoutParams.setMargins(padding, padding, padding, padding);
+
+                //tableRow.setLayoutParams(layoutParams);
+            }
+            tableRow.addView(getGameModeButton(gameModes.get(i)));
+        }
+        tableLayout.addView(tableRow);
+
+
+        /*
+        GridLayout gridLayout = new GridLayout(this);
+        gridLayout.setRowCount(4);
+        gridLayout.setColumnCount(3);
+
+        for(int gameMode : gameModes)
+            gridLayout.addView(getGameModeButton(gameMode));
+            */
+
+        builder.setView(tableLayout);
 
         return builder.create();
+    }
+
+    private View getGameModeButton(final int gameMode) {
+        Button gameButton = new Button(this);
+        gameButton.setBackgroundResource(R.drawable.tile_game_mode);
+        gameButton.setText(GameModes.getGameTitleById(gameMode));
+
+        //int padding = (int) getResources().getDimension(R.dimen.activity_vertical_margin) / 2;
+        //gameButton.setPadding(padding, padding, padding, padding);
+
+        //Drawable background = getResources().getDrawable(R.drawable.tile_game_mode);
+        //gameButton.setHeight(background.getIntrinsicHeight());
+        //gameButton.setWidth(background.getIntrinsicWidth());
+
+
+
+        gameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Game game = GameModes.newGameFromId(gameMode);
+                game.setGameModeId(gameMode);
+
+                File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+                try {
+                    Save.save(game, currentGameFile);
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                // Switch to the game activity
+                startGameActivity();
+            }
+        });
+
+
+
+        return gameButton;
     }
 
     private View getCustomGameView() {
