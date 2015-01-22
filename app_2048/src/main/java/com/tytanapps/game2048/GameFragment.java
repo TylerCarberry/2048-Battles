@@ -42,7 +42,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -240,12 +239,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         swipeSensitivity = Integer.valueOf(prefs.getString("swipeSensitivity", "75"));
         tileSlideSpeed = Integer.valueOf(prefs.getString("speed", "125"));
 
-        // Tell Google Analytics that the user switched to the game
-        GoogleAnalytics.getInstance(getActivity()).reportActivityStart(getActivity());
-
         // Start the multiplayer aspects of the game if necessary
         if(multiplayerActive) {
-
             createCountdown(3000);
 
             // If the user chose to hide their identity do not show them their own identity
@@ -295,7 +290,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(gameStats.getTotalMoves() >= 2048 && getApiClient().isConnected())
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
 
-        GoogleAnalytics.getInstance(getActivity()).reportActivityStop(getActivity());
         super.onStop();
     }
 
@@ -1685,8 +1679,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private void activateSurvivalMode() {
-
-        secondsRemaining = GameModes.SURVIVAL_MODE_TIME;
+        if(game.getTimeLeft() > 0)
+            secondsRemaining = (int) game.getTimeLeft();
+        else
+            secondsRemaining = GameModes.SURVIVAL_MODE_TIME;
 
         final Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -1714,6 +1710,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             }
         }, 1000, 1000);
         activeTimers.add(timer);
+
+        updateTextviews();
     }
 
     public int getSecondsRemaining() {
@@ -1722,6 +1720,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     public int decrementTimeLeft(int seconds) {
         secondsRemaining -= seconds;
+        game.setTimeLimit(secondsRemaining);
 
         getActivity().runOnUiThread(new Runnable() {
             @Override

@@ -427,16 +427,16 @@ public class Game implements java.io.Serializable
 	public void enableSurvivalMode() {
         activeModes.add(Mode.SURVIVAL);
 		
-		// If no time limit is in effect, set it to 30 seconds
+		// If no time limit is in effect, set it to 15 seconds
 		if(timeLeft <= 0)
-			timeLeft = 30;
+			timeLeft = GameModes.SURVIVAL_MODE_TIME;
 	}
 	
 	public void setArcadeMode(boolean enabled) {
 		if(enabled)
-            activeModes.add(Mode.SURVIVAL);
+            activeModes.add(Mode.ARCADE);
         else
-            activeModes.remove(Mode.SURVIVAL);
+            activeModes.remove(Mode.ARCADE);
 	}
 
     /*

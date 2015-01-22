@@ -235,7 +235,7 @@ public class GameModes
 	{
 		Game game = new Game();
 		game.setMoveLimit(-1);
-		game.setTimeLimit(30);
+		game.setTimeLimit(SURVIVAL_MODE_TIME);
 		game.enableSurvivalMode();
         game.setUseItemInventory(true);
 		game.setGameModeId(SURVIVAL_MODE_ID);
