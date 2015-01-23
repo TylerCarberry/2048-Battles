@@ -12,6 +12,7 @@ import android.app.backup.RestoreObserver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -722,11 +723,20 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         int height = size.y;
 
         width -= getResources().getDimension(R.dimen.activity_horizontal_margin) * 2;
-        height -= getResources().getDimension(R.dimen.activity_vertical_margin) * 2;
 
-        if(columns > rows)
-            return width / columns - TILE_MARGIN;
-        return width / rows - TILE_MARGIN;
+        // The ad takes up additional space in landscape mode
+        height -= getResources().getDimension(R.dimen.activity_vertical_margin) * 2 + 80;
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (columns > rows)
+                return width / columns - TILE_MARGIN;
+            return width / rows - TILE_MARGIN;
+        }
+        else {
+            if (columns > rows)
+                return height / columns - TILE_MARGIN;
+            return height / rows - TILE_MARGIN;
+        }
     }
 
     /**
