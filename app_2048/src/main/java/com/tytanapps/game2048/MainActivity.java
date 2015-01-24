@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -543,31 +542,77 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         dialog.setContentView(R.layout.new_game);
         dialog.setTitle("New Game");
 
-        GridLayout gridLayout = (GridLayout) dialog.findViewById(R.id.new_game_layout);
-        for(int i = 0; i < gridLayout.getChildCount(); i++) {
-            Button button = (Button) gridLayout.getChildAt(i);
-            button.setOnClickListener(getOnClickListener(Integer.parseInt((String) button.getTag())));
-        }
+        RelativeLayout gridLayout = (RelativeLayout) dialog.findViewById(R.id.new_game_layout);
+        createNewGameListeners(gridLayout);
 
         return dialog;
     }
 
-    private View.OnClickListener getOnClickListener(final int gameMode) {
+    private void createNewGameListeners(ViewGroup viewGroup) {
+        for(int i = 0; i < viewGroup.getChildCount(); i++) {
+            View view = viewGroup.getChildAt(i);
+            if(view instanceof Button) {
+                view.setOnClickListener(getOnClickListener((Button)view));
+            }
+            else if(view instanceof ViewGroup)
+                createNewGameListeners((ViewGroup)view);
+        }
+    }
+
+    private View.OnClickListener getOnClickListener(Button newGameButton) {
         View.OnClickListener onClickListener;
 
-        if(gameMode == GameModes.CUSTOM_MODE_ID)
-            onClickListener = new View.OnClickListener() {
+
+        if(newGameButton.getId() == R.id.custom_button)
+            return new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity(new Intent(getApplicationContext(), CustomGameActivity.class));
                 }
             };
-        else
-            onClickListener = new View.OnClickListener() {
+
+        int gameMode = GameModes.NORMAL_MODE_ID;
+
+        switch(newGameButton.getId()) {
+            case R.id.classic_button:
+                gameMode = GameModes.NORMAL_MODE_ID;
+                break;
+            case R.id.practice_button:
+                gameMode = GameModes.PRACTICE_MODE_ID;
+                break;
+            case R.id.arcade_button:
+                gameMode = GameModes.ARCADE_MODE_ID;
+                break;
+            case R.id.xmode_button:
+                gameMode = GameModes.X_MODE_ID;
+                break;
+            case R.id.corner_button:
+                gameMode = GameModes.CORNER_MODE_ID;
+                break;
+            case R.id.survival_button:
+                gameMode = GameModes.SURVIVAL_MODE_ID;
+                break;
+            case R.id.rush_button:
+                gameMode = GameModes.RUSH_MODE_ID;
+                break;
+            case R.id.ghost_button:
+                gameMode = GameModes.GHOST_MODE_ID;
+                break;
+            case R.id.speed_button:
+                gameMode = GameModes.SPEED_MODE_ID;
+                break;
+            case R.id.crazy_button:
+                gameMode = GameModes.CRAZY_MODE_ID;
+                break;
+        }
+
+        final int gameModeId = gameMode;
+
+        onClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Game game = GameModes.newGameFromId(gameMode);
-                    game.setGameModeId(gameMode);
+                    Game game = GameModes.newGameFromId(gameModeId);
+                    game.setGameModeId(gameModeId);
 
                     File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
                         try {
