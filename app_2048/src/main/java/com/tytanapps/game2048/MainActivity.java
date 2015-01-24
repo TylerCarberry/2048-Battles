@@ -5,12 +5,14 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,12 +27,11 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -55,7 +56,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -416,9 +416,11 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
      *
      * @return
      */
-    private AlertDialog getNewSinglePlayerGameDialog() {
+    private Dialog getNewSinglePlayerGameDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("New Game");
+
+        /*
 
         final List<Integer> gameModes= GameModes.getListOfGameModesIds();
 
@@ -499,6 +501,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
                 */
 
+        /*
+
 
         TableLayout tableLayout = new TableLayout(this);
         tableLayout.setStretchAllColumns(true);
@@ -507,10 +511,11 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         TableRow tableRow = new TableRow(this);
         tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+        tableRow.addView(getCustomGameView());
 
 
         for(int i = 0; i < gameModes.size(); i++) {
-            if(i > 0 && i % 3 == 0) {
+            if(i % 3 == 0) {
                 tableLayout.addView(tableRow);
                 tableRow = new TableRow(this);
                 tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -533,15 +538,67 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             gridLayout.addView(getGameModeButton(gameMode));
             */
 
-        builder.setView(tableLayout);
 
-        return builder.create();
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.new_game);
+        dialog.setTitle("New Game");
+
+        GridLayout gridLayout = (GridLayout) dialog.findViewById(R.id.new_game_layout);
+        for(int i = 0; i < gridLayout.getChildCount(); i++) {
+            Button button = (Button) gridLayout.getChildAt(i);
+            button.setOnClickListener(getOnClickListener(Integer.parseInt((String) button.getTag())));
+        }
+
+        return dialog;
+    }
+
+    private View.OnClickListener getOnClickListener(final int gameMode) {
+        View.OnClickListener onClickListener;
+
+        if(gameMode == GameModes.CUSTOM_MODE_ID)
+            onClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(), CustomGameActivity.class));
+                }
+            };
+        else
+            onClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Game game = GameModes.newGameFromId(gameMode);
+                    game.setGameModeId(gameMode);
+
+                    File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+                        try {
+                        Save.save(game, currentGameFile);
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    // Switch to the game activity
+                    startGameActivity();
+                }
+            };
+
+        return onClickListener;
     }
 
     private View getGameModeButton(final int gameMode) {
-        Button gameButton = new Button(this);
-        gameButton.setBackgroundResource(R.drawable.tile_game_mode);
-        gameButton.setText(GameModes.getGameTitleById(gameMode));
+        ImageView gameButton = new ImageView(this);
+        gameButton.setImageResource(R.drawable.tile_practice_mode);
+        //gameButton.setText(GameModes.getGameTitleById(gameMode));
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+
+        int buttonSize = (int) (width - 3 * getResources().getDimension(R.dimen.activity_horizontal_margin)) / 3;
+
+        //gameButton.setHeight(buttonSize);
+        //gameButton.setWidth(buttonSize);
 
         //int padding = (int) getResources().getDimension(R.dimen.activity_vertical_margin) / 2;
         //gameButton.setPadding(padding, padding, padding, padding);
@@ -549,8 +606,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         //Drawable background = getResources().getDrawable(R.drawable.tile_game_mode);
         //gameButton.setHeight(background.getIntrinsicHeight());
         //gameButton.setWidth(background.getIntrinsicWidth());
-
-
 
         gameButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -573,13 +628,12 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             }
         });
 
-
-
         return gameButton;
     }
 
     private View getCustomGameView() {
         Button customGameButton = new Button(this);
+        customGameButton.setBackgroundResource(R.drawable.tile_game_mode);
         customGameButton.setText(getString(R.string.mode_custom));
         customGameButton.setOnClickListener(new View.OnClickListener() {
             @Override

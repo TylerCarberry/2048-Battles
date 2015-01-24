@@ -2058,11 +2058,14 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private static Bitmap loadBitmapFromView(View v, int width, int height) {
-        Bitmap b = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-        v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
-        v.draw(c);
-        return b;
+        if(width > 0 && height > 0) {
+            Bitmap b = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(b);
+            v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
+            v.draw(c);
+            return b;
+        }
+        return null;
     }
 
     protected void requestBackup() {

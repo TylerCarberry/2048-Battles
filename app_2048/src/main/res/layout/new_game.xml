@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:rowCount="4"
+    android:columnCount="3"
+    android:id="@+id/new_game_layout">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tile_game_mode"
+        android:text="Classic"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:textSize="20dp"
+        android:tag="1"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tile_game_mode"
+        android:text="Custom"
+        android:layout_row="0"
+        android:layout_column="2"
+        android:textSize="20dp"
+        android:tag="13"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tile_game_mode"
+        android:text="Practice"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:textSize="20dp"
+        android:tag="2"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tile_game_mode"
+        android:text="Arcade"
+        android:layout_row="1"
+        android:layout_column="1"
+        android:textSize="20dp"
+        android:tag="4"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tile_game_mode"
+        android:text="XMode"
+        android:layout_row="1"
+        android:layout_column="2"
+        android:textSize="20dp"
+        android:tag="7"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tile_game_mode"
+        android:text="Corner"
+        android:layout_row="2"
+        android:layout_column="0"
+        android:textSize="20dp"
+        android:tag="8"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tile_game_mode"
+        android:text="Survival"
+        android:layout_row="2"
+        android:layout_column="1"
+        android:textSize="20dp"
+        android:tag="6"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tile_game_mode"
+        android:text="Rush"
+        android:layout_row="2"
+        android:layout_column="2"
+        android:textSize="20dp"
+        android:tag="5"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tile_game_mode"
+        android:text="Ghost"
+        android:layout_row="3"
+        android:layout_column="0"
+        android:textSize="20dp"
+        android:tag="11"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tile_game_mode"
+        android:text="Speed"
+        android:layout_row="3"
+        android:layout_column="1"
+        android:textSize="20dp"
+        android:tag="9"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tile_game_mode"
+        android:text="Crazy"
+        android:layout_row="3"
+        android:layout_column="2"
+        android:textSize="20dp"
+        android:tag="12"/>
+
+
+</GridLayout>
