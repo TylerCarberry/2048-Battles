@@ -457,10 +457,35 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     }
 
     private View.OnClickListener getOnClickListener(Button newGameButton) {
-        View.OnClickListener onClickListener;
-
         final int gameModeId = getGameModeIdFromButton(newGameButton);
-        onClickListener = new View.OnClickListener() {
+
+        if(newGameButton.getId() == R.id.custom_button) {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Button button = (Button) view;
+                    if(view.getTag() != null && view.getTag().toString().equals("1")) {
+                        startActivity(new Intent(getApplicationContext(), CustomGameActivity.class));
+                    }
+                    else {
+                        ViewGroup viewGroup = (ViewGroup) button.getParent();
+                        if(viewGroup.getChildCount() <= 3)
+                            viewGroup = (ViewGroup) viewGroup.getParent();
+                        clearGameDescriptions(viewGroup);
+
+                        int width = view.getWidth();
+                        int height = button.getHeight();
+                        button.setTextSize(getResources().getDimension(R.dimen.new_game_text_size_small));
+                        button.setText(GameModes.getGameDescById(gameModeId));
+                        button.setTag(1);
+                        button.setHeight(height);
+                        button.setWidth(width);
+                    }
+                }
+            };
+        }
+
+        return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Button button = (Button) view;
@@ -478,7 +503,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                         startGameActivity();
                     }
                     else {
-
                         ViewGroup viewGroup = (ViewGroup) button.getParent();
                         if(viewGroup.getChildCount() <= 3)
                             viewGroup = (ViewGroup) viewGroup.getParent();
@@ -494,8 +518,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                     }
                 }
             };
-
-        return onClickListener;
     }
 
     private int getGameModeIdFromButton(Button newGameButton) {

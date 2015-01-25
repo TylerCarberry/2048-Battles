@@ -233,6 +233,16 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                     return true;
                 }
             });
+
+            if(game.getGameModeId() == GameModes.CUSTOM_MODE_ID) {
+                getView().findViewById(R.id.high_score_textview).setVisibility(View.GONE);
+                getView().findViewById(R.id.turn_textview).setVisibility(View.VISIBLE);
+            }
+            else {
+                getView().findViewById(R.id.high_score_textview).setVisibility(View.VISIBLE);
+                getView().findViewById(R.id.turn_textview).setVisibility(View.GONE);
+            }
+
         }
 
         // Load the settings for the tile speed and sensitivity
@@ -467,6 +477,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     protected void updateTextviews() {
         TextView turnTextView = (TextView) getView().findViewById(R.id.turn_textview);
         TextView scoreTextView = (TextView) getView().findViewById(R.id.score_textview);
+        TextView highScoreTextView = (TextView) getView().findViewById(R.id.high_score_textview);
         TextView timeLeftTextView = (TextView) getView().findViewById(R.id.time_left_textview);
         TextView undosTextView = (TextView) getView().findViewById(R.id.undos_textview);
         TextView powerupsTextView = (TextView) getView().findViewById(R.id.powerups_textview);
@@ -476,8 +487,14 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         activeAttacksTextView.setText(getAttackString());
 
         if(! multiplayerActive) {
-            // Update the turn number
-            turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
+            if(game.getGameModeId() == GameModes.CUSTOM_MODE_ID)
+                // Update the turn number
+                turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
+            else {
+                // Update the high score
+                int highScore = Math.max(game.getScore(), gameStats.getHighScore(game.getGameModeId()));
+                highScoreTextView.setText(String.format(getString(R.string.high_score), highScore));
+            }
 
             // Update the score
             scoreTextView.setText(getString(R.string.score) + ": " + game.getScore());
