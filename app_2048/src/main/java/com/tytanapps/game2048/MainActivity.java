@@ -12,12 +12,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -55,6 +55,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -416,128 +417,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
      * @return
      */
     private Dialog getNewSinglePlayerGameDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("New Game");
-
-        /*
-
-        final List<Integer> gameModes= GameModes.getListOfGameModesIds();
-
-        /*
-
-        LinearLayout verticalLinearLayout = new LinearLayout(this);
-        verticalLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        verticalLinearLayout.addView(getCustomGameView());
-
-        for(int modeIndex = 0; modeIndex < gameModes.size();) {
-
-            LinearLayout horizontalLinearLayout = new LinearLayout(this);
-            horizontalLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-            for(int j = 0; j < 3 && modeIndex < gameModes.size(); j++) {
-
-                LinearLayout modeVerticalLayout = new LinearLayout(this);
-                modeVerticalLayout.setOrientation(LinearLayout.VERTICAL);
-                modeVerticalLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-                modeVerticalLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-                int padding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin) / 2;
-                modeVerticalLayout.setPadding(padding, padding, padding, padding);
-
-
-                final int gameId = gameModes.get(modeIndex);
-
-                /*
-                Button button = new Button(this);
-                button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-                button.setText(GameModes.getGameTitleById(gameModes.get(modeIndex)));
-                button.setGravity(Gravity.CENTER_HORIZONTAL);
-
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Game game = GameModes.newGameFromId(gameId);
-                        game.setGameModeId(gameId);
-
-                        File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
-                        try {
-                            Save.save(game, currentGameFile);
-                        }
-                        catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        // Switch to the game activity
-                        startGameActivity();
-                    }
-                });
-
-
-                modeVerticalLayout.addView(button);
-
-                TextView modeDescription = new TextView(this);
-                modeDescription.setText(GameModes.getGameDescById(gameId));
-                modeDescription.setGravity(Gravity.CENTER_HORIZONTAL);
-
-                modeVerticalLayout.addView(modeDescription);
-
-
-                horizontalLinearLayout.addView(modeVerticalLayout);
-
-                   */ /*
-
-                horizontalLinearLayout.addView(getGameModeButton(gameId));
-
-                modeIndex++;
-            }
-
-            verticalLinearLayout.addView(horizontalLinearLayout);
-        }
-
-
-
-        builder.setView(verticalLinearLayout);
-
-                */
-
-        /*
-
-
-        TableLayout tableLayout = new TableLayout(this);
-        tableLayout.setStretchAllColumns(true);
-
-        int padding = (int) getResources().getDimension(R.dimen.activity_vertical_margin) / 2;
-
-        TableRow tableRow = new TableRow(this);
-        tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
-        tableRow.addView(getCustomGameView());
-
-
-        for(int i = 0; i < gameModes.size(); i++) {
-            if(i % 3 == 0) {
-                tableLayout.addView(tableRow);
-                tableRow = new TableRow(this);
-                tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
-                //TableLayout.LayoutParams layoutParams = new TableLayout.LayoutParams();
-                //layoutParams.setMargins(padding, padding, padding, padding);
-
-                //tableRow.setLayoutParams(layoutParams);
-            }
-            tableRow.addView(getGameModeButton(gameModes.get(i)));
-        }
-        tableLayout.addView(tableRow);
-
-
-        /*
-        GridLayout gridLayout = new GridLayout(this);
-        gridLayout.setRowCount(4);
-        gridLayout.setColumnCount(3);
-
-        for(int gameMode : gameModes)
-            gridLayout.addView(getGameModeButton(gameMode));
-            */
-
-
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.new_game);
         dialog.setTitle("New Game");
@@ -548,31 +427,79 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         return dialog;
     }
 
-    private void createNewGameListeners(ViewGroup viewGroup) {
+    private List<Button> getListOfNewGameButtons(ViewGroup viewGroup) {
+        List<Button> buttons = new ArrayList<Button>();
+
         for(int i = 0; i < viewGroup.getChildCount(); i++) {
             View view = viewGroup.getChildAt(i);
             if(view instanceof Button) {
-                view.setOnClickListener(getOnClickListener((Button)view));
+                buttons.add((Button)view);
             }
             else if(view instanceof ViewGroup)
-                createNewGameListeners((ViewGroup)view);
+                buttons.addAll(getListOfNewGameButtons((ViewGroup) view));
+        }
+
+        return buttons;
+    }
+
+    private void createNewGameListeners(ViewGroup viewGroup) {
+        for(Button button : getListOfNewGameButtons(viewGroup)) {
+            button.setOnClickListener(getOnClickListener(button));
+        }
+    }
+
+    private void clearGameDescriptions(ViewGroup viewGroup) {
+        for(Button button : getListOfNewGameButtons(viewGroup)) {
+            button.setText(GameModes.getGameTitleById(getGameModeIdFromButton(button)));
+            button.setTag(0);
+            button.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.new_game_text_size));
         }
     }
 
     private View.OnClickListener getOnClickListener(Button newGameButton) {
         View.OnClickListener onClickListener;
 
-
-        if(newGameButton.getId() == R.id.custom_button)
-            return new View.OnClickListener() {
+        final int gameModeId = getGameModeIdFromButton(newGameButton);
+        onClickListener = new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(getApplicationContext(), CustomGameActivity.class));
+                public void onClick(View view) {
+                    Button button = (Button) view;
+                    if(view.getTag() != null && view.getTag().toString().equals("1")) {
+                        Game game = GameModes.newGameFromId(gameModeId);
+                        game.setGameModeId(gameModeId);
+
+                        File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
+                        try {
+                            Save.save(game, currentGameFile);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        // Switch to the game activity
+                        startGameActivity();
+                    }
+                    else {
+
+                        ViewGroup viewGroup = (ViewGroup) button.getParent();
+                        if(viewGroup.getChildCount() <= 3)
+                            viewGroup = (ViewGroup) viewGroup.getParent();
+                        clearGameDescriptions(viewGroup);
+
+                        int width = view.getWidth();
+                        int height = button.getHeight();
+                        button.setTextSize(getResources().getDimension(R.dimen.new_game_text_size_small));
+                        button.setText(GameModes.getGameDescById(gameModeId));
+                        button.setTag(1);
+                        button.setHeight(height);
+                        button.setWidth(width);
+                    }
                 }
             };
 
-        int gameMode = GameModes.NORMAL_MODE_ID;
+        return onClickListener;
+    }
 
+    private int getGameModeIdFromButton(Button newGameButton) {
+        int gameMode;
         switch(newGameButton.getId()) {
             case R.id.classic_button:
                 gameMode = GameModes.NORMAL_MODE_ID;
@@ -604,76 +531,13 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             case R.id.crazy_button:
                 gameMode = GameModes.CRAZY_MODE_ID;
                 break;
+            case R.id.custom_button:
+                gameMode = GameModes.CUSTOM_MODE_ID;
+                break;
+            default:
+                gameMode = GameModes.NORMAL_MODE_ID;
         }
-
-        final int gameModeId = gameMode;
-
-        onClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Game game = GameModes.newGameFromId(gameModeId);
-                    game.setGameModeId(gameModeId);
-
-                    File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
-                        try {
-                        Save.save(game, currentGameFile);
-                    }
-                    catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    // Switch to the game activity
-                    startGameActivity();
-                }
-            };
-
-        return onClickListener;
-    }
-
-    private View getGameModeButton(final int gameMode) {
-        ImageView gameButton = new ImageView(this);
-        gameButton.setImageResource(R.drawable.tile_practice_mode);
-        //gameButton.setText(GameModes.getGameTitleById(gameMode));
-
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
-
-        int buttonSize = (int) (width - 3 * getResources().getDimension(R.dimen.activity_horizontal_margin)) / 3;
-
-        //gameButton.setHeight(buttonSize);
-        //gameButton.setWidth(buttonSize);
-
-        //int padding = (int) getResources().getDimension(R.dimen.activity_vertical_margin) / 2;
-        //gameButton.setPadding(padding, padding, padding, padding);
-
-        //Drawable background = getResources().getDrawable(R.drawable.tile_game_mode);
-        //gameButton.setHeight(background.getIntrinsicHeight());
-        //gameButton.setWidth(background.getIntrinsicWidth());
-
-        gameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Game game = GameModes.newGameFromId(gameMode);
-                game.setGameModeId(gameMode);
-
-                File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
-                try {
-                    Save.save(game, currentGameFile);
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                sendAnalyticsEvent("Main Activity", "Game", "Mode Id: " + gameMode);
-
-                // Switch to the game activity
-                startGameActivity();
-            }
-        });
-
-        return gameButton;
+        return gameMode;
     }
 
     private View getCustomGameView() {

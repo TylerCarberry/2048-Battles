@@ -13,7 +13,9 @@
     <dimen name="single_player_text_size">20sp</dimen>
     <dimen name="multiplayer_text_size">19sp</dimen>
 
-    <dimen name="new_game_text_size">20dp</dimen>
+    <dimen name="new_game_text_size">20sp</dimen>
+    <dimen name="new_game_text_size_small">5sp</dimen>
+
     <dimen name="new_game_margin">5dp</dimen>
 
 
