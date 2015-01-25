@@ -4,6 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@color/PrimaryBackground"
     tools:context="com.tytanapps.game2048.CustomGameActivity$PlaceholderFragment">
 
     <TextView
@@ -11,12 +12,24 @@
         android:text="@string/grid_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/width_number_picker"
-        android:layout_alignEnd="@+id/width_number_picker"
-        android:gravity="center_horizontal" />
+        android:layout_alignParentTop="true"
+        android:textSize="25sp"
+        android:gravity="center_horizontal"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/grid_size_separator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:text="x"
+        android:layout_below="@+id/grid_size_prompt"
+        android:layout_alignTop="@+id/height_number_picker"
+        android:layout_alignBottom="@+id/height_number_picker"
+        android:layout_toRightOf="@+id/height_number_picker" />
 
     <Button
         android:layout_width="wrap_content"
@@ -33,24 +46,22 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:layout_below="@+id/grid_size_prompt"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentLeft="true"/>
 
-    <NumberPicker
-        android:id="@+id/width_number_picker"
+    <TextView
+        android:id="@+id/game_mode_prompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:layout_below="@+id/grid_size_prompt"
-        android:layout_toRightOf="@+id/height_number_picker"
-        android:layout_toEndOf="@+id/height_number_picker" />
+        android:layout_alignParentRight="true"
+        android:text="Game Modes"
+        android:textSize="25sp"/>
 
     <CheckBox
         android:id="@+id/xmode_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/mode_x"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/game_mode_prompt"
         android:layout_alignParentRight="true" />
 
     <CheckBox
@@ -108,9 +119,17 @@
         android:layout_below="@+id/ghost_mode_checkbox"
         android:layout_above="@+id/create_game_button"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:foregroundGravity="center_horizontal">
+        android:layout_marginBottom="@dimen/activity_vertical_margin">
 
     </FrameLayout>
+
+    <NumberPicker
+        android:id="@+id/width_number_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_below="@+id/grid_size_prompt"
+        android:layout_toRightOf="@+id/grid_size_separator"
+        android:layout_toEndOf="@+id/grid_size_separator" />
 
 </RelativeLayout>

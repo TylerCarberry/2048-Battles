@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +28,8 @@ import java.util.List;
 
 public class CustomGameActivity extends Activity {
 
+    private static final int MAX_GRID_SIZE = 15;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +40,6 @@ public class CustomGameActivity extends Activity {
                     .commit();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -63,9 +64,6 @@ public class CustomGameActivity extends Activity {
     }
 
     public void onClick(View view) {
-
-        Log.d("a", "Entering onclick");
-
         switch(view.getId()) {
             case R.id.create_game_button:
                 createGame();
@@ -74,9 +72,6 @@ public class CustomGameActivity extends Activity {
     }
 
     private void createGame() {
-
-        Log.d("a", "Entering creategame");
-
         int width = ((NumberPicker)findViewById(R.id.width_number_picker)).getValue();
         int height = ((NumberPicker)findViewById(R.id.height_number_picker)).getValue();
 
@@ -256,6 +251,8 @@ public class CustomGameActivity extends Activity {
             gridLayout.addView(cornerTile, gridLayoutParam);
         }
 
+        gridLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+
         return gridLayout;
     }
 
@@ -298,21 +295,20 @@ public class CustomGameActivity extends Activity {
             NumberPicker widthNumberPicker = (NumberPicker) rootView.findViewById(R.id.width_number_picker);
             NumberPicker heightNumberPicker = (NumberPicker) rootView.findViewById(R.id.height_number_picker);
 
-            String[] values=new String[20];
+            String[] values=new String[MAX_GRID_SIZE];
             for(int i = 0; i < values.length; i++){
                 values[i] = ""+(i+1);
             }
 
-            for(String s : values)
-                Log.d("a", s);
-
-            widthNumberPicker.setMaxValue(20);
+            widthNumberPicker.setMaxValue(MAX_GRID_SIZE);
             widthNumberPicker.setMinValue(1);
             widthNumberPicker.setDisplayedValues(values);
+            widthNumberPicker.setValue(4);
 
-            heightNumberPicker.setMaxValue(20);
+            heightNumberPicker.setMaxValue(MAX_GRID_SIZE);
             heightNumberPicker.setMinValue(1);
             heightNumberPicker.setDisplayedValues(values);
+            heightNumberPicker.setValue(4);
 
 
             widthNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -356,6 +352,12 @@ public class CustomGameActivity extends Activity {
 
 
             return rootView;
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            //((CustomGameActivity)getActivity()).updateGamePreview();
         }
     }
 }
