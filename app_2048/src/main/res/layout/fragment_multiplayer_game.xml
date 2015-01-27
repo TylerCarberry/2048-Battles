@@ -10,6 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:clipChildren="false"
+    android:clipToPadding="false"
     tools:context="com.example.app_2048.GameFragment" >
 
     <TextView
@@ -103,8 +104,10 @@
         android:id="@+id/countdown_textview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignTop="@id/grid_layout"
+        android:layout_alignBottom="@id/grid_layout"
         android:gravity="center"
-        android:textSize="100sp"
+        android:textSize="150sp"
         android:text="-7"/>
 
 </RelativeLayout>

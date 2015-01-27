@@ -174,16 +174,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 // Create a multiplayer game
                 startQuickGame();
                 break;
-            case R.id.in_game_button:
-                // play a single-player game
-                Toast.makeText(this, "Is game active? " + (mRoomId != null), Toast.LENGTH_SHORT).show();
-                if(mParticipants == null)
-                    Toast.makeText(this, "mPartic is null", Toast.LENGTH_SHORT).show();
-                else {
-                    Toast.makeText(this, "mPartic is not null", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(this, "mPartic size: " + mParticipants.size(), Toast.LENGTH_SHORT).show();
-                }
-                break;
             case R.id.to_game_button:
                 switchToGame();
                 break;
