@@ -80,6 +80,7 @@ public class CustomGameActivity extends Activity {
             return;
 
         Game game = new Game(width, height);
+        game.setGameModeId(GameModes.CUSTOM_MODE_ID);
 
         if(gameModes.contains(Game.Mode.XMODE))
             game.enableXMode();
