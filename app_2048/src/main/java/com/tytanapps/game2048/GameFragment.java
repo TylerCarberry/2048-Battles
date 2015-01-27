@@ -461,6 +461,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * Update the turn number, score, number of undos and powerups left, and the active attack
      */
     protected void updateTextviews() {
+        TextView gameModeTextView = (TextView) getView().findViewById(R.id.game_mode_textview);
         TextView turnTextView = (TextView) getView().findViewById(R.id.turn_textview);
         TextView scoreTextView = (TextView) getView().findViewById(R.id.score_textview);
         TextView highScoreTextView = (TextView) getView().findViewById(R.id.high_score_textview);
@@ -487,6 +488,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
             timeLeftTextView.setVisibility((game.getSurvivalMode() ? View.VISIBLE : View.INVISIBLE));
             timeLeftTextView.setText(""+getSecondsRemaining());
+
+            gameModeTextView.setText(GameModes.getGameTitleById(game.getGameModeId()));
 
             // Update the undos left
             int undosLeft = (game.getUseItemInventory()) ? gameStats.getUndoInventory() : game.getUndosRemaining();
@@ -1718,7 +1721,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 else {
                     decrementTimeLeft(1);
                 }
-            Log.d(LOG_TAG, ""+getSecondsRemaining());
 
             }
         }, 1000, 1000);

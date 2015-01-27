@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     tools:ignore="MergeRootFrame" >
 
     <fragment android:name="com.tytanapps.game2048.MainActivity$PlaceholderFragment"

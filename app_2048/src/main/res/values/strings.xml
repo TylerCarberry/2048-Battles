@@ -130,5 +130,6 @@
     <string name="reset_game_dialog_title">Reset Game?</string>
     <string name="reset_game">Reset Game</string>
     <string name="reset_warning">This cannot be undone</string>
+    <string name="game_mode">Game Mode</string>
 
 </resources>

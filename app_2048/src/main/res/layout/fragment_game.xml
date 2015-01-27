@@ -9,14 +9,26 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     tools:context="com.example.app_2048.GameFragment" >
+
+    <TextView
+        android:id="@+id/game_mode_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/game_mode"
+        android:textSize="27sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/turn_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/game_mode_textview"
         android:layout_alignParentRight="true"
         android:gravity="center_horizontal"
         android:text="@string/turn"
@@ -29,9 +41,7 @@
         android:text="@string/score"
         android:textSize="27sp"
         android:layout_below="@+id/turn_textview"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:gravity="center_horizontal"/>
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:id="@+id/high_score_textview"
@@ -40,18 +50,16 @@
         android:text="@string/high_score"
         android:textSize="27sp"
         android:layout_below="@+id/score_textview"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:gravity="center_horizontal"/>
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:id="@+id/time_left_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/high_score_textview"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
         android:textStyle="bold"
-        android:textSize="35sp"
+        android:textSize="50sp"
         android:visibility="invisible"/>
 
     <GridLayout
@@ -68,10 +76,8 @@
         android:id="@+id/powerups_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/grid_layout"
         android:layout_toRightOf="@+id/powerup_button"
         android:layout_alignBottom="@+id/powerup_button"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:text="@string/powerups_remaining"
         android:textSize="20sp" />
 
@@ -80,8 +86,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/powerup_button"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/undo_button" />
+        android:layout_toRightOf="@+id/undos_textview"
+        android:layout_alignBottom="@+id/undos_textview" />
 
     <TextView
         android:id="@+id/undos_textview"
@@ -102,7 +108,7 @@
         android:maxWidth="36dp"
         android:minHeight="36dp"
         android:minWidth="36dp"
-        android:layout_alignParentTop="true"
+        android:layout_above="@id/grid_layout"
         android:layout_alignParentLeft="true"/>
 
     <ImageButton
@@ -115,12 +121,15 @@
 
     <TextView
         android:id="@+id/active_attacks_textview"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/high_score_textview"
+        android:layout_alignRight="@id/restart_button"
+        android:layout_above="@id/grid_layout"
+        android:layout_toRightOf="@id/powerups_textview"
+        android:paddingLeft="10dp"
         android:gravity="center"
-        android:layout_above="@+id/grid_layout"
-        android:layout_alignParentRight="true"
         android:text="Active Attacks"
-        android:textSize="20sp" />
+        android:textSize="20sp"/>
 
 </RelativeLayout>
