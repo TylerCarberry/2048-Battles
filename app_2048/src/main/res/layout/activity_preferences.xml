@@ -13,7 +13,7 @@
     </ListView>
 
     <!-- Footer -->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,9 +24,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onClick"
+            android:layout_centerHorizontal="true"
             android:text="@string/reset_game"/>
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

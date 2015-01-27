@@ -127,7 +127,8 @@
     <string name="create_game">Create Game</string>
     <string name="single_player">Single Player</string>
     <string name="multiplayer_quick_game">Quick Game</string>
-    <string name="reset_game">Reset Game?</string>
+    <string name="reset_game_dialog_title">Reset Game?</string>
+    <string name="reset_game">Reset Game</string>
     <string name="reset_warning">This cannot be undone</string>
 
 </resources>

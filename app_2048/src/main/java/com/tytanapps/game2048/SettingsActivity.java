@@ -98,7 +98,7 @@ public class SettingsActivity extends PreferenceActivity {
     private void resetGame() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle(getString(R.string.reset_game)).setMessage(getString(R.string.reset_warning));
+        builder.setTitle(getString(R.string.reset_game_dialog_title)).setMessage(getString(R.string.reset_warning));
 
         builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
