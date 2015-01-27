@@ -94,7 +94,7 @@
     <string name="not_signed_in_error">You must be signed in to access Play Games</string>
     <string name="continue_game">Continue Game</string>
     <string name="share">Share</string>
-    <string name="start_new_game">Start A New Game</string>
+    <string name="start_new_game">New Game</string>
     <string name="sign_out">Sign Out</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>

@@ -402,6 +402,10 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         }
     }
 
+    /**
+     * Shows either the continue game or new game dialog depending if there is a saved game.
+     * Choosing not to continue the game shows the new game dialog.
+     */
     private void showSinglePlayerDialog() {
         AlertDialog continueGameDialog = getContinueGameDialog();
         if(continueGameDialog != null) {
@@ -413,20 +417,25 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     }
 
     /**
-     *
-     * @return
+     * @return the dialog allowing the user to start a new preset or custom game
      */
     private Dialog getNewSinglePlayerGameDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.new_game);
-        dialog.setTitle("New Game");
+        dialog.setTitle(getString(R.string.start_new_game));
 
         RelativeLayout gridLayout = (RelativeLayout) dialog.findViewById(R.id.new_game_layout);
-        createNewGameListeners(gridLayout);
+        createNewGameListeners(gridLayout, dialog);
 
         return dialog;
     }
 
+    /**
+     * This method is needed instead of looping through the children because the new game
+     * ViewGroup contains a LinearLayout and GridLayout each of which has the buttons
+     * @param viewGroup The viewGroup that contains the new game buttons
+     * @return A list containing all new game buttons
+     */
     private List<Button> getListOfNewGameButtons(ViewGroup viewGroup) {
         List<Button> buttons = new ArrayList<Button>();
 
@@ -442,21 +451,35 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         return buttons;
     }
 
-    private void createNewGameListeners(ViewGroup viewGroup) {
+    /**
+     * Add listeners to all of the new game buttons
+     * @param viewGroup The root ViewGroup containing the buttons
+     * @param dialog The dialog that the buttons are shown in. This allows the dialog to close
+     *               when starting a new game.
+     */
+    private void createNewGameListeners(ViewGroup viewGroup, Dialog dialog) {
         for(Button button : getListOfNewGameButtons(viewGroup)) {
-            button.setOnClickListener(getOnClickListener(button));
+            button.setOnClickListener(getOnClickListener(button, dialog));
         }
     }
 
+    /**
+     * Set the text of all buttons back to the mode name
+     * @param viewGroup The root ViewGroup containing the new game buttons
+     */
     private void clearGameDescriptions(ViewGroup viewGroup) {
         for(Button button : getListOfNewGameButtons(viewGroup)) {
             button.setText(GameModes.getGameTitleById(getGameModeIdFromButton(button)));
+
+            // If the button has a tag of 1 the description is being shown.
+            // If 0, the mode name.
             button.setTag(0);
+
             button.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.new_game_text_size));
         }
     }
 
-    private View.OnClickListener getOnClickListener(Button newGameButton) {
+    private View.OnClickListener getOnClickListener(Button newGameButton, final Dialog dialog) {
         final int gameModeId = getGameModeIdFromButton(newGameButton);
 
         if(newGameButton.getId() == R.id.custom_button) {
@@ -466,6 +489,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                     Button button = (Button) view;
                     if(view.getTag() != null && view.getTag().toString().equals("1")) {
                         startActivity(new Intent(getApplicationContext(), CustomGameActivity.class));
+                        dialog.dismiss();
                     }
                     else {
                         ViewGroup viewGroup = (ViewGroup) button.getParent();
@@ -499,8 +523,10 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+
                         // Switch to the game activity
                         startGameActivity();
+                        dialog.dismiss();
                     }
                     else {
                         ViewGroup viewGroup = (ViewGroup) button.getParent();
