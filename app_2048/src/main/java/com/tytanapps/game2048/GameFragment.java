@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.backup.BackupManager;
@@ -191,19 +190,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         // Load the saved file containing the game. This also updates the screen.
         load();
-
-        // Show the game mode in the menu bar
-        int gameTitleId = GameModes.getGameTitleById(game.getGameModeId());
-        if(gameTitleId != -1)
-            try {
-                getActivity().getActionBar().setTitle(gameTitleId);
-            }
-            catch (NullPointerException e) {
-                ActionBar actionBar = getActivity().getActionBar();
-                if(actionBar != null)
-                    getActivity().getActionBar().setTitle(R.string.app_name);
-            }
-
 
         if(game.getSpeedMode()) {
             activateSpeedMode();
@@ -503,7 +489,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             timeLeftTextView.setText(""+getSecondsRemaining());
 
             // Update the undos left
-            int undosLeft = game.getUndosRemaining();
+            int undosLeft = (game.getUseItemInventory()) ? gameStats.getUndoInventory() : game.getUndosRemaining();
             if (undosLeft <= 0) {
                 undosTextView.setVisibility(View.INVISIBLE);
                 undosTextView.setText("");
@@ -516,7 +502,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             }
 
             // Update the powerups left
-            int powerupsLeft = game.getPowerupsRemaining();
+            int powerupsLeft = (game.getUseItemInventory()) ? gameStats.getPowerupInventory() : game.getPowerupsRemaining();
             if (powerupsLeft <= 0) {
                 powerupsTextView.setVisibility(View.INVISIBLE);
                 powerupsTextView.setText("");

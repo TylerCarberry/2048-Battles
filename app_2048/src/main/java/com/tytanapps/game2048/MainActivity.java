@@ -126,13 +126,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         super.onStop();
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        //if (hasFocus)
-        //    hideSystemUI();
-    }
-
     /**
      * Switches to the game activity
      */
@@ -482,6 +475,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     private View.OnClickListener getOnClickListener(Button newGameButton, final Dialog dialog) {
         final int gameModeId = getGameModeIdFromButton(newGameButton);
 
+        // Custom Game
         if(newGameButton.getId() == R.id.custom_button) {
             return new View.OnClickListener() {
                 @Override
@@ -509,6 +503,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             };
         }
 
+        // Preset game mode
         return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
