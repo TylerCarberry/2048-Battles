@@ -790,6 +790,10 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 .setLabel(labelId).build());
     }
 
+    /**
+     * Show a dialog allowing the user to switch to CustomIconActivity
+     * Not currently used
+     */
     protected void showThemesDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Themes");
@@ -1227,9 +1231,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             ImageButton singlePlayerButton = (ImageButton) rootView.findViewById(R.id.single_player_imagebutton);
             ImageButton multiplayerButton = (ImageButton) rootView.findViewById(R.id.multiplayer_imagebutton);
 
-            ImageButton themesButton = (ImageButton) rootView.findViewById(R.id.themes_button);
-
-
             achievementsButton.setOnTouchListener(createOnTouchListener
                     (achievementsButton, R.drawable.games_achievements, R.drawable.games_achievements_pressed));
 
@@ -1253,13 +1254,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
             settingsButton.setOnTouchListener(createOnTouchListener
                     (settingsButton, R.drawable.settings_button, R.drawable.settings_button_pressed));
-
-            themesButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((MainActivity)getActivity()).showThemesDialog();
-                }
-            });
 
             ImageView appLogo = (ImageView) rootView.findViewById(R.id.logo_imageview);
             appLogo.setOnClickListener(new View.OnClickListener() {
