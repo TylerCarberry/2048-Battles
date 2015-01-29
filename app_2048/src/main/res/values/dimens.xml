@@ -18,5 +18,7 @@
 
     <dimen name="new_game_margin">5dp</dimen>
 
+    <dimen name="main_activity_tile_size">64dp</dimen>
+
 
 </resources>

@@ -784,8 +784,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                     return R.drawable.tile_1024;
                 case 2048:
                     return R.drawable.tile_2048;
-                // If I did not create an image for the tile,
-                // default to a question mark
+                case 4096:
+                    return R.drawable.tile_4096;
+                // If I did not create an image for the tile, default to a 0 tile
                 default:
                     return R.drawable.tile_0;
             }

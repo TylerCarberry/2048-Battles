@@ -12,11 +12,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -75,6 +78,9 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
     // The tiles that fly across the background travel for between 3 and 6 seconds
     private final static int FLYING_TILE_SPEED = 6000;
+
+    // Stores a cache of the scaled tiles the fly across the background
+    private SparseArray<Drawable> tileIcons = new SparseArray<Drawable>();
 
     private static GameData gameData;
 
@@ -241,27 +247,31 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         final ImageView tile = new ImageView(this);
 
+        int tileValue;
         double rand = Math.random();
         if(rand < 0.1)
-            tile.setBackgroundResource(R.drawable.tile_2);
+            tileValue = 2;
         else if(rand < 0.2)
-            tile.setBackgroundResource(R.drawable.tile_4);
+            tileValue = 4;
         else if(rand < 0.3)
-            tile.setBackgroundResource(R.drawable.tile_8);
+            tileValue = 8;
         else if(rand < 0.4)
-            tile.setBackgroundResource(R.drawable.tile_16);
+            tileValue = 16;
         else if(rand < 0.5)
-            tile.setBackgroundResource(R.drawable.tile_32);
+            tileValue = 32;
         else if(rand < 0.6)
-            tile.setBackgroundResource(R.drawable.tile_64);
+            tileValue = 64;
         else if(rand < 0.7)
-            tile.setBackgroundResource(R.drawable.tile_128);
+            tileValue = 128;
         else if(rand < 0.8)
-            tile.setBackgroundResource(R.drawable.tile_256);
+            tileValue = 256;
         else if(rand < 0.9)
-            tile.setBackgroundResource(R.drawable.tile_512);
+            tileValue = 512;
         else
-            tile.setBackgroundResource(R.drawable.tile_1024);
+            tileValue = 1024;
+
+        int tileSize = getResources().getDimensionPixelSize(R.dimen.main_activity_tile_size);
+        tile.setImageDrawable(getTileIconDrawable(tileValue, tileSize));
 
         Display display = getWindowManager().getDefaultDisplay();
 
@@ -305,7 +315,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         animatorY.setDuration(randomFlyingSpeed);
         rotateAnimation.setDuration(randomFlyingSpeed);
 
-
         animatorX.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -323,7 +332,11 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    tile.setImageDrawable(getResources().getDrawable(R.drawable.tile_2048));
+                    int tileSize = getResources().getDimensionPixelSize(R.dimen.main_activity_tile_size);
+                    Bitmap tileDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.tile_2048);
+                    Bitmap tileBitmap = Bitmap.createScaledBitmap(tileDrawable, tileSize, tileSize, false);
+                    tile.setImageBitmap(tileBitmap);
+
                     if (getApiClient().isConnected()) {
                         Games.Events.increment(getApiClient(), getString(R.string.event_tap_on_flying_tile), 1);
                         Games.Achievements.increment(getApiClient(), getString(R.string.achievement_tile_tapper), 1);
@@ -357,6 +370,64 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(animatorX).with(animatorY).with(rotateAnimation).with(scaleX).with(scaleY);
         animatorSet.start();
+    }
+
+    private Drawable getTileIconDrawable(int tileValue, int tileSize) {
+        Drawable cachedDrawable = tileIcons.get(tileValue);
+        if(cachedDrawable != null)
+            return cachedDrawable;
+
+        Bitmap tileDrawable = BitmapFactory.decodeResource(getResources(), getTileIconResource(tileValue));
+        Bitmap tileBitmap = Bitmap.createScaledBitmap(tileDrawable, tileSize, tileSize, false);
+        Drawable resultDrawable = new BitmapDrawable(getResources(), tileBitmap);
+
+        tileIcons.put(tileValue, resultDrawable);
+
+        return resultDrawable;
+    }
+
+    /**
+     * Update the tile's icon to match its value
+     * @param tileValue The numerical value of the tile
+     */
+    private int getTileIconResource(int tileValue) {
+        switch(tileValue) {
+            case Game.GHOST_TILE_VALUE:
+                return R.drawable.tile_question;
+            case Game.X_TILE_VALUE:
+                return R.drawable.tile_x;
+            case Game.CORNER_TILE_VALUE:
+                return R.drawable.tile_corner;
+            case 0:
+                return R.drawable.tile_blank;
+            case 2:
+                return R.drawable.tile_2;
+            case 4:
+                return R.drawable.tile_4;
+            case 8:
+                return R.drawable.tile_8;
+            case 16:
+                return R.drawable.tile_16;
+            case 32:
+                return R.drawable.tile_32;
+            case 64:
+                return R.drawable.tile_64;
+            case 128:
+                return R.drawable.tile_128;
+            case 256:
+                return R.drawable.tile_256;
+            case 512:
+                return R.drawable.tile_512;
+            case 1024:
+                return R.drawable.tile_1024;
+            case 2048:
+                return R.drawable.tile_2048;
+            case 4096:
+                return R.drawable.tile_4096;
+            // If I did not create an image for the tile, default to a 0 tile
+            default:
+                return R.drawable.tile_0;
+        }
     }
 
     public void onClick(View view) {
