@@ -650,8 +650,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // 8's combine --> +2 seconds
         // 16's --> +3 seconds
         // 32's --> +4 seconds ...
+        //incrementTimeLeft((int) (Math.log10(tileValue/4)/Math.log10(2)));
+
+
         if(game.getSurvivalMode() && tileValue >= 16)
-            incrementTimeLeft((int) (Math.log10(tileValue/4)/Math.log10(2)));
+            incrementTimeLeft(2);
 
         Drawable[] layers = new Drawable[2];
 
@@ -1750,6 +1753,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     public int incrementTimeLeft(int seconds) {
         secondsRemaining += seconds;
+        if(secondsRemaining > 30)
+            secondsRemaining = 30;
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
