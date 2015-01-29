@@ -9,14 +9,23 @@
     android:background="@color/PrimaryBackground"
     tools:context="com.tytanapps.game2048.MultiplayerActivity$PlaceholderFragment">
 
-    <Button
-        android:id="@+id/quick_game_button"
+    <ImageButton
+        android:id="@+id/app_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/multiplayer_quick_game"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/app_logo"/>
+
+    <Button
+        android:id="@+id/recreate_multiplayer_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/try_again"
         android:onClick="onClick"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true" />
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/multiplayer_message"
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/to_game_button"
@@ -30,21 +39,22 @@
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/creating_multiplayer_progressbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/multiplayer_message"
         android:layout_centerHorizontal="true" />
 
     <TextView
+        android:id="@+id/multiplayer_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="50sp"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@id/progressBar"
         android:gravity="center"
         android:text="Starting Multiplayer Game"
-        android:id="@+id/textView" />
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>

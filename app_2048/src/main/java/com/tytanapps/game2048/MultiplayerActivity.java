@@ -160,9 +160,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 }
 
                 @Override
-                public void onConnectionSuspended(int i) {
-
-                }
+                public void onConnectionSuspended(int i) {}
             });
         }
     }
@@ -170,8 +168,14 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.quick_game_button:
+            case R.id.recreate_multiplayer_button:
                 // Create a multiplayer game
+                findViewById(R.id.creating_multiplayer_progressbar).setVisibility(View.VISIBLE);
+                findViewById(R.id.recreate_multiplayer_button).setVisibility(View.INVISIBLE);
+
+                TextView multiplayer_message_textview = (TextView) findViewById(R.id.multiplayer_message);
+                multiplayer_message_textview.setText(R.string.creating_multiplayer_game);
+
                 startQuickGame();
                 break;
             case R.id.to_game_button:
@@ -201,8 +205,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
      * A quick game with 1 random opponent
      */
     private void startQuickGame() {
-
-        Toast.makeText(this, "Starting Quick Game", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Starting Quick Game", Toast.LENGTH_SHORT).show();
 
         final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 1;
         Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MIN_OPPONENTS,
@@ -212,7 +215,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         rtmConfigBuilder.setRoomStatusUpdateListener(this);
         rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         keepScreenOn();
-        //resetGameVars();
 
         Games.RealTimeMultiplayer.create(mGoogleApiClient, rtmConfigBuilder.build());
     }
@@ -241,12 +243,19 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 } else if (responseCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
                     // player indicated that they want to leave the room
                     leaveRoom();
-                } else if (responseCode == Activity.RESULT_CANCELED) {
+                    switchToMainActivity();
+                }
+                else if (responseCode == Activity.RESULT_CANCELED) {
                     // Dialog was cancelled (user pressed back key, for instance). In our game,
                     // this means leaving the room too. In more elaborate games, this could mean
                     // something else (like minimizing the waiting room UI).
                     leaveRoom();
+                    switchToMainActivity();
                 }
+                else {
+                    unableToCreateRoom();
+                }
+
                 break;
             case RC_SIGN_IN:
                 Log.d(LOG_TAG, "onActivityResult with requestCode == RC_SIGN_IN, responseCode="
@@ -255,9 +264,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 mResolvingConnectionFailure = false;
                 if (responseCode == RESULT_OK) {
                     mGoogleApiClient.connect();
-                } else {
-                    //BaseGameUtils.showActivityResultError(this,requestCode,responseCode,
-                    //        R.string.signin_failure, R.string.signin_other_error);
                 }
                 break;
         }
@@ -638,20 +644,12 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     // Activity is going to the background. We have to leave the current room.
     @Override
     public void onStop() {
-        Log.d(LOG_TAG, "**** got onStop");
-
         // if we're in a room, leave it.
         leaveRoom();
 
         // stop trying to keep the screen on
         stopKeepingScreenOn();
 
-        if (mGoogleApiClient == null || !mGoogleApiClient.isConnected()){
-            //switchToScreen(R.id.screen_sign_in);
-        }
-        else {
-            //switchToScreen(R.id.screen_wait);
-        }
         super.onStop();
     }
 
@@ -801,12 +799,15 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     @Override
     public void onConnectionSuspended(int i) {
+        Toast.makeText(this, "ConnectionSuspended", Toast.LENGTH_LONG).show();
         Log.d(LOG_TAG, "onConnectionSuspended() called. Trying to reconnect.");
         mGoogleApiClient.connect();
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        Toast.makeText(this, "ConnectionFailed", Toast.LENGTH_LONG).show();
+
         Log.d(LOG_TAG, "onConnectionFailed() called, result: " + connectionResult);
 
         if (mResolvingConnectionFailure) {
@@ -869,14 +870,19 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     @Override
     public void onRoomCreated(int statusCode, Room room) {
         Log.d(LOG_TAG, "onRoomCreated(" + statusCode + ", " + room + ")");
-        if (statusCode != GamesStatusCodes.STATUS_OK) {
-            Log.e(LOG_TAG, "*** Error: onRoomCreated, status " + statusCode);
-            showGameError();
-            return;
-        }
+        if (statusCode != GamesStatusCodes.STATUS_OK)
+            unableToCreateRoom();
+        else
+            // show the waiting room UI
+            showWaitingRoom(room);
+    }
 
-        // show the waiting room UI
-        showWaitingRoom(room);
+    private void unableToCreateRoom() {
+        findViewById(R.id.creating_multiplayer_progressbar).setVisibility(View.INVISIBLE);
+        findViewById(R.id.recreate_multiplayer_button).setVisibility(View.VISIBLE);
+
+        TextView multiplayer_message_textview = (TextView) findViewById(R.id.multiplayer_message);
+        multiplayer_message_textview.setText(R.string.error_create_multiplayer_game);
     }
 
     // Called when room is fully connected.
@@ -885,7 +891,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         Log.d(LOG_TAG, "onRoomConnected(" + statusCode + ", " + room + ")");
         if (statusCode != GamesStatusCodes.STATUS_OK) {
             Log.e(LOG_TAG, "*** Error: onRoomConnected, status " + statusCode);
-            showGameError();
+            unableToCreateRoom();
             return;
         }
         updateRoom(room);
@@ -896,7 +902,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         Log.d(LOG_TAG, "onJoinedRoom(" + statusCode + ", " + room + ")");
         if (statusCode != GamesStatusCodes.STATUS_OK) {
             Log.e(LOG_TAG, "*** Error: onRoomConnected, status " + statusCode);
-            showGameError();
+            unableToCreateRoom();
             return;
         }
 

@@ -131,5 +131,7 @@
     <string name="reset_game">Reset Game</string>
     <string name="reset_warning">This cannot be undone</string>
     <string name="game_mode">Game Mode</string>
+    <string name="creating_multiplayer_game">Starting Multiplayer Game</string>
+    <string name="error_create_multiplayer_game">Cannot start multiplayer game</string>
 
 </resources>
