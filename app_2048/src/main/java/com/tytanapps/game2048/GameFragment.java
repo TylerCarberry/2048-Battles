@@ -244,8 +244,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         swipeSensitivity = Integer.valueOf(prefs.getString(getString(R.string.preference_swipe_sensitivity), "75"));
         tileSlideSpeed = Integer.valueOf(prefs.getString(getString(R.string.preference_slide_speed), "125"));
 
-        Toast.makeText(getActivity(), swipeSensitivity + " " + tileSlideSpeed, Toast.LENGTH_SHORT).show();
-
         // Start the multiplayer aspects of the game if necessary
         if(multiplayerActive) {
             // There is a 3 second delay before a multiplayer game starts
@@ -472,14 +470,20 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * Update the turn number, score, number of undos and powerups left, and the active attack
      */
     protected void updateTextviews() {
-        TextView gameModeTextView = (TextView) getView().findViewById(R.id.game_mode_textview);
-        TextView turnTextView = (TextView) getView().findViewById(R.id.turn_textview);
-        TextView scoreTextView = (TextView) getView().findViewById(R.id.score_textview);
-        TextView highScoreTextView = (TextView) getView().findViewById(R.id.high_score_textview);
-        TextView timeLeftTextView = (TextView) getView().findViewById(R.id.time_left_textview);
-        TextView undosTextView = (TextView) getView().findViewById(R.id.undos_textview);
-        TextView powerupsTextView = (TextView) getView().findViewById(R.id.powerups_textview);
-        TextView activeAttacksTextView = (TextView) getView().findViewById(R.id.active_attacks_textview);
+        TextView gameModeTextView, turnTextView, scoreTextView, highScoreTextView,
+                timeLeftTextView, undosTextView, powerupsTextView, activeAttacksTextView;
+        try {
+            gameModeTextView = (TextView) getView().findViewById(R.id.game_mode_textview);
+            turnTextView = (TextView) getView().findViewById(R.id.turn_textview);
+            scoreTextView = (TextView) getView().findViewById(R.id.score_textview);
+            highScoreTextView = (TextView) getView().findViewById(R.id.high_score_textview);
+            timeLeftTextView = (TextView) getView().findViewById(R.id.time_left_textview);
+            undosTextView = (TextView) getView().findViewById(R.id.undos_textview);
+            powerupsTextView = (TextView) getView().findViewById(R.id.powerups_textview);
+            activeAttacksTextView = (TextView) getView().findViewById(R.id.active_attacks_textview);
+        } catch (NullPointerException e) {
+            return;
+        }
 
         // Update attacks
         activeAttacksTextView.setText(getAttackString());

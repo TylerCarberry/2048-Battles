@@ -1,0 +1,150 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/game_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/PrimaryBackground"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    tools:context="com.example.app_2048.GameFragment" >
+
+    <TextView
+        android:id="@+id/game_mode_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/game_mode"
+        android:textSize="27sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_below="@+id/powerups_textview"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/grid_layout"/>
+
+    <TextView
+        android:id="@+id/turn_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/game_mode_textview"
+        android:gravity="center_horizontal"
+        android:text="@string/turn"
+        android:textSize="27sp"
+        android:layout_toLeftOf="@id/grid_layout"/>
+
+    <TextView
+        android:id="@+id/score_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/score"
+        android:textSize="27sp"
+        android:gravity="center"
+        android:layout_below="@+id/turn_textview"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@id/grid_layout"/>
+
+    <TextView
+        android:id="@+id/high_score_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/high_score"
+        android:textSize="27sp"
+        android:gravity="center"
+        android:layout_below="@+id/score_textview"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@id/grid_layout"/>
+
+    <TextView
+        android:id="@+id/time_left_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/grid_layout"
+        android:layout_below="@id/high_score_textview"
+        android:gravity="center"
+        android:text="30"
+        android:textStyle="bold"
+        android:textSize="50sp"
+        android:visibility="visible"/>
+
+    <GridLayout
+        android:id="@+id/grid_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:animateLayoutChanges="false"
+        android:rowOrderPreserved="true"
+        android:useDefaultMargins="true"
+        android:layout_toLeftOf="@id/restart_button"/>
+
+    <TextView
+        android:id="@+id/powerups_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/powerups_remaining"
+        android:textSize="20sp"
+        android:layout_alignBottom="@+id/powerup_button"
+        android:layout_toRightOf="@+id/powerup_button"
+        android:layout_toEndOf="@+id/powerup_button" />
+
+    <ImageButton
+        android:id="@+id/powerup_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/powerup_button"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/undos_textview"
+        android:layout_toEndOf="@+id/game_mode_textview" />
+
+    <TextView
+        android:id="@+id/undos_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/undo_button"
+        android:layout_toRightOf="@+id/undo_button"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:text="@string/undo_remaining"
+        android:textSize="20sp" />
+
+    <ImageButton
+        android:id="@+id/undo_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/undo_button"
+        android:maxHeight="36dp"
+        android:maxWidth="36dp"
+        android:minHeight="36dp"
+        android:minWidth="36dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:id="@+id/restart_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/restart_button"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"/>
+
+    <TextView
+        android:id="@+id/active_attacks_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/grid_layout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:paddingLeft="10dp"
+        android:gravity="center"
+        android:text="Active Attacks"
+        android:textSize="20sp"
+        android:layout_below="@+id/time_left_textview" />
+
+</RelativeLayout>

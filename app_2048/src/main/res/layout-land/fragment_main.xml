@@ -1,0 +1,234 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/PrimaryBackground"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    tools:context="com.tytanapps.game2048.MainActivity$PlaceholderFragment">
+
+    <RelativeLayout
+        android:id="@+id/main_fragment_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/main_layout"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/play_games_layout"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <ImageView
+            android:id="@+id/logo_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/app_logo"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+        <ImageButton
+            android:id="@+id/single_player_imagebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/single_player_icon"
+            android:layout_alignBottom="@+id/help_button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/single_player_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/single_player"
+            android:textSize="@dimen/single_player_text_size"
+            android:gravity="center"
+            android:layout_alignBottom="@+id/multiplayer_textview"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/single_player_imagebutton"
+            android:layout_alignEnd="@+id/single_player_imagebutton" />
+
+        <ImageButton
+            android:id="@+id/multiplayer_imagebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/multiplayer_icon"
+            android:layout_alignBottom="@+id/settings_button"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/multiplayer_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/mode_multiplayer"
+            android:textSize="@dimen/multiplayer_text_size"
+            android:layout_above="@+id/multiplayer_imagebutton"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignLeft="@+id/multiplayer_imagebutton"
+            android:layout_alignStart="@+id/multiplayer_imagebutton" />
+
+        <ImageButton
+            android:id="@+id/settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/settings_button"
+            android:layout_below="@+id/logo_imageview"
+            android:layout_alignRight="@+id/logo_imageview"
+            android:layout_alignEnd="@+id/logo_imageview" />
+
+        <ImageButton
+            android:id="@+id/help_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/help_button"
+            android:layout_below="@+id/logo_imageview"
+            android:layout_alignLeft="@+id/logo_imageview"
+            android:layout_alignStart="@+id/logo_imageview" />
+
+        <TextView
+            android:id="@+id/inventory_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="20sp"
+            android:text="Inventory"
+            android:layout_alignParentRight="true"
+            android:layout_above="@+id/undo_icon" />
+
+        <ImageView
+            android:id="@+id/undo_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/undo_button_small"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/undo_inventory"
+            android:layout_toStartOf="@+id/undo_inventory" />
+
+        <TextView
+            android:id="@+id/undo_inventory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/powerup_icon"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:textSize="20sp"
+            android:text="6"/>
+
+        <ImageView
+            android:id="@+id/powerup_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/powerup_button_small"
+            android:layout_below="@+id/inventory_textview"
+            android:layout_toLeftOf="@+id/powerup_inventory"
+            android:layout_toStartOf="@+id/powerup_inventory" />
+
+        <TextView
+            android:id="@+id/powerup_inventory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:text="5"
+            android:textSize="20sp"/>
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <ImageButton
+            android:id="@+id/sign_out_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:src="@drawable/g_plus_logo"
+            android:background="@color/PrimaryBackground"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/play_games_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="0dp"
+        android:background="@color/SecondaryBackground"
+        android:layout_alignParentRight="true">
+
+        <ImageButton
+            android:id="@+id/achievements_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/games_achievements"
+            android:background="@color/SecondaryBackground" />
+
+        <ImageButton
+            android:id="@+id/leaderboards_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/games_leaderboards"
+            android:background="@color/SecondaryBackground" />
+
+        <ImageButton
+            android:id="@+id/gifts_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/games_gifts"
+            android:background="@color/SecondaryBackground" />
+
+        <ImageButton
+            android:id="@+id/quests_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/games_quests"
+            android:background="@color/SecondaryBackground" />
+
+        <ImageButton
+            android:id="@+id/inbox_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/inbox_button"
+            android:onClick="playGames"
+            android:background="@color/LightBlue"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
+
+
