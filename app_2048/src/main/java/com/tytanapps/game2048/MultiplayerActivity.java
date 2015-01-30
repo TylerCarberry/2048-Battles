@@ -147,7 +147,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 .build();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        hideIdentity = prefs.getBoolean("hideIdentity", false);
+        hideIdentity = prefs.getBoolean(getString(R.string.preference_hide_identity), false);
 
         Intent intent = getIntent();
 

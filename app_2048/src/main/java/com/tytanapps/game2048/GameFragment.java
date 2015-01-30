@@ -34,6 +34,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -156,7 +158,14 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                     updateGame();
                     */
 
-                    restartGame();
+                    //restartGame();
+
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+                    if(prefs.getBoolean(getString(R.string.preference_prompt_restart), true))
+                        promptRestartGame();
+                    else
+                        restartGame();
+
                 }
             });
         }
@@ -228,21 +237,23 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 getView().findViewById(R.id.high_score_textview).setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.turn_textview).setVisibility(View.GONE);
             }
-
         }
 
         // Load the settings for the tile speed and sensitivity
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        swipeSensitivity = Integer.valueOf(prefs.getString("swipeSensitivity", "75"));
-        tileSlideSpeed = Integer.valueOf(prefs.getString("speed", "125"));
+        swipeSensitivity = Integer.valueOf(prefs.getString(getString(R.string.preference_swipe_sensitivity), "75"));
+        tileSlideSpeed = Integer.valueOf(prefs.getString(getString(R.string.preference_slide_speed), "125"));
+
+        Toast.makeText(getActivity(), swipeSensitivity + " " + tileSlideSpeed, Toast.LENGTH_SHORT).show();
 
         // Start the multiplayer aspects of the game if necessary
         if(multiplayerActive) {
-            createCountdown(3000);
+            // There is a 3 second delay before a multiplayer game starts
+            createCountdown(3 * 1000);
 
             // If the user chose to hide their identity do not show them their own identity
             // This confirms the change to the user as they cannot see their opponents screen
-            if(! prefs.getBoolean("hideIdentity", false)) {
+            if(! prefs.getBoolean(getString(R.string.preference_hide_identity), false)) {
                 updatePlayerName();
                 updatePlayerPic();
             }
@@ -1884,6 +1895,44 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
     }
 
+    // TODO
+    private void promptRestartGame() {
+        //FrameLayout frameLayout = new FrameLayout(getActivity());
+        CheckBox checkbox = new CheckBox(getActivity());
+        checkbox.setText(getString(R.string.dont_ask_again));
+        //checkbox.setGravity(Gravity.RIGHT);
+
+        checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+                prefs.edit().putBoolean(getString(R.string.preference_prompt_restart), !isChecked).apply();
+
+            }
+        });
+
+        //frameLayout.addView(checkbox);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setTitle(getString(R.string.ask_restart_game));
+        alertDialogBuilder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                restartGame();
+            }
+        });
+        alertDialogBuilder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        alertDialogBuilder.setView(checkbox);
+
+        alertDialogBuilder.create().show();
+
+    }
+
     /**
      * Restart the game.
      */
@@ -2026,6 +2075,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         countdownTextView.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * The countdown before the game statrs
+     * @param milliseconds
+     */
     protected void createCountdown(final double milliseconds) {
         game.setGrid(new Grid(4,4));
         updateGame();

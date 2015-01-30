@@ -77,8 +77,8 @@ public class SettingsActivity extends PreferenceActivity {
 		// Bind the summaries of the preferences to
 		// their values. When their values change, their summaries are updated
 		// to reflect the new value, per the Android Design guidelines.
-		bindPreferenceSummaryToValue(findPreference("speed"));
-        bindPreferenceSummaryToValue(findPreference("swipeSensitivity"));
+		bindPreferenceSummaryToValue(findPreference(getString(R.string.preference_slide_speed)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.preference_swipe_sensitivity)));
     }
 
 

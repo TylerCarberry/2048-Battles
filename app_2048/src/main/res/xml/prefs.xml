@@ -2,22 +2,27 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     
     <ListPreference 
-        android:title="Tile Slide Speed"
-        android:key="speed"
+        android:title="@string/tile_slide_speed"
+        android:key="@string/preference_slide_speed"
         android:defaultValue="125"
         android:entries="@array/tileSpeeds"
         android:entryValues="@array/tileSpeedsValues"/>
 
     <ListPreference
-        android:title="Swipe Sensitivity"
-        android:key="swipeSensitivity"
+        android:title="@string/swipe_sensitivity"
+        android:key="@string/preference_swipe_sensitivity"
         android:defaultValue="75"
         android:entries="@array/swipeSensitivity"
         android:entryValues="@array/swipeSensitivityValues"/>
 
     <CheckBoxPreference
-        android:title="Hide Identity in Multiplayer"
-        android:key="hideIdentity"
+        android:title="@string/hide_indentity"
+        android:key="@string/preference_hide_identity"
+        android:defaultValue="false" />
+
+    <CheckBoxPreference
+        android:title="@string/ask_before_restarting"
+        android:key="@string/preference_prompt_restart"
         android:defaultValue="false" />
 
 </PreferenceScreen>

@@ -133,5 +133,11 @@
     <string name="game_mode">Game Mode</string>
     <string name="creating_multiplayer_game">Starting Multiplayer Game</string>
     <string name="error_create_multiplayer_game">Cannot start multiplayer game</string>
+    <string name="ask_restart_game">Restart Game?</string>
+    <string name="dont_ask_again">Don\'t ask me again</string>
+    <string name="hide_indentity">Hide Identity in Multiplayer</string>
+    <string name="ask_before_restarting">Ask Before Restarting Game</string>
+    <string name="swipe_sensitivity">Swipe Sensitivity</string>
+    <string name="tile_slide_speed">Tile Slide Speed</string>
 
 </resources>
