@@ -41,6 +41,15 @@
         android:text="Me"/>
 
     <ImageView
+        android:id="@+id/player_crown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/crown"
+        android:layout_alignLeft="@+id/player_imageview"
+        android:layout_below="@+id/player_name"
+        android:visibility="invisible"/>
+
+    <ImageView
         android:id="@+id/opponent_imageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,6 +66,15 @@
         android:layout_alignRight="@id/opponent_imageview"
         android:gravity="center_horizontal"
         android:text="Opponent"/>
+
+    <ImageView
+        android:id="@+id/opponent_crown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/crown"
+        android:layout_alignRight="@+id/opponent_imageview"
+        android:layout_below="@+id/opponent_name"
+        android:visibility="invisible"/>
 
     <GridLayout
         android:id="@+id/grid_layout"

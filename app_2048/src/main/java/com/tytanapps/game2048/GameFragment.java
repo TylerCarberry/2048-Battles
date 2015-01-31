@@ -246,8 +246,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         // Start the multiplayer aspects of the game if necessary
         if(multiplayerActive) {
+            ((MultiplayerActivity) getActivity()).gameHasLoaded();
+
             // There is a 3 second delay before a multiplayer game starts
-            createCountdown(3 * 1000);
+            //createCountdown(3 * 1000);
 
             // If the user chose to hide their identity do not show them their own identity
             // This confirms the change to the user as they cannot see their opponents screen
@@ -2067,6 +2069,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(opponentName != null)
             ((TextView) getView().findViewById(R.id.opponent_name)).setText(opponentName);
 
+    }
+
+    protected void clearMultiplayerInventory() {
+        ViewGroup bonusesLinearLayout = (ViewGroup) getView().findViewById(R.id.bonuses_linear_layout);
+        bonusesLinearLayout.removeAllViews();
     }
 
     /**

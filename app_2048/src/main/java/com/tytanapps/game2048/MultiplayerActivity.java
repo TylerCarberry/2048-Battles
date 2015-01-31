@@ -72,6 +72,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     private static final char SEND_SCORE = 's';
     private static final char SEND_REMATCH = 'r';
+    private static final char SEND_LOADED = 'l';
     private static final char SEND_NAME = 'n';
     private static final char SEND_PIC_URL = 'p';
     private static final char SEND_ATTACK_SHUFFLE = 'h';
@@ -123,6 +124,9 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     private boolean iRequestedRematch = false;
     private boolean opponentRequestedRematch = false;
 
+    private boolean gameLoaded = false;
+    private boolean opponentLoaded = false;
+
     private String opponentName;
     private String opponentPicUrl;
 
@@ -149,16 +153,13 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         hideIdentity = prefs.getBoolean(getString(R.string.preference_hide_identity), false);
 
-        Intent intent = getIntent();
-
         // If the room should be created automatically
-        if(intent.getExtras().getBoolean("startMultiplayer", false)) {
+        if(getIntent().getExtras().getBoolean("startMultiplayer", false)) {
             mGoogleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                 @Override
                 public void onConnected(Bundle bundle) {
                     startQuickGame();
                 }
-
                 @Override
                 public void onConnectionSuspended(int i) {}
             });
@@ -364,6 +365,17 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.multiplayerProgressBar);
         progressBar.setMax(myScore + theirScore);
         progressBar.setProgress(myScore);
+
+        View myCrown = gameFragment.getView().findViewById(R.id.player_crown);
+        View opponentCrown = gameFragment.getView().findViewById(R.id.opponent_crown);
+        if(myScore >= theirScore) {
+            myCrown.setVisibility(View.VISIBLE);
+            opponentCrown.setVisibility(View.INVISIBLE);
+        }
+        else {
+            myCrown.setVisibility(View.INVISIBLE);
+            opponentCrown.setVisibility(View.VISIBLE);
+        }
     }
 
     private void requestRematch() {
@@ -379,9 +391,20 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         opponentRequestedRematch = false;
         iRequestedRematch = false;
 
+        gameFragment.clearMultiplayerInventory();
         gameFragment.setGame(GameModes.practiceMode());
         gameFragment.updateGame();
-        createMultiplayerTimer(MULTIPLAYER_GAME_LENGTH);
+
+        gameFragment.createCountdown(3 * 1000);
+
+        //createMultiplayerTimer(MULTIPLAYER_GAME_LENGTH);
+    }
+
+    public void gameHasLoaded() {
+        gameLoaded = true;
+        sendMessage(""+SEND_LOADED, true);
+        if(opponentLoaded)
+            gameFragment.createCountdown(3 * 1000);
     }
 
     private void addBonus() {
@@ -668,6 +691,69 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             mGoogleApiClient.connect();
         }
         super.onStart();
+    }
+
+    @Override
+    public void onRealTimeMessageReceived(RealTimeMessage rtm) {
+        //Toast.makeText(this, "Message Received", Toast.LENGTH_LONG).show();
+
+        byte[] buf = rtm.getMessageData();
+
+        // Convert the message to a string
+        String message = "";
+        for(byte b : buf) {
+            char letter = (char) b;
+            message += letter;
+        }
+
+        switch(message.charAt(0)) {
+            // The score was sent
+            case SEND_SCORE:
+                int opponentScore = Integer.parseInt(message.substring(1));
+                gameFragment.getGame().setOpponentScore(opponentScore);
+                break;
+            case SEND_REMATCH:
+                opponentRequestedRematch = true;
+                if(iRequestedRematch)
+                    startRematch();
+                break;
+            case SEND_NAME:
+                opponentName = message.substring(1);
+                if(findViewById(R.id.multiplayerProgressBar) != null)
+                    gameFragment.updateOpponentName();
+                break;
+            case SEND_PIC_URL:
+                opponentPicUrl = message.substring(1);
+                if(findViewById(R.id.multiplayerProgressBar) != null)
+                    gameFragment.updateOpponentPic();
+                break;
+            case SEND_ATTACK_SHUFFLE:
+                gameFragment.shuffleGame();
+                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
+                break;
+            case SEND_ATTACK_GHOST:
+                gameFragment.ghostAttack();
+                gameFragment.updateTextviews();
+                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
+                break;
+            case SEND_ATTACK_ICE:
+                gameFragment.ice();
+                gameFragment.updateTextviews();
+                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
+                break;
+            case SEND_ATTACK_X:
+                gameFragment.XTileAttack();
+                gameFragment.updateTextviews();
+                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
+                break;
+            case SEND_LOADED:
+                opponentLoaded = true;
+                if(gameLoaded)
+                    gameFragment.createCountdown(3 * 1000);
+                break;
+            default:
+                Toast.makeText(this, message , Toast.LENGTH_LONG).show();
+        }
     }
 
     // Handle back key to make sure we cleanly leave a game if we are in the middle of one
@@ -972,64 +1058,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     private void roomIsEmpty() {
         Toast.makeText(this, "Everybody has left the game.", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRealTimeMessageReceived(RealTimeMessage rtm) {
-        //Toast.makeText(this, "Message Received", Toast.LENGTH_LONG).show();
-
-        byte[] buf = rtm.getMessageData();
-
-        // Convert the message to a string
-        String message = "";
-        for(byte b : buf) {
-            char letter = (char) b;
-            message += letter;
-        }
-
-        switch(message.charAt(0)) {
-            // The score was sent
-            case SEND_SCORE:
-                int opponentScore = Integer.parseInt(message.substring(1));
-                gameFragment.getGame().setOpponentScore(opponentScore);
-                break;
-            case SEND_REMATCH:
-                opponentRequestedRematch = true;
-                if(iRequestedRematch)
-                    startRematch();
-                break;
-            case SEND_NAME:
-                opponentName = message.substring(1);
-                if(findViewById(R.id.multiplayerProgressBar) != null)
-                    gameFragment.updateOpponentName();
-                break;
-            case SEND_PIC_URL:
-                opponentPicUrl = message.substring(1);
-                if(findViewById(R.id.multiplayerProgressBar) != null)
-                    gameFragment.updateOpponentPic();
-                break;
-            case SEND_ATTACK_SHUFFLE:
-                gameFragment.shuffleGame();
-                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
-                break;
-            case SEND_ATTACK_GHOST:
-                gameFragment.ghostAttack();
-                gameFragment.updateTextviews();
-                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
-                break;
-            case SEND_ATTACK_ICE:
-                gameFragment.ice();
-                gameFragment.updateTextviews();
-                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
-                break;
-            case SEND_ATTACK_X:
-                gameFragment.XTileAttack();
-                gameFragment.updateTextviews();
-                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                Toast.makeText(this, message , Toast.LENGTH_LONG).show();
-        }
     }
 
     public String getOpponentName() {
