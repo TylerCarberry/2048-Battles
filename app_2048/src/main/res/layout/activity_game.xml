@@ -6,7 +6,9 @@
     tools:context=".MainActivity"
     tools:ignore="MergeRootFrame" >
 
-    <fragment android:name="com.tytanapps.game2048.GameFragment"
+    <fragment
+        android:id="@+id/game_fragment"
+        android:name="com.tytanapps.game2048.GameFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/adFragment" />

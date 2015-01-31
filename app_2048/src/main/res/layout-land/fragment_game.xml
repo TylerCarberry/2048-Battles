@@ -69,7 +69,6 @@
         android:layout_toLeftOf="@+id/grid_layout"
         android:layout_below="@id/high_score_textview"
         android:gravity="center"
-        android:text="30"
         android:textStyle="bold"
         android:textSize="50sp"
         android:visibility="visible"/>
@@ -143,7 +142,6 @@
         android:layout_alignParentBottom="true"
         android:paddingLeft="10dp"
         android:gravity="center"
-        android:text="Active Attacks"
         android:textSize="20sp"
         android:layout_below="@+id/time_left_textview" />
 

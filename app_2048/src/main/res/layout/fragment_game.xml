@@ -129,7 +129,6 @@
         android:layout_toRightOf="@id/powerups_textview"
         android:paddingLeft="10dp"
         android:gravity="center"
-        android:text="Active Attacks"
         android:textSize="20sp"/>
 
 </RelativeLayout>

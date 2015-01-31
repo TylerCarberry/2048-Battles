@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:textSize="50sp"
         android:gravity="center"
-        android:text="Starting Multiplayer Game"
+        android:text="@string/creating_multiplayer_game"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />

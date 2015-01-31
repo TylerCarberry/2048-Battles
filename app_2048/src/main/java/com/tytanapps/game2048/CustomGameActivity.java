@@ -106,22 +106,22 @@ public class CustomGameActivity extends Activity {
     }
 
     private List<Game.Mode> getSelectedGameModes() {
-        boolean xmode = ((CheckBox)findViewById(R.id.xmode_checkbox)).isChecked();
+        boolean xMode = ((CheckBox)findViewById(R.id.xmode_checkbox)).isChecked();
         boolean cornerMode = ((CheckBox)findViewById(R.id.corner_mode_checkbox)).isChecked();
         boolean speedMode = ((CheckBox)findViewById(R.id.speed_mode_checkbox)).isChecked();
-        boolean surivalMode = ((CheckBox)findViewById(R.id.survival_mode_checkbox)).isChecked();
+        boolean survivalMode = ((CheckBox)findViewById(R.id.survival_mode_checkbox)).isChecked();
         boolean rushMode = ((CheckBox)findViewById(R.id.rush_mode_checkbox)).isChecked();
         boolean ghostMode = ((CheckBox)findViewById(R.id.ghost_mode_checkbox)).isChecked();
 
         List<Game.Mode> gameModes = new ArrayList<Game.Mode>();
 
-        if(xmode)
+        if(xMode)
             gameModes.add(Game.Mode.XMODE);
         if(cornerMode)
             gameModes.add(Game.Mode.CORNER);
         if(speedMode)
             gameModes.add(Game.Mode.SPEED);
-        if(surivalMode)
+        if(survivalMode)
             gameModes.add(Game.Mode.SURVIVAL);
         if(rushMode)
             gameModes.add(Game.Mode.RUSH);

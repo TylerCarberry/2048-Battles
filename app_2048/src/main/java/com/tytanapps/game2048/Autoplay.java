@@ -125,7 +125,7 @@ public class Autoplay
 		// Undos the the entire game every 6000 moves
 		if(tile <= 2048 && autoMoveCount % 6000 == 0)
 		{
-			System.out.println("Reseting the game");
+			System.out.println("Resetting the game");
 			game = original.clone();
 			System.out.println(game);
 		}

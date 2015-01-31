@@ -688,7 +688,24 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             return null;
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Continue Game?");
+        dialogBuilder.setTitle(getString(R.string.title_continue_game));
+
+        dialogBuilder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                sendAnalyticsEvent("Main Activity", "Game", "Continue");
+                startGameActivity();
+            }
+        });
+
+        dialogBuilder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                getNewSinglePlayerGameDialog().show();
+            }
+        });
 
         LinearLayout dialogLayout = new LinearLayout(this);
         dialogLayout.setOrientation(LinearLayout.VERTICAL);
@@ -699,37 +716,9 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             dialogLayout.addView(savedGameImageView);
         }
 
-        Button yes = new Button(this);
-        yes.setText("Yes");
-
-        Button no = new Button(this);
-        no.setText("No");
-
-        dialogLayout.addView(yes);
-        dialogLayout.addView(no);
-
         dialogBuilder.setView(dialogLayout);
 
-        final AlertDialog alertDialog = dialogBuilder.create();
-
-        yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-                sendAnalyticsEvent("Main Activity", "Game", "Continue");
-                startGameActivity();
-            }
-        });
-
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-                getNewSinglePlayerGameDialog().show();
-            }
-        });
-
-        return alertDialog;
+        return dialogBuilder.create();
     }
 
     private Bitmap getSavedGameBitmap() {
@@ -1057,7 +1046,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
     public void showSignOutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Google Play Games");
+        builder.setTitle(getString(R.string.google_play_games));
 
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -1067,15 +1056,17 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         // The text instructions
         TextView textView = new TextView(this);
-        textView.setText("You are signed into Google Play Games");
+        textView.setText(getString(R.string.signed_in_google_play_games));
         textView.setTextSize(22);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         textView.setPadding(padding, padding, padding, padding);
 
         final Button signoutButton = new Button(this);
-        signoutButton.setText("Sign Out");
-        signoutButton.setTextSize(20);
+        signoutButton.setText(getString(R.string.sign_out));
         signoutButton.setPadding(padding, padding, padding, padding);
+        signoutButton.setBackgroundResource(R.drawable.tile_game_mode);
+        signoutButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.sign_out_text_size));
+
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

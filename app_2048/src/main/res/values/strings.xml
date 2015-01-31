@@ -149,5 +149,12 @@
     <string name="rematch_button_pressed">Requested Rematch. Continue playing while waiting for your opponent.</string>
     <string name="everybody_left_game">Everybody has left the game</string>
     <string name="multiplayer_recieved_attack">You\'ve been attacked!</string>
+    <string name="title_continue_game">Continue Game?</string>
+    <string name="signed_in_google_play_games">You are signed into Google Play Games</string>
+    <string name="google_play_games">Google Play Games</string>
+    <string name="game_modes">Game Modes</string>
+    <string name="me">Me</string>
+    <string name="opponent">Opponent</string>
+    <string name="inventory">Inventory</string>
 
 </resources>

@@ -107,7 +107,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textSize="20sp"
-            android:text="Inventory"
+            android:text="@string/inventory"
             android:layout_alignParentRight="true"
             android:layout_above="@+id/undo_icon" />
 
@@ -127,8 +127,7 @@
             android:layout_toLeftOf="@+id/powerup_icon"
             android:layout_alignParentBottom="true"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:textSize="20sp"
-            android:text="6"/>
+            android:textSize="20sp"/>
 
         <ImageView
             android:id="@+id/powerup_icon"
@@ -145,7 +144,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:text="5"
             android:textSize="20sp"/>
 
         <com.google.android.gms.common.SignInButton

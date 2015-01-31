@@ -19,7 +19,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="30"
         android:textSize="50sp"/>
 
     <ImageView
@@ -38,7 +37,7 @@
         android:layout_alignLeft="@id/player_imageview"
         android:layout_alignRight="@id/player_imageview"
         android:gravity="center_horizontal"
-        android:text="Me"/>
+        android:text="@string/me"/>
 
     <ImageView
         android:id="@+id/player_crown"
@@ -66,7 +65,7 @@
         android:layout_alignLeft="@id/opponent_imageview"
         android:layout_alignRight="@id/opponent_imageview"
         android:gravity="center_horizontal"
-        android:text="Opponent"/>
+        android:text="@string/opponent"/>
 
     <ImageView
         android:id="@+id/opponent_crown"
@@ -95,7 +94,6 @@
         android:gravity="center"
         android:layout_above="@+id/grid_layout"
         android:layout_alignParentRight="true"
-        android:text="Active Attacks"
         android:textSize="20sp" />
 
     <ProgressBar
@@ -128,7 +126,6 @@
         android:layout_alignTop="@id/grid_layout"
         android:layout_alignBottom="@id/grid_layout"
         android:gravity="center"
-        android:textSize="150sp"
-        android:text="-7"/>
+        android:textSize="150sp"/>
 
 </RelativeLayout>

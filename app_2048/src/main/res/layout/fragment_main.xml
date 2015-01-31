@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textSize="20sp"
-            android:text="Inventory"
+            android:text="@string/inventory"
             android:layout_alignRight="@+id/powerup_inventory"
             android:layout_alignEnd="@+id/powerup_inventory"
             android:layout_above="@+id/undo_icon"

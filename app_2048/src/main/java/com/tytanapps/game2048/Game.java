@@ -516,7 +516,7 @@ public class Game implements java.io.Serializable
 					}
 					catch (Exception e)
 					{
-						System.out.println(e);
+						System.out.println(e.getMessage());
 						e.printStackTrace();
 					}
 					

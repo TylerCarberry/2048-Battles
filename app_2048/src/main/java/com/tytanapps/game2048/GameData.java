@@ -103,7 +103,7 @@ public class GameData implements java.io.Serializable {
 
             byte[] imageByteArray = new byte[imageByteList.size()];
             for(int i = 0; i < imageByteList.size(); i++)
-                imageByteArray[i] = imageByteList.get(i).byteValue();
+                imageByteArray[i] = imageByteList.get(i);
 
             BitmapFactory.Options opt = new BitmapFactory.Options();
             opt.inPreferredConfig = Bitmap.Config.ARGB_8888;

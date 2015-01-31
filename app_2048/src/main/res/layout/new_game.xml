@@ -22,7 +22,6 @@
             android:background="@drawable/tile_game_mode"
             android:layout_margin="@dimen/new_game_margin"
             android:textSize="@dimen/new_game_text_size"
-            android:layout_alignParentTop="true"
             android:onClick="onClick"/>
 
         <Button
@@ -33,7 +32,6 @@
             android:background="@drawable/tile_game_mode"
             android:layout_margin="@dimen/new_game_margin"
             android:textSize="@dimen/new_game_text_size"
-            android:layout_alignParentTop="true"
             android:onClick="onClick"/>
 
     </LinearLayout>
