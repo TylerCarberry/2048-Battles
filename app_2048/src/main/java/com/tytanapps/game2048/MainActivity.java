@@ -466,6 +466,14 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         }
     }
 
+    private void openGithubLink() {
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(GITHUB_URL));
+        startActivity(i);
+
+        sendAnalyticsEvent("Main Activity", "Help Dialog", "Github");
+    }
+
     /**
      * Shows either the continue game or new game dialog depending if there is a saved game.
      * Choosing not to continue the game shows the new game dialog.
@@ -781,25 +789,14 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     }
 
     protected void showHelpDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.how_to_play));
-
-        LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-
-        int padding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
-
-        // The text instructions
-        TextView textView = new TextView(this);
-        textView.setText(getString(R.string.instructions_to_play));
-        textView.setTextSize(22);
-        textView.setGravity(Gravity.CENTER_HORIZONTAL);
-        textView.setPadding(0, padding, 0, padding);
+        Dialog dialog = new Dialog(this);
+        dialog.setTitle(getString(R.string.how_to_play));
+        dialog.setContentView(R.layout.how_to_play_dialog);
 
         // VideoView with game animation how to play
-        VideoView videoview = new VideoView(this);
-        Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.how_to_play_2048);
+        VideoView videoview = (VideoView) dialog.findViewById(R.id.how_to_play_videoview);
 
+        Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.how_to_play_2048);
         videoview.setVideoURI(uri);
         videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -810,29 +807,20 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         videoview.setZOrderOnTop(true);
         videoview.start();
 
-
-        TextView openSource = new TextView(this);
-        openSource.setText(getString(R.string.open_source) + " " + getString(R.string.creator_name));
-        openSource.setTextSize(17);
-        openSource.setPadding(padding, padding, padding, padding);
-
-        openSource.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener openGithubListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(GITHUB_URL));
-                startActivity(i);
+                openGithubLink();
             }
-        });
+        };
 
-        linearLayout.addView(textView);
-        linearLayout.addView(videoview);
-        linearLayout.addView(openSource);
+        dialog.findViewById(R.id.open_source).setOnClickListener(openGithubListener);
+        dialog.findViewById(R.id.creator_name).setOnClickListener(openGithubListener);
 
-        builder.setView(linearLayout);
-        builder.create().show();
 
-        sendAnalyticsEvent("MainActivity", "Button Press", "Help");
+        dialog.show();
+
+        sendAnalyticsEvent("Main Activity", "Button Press", "Help");
     }
 
     private void sendAnalyticsEvent(String categoryId, String actionId, String labelId) {
@@ -1089,7 +1077,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         dialog.show();
 
-        sendAnalyticsEvent("MainActivity", "Google Play Games", "Sign Out");
+        sendAnalyticsEvent("Main Activity", "Google Play Games", "Sign Out");
     }
 
     @Override
