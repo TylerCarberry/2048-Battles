@@ -488,7 +488,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
 
         // Update attacks
-        activeAttacksTextView.setText(getAttackString());
+        if(! multiplayerActive || ((MultiplayerActivity)(getActivity())).isMultiplayerActive())
+            activeAttacksTextView.setText(getAttackString());
 
         if(! multiplayerActive) {
             if(game.getGameModeId() == GameModes.CUSTOM_MODE_ID)
@@ -2125,6 +2126,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      */
     private void endCountdown() {
         getView().findViewById(R.id.countdown_textview).setVisibility(View.GONE);
+        getView().findViewById(R.id.active_attacks_textview).setVisibility(View.VISIBLE);
+
 
         // Create the game timer
         ((MultiplayerActivity) getActivity()).createMultiplayerTimer(MultiplayerActivity.MULTIPLAYER_GAME_LENGTH);

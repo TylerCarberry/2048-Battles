@@ -240,6 +240,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 if (responseCode == Activity.RESULT_OK) {
                     // ready to start playing
                     Log.d(LOG_TAG, "Starting game (waiting room returned OK).");
+                    multiplayerActive = true;
                     switchToGame();
                 } else if (responseCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
                     // player indicated that they want to leave the room
@@ -316,41 +317,39 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     }
 
     private void multiplayerTimeUp() {
-        Toast.makeText(this, "Time Is Up", Toast.LENGTH_SHORT).show();
-
         int myScore = gameFragment.getGame().getScore();
         int opponentScore = gameFragment.getGame().getOpponentScore();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Time Is Up");
+        builder.setTitle(getString(R.string.time_is_up));
 
         if (myScore > opponentScore)
-            builder.setMessage("YOU WIN");
+            builder.setMessage(getString(R.string.win_multiplayer));
         else if (myScore == opponentScore)
-            builder.setMessage("IT'S A TIE!");
+            builder.setMessage(getString(R.string.tie_multiplayer));
         else
-            builder.setMessage("You Lose");
+            builder.setMessage(getString(R.string.lose_multiplayer));
 
-        builder.setNegativeButton("Leave Game", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.leave_game), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                sendMessage("Your opponent has left the game", true);
+                sendMessage(getString(R.string.opponent_left_game), true);
                 leaveRoom();
                 switchToMainActivity();
             }
         });
 
-        builder.setPositiveButton("Rematch", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                requestRematch();
-            }
-        });
-        AlertDialog dialog = builder.create();
+        if(multiplayerActive)
+            builder.setPositiveButton(getString(R.string.rematch), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    requestRematch();
+                }
+            });
 
+        AlertDialog dialog = builder.create();
         // You must click on one of the buttons in order to dismiss the dialog
         dialog.setCanceledOnTouchOutside(false);
-
         // Show the dialog
         dialog.show();
 
@@ -380,11 +379,11 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     private void requestRematch() {
         iRequestedRematch = true;
-        sendMessage("rematch", true);
+        sendMessage("" + SEND_REMATCH, true);
         if(opponentRequestedRematch)
             startRematch();
         else
-            Toast.makeText(this, "Requested Rematch. Continue playing while waiting for your opponent", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.rematch_button_pressed), Toast.LENGTH_LONG).show();
     }
 
     private void startRematch() {
@@ -396,8 +395,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         gameFragment.updateGame();
 
         gameFragment.createCountdown(3 * 1000);
-
-        //createMultiplayerTimer(MULTIPLAYER_GAME_LENGTH);
     }
 
     public void gameHasLoaded() {
@@ -695,11 +692,11 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage rtm) {
-        //Toast.makeText(this, "Message Received", Toast.LENGTH_LONG).show();
-
-        byte[] buf = rtm.getMessageData();
+        if(! multiplayerActive)
+            return;
 
         // Convert the message to a string
+        byte[] buf = rtm.getMessageData();
         String message = "";
         for(byte b : buf) {
             char letter = (char) b;
@@ -729,22 +726,22 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 break;
             case SEND_ATTACK_SHUFFLE:
                 gameFragment.shuffleGame();
-                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.multiplayer_recieved_attack), Toast.LENGTH_SHORT).show();
                 break;
             case SEND_ATTACK_GHOST:
                 gameFragment.ghostAttack();
                 gameFragment.updateTextviews();
-                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
                 break;
             case SEND_ATTACK_ICE:
                 gameFragment.ice();
                 gameFragment.updateTextviews();
-                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
                 break;
             case SEND_ATTACK_X:
                 gameFragment.XTileAttack();
                 gameFragment.updateTextviews();
-                Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
                 break;
             case SEND_LOADED:
                 opponentLoaded = true;
@@ -785,6 +782,8 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     // Leave the room.
     void leaveRoom() {
+        //Toast.makeText(this, "leaving room", Toast.LENGTH_LONG).show();
+
         Log.d(LOG_TAG, "Leaving room.");
         //mSecondsLeft = 0;
         stopKeepingScreenOn();
@@ -792,9 +791,12 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             Games.RealTimeMultiplayer.leave(mGoogleApiClient, this, mRoomId);
             mRoomId = null;
             //switchToScreen(R.id.screen_wait);
-        } //else {
+        } else {
+
+            //Toast.makeText(this, "Attempting to leave room. Room is null", Toast.LENGTH_LONG).show();
+
             //switchToMainScreen();
-        //}
+        }
     }
 
     protected String getPlayerName() {
@@ -943,13 +945,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     @Override
     public void onDisconnectedFromRoom(Room room) {
         mRoomId = null;
-        showGameError();
-    }
-
-    // Show error message about game being cancelled and return to main screen.
-    void showGameError() {
-        //BaseGameUtils.makeSimpleDialog(this, getString(R.string.game_problem));
-        //switchToMainScreen();
+        opponentLeft();
     }
 
     // Called when room has been created
@@ -1004,60 +1000,79 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     public void onPeerDeclined(Room room, List<String> arg1) {
         updateRoom(room);
     }
-
     @Override
     public void onPeerInvitedToRoom(Room room, List<String> arg1) {
         updateRoom(room);
     }
-
     @Override
-    public void onP2PDisconnected(String participant) {
-    }
-
+    public void onP2PDisconnected(String participant) {}
     @Override
-    public void onP2PConnected(String participant) {
-    }
-
+    public void onP2PConnected(String participant) {}
     @Override
     public void onPeerJoined(Room room, List<String> arg1) {
         updateRoom(room);
     }
-
     @Override
     public void onPeerLeft(Room room, List<String> peersWhoLeft) {
+        //Toast.makeText(this, "onPeerLeft", Toast.LENGTH_LONG).show();
+
+        opponentLeft();
         updateRoom(room);
     }
-
     @Override
     public void onRoomAutoMatching(Room room) {
         updateRoom(room);
     }
-
     @Override
     public void onRoomConnecting(Room room) {
         updateRoom(room);
     }
-
     @Override
     public void onPeersConnected(Room room, List<String> peers) {
         updateRoom(room);
     }
-
     @Override
     public void onPeersDisconnected(Room room, List<String> peers) {
+        //Toast.makeText(this, "onPeersDisconnected", Toast.LENGTH_LONG).show();
+
+        opponentLeft();
         updateRoom(room);
     }
 
+    private void opponentLeft() {
+        multiplayerActive = false;
+
+        View activeAttacks = gameFragment.getView().findViewById(R.id.active_attacks_textview);
+        View attackInventory = gameFragment.getView().findViewById(R.id.bonuses_linear_layout);
+
+        if(activeAttacks != null)
+            ((TextView) activeAttacks).setText(getString(R.string.opponent_left_game));
+        if(attackInventory != null)
+            attackInventory.setVisibility(View.INVISIBLE);
+    }
+
     void updateRoom(Room room) {
+        //Toast.makeText(this, "update room", Toast.LENGTH_LONG).show();
         if (room != null) {
             mParticipants = room.getParticipants();
-            if(room.getRoomId() == null)
-                roomIsEmpty();
+            //Toast.makeText(this, "partic: " + mParticipants.size(), Toast.LENGTH_LONG).show();
+
+
+            //for(Participant p : mParticipants)
+            //    if(! p.isConnectedToRoom())
+            //        roomIsEmpty();
+
+
+            //if(room.getRoomId() == null || mParticipants.size() <= 1)
+            //    mParticipants.get
+
+            //    roomIsEmpty();
+
         }
     }
 
     private void roomIsEmpty() {
-        Toast.makeText(this, "Everybody has left the game.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.everybody_left_game), Toast.LENGTH_SHORT).show();
     }
 
     public String getOpponentName() {
@@ -1116,6 +1131,10 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     @Override
     public void onSignInSucceeded() {    }
+
+    public boolean isMultiplayerActive() {
+        return multiplayerActive;
+    }
 
     /**
      * A placeholder fragment containing a simple view.

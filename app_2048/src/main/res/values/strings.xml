@@ -139,5 +139,15 @@
     <string name="ask_before_restarting">Ask Before Restarting Game</string>
     <string name="swipe_sensitivity">Swipe Sensitivity</string>
     <string name="tile_slide_speed">Tile Slide Speed</string>
+    <string name="time_is_up">Time Is Up</string>
+    <string name="win_multiplayer">YOU WIN!</string>
+    <string name="tie_multiplayer">It\'s A Tie!</string>
+    <string name="lose_multiplayer">You Lose</string>
+    <string name="rematch">Rematch</string>
+    <string name="leave_game">Leave Game</string>
+    <string name="opponent_left_game">Your opponent has left the game</string>
+    <string name="rematch_button_pressed">Requested Rematch. Continue playing while waiting for your opponent.</string>
+    <string name="everybody_left_game">Everybody has left the game</string>
+    <string name="multiplayer_recieved_attack">You\'ve been attacked!</string>
 
 </resources>
