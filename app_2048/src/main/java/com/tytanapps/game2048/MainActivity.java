@@ -427,12 +427,15 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         switch(view.getId()) {
             case R.id.single_player_imagebutton:
                 showSinglePlayerDialog();
-                //startActivity(new Intent(this, SelectModeActivity.class));
                 break;
             case R.id.multiplayer_imagebutton:
-                Intent multiplayerIntent = new Intent(getBaseContext(), MultiplayerActivity.class);
-                multiplayerIntent.putExtra("startMultiplayer", true);
-                startActivity(multiplayerIntent);
+                if(getApiClient().isConnected()) {
+                    Intent multiplayerIntent = new Intent(getBaseContext(), MultiplayerActivity.class);
+                    multiplayerIntent.putExtra("startMultiplayer", true);
+                    startActivity(multiplayerIntent);
+                }
+                else
+                    Toast.makeText(this, getString(R.string.not_signed_in_multiplayer), Toast.LENGTH_SHORT).show();
                 break;
             case R.id.help_button:
                 showHelpDialog();
@@ -1063,7 +1066,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         final Button signoutButton = new Button(this);
         signoutButton.setText(getString(R.string.sign_out));
         signoutButton.setPadding(padding, padding, padding, padding);
-        signoutButton.setBackgroundResource(R.drawable.tile_game_mode);
+        signoutButton.setBackgroundResource(R.drawable.tile_button_background);
         signoutButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.sign_out_text_size));
 
 

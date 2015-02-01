@@ -179,9 +179,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
                 startQuickGame();
                 break;
-            case R.id.to_game_button:
-                switchToGame();
-                break;
         }
     }
 
@@ -874,23 +871,17 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Toast.makeText(this, "ConnectionFailed", Toast.LENGTH_LONG).show();
+        unableToCreateRoom();
 
         Log.d(LOG_TAG, "onConnectionFailed() called, result: " + connectionResult);
-
-        if (mResolvingConnectionFailure) {
+        if (mResolvingConnectionFailure)
             Log.d(LOG_TAG, "onConnectionFailed() ignoring connection failure; already resolving.");
-            return;
+        else {
+            if (mSignInClicked || mAutoStartSignInFlow) {
+                mAutoStartSignInFlow = false;
+                mSignInClicked = false;
+            }
         }
-
-        if (mSignInClicked || mAutoStartSignInFlow) {
-            mAutoStartSignInFlow = false;
-            mSignInClicked = false;
-            //mResolvingConnectionFailure = BaseGameUtils.resolveConnectionFailure(this, mGoogleApiClient,
-            //        connectionResult, RC_SIGN_IN, getString(R.string.signin_other_error));
-        }
-
-        //switchToScreen(R.id.screen_sign_in);
     }
 
     // Called when we are connected to the room. We're not ready to play yet! (maybe not everybody

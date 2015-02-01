@@ -43,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/linearlayout"
         android:layout_margin="@dimen/new_game_margin"
+        android:padding="2dp"
         android:background="@drawable/tile_game_mode"
         android:textSize="@dimen/new_game_text_size"
         android:onClick="onClick"/>
@@ -55,6 +56,7 @@
         android:layout_below="@+id/linearlayout"
         android:layout_toRightOf="@+id/practice_button"
         android:layout_margin="@dimen/new_game_margin"
+        android:padding="2dp"
         android:background="@drawable/tile_game_mode"
         android:textSize="@dimen/new_game_text_size"
         android:onClick="onClick"/>
@@ -67,6 +69,7 @@
         android:layout_below="@+id/linearlayout"
         android:layout_toRightOf="@+id/arcade_button"
         android:layout_margin="@dimen/new_game_margin"
+        android:padding="2dp"
         android:background="@drawable/tile_game_mode"
         android:textSize="@dimen/new_game_text_size"
         android:onClick="onClick"/>
@@ -78,6 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/practice_button"
         android:layout_margin="@dimen/new_game_margin"
+        android:padding="2dp"
         android:background="@drawable/tile_game_mode"
         android:textSize="@dimen/new_game_text_size"
         android:onClick="onClick"/>
@@ -90,6 +94,7 @@
         android:layout_below="@+id/practice_button"
         android:layout_toRightOf="@+id/corner_button"
         android:layout_margin="@dimen/new_game_margin"
+        android:padding="2dp"
         android:background="@drawable/tile_game_mode"
         android:textSize="@dimen/new_game_text_size"
         android:onClick="onClick"/>
@@ -102,6 +107,7 @@
         android:layout_below="@+id/practice_button"
         android:layout_toRightOf="@+id/survival_button"
         android:layout_margin="@dimen/new_game_margin"
+        android:padding="2dp"
         android:background="@drawable/tile_game_mode"
         android:textSize="@dimen/new_game_text_size"
         android:onClick="onClick"/>
@@ -113,6 +119,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/corner_button"
         android:layout_margin="@dimen/new_game_margin"
+        android:padding="2dp"
         android:background="@drawable/tile_game_mode"
         android:textSize="@dimen/new_game_text_size"
         android:onClick="onClick"/>
@@ -125,6 +132,7 @@
         android:layout_below="@+id/corner_button"
         android:layout_toRightOf="@+id/ghost_button"
         android:layout_margin="@dimen/new_game_margin"
+        android:padding="2dp"
         android:background="@drawable/tile_game_mode"
         android:textSize="@dimen/new_game_text_size"
         android:onClick="onClick"/>
@@ -137,6 +145,7 @@
         android:layout_below="@+id/corner_button"
         android:layout_toRightOf="@+id/speed_button"
         android:layout_margin="@dimen/new_game_margin"
+        android:padding="2dp"
         android:background="@drawable/tile_game_mode"
         android:textSize="@dimen/new_game_text_size"
         android:onClick="onClick"/>

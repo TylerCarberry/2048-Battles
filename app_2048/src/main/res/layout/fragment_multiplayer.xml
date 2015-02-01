@@ -22,20 +22,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/try_again"
+        android:background="@drawable/tile_button_background"
         android:onClick="onClick"
         android:layout_centerInParent="true"
         android:layout_below="@+id/multiplayer_message"
         android:visibility="invisible"/>
-
-    <Button
-        android:id="@+id/to_game_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="To Game"
-        android:onClick="onClick"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
@@ -54,7 +45,8 @@
         android:text="@string/creating_multiplayer_game"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
 
 </RelativeLayout>

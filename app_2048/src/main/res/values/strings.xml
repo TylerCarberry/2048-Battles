@@ -39,7 +39,7 @@
     <string name="mode_multiplayer">Multiplayer</string>
     <string name="try_again">Try Again</string>
     <string name="mode_desc_normal">The classic game of 2048.</string>
-    <string name="mode_desc_practice">Unlimited powerups. Warns before you lose.</string>
+    <string name="mode_desc_practice">Unlimited powerups and undos</string>
     <string name="mode_desc_pro">No Undos\nNo Powerups</string>
     <string name="mode_desc_rush">Higher value tiles appear</string>
     <string name="mode_desc_survival">Time limit, combine tiles for more time</string>
@@ -177,6 +177,7 @@
     <string name="confirm_leave_multiplayer_game">Leave Multiplayer Game?</string>
     <string name="player">Player</string>
     <string name="share_title">Share game with</string>
+    <string name="not_signed_in_multiplayer">You must be signed in to access multiplayer</string>
 
 
 </resources>
