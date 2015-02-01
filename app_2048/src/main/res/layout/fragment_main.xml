@@ -161,6 +161,14 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:visibility="gone" />
 
+        <ImageButton
+            android:id="@+id/share_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/share"/>
+
     </RelativeLayout>
 
     <LinearLayout

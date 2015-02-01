@@ -984,7 +984,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
 
-                String shareMessage = String.format(getString(R.string.share_intent_message), tile);
+                String shareMessage = String.format(getString(R.string.share_intent_high_tile_message), tile);
                 shareMessage += " " + MainActivity.APP_URL;
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                 shareIntent.setType("text/plain");

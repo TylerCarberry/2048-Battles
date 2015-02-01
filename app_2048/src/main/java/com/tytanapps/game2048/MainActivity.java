@@ -455,8 +455,24 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             case R.id.sign_out_button:
                 showSignOutDialog();
                 break;
+            case R.id.share_button:
+                createShareIntent();
             default: playGames(view);
         }
+    }
+
+    private void createShareIntent() {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+
+        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_intent_message) + " " + APP_URL);
+        shareIntent.setType("text/plain");
+
+        if(getApiClient().isConnected())
+            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_brag_to_your_friends));
+
+
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_title)));
     }
 
     private void openGithubLink() {
@@ -466,6 +482,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         sendAnalyticsEvent("Main Activity", "Help Dialog", "Github");
     }
+
+
 
     /**
      * Shows either the continue game or new game dialog depending if there is a saved game.
@@ -1267,6 +1285,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             ImageButton helpButton = (ImageButton) rootView.findViewById(R.id.help_button);
             ImageButton singlePlayerButton = (ImageButton) rootView.findViewById(R.id.single_player_imagebutton);
             ImageButton multiplayerButton = (ImageButton) rootView.findViewById(R.id.multiplayer_imagebutton);
+            ImageButton shareButton = (ImageButton) rootView.findViewById(R.id.share_button);
 
             achievementsButton.setOnTouchListener(createOnTouchListener
                     (achievementsButton, R.drawable.games_achievements, R.drawable.games_achievements_pressed));
@@ -1291,6 +1310,9 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
             settingsButton.setOnTouchListener(createOnTouchListener
                     (settingsButton, R.drawable.settings_button, R.drawable.settings_button_pressed));
+
+            shareButton.setOnTouchListener(createOnTouchListener
+                    (shareButton, R.drawable.share, R.drawable.share_white));
 
             ImageView appLogo = (ImageView) rootView.findViewById(R.id.logo_imageview);
             appLogo.setOnClickListener(new View.OnClickListener() {

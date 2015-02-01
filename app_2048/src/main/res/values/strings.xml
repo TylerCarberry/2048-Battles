@@ -85,7 +85,8 @@
     <string name="new_high_tile">New Highest Tile: %1$d</string>
     <string name="new_low_score">New Lowest Score: %1$d</string>
     <string name="final_score">Final Score: %1$d</string>
-    <string name="share_intent_message">I just reached a %1$d tile in 2048 Battles. Try to beat me!</string>
+    <string name="share_intent_high_tile_message">I just reached a %1$d tile in 2048 Battles. Try to beat me!</string>
+    <string name="share_intent_message">I am playing to 2048 Battles. Try to beat my high score!</string>
     <string name="prompt_choose_powerup">Choose Powerup</string>
     <string name="prompt_choose_gift">Send Gift</string>
     <string name="not_signed_in_error">You must be signed in to access Play Games</string>
@@ -175,6 +176,7 @@
     <string name="daily_bonus_powerup">You gained a powerup. Come back tomorrow for more.</string>
     <string name="confirm_leave_multiplayer_game">Leave Multiplayer Game?</string>
     <string name="player">Player</string>
+    <string name="share_title">Share game with</string>
 
 
 </resources>

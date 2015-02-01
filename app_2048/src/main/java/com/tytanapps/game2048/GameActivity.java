@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,54 +58,6 @@ public class GameActivity extends BaseGameActivity {
         }
         return mHelper;
     }
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.game, menu);
-		
-		// Add the share action provider to the menu
-	    MenuItem item = menu.findItem(R.id.menu_item_share);
-        mShareActionProvider = (ShareActionProvider) item.getActionProvider();
-		createShareIntent();
-	    
-		return true;
-	}
-
-    /**
-     * Used to create the share action provider.
-     * Plain text is shared with a message containing the current high score.
-     */
-    // TODO: Implement create share intent again
-	private void createShareIntent() {
-
-        /*
-        Intent shareIntent = new Intent();
-		shareIntent.setAction(Intent.ACTION_SEND);
-
-        // Stores info about the game such as high score
-        File gameStatsFile = new File(getFilesDir(), getString(R.string.file_game_stats));
-        Statistics gameStats = (Statistics) Save.load(gameStatsFile);
-
-        shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.share_intent_message),
-                        gameStats.getHighScore(game.getGameModeId())) + " " + APP_URL);
-		shareIntent.setType("text/plain");
-		if (mShareActionProvider != null) {
-	        mShareActionProvider.setShareIntent(shareIntent);
-            mShareActionProvider.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
-                @Override
-                public boolean onShareTargetSelected(ShareActionProvider shareActionProvider, Intent intent) {
-
-                    // An achievement is unlocked when using the share action provider
-                    if(getApiClient().isConnected())
-                        Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_brag_to_your_friends));
-
-                    return true;
-                }
-            });
-	    }
-	    */
-	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
