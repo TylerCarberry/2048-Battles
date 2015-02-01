@@ -109,7 +109,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             = new ArrayList<ObjectAnimator>();
 
     // Stores info about the game such as high score
-    private static GameData gameStats;
+    private static GameData gameData;
 
     // The distance in pixels between tiles
     private static int verticalTileDistance = 0;
@@ -268,7 +268,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     @Override
     public void onPause() {
-
         if (getApiClient().isConnected()) {
             Games.Events.increment(this.getApiClient(), getString(R.string.event_tiles_combined), game.getTilesCombined());
             game.resetTilesCombined();
@@ -295,7 +294,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         // The achievement long time player is unlocked after 2048 moves are made. The game will
         // still call the api every time afterwards but for now this is not a major issue
-        if(gameStats.getTotalMoves() >= 2048 && getApiClient().isConnected())
+        if(gameData.getTotalMoves() >= 2048 && getApiClient().isConnected())
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
 
         super.onStop();
@@ -400,9 +399,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             public void onAnimationEnd(Animator animation) {
 
                 updateGame();
-                gameStats.incrementTotalMoves(1);
+                gameData.incrementTotalMoves(1);
 
-                if(gameStats.getTotalMoves() == 2048 && getApiClient().isConnected()) {
+                if(gameData.getTotalMoves() >= 2048 && getApiClient().isConnected()) {
                     Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
                 }
 
@@ -456,7 +455,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
 
         if(multiplayerActive) {
-                ((MultiplayerActivity) getActivity()).sendMessage("s" + game.getScore(), false);
+                ((MultiplayerActivity) getActivity()).sendMessage(""+MultiplayerActivity.SEND_SCORE+game.getScore(), false);
         }
     }
 
@@ -497,7 +496,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 turnTextView.setText(getString(R.string.turn) + " #" + game.getTurns());
             else {
                 // Update the high score
-                int highScore = Math.max(game.getScore(), gameStats.getHighScore(game.getGameModeId()));
+                int highScore = Math.max(game.getScore(), gameData.getHighScore(game.getGameModeId()));
                 highScoreTextView.setText(String.format(getString(R.string.high_score), highScore));
             }
 
@@ -510,7 +509,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             gameModeTextView.setText(GameModes.getGameTitleById(game.getGameModeId()));
 
             // Update the undos left
-            int undosLeft = (game.getUseItemInventory()) ? gameStats.getUndoInventory() : game.getUndosRemaining();
+            int undosLeft = (game.getUseItemInventory()) ? gameData.getUndoInventory() : game.getUndosRemaining();
             if (undosLeft <= 0) {
                 undosTextView.setVisibility(View.INVISIBLE);
                 undosTextView.setText("");
@@ -523,7 +522,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             }
 
             // Update the powerups left
-            int powerupsLeft = (game.getUseItemInventory()) ? gameStats.getPowerupInventory() : game.getPowerupsRemaining();
+            int powerupsLeft = (game.getUseItemInventory()) ? gameData.getPowerupInventory() : game.getPowerupsRemaining();
             if (powerupsLeft <= 0) {
                 powerupsTextView.setVisibility(View.INVISIBLE);
                 powerupsTextView.setText("");
@@ -852,7 +851,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 break;
             case Game.ICE_ATTACK:
                 resultString += String.format(getString(R.string.ice_attack_active),
-                        Location.directionToString(game.getIceDirection()),
+                        directionToString(game.getIceDirection()),
                         game.getAttackDuration());
                 break;
             default:
@@ -863,7 +862,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     private void lost() {
         if(multiplayerActive) {
-            Toast.makeText(getActivity(), "You cannot move. Use a powerup to continue", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(R.string.multiplayer_cant_move), Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -874,15 +873,15 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         gameLost = true;
 
         // This is the only place where total games played is incremented.
-        gameStats.incrementGamesPlayed(1);
+        gameData.incrementGamesPlayed(1);
 
         // You cannot act on a game once you lose
         setUndoButtonEnabled(false);
         setPowerupButtonEnabled(false);
 
-        gameStats.updateGameRecords(game.getGameModeId(), game);
+        gameData.updateGameRecords(game.getGameModeId(), game);
 
-        // Save the updated gameStats and delete the current game save file.
+        // Save the updated gameData and delete the current game save file.
         // The user can no longer continue this game.
         save();
         File currentGameFile = new File(getActivity().getFilesDir(), getString(R.string.file_current_game));
@@ -958,8 +957,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // The text instructions
         TextView textView = new TextView(getActivity());
 
-        // TODO: use strings.xml
-        textView.setText(tile + " tile reached!");
+        textView.setText(String.format(getString(R.string.tile_reached), tile));
 
         textView.setTextSize(22);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -975,18 +973,20 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
 
         Button continuePlayingButton = new Button(getActivity());
-        continuePlayingButton.setText("Continue Playing");
+        continuePlayingButton.setText(getString(R.string.continue_playing));
 
 
         Button shareButton = new Button(getActivity());
-        shareButton.setText("Brag");
+        shareButton.setText(getString(R.string.share_high_score));
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
 
-                shareIntent.putExtra(Intent.EXTRA_TEXT, "I just reached a " + tile + " tile in 2048 Battles! Try to beat me! " + MainActivity.APP_URL);
+                String shareMessage = String.format(getString(R.string.share_intent_message), tile);
+                shareMessage += " " + MainActivity.APP_URL;
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                 shareIntent.setType("text/plain");
                 startActivity(shareIntent);
 
@@ -1208,7 +1208,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         if((!game.isGameLost()) || multiplayerActive) {
             if (game.getPowerupsRemaining() == 0) {
-                builder.setTitle("No More Powerups").setMessage("There are no powerups remaining");
+                builder.setTitle(getString(R.string.no_powerups_short)).setMessage(getString(R.string.no_powerups_long));
             }
             else {
                 builder.setTitle(getString(R.string.prompt_choose_powerup)).setItems(R.array.powerups, new DialogInterface.OnClickListener() {
@@ -1221,7 +1221,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                                 shuffleGame();
                                 game.decrementPowerupsRemaining();
                                 if(game.getUseItemInventory())
-                                    gameStats.decrementPowerupInventory();
+                                    gameData.decrementPowerupInventory();
                                 break;
                             case 1:
                                 // The number of powerups is decremented in removeTile
@@ -1232,13 +1232,13 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                                 removeLowTiles();
                                 game.decrementPowerupsRemaining();
                                 if(game.getUseItemInventory())
-                                    gameStats.decrementPowerupInventory();
+                                    gameData.decrementPowerupInventory();
                                 break;
                             case 3:
                                 game.setGenieEnabled(true);
                                 game.decrementPowerupsRemaining();
                                 if(game.getUseItemInventory())
-                                    gameStats.decrementPowerupInventory();
+                                    gameData.decrementPowerupInventory();
                                 updateTextviews();
                                 sendAnalyticsEvent("Game Fragment", "Item Used", "Genie");
                                 break;
@@ -1268,7 +1268,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         });
 
         // Create the message to show the player
-        String message = createLoseMessage(game, gameStats);
+        String message = createLoseMessage(game, gameData);
         builder.setMessage(message);
         AlertDialog dialog = builder.create();
 
@@ -1277,25 +1277,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         // Show the dialog
         dialog.show();
-    }
-
-    /**
-     * @deprecated This method is no longer used because I switched to ImageViews instead of
-     * buttons. I may need this method later for zen mode.
-     * @param tile The number representation of the tile
-     * @return The string representation of the tile
-     */
-    private String convertToTileText(int tile) {
-        switch (tile) {
-            case 0:
-                return "";
-            case -1:
-                return "XX";
-            case -2:
-                return "x";
-            default:
-                return "" + tile;
-        }
     }
 
     /**
@@ -1385,7 +1366,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                             game.removeTile(new Location(view.getId() / 100, view.getId() % 100));
                             game.decrementPowerupsRemaining();
                             if(game.getUseItemInventory())
-                                gameStats.decrementPowerupInventory();
+                                gameData.decrementPowerupInventory();
                             setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);
                             updateTextviews();
 
@@ -1439,7 +1420,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * 50% chance of bonus: +1 undo, +1 powerup
      */
     private void addRandomBonus() {
-        String item;
 
         double rand = Math.random();
         if(rand < .5 && game.getAttackDuration() <= 0) {
@@ -1459,18 +1439,19 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             updateTextviews();
         }
         else {
+            String message;
             if(rand < 0.75) {
                 game.incrementUndosRemaining();
                 setUndoButtonEnabled(true);
-                item = getString(R.string.undo);
+                message = getString(R.string.bonus_undo);
             }
             else {
                 game.incrementPowerupsRemaining();
                 setPowerupButtonEnabled(true);
-                item = getString(R.string.powerup);
+                message = getString(R.string.bonus_powerup);
             }
 
-            Toast.makeText(getActivity(), "Bonus! +1 " + item, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1521,8 +1502,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             public void onAnimationEnd(Animator animation) {
                 game.removeLowTiles();
                 game.newTurn();
-                gameStats.incrementTotalMoves(1);
-                if(gameStats.getTotalMoves() == 2048 && getApiClient().isConnected()) {
+                gameData.incrementTotalMoves(1);
+                if(gameData.getTotalMoves() == 2048 && getApiClient().isConnected()) {
                     Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
                 }
                 updateGame();
@@ -1591,9 +1572,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             @Override
             public void onAnimationRepeat(Animator animation) {
                 game.shuffle();
-                gameStats.incrementShufflesUsed(1);
-                gameStats.incrementTotalMoves(1);
-                if(gameStats.getTotalMoves() == 2048 && getApiClient().isConnected()) {
+                gameData.incrementShufflesUsed(1);
+                gameData.incrementTotalMoves(1);
+                if(gameData.getTotalMoves() == 2048 && getApiClient().isConnected()) {
                     Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
                 }
                 updateGame();
@@ -1789,7 +1770,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     private void warnAboutMove(final int direction) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.are_you_sure));
-        builder.setMessage("Moving " + Location.directionToString(direction) + " might cause you to lose");
+        builder.setMessage(String.format(getString(R.string.confirm_moving_direction), directionToString(direction)));
 
         // Two buttons appear, yes and no
         builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
@@ -1817,6 +1798,21 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         dialog.show();
     }
 
+    private String directionToString(int direction) {
+        switch(direction) {
+            case Location.UP:
+                return getString(R.string.up);
+            case Location.DOWN:
+                return getString(R.string.down);
+            case Location.LEFT:
+                return getString(R.string.left);
+            case Location.RIGHT:
+                return getString(R.string.right);
+
+        }
+        return "";
+    }
+
     /**
      * Undo the game. Currently does not have any animations because it
      * would be difficult to track every tile separately
@@ -1826,10 +1822,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         if(undoButton == null) {
             game.undo();
-            gameStats.incrementTotalMoves(1);
-            gameStats.incrementUndosUsed(1);
+            gameData.incrementTotalMoves(1);
+            gameData.incrementUndosUsed(1);
             if(game.getUseItemInventory())
-                gameStats.decrementUndoInventory();
+                gameData.decrementUndoInventory();
             updateGame();
 
             Games.Events.increment(this.getApiClient(), getString(R.string.event_undos_used), 1);
@@ -1867,10 +1863,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 spinAnimation.start();
 
                 game.undo();
-                gameStats.incrementTotalMoves(1);
-                gameStats.incrementUndosUsed(1);
+                gameData.incrementTotalMoves(1);
+                gameData.incrementUndosUsed(1);
                 if(game.getUseItemInventory())
-                    gameStats.decrementUndoInventory();
+                    gameData.decrementUndoInventory();
                 updateGame();
 
                 Games.Events.increment(this.getApiClient(), getString(R.string.event_undos_used), 1);
@@ -1957,7 +1953,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         activeTimers.clear();
 
         // Save any new records
-        gameStats.updateGameRecords(game.getGameModeId(), game);
+        gameData.updateGameRecords(game.getGameModeId(), game);
 
         // Create a new game
         game = game.getOriginalGame();
@@ -1985,18 +1981,18 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         File currentGameFile = new File(getActivity().getFilesDir(), getString(R.string.file_current_game));
         File gameStatsFile = new File(getActivity().getFilesDir(), getString(R.string.file_game_stats));
 
-        File currentGameScreenshotFile = new File(getActivity().getFilesDir(), "CURRENT_GAME_SCREENSHOT");
+        File currentGameScreenshotFile = new File(getActivity().getFilesDir(), getString(R.string.file_screenshot));
 
         try {
             Save.save(game, currentGameFile);
-            Save.save(gameStats, gameStatsFile);
+            Save.save(gameData, gameStatsFile);
 
             View currentGame = getView().findViewById(R.id.grid_layout);
             if(currentGame != null) {
                 Bitmap currentGameBitmap = loadBitmapFromView(currentGame, currentGame.getWidth(), currentGame.getHeight());
                 Save.saveBitmap(currentGameBitmap, currentGameScreenshotFile);
             }
-            //Save.save(gameStats, gameStatsFile);
+            //Save.save(gameData, gameStatsFile);
         } catch (IOException e) {
             e.printStackTrace();
             // Notify the user of the error through a toast
@@ -2015,12 +2011,12 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         try {
             game = (Game) Save.load(currentGameFile);
-            gameStats = (GameData) Save.load(gameStatsFile);
+            gameData = (GameData) Save.load(gameStatsFile);
 
             if(game != null) {
                 if(game.getUseItemInventory()) {
-                    game.setUndoLimit(gameStats.getUndoInventory());
-                    game.setPowerupLimit(gameStats.getPowerupInventory());
+                    game.setUndoLimit(gameData.getUndoInventory());
+                    game.setPowerupLimit(gameData.getPowerupInventory());
                 }
 
                 if(! (getActivity() instanceof MultiplayerActivity))
@@ -2030,10 +2026,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         } catch (ClassNotFoundException e) {
             Log.e(LOG_TAG, "Class not found exception in load");
             game = new Game();
-            gameStats = new GameData();
+            gameData = new GameData();
         } catch (IOException e) {
             game = new Game();
-            gameStats = new GameData();
+            gameData = new GameData();
         }
     }
 
@@ -2161,7 +2157,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                     @Override
                     public void restoreStarting(int numPackages) {
                         Log.d(LOG_TAG, "Restore from cloud starting.");
-                        Log.d(LOG_TAG, "" + gameStats.getTotalMoves());
+                        Log.d(LOG_TAG, "" + gameData.getTotalMoves());
 
                         super.restoreStarting(numPackages);
                     }
@@ -2177,7 +2173,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                         Log.d(LOG_TAG, "Restore from cloud finished.");
 
                         super.restoreFinished(error);
-                        Log.d(LOG_TAG, "" + gameStats.getTotalMoves());
+                        Log.d(LOG_TAG, "" + gameData.getTotalMoves());
 
                         Log.d(LOG_TAG, "calling load");
                         load();
@@ -2236,7 +2232,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     public GameData getGameStats() {
-        return gameStats;
+        return gameData;
     }
 
     public Game setGame(Game newGame) {

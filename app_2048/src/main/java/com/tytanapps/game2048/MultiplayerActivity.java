@@ -70,15 +70,15 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     // Request code used to invoke sign in user interactions.
     private static final int RC_SIGN_IN = 9001;
 
-    private static final char SEND_SCORE = 's';
-    private static final char SEND_REMATCH = 'r';
-    private static final char SEND_LOADED = 'l';
-    private static final char SEND_NAME = 'n';
-    private static final char SEND_PIC_URL = 'p';
-    private static final char SEND_ATTACK_SHUFFLE = 'h';
-    private static final char SEND_ATTACK_ICE = 'i';
-    private static final char SEND_ATTACK_GHOST = 'g';
-    private static final char SEND_ATTACK_X = 'x';
+    public static final char SEND_SCORE = 's';
+    public static final char SEND_REMATCH = 'r';
+    public static final char SEND_LOADED = 'l';
+    public static final char SEND_NAME = 'n';
+    public static final char SEND_PIC_URL = 'p';
+    public static final char SEND_ATTACK_SHUFFLE = 'h';
+    public static final char SEND_ATTACK_ICE = 'i';
+    public static final char SEND_ATTACK_GHOST = 'g';
+    public static final char SEND_ATTACK_X = 'x';
 
     // The % chance that a bonus will be received this second
     private final static double BONUS_CHANCE = 0.20;
@@ -206,8 +206,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
      * A quick game with 1 random opponent
      */
     private void startQuickGame() {
-        //Toast.makeText(this, "Starting Quick Game", Toast.LENGTH_SHORT).show();
-
         final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 1;
         Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MIN_OPPONENTS,
                 MAX_OPPONENTS, 0);
@@ -549,10 +547,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         int deltaX = positionOpponent[0] - positionAttack[0];
         int deltaY = 0 - (positionAttack[1] - positionOpponent[1]);
 
-        //Toast.makeText(this, positionOpponent[0] + "," + positionOpponent[1], Toast.LENGTH_LONG).show();
-        //Toast.makeText(this, positionAttack[0] + "," + positionAttack[1], Toast.LENGTH_LONG).show();
-        //Toast.makeText(this, deltaX + " " + deltaY, Toast.LENGTH_LONG).show();
-
         ObjectAnimator translateX = ObjectAnimator.ofFloat(view, "translationX", deltaX);
         ObjectAnimator translateY = ObjectAnimator.ofFloat(view, "translationY", deltaY);
 
@@ -731,17 +725,14 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             case SEND_ATTACK_GHOST:
                 gameFragment.ghostAttack();
                 gameFragment.updateTextviews();
-                //Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
                 break;
             case SEND_ATTACK_ICE:
                 gameFragment.ice();
                 gameFragment.updateTextviews();
-                //Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
                 break;
             case SEND_ATTACK_X:
                 gameFragment.XTileAttack();
                 gameFragment.updateTextviews();
-                //Toast.makeText(this, "You've been attacked!", Toast.LENGTH_SHORT).show();
                 break;
             case SEND_LOADED:
                 opponentLoaded = true;
@@ -761,15 +752,15 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 return super.onKeyDown(keyCode, e);
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Leave Multiplayer Game?");
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            builder.setTitle(getString(R.string.confirm_leave_multiplayer_game));
+            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     leaveRoom();
                     switchToMainActivity();
                 }
             });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {}
             });
@@ -782,27 +773,16 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     // Leave the room.
     void leaveRoom() {
-        //Toast.makeText(this, "leaving room", Toast.LENGTH_LONG).show();
-
-        Log.d(LOG_TAG, "Leaving room.");
-        //mSecondsLeft = 0;
         stopKeepingScreenOn();
         if (mRoomId != null) {
             Games.RealTimeMultiplayer.leave(mGoogleApiClient, this, mRoomId);
             mRoomId = null;
-            //switchToScreen(R.id.screen_wait);
-        } else {
-
-            //Toast.makeText(this, "Attempting to leave room. Room is null", Toast.LENGTH_LONG).show();
-
-            //switchToMainScreen();
         }
     }
 
     protected String getPlayerName() {
-
         if(hideIdentity)
-            return "Player";
+            return getString(R.string.player);
 
         return Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getName().getGivenName();
     }

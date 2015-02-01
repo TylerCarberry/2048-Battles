@@ -72,9 +72,6 @@
     <string name="fast">Fast</string>
     <string name="no_animation">No Animation</string>
     <string name="title_activity_info">How To Play</string>
-    <string name="file_current_game">CURRENT_GAME</string>
-    <string name="file_game_stats">GAME_STATS</string>
-    <string name="file_custom_tile_icons">TILE_ICONS</string>
     <string name="title_activity_stats">Game Stats</string>
     <string name="game_stats">Game Stats</string>
     <string name="total_games">Total Games Lost</string>
@@ -88,7 +85,7 @@
     <string name="new_high_tile">New Highest Tile: %1$d</string>
     <string name="new_low_score">New Lowest Score: %1$d</string>
     <string name="final_score">Final Score: %1$d</string>
-    <string name="share_intent_message">I am playing 2048. My high score is %1$d. Try to beat me!</string>
+    <string name="share_intent_message">I just reached a %1$d tile in 2048 Battles. Try to beat me!</string>
     <string name="prompt_choose_powerup">Choose Powerup</string>
     <string name="prompt_choose_gift">Send Gift</string>
     <string name="not_signed_in_error">You must be signed in to access Play Games</string>
@@ -156,5 +153,28 @@
     <string name="me">Me</string>
     <string name="opponent">Opponent</string>
     <string name="inventory">Inventory</string>
+    <string name="multiplayer_cant_move">You cannot move. Use a powerup to continue.</string>
+    <string name="continue_playing">Continue Playing</string>
+    <string name="share_high_score">Brag</string>
+    <string name="tile_reached">%1$d tile reached</string>
+    <string name="no_powerups_short">No more powerups</string>
+    <string name="no_powerups_long">There are no powerups remaining</string>
+    <string name="bonus_undo">Bonus! +1 Undo</string>
+    <string name="bonus_powerup">Bonus! +1 Powerup</string>
+    <string name="confirm_moving_direction">Moving %1$s might cause you to lose</string>
+    <string name="up">up</string>
+    <string name="down">down</string>
+    <string name="left">left</string>
+    <string name="right">right</string>
+    <string name="theme_custom">Custom</string>
+    <string name="themes">Themes</string>
+    <string name="quest_reward_undos">You gained %1$d undos</string>
+    <string name="quest_reward_powerups">You gained %1$d powerups</string>
+    <string name="user_changed_date">The date was changed</string>
+    <string name="daily_bonus_undo">You gained an undo. Come back tomorrow for more.</string>
+    <string name="daily_bonus_powerup">You gained a powerup. Come back tomorrow for more.</string>
+    <string name="confirm_leave_multiplayer_game">Leave Multiplayer Game?</string>
+    <string name="player">Player</string>
+
 
 </resources>

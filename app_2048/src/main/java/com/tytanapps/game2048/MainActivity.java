@@ -156,7 +156,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         else
             // The time was changed
             if (currentDate < lastDatePlayed) {
-                Toast.makeText(this, "You changed the date", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.user_changed_date), Toast.LENGTH_LONG).show();
 
                 // The user must wait another 3 days
                 currentDate = lastDatePlayed + 3;
@@ -172,28 +172,21 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.welcome_back));
 
-        // Add either 1 or 2 bonus items
-        int bonusAmount = (int) (Math.random() * 2 + 1);
-
         try {
             if (Math.random() < 0.5) {
-                //Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
-                incrementPowerupInventory(bonusAmount);
-                builder.setMessage("You Gained " + bonusAmount + " Powerup!\n" +
-                        "Come back tomorrow for more.");
+                incrementPowerupInventory(1);
+                builder.setMessage(getString(R.string.daily_bonus_powerup));
             }
             else {
-                //Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
-                incrementUndoInventory(bonusAmount);
-                builder.setMessage("You Gained " + bonusAmount + " Undo!\n" +
-                        "Come back tomorrow for more.");
+                incrementUndoInventory(1);
+                builder.setMessage(getString(R.string.daily_bonus_undo));
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             Toast.makeText(this, getString(R.string.error_claim_bonus), Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Unable to access save file to add random bonus", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.error_claim_bonus), Toast.LENGTH_LONG).show();
         }
 
         // Show the message to the player
@@ -730,7 +723,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     }
 
     private Bitmap getSavedGameBitmap() {
-        File savedGameBitmapFile = new File(getFilesDir(), "CURRENT_GAME_SCREENSHOT");
+        File savedGameBitmapFile = new File(getFilesDir(), getString(R.string.file_screenshot));
         return Save.loadBitmap(savedGameBitmapFile);
     }
 
@@ -839,7 +832,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
      */
     protected void showThemesDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Themes");
+        builder.setTitle(getString(R.string.themes));
 
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -848,7 +841,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         //defaultTheme.setText("Default");
 
         Button customTheme = new Button(this);
-        customTheme.setText("Custom");
+        customTheme.setText(getString(R.string.theme_custom));
         customTheme.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -964,7 +957,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             try {
                 Save.save(new GameData(), gameDataFile);
             } catch (IOException e1) {
-                Toast.makeText(this, "Error: Unable to create save game file", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.error_can_not_save), Toast.LENGTH_LONG).show();
             }
 
             //e.printStackTrace();
@@ -978,7 +971,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         try {
             Save.save(gameData, gameDataFile);
         } catch (IOException e) {
-            Toast.makeText(this, "Error: Unable to save game data", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.error_can_not_save), Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
@@ -1001,29 +994,29 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                     String(quest.getCurrentMilestone().getCompletionRewardData(), "UTF-8");
 
             int rewardAmount = Character.getNumericValue(rewardRaw.charAt(0));
-            String reward = "";
 
+            String message = "";
             if(rewardRaw.charAt(1) == 'p') {
-                reward = "Powerup";
+                message =  String.format(getString(R.string.quest_reward_powerups), rewardAmount);
                 incrementPowerupInventory(rewardAmount);
             }
-
             else {
                 if(rewardRaw.charAt(1) == 'u') {
-                    reward = "Undo";
+                    message =  String.format(getString(R.string.quest_reward_undos), rewardAmount);
                     incrementUndoInventory(rewardAmount);
                 }
             }
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Quest Completed");
-            builder.setMessage("You gained " + rewardAmount + " " + reward);
+            builder.setTitle(getString(R.string.quest_completed));
+
+            builder.setMessage(message);
             builder.create().show();
 
             animateFlyingTiles(150, 10);
 
         } catch (Exception e) {
-            Toast.makeText(this, "Unable to claim quest reward", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.error_claim_bonus), Toast.LENGTH_LONG).show();
             Log.w(LOG_TAG, e.toString());
         }
     }
@@ -1205,7 +1198,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 }
                 break;
             case QUEST_CODE:
-                //Toast.makeText(this, "Quest code", Toast.LENGTH_LONG).show();
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     Quest quest = data.getParcelableExtra(Quests.EXTRA_QUEST);
 
