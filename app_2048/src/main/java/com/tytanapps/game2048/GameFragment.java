@@ -149,19 +149,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             final ImageButton restartButton = (ImageButton) rootView.findViewById(R.id.restart_button);
             restartButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    /*
-                    Grid newGrid = game.getGrid();
-                    List<Location> tiles = newGrid.toList();
-                    for (Location tile : tiles)
-                        newGrid.set(tile, newGrid.get(tile) * 2);
-                    game.setGrid(newGrid);
-                    updateGame();
-                    */
-
-                    //restartGame();
-
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-                    if(prefs.getBoolean(getString(R.string.preference_prompt_restart), true))
+                    if(!gameLost && prefs.getBoolean(getString(R.string.preference_prompt_restart), true))
                         promptRestartGame();
                     else
                         restartGame();
@@ -1718,12 +1707,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                         public void run() {
                             lost();
                             activeTimers.remove(timer);
-                        }
-                    });
+                        }});
                     }
-                else {
-                    decrementTimeLeft(1);
-                }
+                    else {
+                        decrementTimeLeft(1);
+                    }
 
             }
         }, 1000, 1000);
@@ -1898,12 +1886,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
     }
 
-    // TODO
     private void promptRestartGame() {
-        //FrameLayout frameLayout = new FrameLayout(getActivity());
         CheckBox checkbox = new CheckBox(getActivity());
         checkbox.setText(getString(R.string.dont_ask_again));
-        //checkbox.setGravity(Gravity.RIGHT);
 
         checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -1914,26 +1899,20 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             }
         });
 
-        //frameLayout.addView(checkbox);
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setTitle(getString(R.string.ask_restart_game));
-        alertDialogBuilder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                restartGame();
-            }
-        });
-        alertDialogBuilder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        alertDialogBuilder.setView(checkbox);
-
-        alertDialogBuilder.create().show();
-
+        new AlertDialog.Builder(getActivity())
+            .setTitle(getString(R.string.ask_restart_game))
+            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    restartGame();
+                }
+            })
+            .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {}
+            })
+            .setView(checkbox)
+            .create().show();
     }
 
     /**
@@ -1957,6 +1936,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         // Create a new game
         game = game.getOriginalGame();
+        
+        // TODO: This line of code is causing multiple crashes but I do not know why
         game.finishedCreatingGame();
 
         // Activate speed or survival mode if necessary
