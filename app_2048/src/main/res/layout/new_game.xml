@@ -145,7 +145,7 @@
         android:layout_below="@+id/corner_button"
         android:layout_toRightOf="@+id/speed_button"
         android:layout_margin="@dimen/new_game_margin"
-        android:padding="2dp"
+        android:padding="5dp"
         android:background="@drawable/tile_game_mode"
         android:textSize="@dimen/new_game_text_size"
         android:onClick="onClick"/>

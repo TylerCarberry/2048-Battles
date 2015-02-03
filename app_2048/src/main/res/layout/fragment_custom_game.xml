@@ -35,6 +35,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/create_game"
+        android:background="@drawable/tile_button_background"
+        android:padding="7dp"
         android:id="@+id/create_game_button"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

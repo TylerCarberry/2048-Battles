@@ -23,6 +23,8 @@
             android:id="@+id/reset_game_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/tile_button_background"
+            android:padding="7dp"
             android:onClick="onClick"
             android:layout_centerHorizontal="true"
             android:text="@string/reset_game"/>
