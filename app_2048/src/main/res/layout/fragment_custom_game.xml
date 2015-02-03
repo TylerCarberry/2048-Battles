@@ -48,7 +48,8 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:layout_below="@+id/grid_size_prompt"
-        android:layout_alignParentLeft="true"/>
+        android:layout_alignParentLeft="true"
+        android:descendantFocusability="blocksDescendants"/>
 
     <TextView
         android:id="@+id/game_mode_prompt"
@@ -132,6 +133,7 @@
         android:inputType="number"
         android:layout_below="@+id/grid_size_prompt"
         android:layout_toRightOf="@+id/grid_size_separator"
-        android:layout_toEndOf="@+id/grid_size_separator" />
+        android:layout_toEndOf="@+id/grid_size_separator"
+        android:descendantFocusability="blocksDescendants"/>
 
 </RelativeLayout>
