@@ -471,9 +471,10 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_intent_message) + " " + APP_URL);
         shareIntent.setType("text/plain");
 
-        if(getApiClient().isConnected())
+        if(getApiClient().isConnected()) {
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_brag_to_your_friends));
-
+            Games.Events.increment(getApiClient(), getString(R.string.event_shares), 1);
+        }
 
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_title)));
     }

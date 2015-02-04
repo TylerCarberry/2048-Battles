@@ -56,6 +56,7 @@ import com.google.example.games.basegameutils.BaseGameActivity;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,10 +73,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     // The time in milliseconds for the animation
     public static final long SHUFFLE_SPEED = 300;
-
     // The % chance of a bonus or attack each move in arcade mode
     public static final double CHANCE_OF_ARCADE_BONUS = 0.10;
-
     // The time in milliseconds before a new tile appears in speed mode
     public static final int SPEED_MODE_DELAY = 1000;
 
@@ -126,6 +125,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     private int secondsRemaining = GameModes.SURVIVAL_MODE_TIME;
 
     private boolean multiplayerActive = false;
+
+    private Date dateStarted;
 
     public GameFragment() { }
 
@@ -252,19 +253,17 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             updateOpponentPic();
         }
 
+        dateStarted = new Date();
+
         super.onStart();
     }
 
     @Override
     public void onPause() {
-        if (getApiClient().isConnected()) {
-            Games.Events.increment(this.getApiClient(), getString(R.string.event_tiles_combined), game.getTilesCombined());
-            game.resetTilesCombined();
-        }
-
         // Only save a game that is still in progress and not a multiplayer game
         if(! (game.isGameLost() || gameLost || multiplayerActive))
             save();
+
         super.onPause();
     }
 
@@ -281,10 +280,17 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             t.cancel();
         activeTimers.clear();
 
-        // The achievement long time player is unlocked after 2048 moves are made. The game will
-        // still call the api every time afterwards but for now this is not a major issue
-        if(gameData.getTotalMoves() >= 2048 && getApiClient().isConnected())
-            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
+        if (getApiClient().isConnected()) {
+            if(dateStarted != null) {
+                Date currentDate = new Date();
+                int secondsPlayed = (int) (currentDate.getTime() - dateStarted.getTime()) / 1000;
+                Games.Events.increment(this.getApiClient(), getString(R.string.event_time_played), secondsPlayed);
+            }
+
+            Games.Events.increment(this.getApiClient(), getString(R.string.event_tiles_combined), game.getTilesCombined());
+            game.resetTilesCombined();
+        }
+        dateStarted = null;
 
         super.onStop();
     }
@@ -966,7 +972,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         Button continuePlayingButton = new Button(getActivity());
         continuePlayingButton.setText(getString(R.string.continue_playing));
 
-
         Button shareButton = new Button(getActivity());
         shareButton.setText(getString(R.string.share_high_score));
         shareButton.setOnClickListener(new View.OnClickListener() {
@@ -982,8 +987,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 startActivity(shareIntent);
 
                 sendAnalyticsEvent("Game Fragment", "Congratulations Dialog", "Share Button");
-                if(getApiClient().isConnected())
+                if(getApiClient().isConnected()) {
                     Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_brag_to_your_friends));
+                    Games.Events.increment(getApiClient(), getString(R.string.event_shares), 1);
+                }
             }
         });
 
@@ -1142,14 +1149,12 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             }
 
             if(leaderboard != null)
-                Games.Leaderboards.submitScore(getApiClient(),
-                        leaderboard,
-                        score);
+                Games.Leaderboards.submitScore(getApiClient(), leaderboard, score);
         }
     }
 
     /**
-     * Update the events on google play games with the game information
+     * Update the events on Google Play Games with the game information
      * @param myGame The game to get the data from
      */
     private void submitEvents(Game myGame)
@@ -1165,6 +1170,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             Games.Events.increment(this.getApiClient(), totalMovesId, myGame.getTurns());
             Games.Events.increment(this.getApiClient(), totalScoreId, myGame.getScore());
             Games.Events.increment(this.getApiClient(), tilesCombinedId, game.getTilesCombined());
+            game.resetTilesCombined();
         }
     }
 
@@ -1204,7 +1210,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             else {
                 builder.setTitle(getString(R.string.prompt_choose_powerup)).setItems(R.array.powerups, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Games.Events.increment(getApiClient(), getString(R.string.event_powerups_used), 1);
                         // The 'which' argument contains the index position
                         // of the selected item
                         switch (which) {
@@ -1213,6 +1218,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                                 game.decrementPowerupsRemaining();
                                 if(game.getUseItemInventory())
                                     gameData.decrementPowerupInventory();
+                                if(getApiClient().isConnected())
+                                    Games.Events.increment(getApiClient(), getString(R.string.event_powerups_used), 1);
                                 break;
                             case 1:
                                 // The number of powerups is decremented in removeTile
@@ -1222,12 +1229,16 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                             case 2:
                                 removeLowTiles();
                                 game.decrementPowerupsRemaining();
+                                if(getApiClient().isConnected())
+                                    Games.Events.increment(getApiClient(), getString(R.string.event_powerups_used), 1);
                                 if(game.getUseItemInventory())
                                     gameData.decrementPowerupInventory();
                                 break;
                             case 3:
                                 game.setGenieEnabled(true);
                                 game.decrementPowerupsRemaining();
+                                if(getApiClient().isConnected())
+                                    Games.Events.increment(getApiClient(), getString(R.string.event_powerups_used), 1);
                                 if(game.getUseItemInventory())
                                     gameData.decrementPowerupInventory();
                                 updateTextviews();
@@ -1356,6 +1367,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                                     .setDuration(tileSlideSpeed)).start();
                             game.removeTile(new Location(view.getId() / 100, view.getId() % 100));
                             game.decrementPowerupsRemaining();
+                            if(getApiClient().isConnected())
+                                Games.Events.increment(getApiClient(), getString(R.string.event_powerups_used), 1);
                             if(game.getUseItemInventory())
                                 gameData.decrementPowerupInventory();
                             setPowerupButtonEnabled(game.getPowerupsRemaining() != 0);

@@ -1,6 +1,5 @@
 package com.tytanapps.game2048;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,13 +17,16 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import com.google.android.gms.games.Games;
+import com.google.example.games.basegameutils.BaseGameActivity;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class CustomGameActivity extends Activity {
+public class CustomGameActivity extends BaseGameActivity {
 
     private static final int MAX_GRID_SIZE = 15;
 
@@ -87,6 +89,10 @@ public class CustomGameActivity extends Activity {
 
         // Switch to the game activity
         startActivity(new Intent(this, GameActivity.class));
+
+        if(getApiClient().isConnected())
+            Games.Events.increment(getApiClient(), getString(R.string.event_custom_games_created), 1);
+
     }
 
     private List<Game.Mode> getSelectedGameModes() {
@@ -264,6 +270,16 @@ public class CustomGameActivity extends Activity {
         return true;
     }
 
+    @Override
+    public void onSignInFailed() {
+
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -333,8 +349,6 @@ public class CustomGameActivity extends Activity {
             survivalCheckbox.setOnCheckedChangeListener(onCheckedChangeListener);
             rushCheckbox.setOnCheckedChangeListener(onCheckedChangeListener);
             ghostCheckbox.setOnCheckedChangeListener(onCheckedChangeListener);
-
-
 
             return rootView;
         }
