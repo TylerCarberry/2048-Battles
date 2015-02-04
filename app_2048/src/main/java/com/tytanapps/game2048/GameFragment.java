@@ -390,7 +390,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 updateGame();
                 gameData.incrementTotalMoves(1);
 
-                if(gameData.getTotalMoves() >= 2048 && getApiClient().isConnected()) {
+                // After 2048 moves have been made the game only attempts to submit the achievement
+                // once every 32 moves to avoid exceeding the limits.
+                if(gameData.getTotalMoves() >= 2048 && gameData.getTotalMoves() % 32 == 0 && getApiClient().isConnected()) {
                     Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
                 }
 
@@ -439,7 +441,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(game.highestPiece() > highestTile) {
             if (game.highestPiece() >= 128 && game.getGameModeId() == GameModes.NORMAL_MODE_ID)
                 unlockAchievementNewHighestTile(game.highestPiece());
-            if(game.highestPiece() == 2048)
+            if(game.highestPiece() >= 2048)
                 showCongratulationsDialog(game.highestPiece());
         }
 
@@ -1936,7 +1938,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         // Create a new game
         game = game.getOriginalGame();
-        
+
         // TODO: This line of code is causing multiple crashes but I do not know why
         game.finishedCreatingGame();
 
@@ -2184,6 +2186,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                     break;
                 case 2048:
                     Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_2048_tile));
+                    break;
+                case 4096:
+                    Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_4096_tile));
                     break;
             }
         }
