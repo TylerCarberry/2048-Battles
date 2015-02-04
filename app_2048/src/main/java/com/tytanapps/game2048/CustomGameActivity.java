@@ -102,6 +102,7 @@ public class CustomGameActivity extends BaseGameActivity {
         boolean survivalMode = ((CheckBox)findViewById(R.id.survival_mode_checkbox)).isChecked();
         boolean rushMode = ((CheckBox)findViewById(R.id.rush_mode_checkbox)).isChecked();
         boolean ghostMode = ((CheckBox)findViewById(R.id.ghost_mode_checkbox)).isChecked();
+        boolean arcadeMode = ((CheckBox)findViewById(R.id.arcade_mode_checkbox)).isChecked();
 
         List<Game.Mode> gameModes = new ArrayList<Game.Mode>();
 
@@ -117,6 +118,8 @@ public class CustomGameActivity extends BaseGameActivity {
             gameModes.add(Game.Mode.RUSH);
         if(ghostMode)
             gameModes.add(Game.Mode.GHOST);
+        if(arcadeMode)
+            gameModes.add(Game.Mode.ARCADE);
 
         return gameModes;
     }

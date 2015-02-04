@@ -336,7 +336,7 @@ public class GameModes
 	{
         Game game = new Game(5,5);
 		game.setMoveLimit(-1);
-		game.setTimeLimit(30);
+		game.setTimeLimit(SURVIVAL_MODE_TIME);
 		game.enableSurvivalMode();
 		game.enableCornerMode();
 		game.enableXMode();

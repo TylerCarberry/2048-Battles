@@ -661,17 +661,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         tile.setTag(tileValue);
 
         // Increment the time left on survival mode when tiles 8 or higher combine
-        // 8's combine --> +2 seconds
-        // 16's --> +3 seconds
-        // 32's --> +4 seconds ...
-        //incrementTimeLeft((int) (Math.log10(tileValue/4)/Math.log10(2)));
-
-
-        if(game.getSurvivalMode() && tileValue >= 16)
-            incrementTimeLeft(2);
+        if(game.getSurvivalMode())
+            if(tileValue >= 16)
+                incrementTimeLeft(1);
 
         Drawable[] layers = new Drawable[2];
-
         // The current icon
         // I used a workaround to fix a bug that was caused when both of the tiles that
         // combine are moving. This will causes issues when I implement zen mode because this
@@ -767,7 +761,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * @param tileValue The numerical value of the tile
      */
     private int getTileIconResource(int tileValue) {
-        if(tileValue != 0 && (game.getGameModeId() == GameModes.GHOST_MODE_ID || ghostAttackActive))
+        if(tileValue != 0 && (game.getGhostMode() || ghostAttackActive))
             return R.drawable.tile_question;
         else {
             switch(tileValue) {
@@ -893,7 +887,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_worst_player_ever));
         }
         if(game.getPowerupsUsed() <= 0 && game.getUndosUsed() <= 0 &&
-                game.getGameModeId() == GameModes.PRACTICE_MODE_ID &&  getApiClient().isConnected()) {
+                game.getGameModeId() == GameModes.PRACTICE_MODE_ID && getApiClient().isConnected()) {
             Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_i_dont_want_any_help));
         }
 
@@ -1443,19 +1437,19 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             updateTextviews();
         }
         else {
-            String message;
-            if(rand < 0.75) {
-                game.incrementUndosRemaining();
-                setUndoButtonEnabled(true);
-                message = getString(R.string.bonus_undo);
+            if(!game.getUseItemInventory()) {
+                String message;
+                if (rand < 0.75) {
+                    game.incrementUndosRemaining();
+                    setUndoButtonEnabled(true);
+                    message = getString(R.string.bonus_undo);
+                } else {
+                    game.incrementPowerupsRemaining();
+                    setPowerupButtonEnabled(true);
+                    message = getString(R.string.bonus_powerup);
+                }
+                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             }
-            else {
-                game.incrementPowerupsRemaining();
-                setPowerupButtonEnabled(true);
-                message = getString(R.string.bonus_powerup);
-            }
-
-            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
     }
 
