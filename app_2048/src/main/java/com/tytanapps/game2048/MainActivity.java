@@ -147,7 +147,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         // The number of days since the epoch
-        long lastDatePlayed = prefs.getLong("lastDatePlayed", -1);
+        long lastDatePlayed = prefs.getLong(getString(R.string.shared_preference_last_date_played), -1);
         long currentDate = TimeUnit.MILLISECONDS.toDays(Calendar.getInstance().getTimeInMillis());
 
         if (currentDate > lastDatePlayed && lastDatePlayed != -1) {
@@ -163,7 +163,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             }
 
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putLong("lastDatePlayed", currentDate);
+        editor.putLong(getString(R.string.shared_preference_last_date_played), currentDate);
         editor.apply();
     }
 

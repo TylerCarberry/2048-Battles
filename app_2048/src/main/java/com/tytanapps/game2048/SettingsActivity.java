@@ -3,6 +3,7 @@ package com.tytanapps.game2048;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,20 +43,7 @@ public class SettingsActivity extends PreferenceActivity {
 		super.onPostCreate(savedInstanceState);
 
         setContentView(R.layout.activity_preferences);
-
 		setupSimplePreferencesScreen();
-
-
-        /*
-        ListView v = getListView();
-
-
-
-        Button button = new Button(this);
-        button.setText("Button");
-
-        v.addFooterView(button);
-        */
 	}
 
 	/**
@@ -105,8 +93,21 @@ public class SettingsActivity extends PreferenceActivity {
             public void onClick(DialogInterface dialog, int which) {
                 File currentGameFile = new File(getFilesDir(), getString(R.string.file_current_game));
                 currentGameFile.delete();
-                GameData gameData = new GameData();
-                saveGameData(gameData);
+
+                File screenshotFile = new File(getFilesDir(), getString(R.string.file_screenshot));
+                screenshotFile.delete();
+
+                File customTileIcons = new File(getFilesDir(), getString(R.string.file_custom_tile_icons));
+                customTileIcons.delete();
+
+                saveGameData(new GameData());
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        clearSavedPreferences();
+                    }
+                });
             }
         });
         builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -115,6 +116,11 @@ public class SettingsActivity extends PreferenceActivity {
         });
 
         builder.create().show();
+    }
+
+    private void clearSavedPreferences() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.edit().clear().commit();
     }
 
     private void saveGameData(GameData gameData) {
