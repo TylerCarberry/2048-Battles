@@ -77,7 +77,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     private final static int QUEST_CODE = 1004;
 
     // The tiles that fly across the background travel for between 3 and 6 seconds
-    private final static int FLYING_TILE_SPEED = 6000;
+    public final static int FLYING_TILE_SPEED = 6000;
 
     // Stores a cache of the scaled tiles the fly across the background
     private SparseArray<Drawable> tileIcons = new SparseArray<Drawable>();
@@ -216,7 +216,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
             @Override
             public void run() {
-                if (activityIsVisible && (times > amount || amount < 0)) {
+                if (activityIsVisible && (times < amount || amount < 0)) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -740,6 +740,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         }
 
         dialogBuilder.setView(dialogLayout);
+
 
         return dialogBuilder.create();
     }

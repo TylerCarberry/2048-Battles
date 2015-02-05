@@ -118,7 +118,7 @@
     <string name="opponent_lost">Your opponent has lost</string>
     <string name="random_shuffle">Random Shuffle</string>
     <string name="open_source">This app is open source.\nTap to see the code.</string>
-    <string name="congratulations">Congratulations</string>
+    <string name="congratulations">Congratulations!</string>
     <string name="title_activity_custom_game">CustomGameActivity</string>
     <string name="error_grid_small">The grid is too small</string>
     <string name="grid_size">Grid Size</string>
@@ -157,7 +157,7 @@
     <string name="multiplayer_cant_move">You cannot move. Use a powerup to continue.</string>
     <string name="continue_playing">Continue Playing</string>
     <string name="share_high_score">Brag</string>
-    <string name="tile_reached">%1$d tile reached</string>
+    <string name="tile_reached">%1$d Tile Reached!</string>
     <string name="no_powerups_short">No more powerups</string>
     <string name="no_powerups_long">There are no powerups remaining</string>
     <string name="bonus_undo">Bonus! +1 Undo</string>

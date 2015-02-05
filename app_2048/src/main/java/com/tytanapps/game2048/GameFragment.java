@@ -33,7 +33,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
@@ -128,6 +127,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     private Date dateStarted;
 
+    private static boolean fragmentIsVisible = false;
+
     public GameFragment() { }
 
     @Override
@@ -142,7 +143,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             final ImageButton undoButton = (ImageButton) rootView.findViewById(R.id.undo_button);
             undoButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    //showCongratulationsDialog(2048);
                     undo();
                 }
             });
@@ -252,6 +252,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         dateStarted = new Date();
 
+        fragmentIsVisible = true;
+
         super.onStart();
     }
 
@@ -288,6 +290,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             game.resetTilesCombined();
         }
         dateStarted = null;
+
+        fragmentIsVisible = false;
 
         super.onStop();
     }
@@ -932,7 +936,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private void showCongratulationsDialog(final int tile) {
-        animateFlyingTiles(150,15);
+        animateFlyingTiles(20,200);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.congratulations));
@@ -942,32 +946,31 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         int padding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
 
-        // The text instructions
-        TextView textView = new TextView(getActivity());
-
-        textView.setText(String.format(getString(R.string.tile_reached), tile));
-
-        textView.setTextSize(22);
-        textView.setGravity(Gravity.CENTER_HORIZONTAL);
-        textView.setPadding(0, padding, 0, padding);
-
         ImageView tileImageView = new ImageView(getActivity());
         tileImageView.setPadding(padding, padding, padding, padding);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
         tileImageView.setLayoutParams(layoutParams);
-        setIcon(tileImageView, tile);
+
+        int tileSize = calculateTileSize(2, 2);
+        Bitmap tileDrawable = BitmapFactory.decodeResource(getResources(), getTileIconResource(tile));
+        Bitmap tileBitmap = Bitmap.createScaledBitmap(tileDrawable, tileSize, tileSize, false);
+        Drawable resultDrawable = new BitmapDrawable(getResources(), tileBitmap);
+        tileImageView.setImageDrawable(resultDrawable);
 
 
-        Button continuePlayingButton = new Button(getActivity());
-        continuePlayingButton.setText(getString(R.string.continue_playing));
 
-        Button shareButton = new Button(getActivity());
-        shareButton.setText(getString(R.string.share_high_score));
-        shareButton.setOnClickListener(new View.OnClickListener() {
+        linearLayout.addView(tileImageView);
+        builder.setView(linearLayout);
+
+        builder.setPositiveButton(getString(R.string.continue_playing), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(DialogInterface dialog, int which) {}
+        });
+        builder.setNeutralButton(getString(R.string.share_high_score), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
 
@@ -985,22 +988,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             }
         });
 
-        linearLayout.addView(textView);
-        linearLayout.addView(tileImageView);
-        linearLayout.addView(continuePlayingButton);
-        linearLayout.addView(shareButton);
-
-        builder.setView(linearLayout);
-
-        final AlertDialog alertDialog = builder.create();
-
-        continuePlayingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
-
+        AlertDialog alertDialog = builder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
 
         sendAnalyticsEvent("Game Fragment", "Congratulations Dialog", "Tile: " + tile);
@@ -1010,46 +999,58 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         final Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             int times = 0;
+
             @Override
             public void run() {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        animateFlyingTile();
-                    }
-                });
-                times++;
-                if(times > amount)
+                if (fragmentIsVisible && (times < amount || amount < 0)) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            animateFlyingTile();
+                        }
+                    });
+                    times++;
+                } else
                     timer.cancel();
+
             }
         }, delay, delay);
     }
 
     public void animateFlyingTile() {
         final RelativeLayout mainFragment = (RelativeLayout) getView().findViewById(R.id.game_fragment);
+        if(mainFragment == null)
+            return;
+
+        int randomFlyingSpeed = (int) (Math.random() * MainActivity.FLYING_TILE_SPEED/2 + MainActivity.FLYING_TILE_SPEED/2);
+
         final ImageView tile = new ImageView(getActivity());
 
+        int tileValue;
         double rand = Math.random();
         if(rand < 0.1)
-            tile.setBackgroundResource(R.drawable.tile_2);
+            tileValue = 2;
         else if(rand < 0.2)
-            tile.setBackgroundResource(R.drawable.tile_4);
+            tileValue = 4;
         else if(rand < 0.3)
-            tile.setBackgroundResource(R.drawable.tile_8);
+            tileValue = 8;
         else if(rand < 0.4)
-            tile.setBackgroundResource(R.drawable.tile_16);
+            tileValue = 16;
         else if(rand < 0.5)
-            tile.setBackgroundResource(R.drawable.tile_32);
+            tileValue = 32;
         else if(rand < 0.6)
-            tile.setBackgroundResource(R.drawable.tile_64);
+            tileValue = 64;
         else if(rand < 0.7)
-            tile.setBackgroundResource(R.drawable.tile_256);
+            tileValue = 128;
         else if(rand < 0.8)
-            tile.setBackgroundResource(R.drawable.tile_512);
+            tileValue = 256;
         else if(rand < 0.9)
-            tile.setBackgroundResource(R.drawable.tile_1024);
+            tileValue = 512;
         else
-            tile.setBackgroundResource(R.drawable.tile_2048);
+            tileValue = 1024;
+
+        int tileSize = getResources().getDimensionPixelSize(R.dimen.main_activity_tile_size);
+        tile.setImageDrawable(getTileIconDrawable(tileValue, tileSize));
 
         Display display = getActivity().getWindowManager().getDefaultDisplay();
 
@@ -1086,15 +1087,18 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         ObjectAnimator animatorX = ObjectAnimator.ofFloat(tile, View.TRANSLATION_X, endingX - startingX);
         ObjectAnimator animatorY = ObjectAnimator.ofFloat(tile, View.TRANSLATION_Y, endingY - startingY);
 
-        animatorX.setDuration(1000);
-        animatorY.setDuration(1000);
+        float[] rotateAmount = {(float) (2 * (Math.random() - 0.5) * 360), (float) (2 * (Math.random() - 0.5) * 360)};
+        ObjectAnimator rotateAnimation = ObjectAnimator.ofFloat(tile, View.ROTATION, rotateAmount);
+
+        animatorX.setDuration(randomFlyingSpeed);
+        animatorY.setDuration(randomFlyingSpeed);
+        rotateAnimation.setDuration(randomFlyingSpeed);
 
         animatorX.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mainFragment.removeView(tile);
             }
-
             @Override
             public void onAnimationStart(Animator animation) {}
             @Override
@@ -1103,14 +1107,62 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             public void onAnimationRepeat(Animator animation) {}
         });
 
+        tile.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    int tileSize = getResources().getDimensionPixelSize(R.dimen.main_activity_tile_size);
+                    Bitmap tileDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.tile_2048);
+                    Bitmap tileBitmap = Bitmap.createScaledBitmap(tileDrawable, tileSize, tileSize, false);
+                    tile.setImageBitmap(tileBitmap);
+
+                    if (getApiClient().isConnected()) {
+                        Games.Events.increment(getApiClient(), getString(R.string.event_tap_on_flying_tile), 1);
+                        Games.Achievements.increment(getApiClient(), getString(R.string.achievement_tile_tapper), 1);
+                    }
+                }
+
+                tile.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return false;
+                    }
+                });
+
+                return true;
+            }
+        });
+
         RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(startingX, startingY, 0, 0);
         tile.setLayoutParams(layoutParams);
 
         mainFragment.addView(tile);
 
-        animatorX.start();
-        animatorY.start();
+        float[] scaleSize = {(float) (Math.random()/2+.5), (float) (Math.random()/2+.5)};
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(tile, View.SCALE_X, scaleSize);
+        scaleX.setDuration(randomFlyingSpeed);
+
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(tile, View.SCALE_Y, scaleSize);
+        scaleY.setDuration(randomFlyingSpeed);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(animatorX).with(animatorY).with(rotateAnimation).with(scaleX).with(scaleY);
+        animatorSet.start();
+    }
+
+    private Drawable getTileIconDrawable(int tileValue, int tileSize) {
+        Drawable cachedDrawable = tileIcons.get(tileValue);
+        if(cachedDrawable != null)
+            return cachedDrawable;
+
+        Bitmap tileDrawable = BitmapFactory.decodeResource(getResources(), getTileIconResource(tileValue));
+        Bitmap tileBitmap = Bitmap.createScaledBitmap(tileDrawable, tileSize, tileSize, false);
+        Drawable resultDrawable = new BitmapDrawable(getResources(), tileBitmap);
+
+        tileIcons.put(tileValue, resultDrawable);
+
+        return resultDrawable;
     }
 
     /**
@@ -1216,6 +1268,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                                 // The number of powerups is decremented in removeTile
                                 // after a tile has been selected
                                 removeTile();
+                                //debugDoubleAllTiles();
                                 break;
                             case 2:
                                 removeLowTiles();
@@ -1242,6 +1295,16 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             }
             builder.create().show();
         }
+    }
+
+    private void debugDoubleAllTiles() {
+        Grid grid = game.getGrid();
+        for(int x = 0; x < grid.getNumRows(); x++) {
+            for (int y = 0; y < grid.getNumRows(); y++) {
+                grid.set(new Location(x,y), grid.get(new Location(x,y)) * 4);
+            }
+        }
+        updateGame();
     }
 
     private void showLoseDialog() {
