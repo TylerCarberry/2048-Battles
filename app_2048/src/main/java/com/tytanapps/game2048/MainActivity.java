@@ -1145,13 +1145,16 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
     private void handleInboxResult(ArrayList<GameRequest> gameRequests) {
         for(GameRequest request : gameRequests) {
+
+            if(getApiClient().isConnected())
+                Games.Requests.acceptRequest(getApiClient(), request.getRequestId());
+            else
+                break;
+
             String senderName = request.getSender().getDisplayName();
             String message;
 
             if(new String(request.getData()).equals("p")) {
-
-                animateFlyingTiles(150, 10);
-
                 message = String.format(getString(R.string.powerup_gift_received), senderName);
                 try {
                     incrementPowerupInventory(1);
@@ -1163,8 +1166,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             }
             else {
 
-                animateFlyingTiles(150, 10);
-
                 message = String.format(getString(R.string.undo_gift_received), senderName);
                 try {
                     incrementUndoInventory(1);
@@ -1174,8 +1175,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                     e.printStackTrace();
                 }
             }
-
-            Games.Requests.acceptRequest(getApiClient(), request.getRequestId());
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
     }

@@ -99,6 +99,8 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     // Set to false to require the user to click the button in order to sign in.
     private boolean mAutoStartSignInFlow = true;
 
+    private boolean activityIsVisible = false;
+
     // Room ID where the currently active game is taking place; null if we're
     // not playing.
     String mRoomId = null;
@@ -280,7 +282,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                         times++;
 
                         // If the time is up or the user switched screens then stop the timer
-                        if(times > seconds || findViewById(R.id.multiplayerProgressBar) == null) {
+                        if(times > seconds || findViewById(R.id.multiplayerProgressBar) == null || !activityIsVisible) {
                             t.cancel();
                             t.purge();
                             return;
@@ -655,6 +657,8 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     // Activity is going to the background. We have to leave the current room.
     @Override
     public void onStop() {
+        activityIsVisible = false;
+
         // if we're in a room, leave it.
         leaveRoom();
 
@@ -670,7 +674,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     // this flow simply succeeds and is imperceptible).
     @Override
     public void onStart() {
-        //switchToScreen(R.id.screen_wait);
+        activityIsVisible = true;
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             Log.w(LOG_TAG,
                     "GameHelper: client was already connected on onStart()");
