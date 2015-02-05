@@ -9,6 +9,8 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -81,10 +83,13 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     public static final char SEND_ATTACK_X = 'x';
 
     // The % chance that a bonus will be received this second
-    private final static double BONUS_CHANCE = 0.20;
+    //private final static double BONUS_CHANCE = 0.20;
 
     // The number of seconds a multiplayer game is played for
     public static final int MULTIPLAYER_GAME_LENGTH = 60;
+
+    // A bonus attack/powerup is gained every x seconds.
+    private static final int DELAY_BETWEEN_BONUSES = 5;
 
     // Client used to interact with Google APIs.
     private GoogleApiClient mGoogleApiClient;
@@ -101,12 +106,16 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     private boolean activityIsVisible = false;
 
-    // Room ID where the currently active game is taking place; null if we're
-    // not playing.
+    // Room ID where the currently active game is taking place; null if we're not playing.
     String mRoomId = null;
 
     // Are we playing in multiplayer mode?
-    private boolean multiplayerActive = false;
+    private boolean multiplayerConnected = false;
+
+    // Becomes true after the first game has started and does not become false again.
+    // This is used to kick the player out of a game immediately if the opponent
+    // left during the countdown.
+    private boolean gameStarted = false;
 
     // The participants in the currently active game
     ArrayList<Participant> mParticipants = null;
@@ -193,8 +202,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         ft.addToBackStack(null);
         ft.commit();
 
-        multiplayerActive = true;
-
         if(! hideIdentity) {
             sendMessage(SEND_NAME + getPlayerName(), true);
             sendMessage(SEND_PIC_URL + getPlayer().getImage().getUrl(), true);
@@ -206,15 +213,24 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
      */
     private void startQuickGame() {
         final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 1;
-        Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MIN_OPPONENTS,
-                MAX_OPPONENTS, 0);
-        RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
-        rtmConfigBuilder.setMessageReceivedListener(this);
-        rtmConfigBuilder.setRoomStatusUpdateListener(this);
-        rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
+        Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MIN_OPPONENTS, MAX_OPPONENTS, 0);
+
+        RoomConfig.Builder builder = RoomConfig.builder(this);
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            int version = pInfo.versionCode;
+            builder.setVariant(version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        builder.setMessageReceivedListener(this);
+        builder.setRoomStatusUpdateListener(this);
+        builder.setAutoMatchCriteria(autoMatchCriteria);
+
         keepScreenOn();
 
-        Games.RealTimeMultiplayer.create(mGoogleApiClient, rtmConfigBuilder.build());
+        Games.RealTimeMultiplayer.create(mGoogleApiClient, builder.build());
     }
 
     @Override
@@ -237,7 +253,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 if (responseCode == Activity.RESULT_OK) {
                     // ready to start playing
                     Log.d(LOG_TAG, "Starting game (waiting room returned OK).");
-                    multiplayerActive = true;
+                    multiplayerConnected = true;
                     switchToGame();
                 } else if (responseCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
                     // player indicated that they want to leave the room
@@ -270,7 +286,9 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     }
 
     protected void createMultiplayerTimer(final int seconds) {
-        ((TextView) findViewById(R.id.time_left_textview)).setText(""+seconds);
+        setGameStarted(true);
+
+        ((TextView) findViewById(R.id.time_left_textview)).setText("" + seconds);
 
         final Timer t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {
@@ -303,11 +321,13 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         secondsLeft -= seconds;
         timerTextView.setText(""+secondsLeft);
 
-        Log.d(LOG_TAG, "Seconds Left: "+secondsLeft);
+        //Log.d(LOG_TAG, "Seconds Left: "+secondsLeft);
 
         if(secondsLeft <= 0)
             multiplayerTimeUp();
-        else if(Math.random() < BONUS_CHANCE)
+        else
+            //if(Math.random() < BONUS_CHANCE)
+            if(secondsLeft % DELAY_BETWEEN_BONUSES == 0)
                 addBonus();
 
         return secondsLeft;
@@ -336,7 +356,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             }
         });
 
-        if(multiplayerActive)
+        if(multiplayerConnected)
             builder.setPositiveButton(getString(R.string.rematch), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -398,7 +418,14 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         gameLoaded = true;
         sendMessage(""+SEND_LOADED, true);
         if(opponentLoaded)
-            gameFragment.createCountdown(3 * 1000);
+            bothPlayersHaveLoaded();
+
+    }
+
+    private void bothPlayersHaveLoaded() {
+        gameFragment.createCountdown(3 * 1000);
+        gameFragment.updateOpponentName();
+        gameFragment.updateOpponentPic();
     }
 
     private void addBonus() {
@@ -682,13 +709,19 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             Log.d(LOG_TAG,"Connecting client.");
             mGoogleApiClient.connect();
         }
+
+        if(gameStarted)
+            startActivity(new Intent(this, MainActivity.class));
+        else
+            gameStarted = false;
+
         super.onStart();
     }
 
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage rtm) {
-        if(! multiplayerActive)
-            return;
+        //if(! multiplayerConnected)
+        //    return;
 
         // Convert the message to a string
         byte[] buf = rtm.getMessageData();
@@ -702,7 +735,8 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             // The score was sent
             case SEND_SCORE:
                 int opponentScore = Integer.parseInt(message.substring(1));
-                gameFragment.getGame().setOpponentScore(opponentScore);
+                if(gameFragment != null)
+                    gameFragment.getGame().setOpponentScore(opponentScore);
                 break;
             case SEND_REMATCH:
                 opponentRequestedRematch = true;
@@ -711,37 +745,45 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                 break;
             case SEND_NAME:
                 opponentName = message.substring(1);
-                if(findViewById(R.id.multiplayerProgressBar) != null)
+                if(gameFragment != null)
                     gameFragment.updateOpponentName();
                 break;
             case SEND_PIC_URL:
                 opponentPicUrl = message.substring(1);
-                if(findViewById(R.id.multiplayerProgressBar) != null)
+                if(gameFragment != null)
                     gameFragment.updateOpponentPic();
                 break;
             case SEND_ATTACK_SHUFFLE:
-                gameFragment.shuffleGame();
-                Toast.makeText(this, getString(R.string.multiplayer_recieved_attack), Toast.LENGTH_SHORT).show();
+                if(gameFragment != null) {
+                    gameFragment.shuffleGame();
+                    Toast.makeText(this, getString(R.string.multiplayer_recieved_attack), Toast.LENGTH_SHORT).show();
+                }
                 break;
             case SEND_ATTACK_GHOST:
-                gameFragment.ghostAttack();
-                gameFragment.updateTextviews();
+                if(gameFragment != null) {
+                    gameFragment.ghostAttack();
+                    gameFragment.updateTextviews();
+                }
                 break;
             case SEND_ATTACK_ICE:
-                gameFragment.ice();
-                gameFragment.updateTextviews();
+                if(gameFragment != null) {
+                    gameFragment.ice();
+                    gameFragment.updateTextviews();
+                }
                 break;
             case SEND_ATTACK_X:
-                gameFragment.XTileAttack();
-                gameFragment.updateTextviews();
+                if(gameFragment != null) {
+                    gameFragment.XTileAttack();
+                    gameFragment.updateTextviews();
+                }
                 break;
             case SEND_LOADED:
                 opponentLoaded = true;
                 if(gameLoaded)
-                    gameFragment.createCountdown(3 * 1000);
+                    bothPlayersHaveLoaded();
                 break;
-            default:
-                Toast.makeText(this, message , Toast.LENGTH_LONG).show();
+            //default:
+            //    Toast.makeText(this, message , Toast.LENGTH_LONG).show();
         }
     }
 
@@ -1015,15 +1057,21 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     }
 
     private void opponentLeft() {
-        multiplayerActive = false;
+        multiplayerConnected = false;
 
-        View activeAttacks = gameFragment.getView().findViewById(R.id.active_attacks_textview);
-        View attackInventory = gameFragment.getView().findViewById(R.id.bonuses_linear_layout);
+        if(gameStarted) {
+            View activeAttacks = gameFragment.getView().findViewById(R.id.active_attacks_textview);
+            View attackInventory = gameFragment.getView().findViewById(R.id.bonuses_linear_layout);
 
-        if(activeAttacks != null)
-            ((TextView) activeAttacks).setText(getString(R.string.opponent_left_game));
-        if(attackInventory != null)
-            attackInventory.setVisibility(View.INVISIBLE);
+            if (activeAttacks != null)
+                ((TextView) activeAttacks).setText(getString(R.string.opponent_left_game));
+            if (attackInventory != null)
+                attackInventory.setVisibility(View.INVISIBLE);
+        }
+        else {
+            startActivity(new Intent(this, MainActivity.class));
+            Toast.makeText(this, getString(R.string.opponent_left_game), Toast.LENGTH_LONG).show();
+        }
     }
 
     void updateRoom(Room room) {
@@ -1107,8 +1155,12 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     @Override
     public void onSignInSucceeded() {    }
 
-    public boolean isMultiplayerActive() {
-        return multiplayerActive;
+    public boolean isMultiplayerConnected() {
+        return multiplayerConnected;
+    }
+
+    public void setGameStarted(boolean isGameActive) {
+        gameStarted = isGameActive;
     }
 
     /**

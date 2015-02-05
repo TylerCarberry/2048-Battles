@@ -238,9 +238,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(multiplayerActive) {
             ((MultiplayerActivity) getActivity()).gameHasLoaded();
 
-            // There is a 3 second delay before a multiplayer game starts
-            //createCountdown(3 * 1000);
-
             // If the user chose to hide their identity do not show them their own identity
             // This confirms the change to the user as they cannot see their opponents screen
             if(! prefs.getBoolean(getString(R.string.preference_hide_identity), false)) {
@@ -249,8 +246,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             }
             // Show the opponent's first name and profile picture.
             // If the opponent hid their identity these methods do nothing
-            updateOpponentName();
-            updateOpponentPic();
+            //updateOpponentName();
+            //updateOpponentPic();
         }
 
         dateStarted = new Date();
@@ -484,7 +481,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
 
         // Update attacks
-        if(! multiplayerActive || ((MultiplayerActivity)(getActivity())).isMultiplayerActive())
+        if(! multiplayerActive || ((MultiplayerActivity)(getActivity())).isMultiplayerConnected())
             activeAttacksTextView.setText(getAttackString());
 
         if(! multiplayerActive) {
@@ -2113,7 +2110,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     private void endCountdown() {
         getView().findViewById(R.id.countdown_textview).setVisibility(View.GONE);
         getView().findViewById(R.id.active_attacks_textview).setVisibility(View.VISIBLE);
-
 
         // Create the game timer
         ((MultiplayerActivity) getActivity()).createMultiplayerTimer(MultiplayerActivity.MULTIPLAYER_GAME_LENGTH);
