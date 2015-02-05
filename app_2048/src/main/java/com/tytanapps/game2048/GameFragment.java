@@ -798,9 +798,13 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                     return R.drawable.tile_2048;
                 case 4096:
                     return R.drawable.tile_4096;
-                // If I did not create an image for the tile, default to a 0 tile
+                case 8192:
+                    return R.drawable.tile_8192;
+                case 16384:
+                    return R.drawable.tile_16384;
+                // If the tile is so high that I did not create an image, default to infinity
                 default:
-                    return R.drawable.tile_0;
+                    return R.drawable.tlie_infinity;
             }
         }
     }
