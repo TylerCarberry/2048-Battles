@@ -43,9 +43,7 @@ public class MainApplication extends Application{
             }
 
             @Override
-            public void setLogLevel(int i) {
-
-            }
+            public void setLogLevel(int i) {}
 
             @Override
             public int getLogLevel() {
@@ -79,7 +77,6 @@ public class MainApplication extends Application{
 
             if(trackerId == TrackerName.APP_TRACKER) {
                 Tracker t = analytics.newTracker(R.xml.app_tracker);
-                t.enableAdvertisingIdCollection(true);
                 mTrackers.put(trackerId, t);
             }
 		}
