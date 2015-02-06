@@ -1,6 +1,6 @@
 ![2048 logo 19](https://cloud.githubusercontent.com/assets/6628497/4520300/6df7cce6-4ce6-11e4-935a-e687fe85379d.png).
-![screenshot_2014-10-05-19-06-08](https://cloud.githubusercontent.com/assets/6628497/4520278/7c27196c-4ce5-11e4-83c8-151c17f4084f.png).
-![screenshot_2014-10-05-19-26-29](https://cloud.githubusercontent.com/assets/6628497/4520315/50cad018-4ce7-11e4-8c6f-d1c0aed9e61d.png)
+![screenshot_2014-10-05-19-06-08](https://cloud.githubusercontent.com/assets/6628497/6073897/cc3ce618-ad82-11e4-9031-44aa4696337f.png).
+![screenshot_2014-10-05-19-26-29](https://cloud.githubusercontent.com/assets/6628497/6073904/dc2b1914-ad82-11e4-8617-7c13876c2af4.png)
 
 
 
@@ -9,31 +9,35 @@ My version of 2048 based off the orginal 2048 by Gabriele Cirulli.
 
 **Licensing:** Although this app is open source, you may **not** modify or distribute it outside of the [Github Terms of Service](https://help.github.com/articles/github-terms-of-service/). See the [Digital Millennium Copyright Act (DMCA)](http://www.copyright.gov/legislation/dmca.pdf) for more information. 
 
-### Download the beta from Google Play
-1) [Join this Google+ Community](https://plus.google.com/communities/100444948974584286905)  
-2) [Opt into the beta](https://play.google.com/apps/testing/com.tytanapps.game2048)   
-3) ** Wait several hours for the app to become visible **  
-4) [Download the app](https://play.google.com/store/apps/details?id=com.tytanapps.game2048)
+This app is now available on [Google Play](https://play.google.com/store/apps/details?id=com.tytanapps.game2048)
 
 Or click here to download the latest  [beta](https://github.com/tytan34/2048-for-Android/blob/master/app_2048/build/outputs/apk/app_2048-debug.apk?raw=true) or
 [stable](https://github.com/tytan34/2048-for-Android/blob/master/app_2048/app_2048-release.apk?raw=true
 ) apk directly
 
-### Different Modes
-Multiplayer: Score more points than your opponent in 30 seconds   
-Classic: 10 Undos and 5 Powerups  
+### Real Time Multiplayer
+Challenge a random opponent to a quick battle.  
+Send attacks or use powerups to win.
+
+### Custom Game Modes
+Create a 2x3 game or 15x15  
+Toggle any of the game modes below individually
+
+### 9 Different Game Modes
+Classic: The boring way of playing  
 Practice: Unlimited powerups. Warns you before you lose.  
-Pro: No powerups
 Arcade: Randomly gain powerups and attacks   
 XMode: XTile cannot be combined  
 Corner Mode: Immovable tiles in the corners  
 Rush: Higher value tiles appear  
 Ghost: All tiles appear as ?  
-Coming Soon: Crazy, Survival, Zen, and Custom Games
+Crazy: A 5x5 grid with all other game modes enabled  
+Survival: 15 seconds. Combine tiles for more time  
+Coming Soon: Zen Mode
 
-![screenshot_2014-10-05-19-06-59](https://cloud.githubusercontent.com/assets/6628497/4520384/112702f8-4cea-11e4-9b88-b7292a3f4337.png) . 
-![screenshot_2014-10-05-19-07-15](https://cloud.githubusercontent.com/assets/6628497/4520385/13de5d84-4cea-11e4-8cf7-910ceb4a71ee.png) . 
-![screenshot_2014-10-05-19-10-44](https://cloud.githubusercontent.com/assets/6628497/4520386/16d17e86-4cea-11e4-902b-007f259ab4b5.png)
+![screenshot_2014-10-05-19-06-59](https://cloud.githubusercontent.com/assets/6628497/6073920/20da9c88-ad83-11e4-9b44-8be945b2e486.png). 
+![screenshot_2014-10-05-19-07-15](https://cloud.githubusercontent.com/assets/6628497/6073923/255f7f76-ad83-11e4-8b25-1f16fbe07bdf.png). 
+![screenshot_2014-10-05-19-10-44](https://cloud.githubusercontent.com/assets/6628497/6073924/2a828f3e-ad83-11e4-8a66-fcffe944dd5c.png)
 
 
 
@@ -42,15 +46,15 @@ Undo
 Shuffle  
 Remove A Tile  
 Remove All Low Tiles: Remove all 2s and 4s  
-Genie: Warns you about making a bad move  
+Warn Before You Lose  
 
-### Features
-Customize tile icons: Select an image from your device to use as the tile icon  
+### Additional Features
 Achievements  
 Leaderboards  
 Quests  
+Gifts: Send a powerup to your Google+ friend  
 Coming Soon: Cloud Save
 
-![screenshot_2014-10-05-19-06-23](https://cloud.githubusercontent.com/assets/6628497/4520339/667e3868-4ce8-11e4-8e40-7558f31a1a99.png) . 
-![screenshot_2014-10-05-19-06-33](https://cloud.githubusercontent.com/assets/6628497/4520340/6687b848-4ce8-11e4-9cc9-abb7bc15d0bc.png) . 
-![screenshot_2014-10-05-19-11-04](https://cloud.githubusercontent.com/assets/6628497/4520361/24671da4-4ce9-11e4-8138-9a816e6989cf.png)
+![screenshot_2014-10-05-19-06-23](https://cloud.githubusercontent.com/assets/6628497/6073952/8837fb3c-ad83-11e4-8b47-8d5e5893e561.png). 
+![screenshot_2014-10-05-19-06-33](https://cloud.githubusercontent.com/assets/6628497/6073954/8b4171c8-ad83-11e4-89d1-46b642c5e113.png). 
+![screenshot_2014-10-05-19-11-04](https://cloud.githubusercontent.com/assets/6628497/6073956/91153440-ad83-11e4-802f-431631f167d1.png)
