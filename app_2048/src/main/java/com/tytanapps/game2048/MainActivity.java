@@ -1041,7 +1041,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             builder.setMessage(message);
             builder.create().show();
 
-            animateFlyingTiles(150, 10);
+            animateFlyingTiles(30, 200);
 
         } catch (Exception e) {
             Toast.makeText(this, getString(R.string.error_claim_bonus), Toast.LENGTH_LONG).show();
