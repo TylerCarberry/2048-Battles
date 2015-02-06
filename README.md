@@ -9,8 +9,8 @@ My version of 2048 based off the orginal 2048 by Gabriele Cirulli.
 
 **Licensing:** Although this app is open source, you may **not** modify or distribute it outside of the [Github Terms of Service](https://help.github.com/articles/github-terms-of-service/). See the [Digital Millennium Copyright Act (DMCA)](http://www.copyright.gov/legislation/dmca.pdf) for more information. 
 
-This app is now available on [Google Play](https://play.google.com/store/apps/details?id=com.tytanapps.game2048)
 
+# Download from [Google Play](https://play.google.com/store/apps/details?id=com.tytanapps.game2048)  
 Or click here to download the latest  [beta](https://github.com/tytan34/2048-for-Android/blob/master/app_2048/build/outputs/apk/app_2048-debug.apk?raw=true) or
 [stable](https://github.com/tytan34/2048-for-Android/blob/master/app_2048/app_2048-release.apk?raw=true
 ) apk directly
@@ -35,7 +35,7 @@ Crazy: A 5x5 grid with all other game modes enabled
 Survival: 15 seconds. Combine tiles for more time  
 Coming Soon: Zen Mode
 
-![screenshot_2014-10-05-19-06-59](https://cloud.githubusercontent.com/assets/6628497/6073920/20da9c88-ad83-11e4-9b44-8be945b2e486.png). 
+![screenshot_2014-10-05-19-06-59](https://cloud.githubusercontent.com/assets/6628497/6074006/35be40fe-ad84-11e4-926c-21e5a68127ca.png). 
 ![screenshot_2014-10-05-19-07-15](https://cloud.githubusercontent.com/assets/6628497/6073923/255f7f76-ad83-11e4-8b25-1f16fbe07bdf.png). 
 ![screenshot_2014-10-05-19-10-44](https://cloud.githubusercontent.com/assets/6628497/6073924/2a828f3e-ad83-11e4-8a66-fcffe944dd5c.png)
 
