@@ -397,10 +397,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 updateGame();
                 gameData.incrementTotalMoves(1);
 
-                // After 2048 moves have been made the game only attempts to submit the achievement
-                // once every 32 moves to avoid exceeding the limits.
-                if(gameData.getTotalMoves() >= 2048 && gameData.getTotalMoves() % 32 == 0 && getApiClient().isConnected()) {
-                    Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
+                if(gameData.getPlayGamesPendingMoves() % 8 == 0 && getApiClient().isConnected()) {
+                    Games.Achievements.increment(getApiClient(), getString(R.string.achievement_long_time_player), gameData.getPlayGamesPendingMoves());
+                    gameData.resetPlayGamesPendingMoves();
                 }
 
                 activeAnimations.clear();
@@ -1565,8 +1564,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 game.removeLowTiles();
                 game.newTurn();
                 gameData.incrementTotalMoves(1);
-                if(gameData.getTotalMoves() == 2048 && getApiClient().isConnected()) {
-                    Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
+                if(gameData.getPlayGamesPendingMoves() % 8 == 0 && getApiClient().isConnected()) {
+                    Games.Achievements.increment(getApiClient(), getString(R.string.achievement_long_time_player), gameData.getPlayGamesPendingMoves());
+                    gameData.resetPlayGamesPendingMoves();
                 }
                 updateGame();
                 activeAnimations.clear();
@@ -1636,9 +1636,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 game.shuffle();
                 gameData.incrementShufflesUsed(1);
                 gameData.incrementTotalMoves(1);
-                if(gameData.getTotalMoves() == 2048 && getApiClient().isConnected()) {
-                    Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_long_time_player));
-                }
                 updateGame();
             }
         });

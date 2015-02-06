@@ -333,6 +333,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                     if (getApiClient().isConnected()) {
                         Games.Events.increment(getApiClient(), getString(R.string.event_tap_on_flying_tile), 1);
                         Games.Achievements.increment(getApiClient(), getString(R.string.achievement_tile_tapper), 1);
+                        Games.Achievements.increment(getApiClient(), getString(R.string.achievement_tile_tapper_insane), 1);
                     }
                 }
 

@@ -39,11 +39,14 @@ public class GameData implements java.io.Serializable {
     // Stores custom tile icons
     private Map<Integer, List<Byte>> customTileIcon = new HashMap<Integer, List<Byte>>();
 
+    private int playGamesPendingMoves;
+
     public GameData() {
         totalGamesPlayed = 0;
         totalUndosUsed = 0;
         totalShufflesUsed = 0;
         totalMoves = 0;
+        playGamesPendingMoves = 0;
 
         powerupInventory = 3;
         undoInventory = 5;
@@ -134,6 +137,7 @@ public class GameData implements java.io.Serializable {
     }
     public void incrementTotalMoves(int amount) {
         totalMoves += amount;
+        playGamesPendingMoves += amount;
     }
 
     public int getTotalGamesPlayed () {
@@ -147,6 +151,9 @@ public class GameData implements java.io.Serializable {
     }
     public int getTotalMoves () {
         return totalMoves;
+    }
+    public int getPlayGamesPendingMoves () {
+        return playGamesPendingMoves;
     }
 
     /**
@@ -219,4 +226,7 @@ public class GameData implements java.io.Serializable {
         return undoInventory;
     }
 
+    public void resetPlayGamesPendingMoves () {
+        playGamesPendingMoves = 0;
+    }
 }
