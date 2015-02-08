@@ -46,10 +46,7 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.event.Event;
-import com.google.android.gms.games.event.Events;
 import com.google.example.games.basegameutils.BaseGameActivity;
 
 import java.io.File;
@@ -1169,7 +1166,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     /**
-     * Updates the leaderboards with the new score
+     * Updates the Google Play leaderboards with the new score
      * @param score The final score of the game
      * @param gameModeId The game mode using the GameModes class
      */
@@ -1184,14 +1181,24 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                     leaderboard = getString(R.string.leaderboard_arcade_mode);
                     break;
                 case GameModes.X_MODE_ID:
-                    leaderboard = getString(R.string.leaderboard_xmode);
+                    leaderboard = getString(R.string.leaderboard_x_mode);
                     break;
                 case GameModes.CORNER_MODE_ID:
                     leaderboard = getString(R.string.leaderboard_corner_mode);
                     break;
+                case GameModes.SURVIVAL_MODE_ID:
+                    leaderboard = getString(R.string.leaderboard_survival_mode);
+                    break;
                 case GameModes.RUSH_MODE_ID:
                     leaderboard = getString(R.string.leaderboard_rush_mode);
                     break;
+                case GameModes.SPEED_MODE_ID:
+                    leaderboard = getString(R.string.leaderboard_speed_mode);
+                    break;
+                case GameModes.CRAZY_MODE_ID:
+                    leaderboard = getString(R.string.leaderboard_crazy_mode);
+                    break;
+
             }
 
             if(leaderboard != null)
@@ -1217,32 +1224,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             Games.Events.increment(this.getApiClient(), totalScoreId, myGame.getScore());
             Games.Events.increment(this.getApiClient(), tilesCombinedId, game.getTilesCombined());
             game.resetTilesCombined();
-        }
-    }
-
-    public void callback() {
-        // EventCallback is a subclass of ResultCallback; use this to handle the
-        // query results
-        EventCallback ec = new EventCallback();
-
-        // Load all events tracked for your game
-        com.google.android.gms.common.api.PendingResult<Events.LoadEventsResult>
-                pr = Games.Events.load(this.getApiClient(), true);
-        pr.setResultCallback(ec);
-    }
-
-    class EventCallback implements ResultCallback
-    {
-        // Handle the results from the events load call
-        public void onResult(com.google.android.gms.common.api.Result result) {
-            Events.LoadEventsResult r = (Events.LoadEventsResult)result;
-            com.google.android.gms.games.event.EventBuffer eb = r.getEvents();
-
-            for (int i=0; i < eb.getCount(); i++) {
-                Event e = eb.get(i);
-                Toast.makeText(getActivity(), "" + e.getValue(), Toast.LENGTH_SHORT).show();
-            }
-            eb.close();
         }
     }
 
@@ -1300,6 +1281,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
     }
 
+    // ONLY USED FOR DEVELOPMENT PURPOSES
     private void debugDoubleAllTiles() {
         Grid grid = game.getGrid();
         for(int x = 0; x < grid.getNumRows(); x++) {
