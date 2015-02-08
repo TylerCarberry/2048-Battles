@@ -9,8 +9,6 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -64,6 +62,12 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     final static String LOG_TAG = MultiplayerActivity.class.getSimpleName();
 
+    /**
+     * Increment this number when a change is made to multiplayer that makes it
+     * incompatible with previous versions
+     **/
+    private final static int MULTIPLAYER_VERSION = 39;
+
     // Request codes for the UIs that we show with startActivityForResult:
     final static int RC_SELECT_PLAYERS = 10000;
     final static int RC_INVITATION_INBOX = 10001;
@@ -81,9 +85,6 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     public static final char SEND_ATTACK_ICE = 'i';
     public static final char SEND_ATTACK_GHOST = 'g';
     public static final char SEND_ATTACK_X = 'x';
-
-    // The % chance that a bonus will be received this second
-    //private final static double BONUS_CHANCE = 0.20;
 
     // The number of seconds a multiplayer game is played for
     public static final int MULTIPLAYER_GAME_LENGTH = 60;
@@ -216,13 +217,9 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MIN_OPPONENTS, MAX_OPPONENTS, 0);
 
         RoomConfig.Builder builder = RoomConfig.builder(this);
-        try {
-            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            int version = pInfo.versionCode;
-            builder.setVariant(version);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+
+        // Players will only be matched with users running compatible versions of the app
+        builder.setVariant(MULTIPLAYER_VERSION);
 
         builder.setMessageReceivedListener(this);
         builder.setRoomStatusUpdateListener(this);
@@ -261,9 +258,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
                     switchToMainActivity();
                 }
                 else if (responseCode == Activity.RESULT_CANCELED) {
-                    // Dialog was cancelled (user pressed back key, for instance). In our game,
-                    // this means leaving the room too. In more elaborate games, this could mean
-                    // something else (like minimizing the waiting room UI).
+                    // Dialog was cancelled (user pressed back key, for instance)
                     leaveRoom();
                     switchToMainActivity();
                 }
@@ -288,7 +283,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
     protected void createMultiplayerTimer(final int seconds) {
         setGameStarted(true);
 
-        ((TextView) findViewById(R.id.time_left_textview)).setText("" + seconds);
+        ((TextView) findViewById(R.id.time_left_textview)).setText(""+seconds);
 
         final Timer t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {

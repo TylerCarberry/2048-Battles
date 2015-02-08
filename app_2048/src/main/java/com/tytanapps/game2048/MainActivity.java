@@ -67,6 +67,7 @@ import java.util.concurrent.TimeUnit;
 public class MainActivity extends BaseGameActivity implements QuestUpdateListener {
 
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String analyticsCategory = "Main Activity";
 
     public static final String GITHUB_URL = "https://github.com/TylerCarberry/2048-for-Android";
     public static final String APP_URL = "https://play.google.com/store/apps/details?id=com.tytanapps.game2048";
@@ -489,7 +490,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         i.setData(Uri.parse(GITHUB_URL));
         startActivity(i);
 
-        sendAnalyticsEvent("Main Activity", "Help Dialog", "Github");
+        sendAnalyticsEvent(analyticsCategory, "Help Dialog", "Github");
     }
 
 
@@ -722,7 +723,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                sendAnalyticsEvent("Main Activity", "Game", "Continue");
+                sendAnalyticsEvent(analyticsCategory, "Game", "Continue");
                 startGameActivity();
             }
         });
@@ -763,23 +764,23 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         if(getApiClient().isConnected()) {
             switch (view.getId()) {
                 case R.id.achievements_button:
-                    sendAnalyticsEvent("Main Activity", "Google Play Games", "Achievements Button Press");
+                    sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Achievements Button Press");
                     startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 1);
                     break;
                 case R.id.quests_button:
-                    sendAnalyticsEvent("Main Activity", "Google Play Games", "Quests Button Press");
+                    sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Quests Button Press");
                     showQuests();
                     break;
                 case R.id.leaderboards_button:
-                    sendAnalyticsEvent("Main Activity", "Google Play Games", "Leaderboards Button Press");
+                    sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Leaderboards Button Press");
                     startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 0);
                     break;
                 case R.id.gifts_button:
-                    sendAnalyticsEvent("Main Activity", "Google Play Games", "Gifts Button Press");
+                    sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Gifts Button Press");
                     sendGift();
                     break;
                 case R.id.inbox_button:
-                    sendAnalyticsEvent("Main Activity", "Google Play Games", "Inbox Button Press");
+                    sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Inbox Button Press");
                     startActivityForResult(Games.Requests.getInboxIntent(getApiClient()), SHOW_INBOX);
                     break;
             }
@@ -834,14 +835,12 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 openGithubLink();
             }
         };
-
         dialog.findViewById(R.id.open_source).setOnClickListener(openGithubListener);
         dialog.findViewById(R.id.creator_name).setOnClickListener(openGithubListener);
 
-
         dialog.show();
 
-        sendAnalyticsEvent("Main Activity", "Button Press", "Help");
+        sendAnalyticsEvent(analyticsCategory, "Button Press", "Help");
     }
 
     private void sendAnalyticsEvent(String categoryId, String actionId, String labelId) {
@@ -1098,7 +1097,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         dialog.show();
 
-        sendAnalyticsEvent("Main Activity", "Google Play Games", "Sign Out");
+        sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Sign Out");
     }
 
     @Override
