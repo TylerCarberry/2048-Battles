@@ -40,3 +40,9 @@ app_2048/src/main/res/xml/app_tracker.xml
 .idea/inspectionProfiles/profiles_settings.xml
 
 .idea/inspectionProfiles/Project_Default.xml
+
+App_2048.iml
+
+app_2048/app_2048.iml
+
+baseGameUtils/baseGameUtils.iml
