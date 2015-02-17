@@ -24,7 +24,7 @@
         android:layout_below="@+id/powerups_textview"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/grid_layout"/>
+        android:layout_toLeftOf="@+id/game_grid"/>
 
     <TextView
         android:id="@+id/turn_textview"
@@ -35,7 +35,7 @@
         android:gravity="center_horizontal"
         android:text="@string/turn"
         android:textSize="27sp"
-        android:layout_toLeftOf="@id/grid_layout"/>
+        android:layout_toLeftOf="@id/game_grid"/>
 
     <TextView
         android:id="@+id/score_textview"
@@ -47,7 +47,7 @@
         android:layout_below="@+id/turn_textview"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@id/grid_layout"/>
+        android:layout_toLeftOf="@id/game_grid"/>
 
     <TextView
         android:id="@+id/high_score_textview"
@@ -59,14 +59,14 @@
         android:layout_below="@+id/score_textview"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@id/grid_layout"/>
+        android:layout_toLeftOf="@id/game_grid"/>
 
     <TextView
         android:id="@+id/time_left_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/grid_layout"
+        android:layout_toLeftOf="@+id/game_grid"
         android:layout_below="@id/high_score_textview"
         android:gravity="center"
         android:textStyle="bold"
@@ -74,7 +74,7 @@
         android:visibility="visible"/>
 
     <GridLayout
-        android:id="@+id/grid_layout"
+        android:id="@+id/game_grid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -137,7 +137,7 @@
         android:id="@+id/active_attacks_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/grid_layout"
+        android:layout_toLeftOf="@id/game_grid"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:paddingLeft="10dp"

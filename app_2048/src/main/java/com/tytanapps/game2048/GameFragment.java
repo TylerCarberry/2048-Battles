@@ -179,7 +179,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // there is a chance that android killed this activity in the background
         boardCreated = false;
 
-        gridLayout = (GridLayout) getView().findViewById(R.id.grid_layout);
+        gridLayout = (GridLayout) getView().findViewById(R.id.game_grid);
 
         // Load the custom tiles and place them in the Map customTileIcon to be accessed later
         //loadCustomTileIcons();
@@ -535,7 +535,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      */
     private void createGrid() {
         // The grid that all tiles are on
-        GridLayout gridLayout = (GridLayout) getView().findViewById(R.id.grid_layout);
+        GridLayout gridLayout = (GridLayout) getView().findViewById(R.id.game_grid);
 
         // Set the number of rows and columns in the game
         gridLayout.setRowCount(game.getGrid().getNumRows());
@@ -558,7 +558,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             // Add a blank tile to that spot on the grid
             ImageView blankTile = new ImageView(getActivity());
             setIcon(blankTile, 0);
-            ((GridLayout) getActivity().findViewById(R.id.grid_layout)).addView(blankTile, gridLayoutParam);
+            ((GridLayout) getActivity().findViewById(R.id.game_grid)).addView(blankTile, gridLayoutParam);
 
             // Check if that tile already exists
             existingTile = findTileByLocation(tileLoc);
@@ -587,7 +587,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(! boardCreated)
             createGrid();
 
-        GridLayout gridLayout = (GridLayout) getView().findViewById(R.id.grid_layout);
+        GridLayout gridLayout = (GridLayout) getView().findViewById(R.id.game_grid);
         gridLayout.setRowCount(game.getGrid().getNumRows());
         gridLayout.setColumnCount(game.getGrid().getNumCols());
 
@@ -1452,7 +1452,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * Calculate the distances that tiles should move when the game is swiped
      */
     private void calculateDistances() {
-        GridLayout grid = (GridLayout) getView().findViewById(R.id.grid_layout);
+        GridLayout grid = (GridLayout) getView().findViewById(R.id.game_grid);
         verticalTileDistance = grid.getHeight() / game.getGrid().getNumRows();
         horizontalTileDistance = grid.getWidth() / game.getGrid().getNumCols();
     }
@@ -1584,7 +1584,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // Save the game history before each move
         game.saveGameInHistory();
 
-        GridLayout gridLayout = (GridLayout) getView().findViewById(R.id.grid_layout);
+        GridLayout gridLayout = (GridLayout) getView().findViewById(R.id.game_grid);
 
         // Causes conflicts when the shuffle button is double tapped
         if(animationInProgress)
@@ -2020,7 +2020,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             Save.save(game, currentGameFile);
             Save.save(gameData, gameStatsFile);
 
-            View currentGame = getView().findViewById(R.id.grid_layout);
+            View currentGame = getView().findViewById(R.id.game_grid);
             if(currentGame != null) {
                 Bitmap currentGameBitmap = loadBitmapFromView(currentGame, currentGame.getWidth(), currentGame.getHeight());
                 Save.saveBitmap(currentGameBitmap, currentGameScreenshotFile);
