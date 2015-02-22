@@ -39,43 +39,6 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
         <ImageButton
-            android:id="@+id/single_player_imagebutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/single_player_icon"
-            android:layout_below="@+id/logo_imageview"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/single_player_imagebutton"
-            android:layout_alignRight="@id/single_player_imagebutton"
-            android:layout_below="@id/single_player_imagebutton"
-            android:gravity="center_horizontal"
-            android:text="@string/single_player"
-            android:textSize="@dimen/single_player_text_size"/>
-
-        <ImageButton
-            android:id="@+id/multiplayer_imagebutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/multiplayer_icon"
-            android:layout_alignTop="@+id/single_player_imagebutton"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_alignParentRight="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/multiplayer_imagebutton"
-            android:layout_alignRight="@id/multiplayer_imagebutton"
-            android:layout_below="@id/multiplayer_imagebutton"
-            android:gravity="center_horizontal"
-            android:text="@string/mode_multiplayer"
-            android:textSize="@dimen/multiplayer_text_size"/>
-
-        <ImageButton
             android:id="@+id/settings_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -168,6 +131,52 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:background="@drawable/share"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/logo_imageview"
+            android:layout_above="@id/inventory_textview"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/single_player_imagebutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/single_player_icon"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/single_player_imagebutton"
+                android:layout_alignRight="@id/single_player_imagebutton"
+                android:layout_below="@id/single_player_imagebutton"
+                android:gravity="center_horizontal"
+                android:text="@string/single_player"
+                android:textSize="@dimen/single_player_text_size"/>
+
+            <ImageButton
+                android:id="@+id/multiplayer_imagebutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/multiplayer_icon"
+                android:layout_alignTop="@+id/single_player_imagebutton"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_toRightOf="@+id/single_player_imagebutton"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/multiplayer_imagebutton"
+                android:layout_alignRight="@id/multiplayer_imagebutton"
+                android:layout_below="@id/multiplayer_imagebutton"
+                android:gravity="center_horizontal"
+                android:text="@string/mode_multiplayer"
+                android:textSize="@dimen/multiplayer_text_size"/>
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
