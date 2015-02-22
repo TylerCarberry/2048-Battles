@@ -194,7 +194,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         builder.create().show();
     }
 
-    public void setQuestButtonEnabled(boolean enabled) {
+    public void setQuestButtonEmphasis(boolean enabled) {
         ImageButton questsButton = (ImageButton) findViewById(R.id.quests_button);
         questsButton.setImageResource((enabled) ? R.drawable.games_quests_green : R.drawable.games_quests);
     }
@@ -920,7 +920,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         s.setResultCallback(new ResultCallback<Quests.LoadQuestsResult>() {
             @Override
             public void onResult(Quests.LoadQuestsResult loadQuestsResult) {
-                setQuestButtonEnabled(loadQuestsResult.getQuests().getCount() > 0);
+                setQuestButtonEmphasis(loadQuestsResult.getQuests().getCount() > 0);
             }
         });
     }
@@ -1008,8 +1008,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     @Override
     public void onQuestCompleted(Quest quest) {
 
-        Toast.makeText(this, getString(R.string.quest_completed), Toast.LENGTH_SHORT).show();
-
         // Claim the quest reward.
         Games.Quests.claim(this.getApiClient(), quest.getQuestId(),
                 quest.getCurrentMilestone().getMilestoneId());
@@ -1036,13 +1034,25 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 }
             }
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(getString(R.string.quest_completed));
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.quest_completed);
+            dialog.setTitle(getString(R.string.quest_completed));
 
-            builder.setMessage(message);
-            builder.create().show();
+            ((TextView)dialog.findViewById(R.id.quest_name_textview)).setText(quest.getName());
+            ((TextView)dialog.findViewById(R.id.quest_reward_textview)).setText(message);
 
-            animateFlyingTiles(30, 200);
+            ImageView questBanner = (ImageView) dialog.findViewById(R.id.quest_banner);
+            questBanner.setTag(quest.getBannerImageUrl());
+
+            DownloadImageTask downloadImageTask =  new DownloadImageTask(){
+                @Override
+                protected void onPostExecute(Bitmap result) {
+                    super.onPostExecute(result);
+                    dialog.show();
+                    checkIfQuestActive();
+                }
+            };
+            downloadImageTask.execute(questBanner);
 
         } catch (Exception e) {
             Toast.makeText(this, getString(R.string.error_claim_bonus), Toast.LENGTH_LONG).show();

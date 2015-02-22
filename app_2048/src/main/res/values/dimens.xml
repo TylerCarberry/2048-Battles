@@ -24,6 +24,8 @@
     <dimen name="new_game_margin">3dp</dimen>
 
     <dimen name="main_activity_tile_size">64dp</dimen>
+    <dimen name="questNameSize">30sp</dimen>
+    <dimen name="questRewardSize">25sp</dimen>
 
 
 </resources>
