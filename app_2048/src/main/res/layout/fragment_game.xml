@@ -5,10 +5,6 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/PrimaryBackground"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:clipChildren="false"
     android:clipToPadding="false"
     tools:context="com.example.app_2048.GameFragment" >
@@ -17,7 +13,12 @@
         android:id="@+id/game_layout_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:background="@color/PrimaryBackground"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin">
 
         <TextView
             android:id="@+id/game_mode_textview"
@@ -65,7 +66,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:textStyle="bold"
-            android:textSize="50sp"
+            android:textSize="@dimen/time_left_text_size"
             android:visibility="invisible"/>
 
         <ImageButton
@@ -86,7 +87,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/game_layout_top"
         android:layout_alignParentBottom="true"
-        android:gravity="center">
+        android:gravity="center"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:background="@color/SecondaryBackground">
 
         <ImageButton
             android:id="@+id/undo_button"
@@ -132,10 +138,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="false"
-            android:layout_centerHorizontal="true"
             android:rowOrderPreserved="true"
             android:useDefaultMargins="true"
-            android:layout_below="@+id/undo_button"/>
+            android:padding="0dp"
+            android:layout_margin="0dp"
+            android:background="@color/SecondaryBackground"
+            android:layout_below="@+id/undo_button"
+            android:layout_centerHorizontal="true"/>
+
 
         <TextView
             android:id="@+id/active_attacks_textview"

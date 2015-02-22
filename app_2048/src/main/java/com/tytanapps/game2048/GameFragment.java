@@ -2025,7 +2025,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 Bitmap currentGameBitmap = loadBitmapFromView(currentGame, currentGame.getWidth(), currentGame.getHeight());
                 Save.saveBitmap(currentGameBitmap, currentGameScreenshotFile);
             }
-            //Save.save(gameData, gameStatsFile);
         } catch (IOException e) {
             e.printStackTrace();
             // Notify the user of the error through a toast

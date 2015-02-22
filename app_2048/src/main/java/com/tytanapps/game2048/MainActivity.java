@@ -774,6 +774,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         LinearLayout dialogLayout = new LinearLayout(this);
         dialogLayout.setOrientation(LinearLayout.VERTICAL);
+        dialogLayout.setBackgroundColor(getResources().getColor(R.color.SecondaryBackground));
+
         Bitmap savedGameBitmap = getSavedGameBitmap();
         if(savedGameBitmap != null) {
             ImageView savedGameImageView = new ImageView(this);
