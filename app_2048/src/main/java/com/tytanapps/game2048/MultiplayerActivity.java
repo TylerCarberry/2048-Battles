@@ -10,8 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -46,10 +44,6 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.example.games.basegameutils.BaseGameActivity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -835,7 +829,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
 
     protected void setImageViewBackground(ImageView imageView, String url) {
         imageView.setTag(url);
-        new DownloadImagesTask().execute(imageView);
+        new DownloadImageTask().execute(imageView);
     }
 
     // Show the waiting room UI to track the progress of other players as they enter the
@@ -1175,41 +1169,5 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         }
     }
 
-    public static class DownloadImagesTask extends AsyncTask<ImageView, Void, Bitmap> {
 
-        ImageView imageView = null;
-
-        @Override
-        protected Bitmap doInBackground(ImageView... imageViews) {
-            this.imageView = imageViews[0];
-            return download_Image((String) imageView.getTag());
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            new MultiplayerActivity().setImageView(imageView, result);
-        }
-
-        private Bitmap download_Image(String stringUrl) {
-            try {
-                URL url = new URL(stringUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                return BitmapFactory.decodeStream(input);
-            } catch (IOException e) {
-                // Log exception
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-    }
 }
