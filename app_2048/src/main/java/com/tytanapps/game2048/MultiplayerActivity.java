@@ -60,7 +60,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
      * Increment this number when a change is made to multiplayer that makes it
      * incompatible with previous versions
      **/
-    private final static int MULTIPLAYER_VERSION = 39;
+    private final static int MULTIPLAYER_VERSION = 40;
 
     // Request codes for the UIs that we show with startActivityForResult:
     final static int RC_SELECT_PLAYERS = 10000;
@@ -751,19 +751,16 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
             case SEND_ATTACK_GHOST:
                 if(gameFragment != null) {
                     gameFragment.ghostAttack();
-                    gameFragment.updateTextviews();
                 }
                 break;
             case SEND_ATTACK_ICE:
                 if(gameFragment != null) {
-                    gameFragment.ice();
-                    gameFragment.updateTextviews();
+                    gameFragment.iceAttack();
                 }
                 break;
             case SEND_ATTACK_X:
                 if(gameFragment != null) {
                     gameFragment.XTileAttack();
-                    gameFragment.updateTextviews();
                 }
                 break;
             case SEND_LOADED:

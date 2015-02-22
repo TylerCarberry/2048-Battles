@@ -94,13 +94,14 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     private boolean animationInProgress = false;
 
-    // This only becomes true after the lose message is shown
+    // Only becomes true after the lose message is shown
     private boolean gameLost = false;
 
-    // This keeps track of the active animations and
-    // stops them in onStop
-    private ArrayList<ObjectAnimator> activeAnimations
-            = new ArrayList<ObjectAnimator>();
+    // Keeps track of the active animations and stops them in onStop
+    private ArrayList<ObjectAnimator> activeAnimations = new ArrayList<>();
+
+    // Stores pending attacks in multiplayer mode
+    private ArrayList<Integer> pendingMultiplayerAttacks = new ArrayList<>();
 
     // Stores info about the game such as high score
     private static GameData gameData;
@@ -305,7 +306,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     protected void act(int direction) {
         animationInProgress = true;
 
-        // If the ice attack is active in that direction do not move
+        // If the iceAttack attack is active in that direction do not move
         if((game.getAttackDuration() > 0 && game.getIceDirection() == direction)) {
             emphasizeAttack();
             animationInProgress = false;
@@ -410,6 +411,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                     else if(ghostAttackActive)
                         endGhostAttack();
                 }
+                checkPendingAttacks();
 
                 addTile();
 
@@ -1455,7 +1457,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     /**
      * Give a random bonus or attack to the player
-     * 50% chance of an attack: ice attack, ghost attack, XTile attack, shuffle attack
+     * 50% chance of an attack: iceAttack attack, ghost attack, XTile attack, shuffle attack
      * 50% chance of bonus: +1 undo, +1 powerup
      */
     private void addRandomBonus() {
@@ -1463,7 +1465,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         double rand = Math.random();
         if(rand < .5 && game.getAttackDuration() <= 0) {
             if(rand < .125)
-                ice();
+                iceAttack();
             else
             if(rand < .25)
                 ghostAttack();
@@ -1490,6 +1492,27 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                     message = getString(R.string.bonus_powerup);
                 }
                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void checkPendingAttacks() {
+        if(game.getAttackDuration() <= 0 && pendingMultiplayerAttacks.size() > 0) {
+            int attack = pendingMultiplayerAttacks.remove(0);
+
+            switch(attack) {
+                case Game.X_ATTACK:
+                    XTileAttack();
+                    break;
+                case Game.GHOST_ATTACK:
+                    ghostAttack();
+                    break;
+                case Game.ICE_ATTACK:
+                    iceAttack();
+                    break;
+                default:
+                    throw new RuntimeException("Unexpected attack in checkPendingAttacks: " + attack);
+
             }
         }
     }
@@ -1627,10 +1650,13 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     /**
      * Freezes the game (can not move in a direction for a random amount of turns)
      */
-    protected void ice() {
+    protected void iceAttack() {
         // This attack cannot be stacked
-        if(game.getAttackDuration() <= 0)
+        if(game.getActiveAttack() == Game.ICE_ATTACK || game.getAttackDuration() <= 0)
             game.ice();
+        else
+            pendingMultiplayerAttacks.add(Game.ICE_ATTACK);
+        updateTextviews();
     }
 
     /**
@@ -1638,11 +1664,13 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      */
     protected void XTileAttack() {
         // This attack cannot be stacked
-        if(game.getAttackDuration() <= 0) {
+        if(game.getActiveAttack() == Game.X_ATTACK || game.getAttackDuration() <= 0) {
             game.XTileAttack();
             XTileAttackActive = true;
-            updateGrid();
+            updateGame();
         }
+        else
+            pendingMultiplayerAttacks.add(Game.X_ATTACK);
     }
 
     private void endXAttack() {
@@ -1660,27 +1688,34 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     protected void ghostAttack() {
-        game.ghostAttack();
+        // This attack cannot be stacked
+        if(game.getActiveAttack() == Game.GHOST_ATTACK || game.getAttackDuration() <= 0) {
+            game.ghostAttack();
 
-        List<Location> tileLocs = game.getGrid().getFilledLocations();
-        int tileValue;
-        ImageView tile;
+            List<Location> tileLocs = game.getGrid().getFilledLocations();
+            int tileValue;
+            ImageView tile;
 
-        for(Location loc : tileLocs) {
-            tileValue = game.getGrid().get(loc);
-            tile = findTileByLocation(loc);
+            for(Location loc : tileLocs) {
+                tileValue = game.getGrid().get(loc);
+                tile = findTileByLocation(loc);
 
-            Drawable[] layers = new Drawable[2];
-            // The current icon
-            layers[0] = getTileIconDrawable(tileValue);
-            // No icon found, default to question mark
-            layers[1] = getTileIconDrawable(-10);
-            TransitionDrawable transition = new TransitionDrawable(layers);
-            tile.setImageDrawable(transition);
-            transition.startTransition((int) tileSlideSpeed);
+                Drawable[] layers = new Drawable[2];
+                // The current icon
+                layers[0] = getTileIconDrawable(tileValue);
+                // The ? icon
+                layers[1] = getTileIconDrawable(Game.GHOST_TILE_VALUE);
+                TransitionDrawable transition = new TransitionDrawable(layers);
+                tile.setImageDrawable(transition);
+                transition.startTransition((int) tileSlideSpeed);
+            }
+
+            ghostAttackActive = true;
+            updateTextviews();
         }
+        else
+            pendingMultiplayerAttacks.add(Game.GHOST_ATTACK);
 
-        ghostAttackActive = true;
     }
     private void endGhostAttack() {
         ghostAttackActive = false;
@@ -1696,7 +1731,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             Drawable[] layers = new Drawable[2];
 
             // The ghost icon
-            layers[0] = getTileIconDrawable(-10);
+            layers[0] = getTileIconDrawable(Game.GHOST_TILE_VALUE);
             // The tile icon
             layers[1] = getTileIconDrawable(tileValue);
 
@@ -1910,7 +1945,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
     }
 
-    // If an ice attack is active and the user tries to move anyway screen will flash
+    // If an iceAttack attack is active and the user tries to move anyway screen will flash
     private void emphasizeAttack() {
         TextView activeAttack = (TextView) getView().findViewById(R.id.active_attacks_textview);
 
@@ -2122,6 +2157,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * @param milliseconds
      */
     protected void createCountdown(final double milliseconds) {
+        game.setGrid(new Grid(4,4));
+        pendingMultiplayerAttacks.clear();
         updateGame();
 
         final Timer timer = new Timer();

@@ -563,26 +563,30 @@ public class Game implements java.io.Serializable
 	}
 
 	/**
-	 * You can not move in a random direction for a random
-	 * amount of time (currently between 3 and 10)
+	 * You can not move in a random direction for a random amount of time
+     * (currently between 3 and 10 moves)
+     *
+     * If an ice attack is currently active additional time is added to the attack
+     * If another attack is active it is cleared
 	 */
 	public void ice() {
-		activeAttack = ICE_ATTACK;
-		
-		double randomDirection = Math.random();
-		if(randomDirection < .5)
-			if(randomDirection < .25)
-				iceDirection = Location.UP;
-			else
-				iceDirection = Location.DOWN;
-		else
-			if(randomDirection < .75)
-				iceDirection = Location.LEFT;
-			else
-				iceDirection = Location.RIGHT;
-					
-		// Between 3 and 10 moves
-		attackDuration = (int) (Math.random() * 7 + 3);
+        if(activeAttack == ICE_ATTACK)
+            attackDuration += (int) (Math.random() * 7 + 3);
+        else {
+            attackDuration = (int) (Math.random() * 7 + 3);
+            activeAttack = ICE_ATTACK;
+
+            double randomDirection = Math.random();
+            if (randomDirection < .5)
+                if (randomDirection < .25)
+                    iceDirection = Location.UP;
+                else
+                    iceDirection = Location.DOWN;
+            else if (randomDirection < .75)
+                iceDirection = Location.LEFT;
+            else
+                iceDirection = Location.RIGHT;
+        }
 	}
 	
 	public int getIceDirection() {
@@ -594,12 +598,18 @@ public class Game implements java.io.Serializable
 	 * @return The location where it was added
 	 */
 	public Location XTileAttack() {
-		activeAttack = X_ATTACK;
-		
-		// Between 5 and 10 moves
-		attackDuration = (int) (Math.random() * 6 + 5);
-		
-		return addRandomPiece(X_TILE_VALUE);
+        if(activeAttack == X_ATTACK) {
+            attackDuration += (int) (Math.random() * 6 + 5);
+            for(Location loc : board.getFilledLocations())
+                if(board.get(loc) == X_TILE_VALUE)
+                    return loc;
+            return null;
+        }
+        else {
+            attackDuration = (int) (Math.random() * 6 + 5);
+            activeAttack = X_ATTACK;
+            return addRandomPiece(X_TILE_VALUE);
+        }
 	}
 	
 	public Location endXTileAttack() {
@@ -615,10 +625,12 @@ public class Game implements java.io.Serializable
 	 * Enable ghost attack for between 5 and 10 turns
 	 */
 	public void ghostAttack() {
-		activeAttack = GHOST_ATTACK;
-		
-		// Between 5 and 10 moves
-		attackDuration = (int) (Math.random() * 6 + 5);
+        if(activeAttack == GHOST_ATTACK)
+            attackDuration += (int) (Math.random() * 6 + 5);
+        else {
+            attackDuration = (int) (Math.random() * 6 + 5);
+            activeAttack = GHOST_ATTACK;
+        }
 	}
 	
 	public int getAttackDuration() {
