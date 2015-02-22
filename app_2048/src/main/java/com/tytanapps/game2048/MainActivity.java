@@ -467,9 +467,9 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 break;
             case R.id.share_button:
                 createShareIntent();
+                break;
             case R.id.achievements_button:
                 sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Achievements Button Press");
-
                 if(getApiClient().isConnected())
                     startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 1);
                 else
