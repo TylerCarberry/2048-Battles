@@ -83,7 +83,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     private GridLayout gridLayout;
 
-    // Warns about making a making a move that may lose the game
     private boolean XTileAttackActive = false;
     private boolean ghostAttackActive = false;
 
@@ -2272,6 +2271,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     public Game setGame(Game newGame) {
         Game oldGame = game;
         game = newGame;
+
+        // Clear the active attacks
+        XTileAttackActive = false;
+        ghostAttackActive = false;
+
         return oldGame;
     }
 
