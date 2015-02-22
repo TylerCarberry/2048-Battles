@@ -230,7 +230,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/inbox_button"
-            android:onClick="playGames"
             android:background="@color/LightBlue"
             android:layout_gravity="center_vertical"
             android:visibility="gone"/>

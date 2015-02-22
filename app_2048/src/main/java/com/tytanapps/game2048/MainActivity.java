@@ -943,18 +943,18 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
                     inboxButton.setOnTouchListener(new View.OnTouchListener() {
                         @Override
-                        public boolean onTouch(View v, MotionEvent event) {
-
-                            switch(event.getAction()){
-                                case MotionEvent.ACTION_UP:
-                                    inboxButton.setImageResource(R.drawable.inbox_button);
-                                    break;
-                                case MotionEvent.ACTION_DOWN:
-                                    inboxButton.setImageResource(R.drawable.inbox_button_pressed);
-                                    break;
+                        public boolean onTouch(View view, MotionEvent event) {
+                            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                                inboxButton.setImageResource(R.drawable.inbox_button_pressed);
                             }
+                            else if (event.getAction() == MotionEvent.ACTION_UP) {
+                                inboxButton.setImageResource(R.drawable.inbox_button);
 
-                            return false;
+                                if(event.getX() > 0 && event.getX() < view.getWidth() &&
+                                        event.getY() > 0 && event.getY() < view.getHeight())
+                                    onClick(view);
+                            }
+                            return true;
                         }
                     });
 
