@@ -440,8 +440,9 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                     multiplayerIntent.putExtra("startMultiplayer", true);
                     startActivity(multiplayerIntent);
                 }
-                else
-                    Toast.makeText(this, getString(R.string.not_signed_in_multiplayer), Toast.LENGTH_SHORT).show();
+                else {
+                    signIn();
+                }
                 break;
             case R.id.help_button:
                 showHelpDialog();
@@ -466,7 +467,42 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
                 break;
             case R.id.share_button:
                 createShareIntent();
-            default: playGames(view);
+            case R.id.achievements_button:
+                sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Achievements Button Press");
+
+                if(getApiClient().isConnected())
+                    startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 1);
+                else
+                    signIn();
+                break;
+            case R.id.quests_button:
+                sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Quests Button Press");
+                if(getApiClient().isConnected())
+                    showQuests();
+                else
+                    signIn();
+                break;
+            case R.id.leaderboards_button:
+                sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Leaderboards Button Press");
+                if(getApiClient().isConnected())
+                    startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 0);
+                else
+                    signIn();
+                break;
+            case R.id.gifts_button:
+                sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Gifts Button Press");
+                if(getApiClient().isConnected())
+                    sendGift();
+                else
+                    signIn();
+                break;
+            case R.id.inbox_button:
+                sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Inbox Button Press");
+                if(getApiClient().isConnected())
+                    startActivityForResult(Games.Requests.getInboxIntent(getApiClient()), SHOW_INBOX);
+                else
+                    signIn();
+                break;
         }
     }
 
@@ -754,40 +790,6 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     private Bitmap getSavedGameBitmap() {
         File savedGameBitmapFile = new File(getFilesDir(), getString(R.string.file_screenshot));
         return Save.loadBitmap(savedGameBitmapFile);
-    }
-
-    /**
-     * Called when either the achievements, leaderboards, or quests buttons are pressed
-     * @param view The button that was pressed
-     */
-    public void playGames(View view) {
-        if(getApiClient().isConnected()) {
-            switch (view.getId()) {
-                case R.id.achievements_button:
-                    sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Achievements Button Press");
-                    startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 1);
-                    break;
-                case R.id.quests_button:
-                    sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Quests Button Press");
-                    showQuests();
-                    break;
-                case R.id.leaderboards_button:
-                    sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Leaderboards Button Press");
-                    startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 0);
-                    break;
-                case R.id.gifts_button:
-                    sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Gifts Button Press");
-                    sendGift();
-                    break;
-                case R.id.inbox_button:
-                    sendAnalyticsEvent(analyticsCategory, "Google Play Games", "Inbox Button Press");
-                    startActivityForResult(Games.Requests.getInboxIntent(getApiClient()), SHOW_INBOX);
-                    break;
-            }
-        }
-        else {
-            Toast.makeText(this, getString(R.string.not_signed_in_error), Toast.LENGTH_SHORT).show();
-        }
     }
 
     /**
