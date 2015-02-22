@@ -183,7 +183,9 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         // Load the custom tiles and place them in the Map customTileIcon to be accessed later
         //loadCustomTileIcons();
 
-        // Load the saved file containing the game. This also updates the screen.
+        // Load the saved file containing the game and update the screen.
+        // If the game is multiplayer game instead becomes a new game with a blank 4x4 grid
+        // It replaced with the actual game after the countdown is complete
         load();
 
         if(game.getSpeedMode()) {
@@ -192,6 +194,11 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         if(game.getSurvivalMode()) {
             activateSurvivalMode();
         }
+
+        // Load the settings for the tile speed and sensitivity
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        swipeSensitivity = Integer.valueOf(prefs.getString(getString(R.string.preference_swipe_sensitivity), "75"));
+        tileSlideSpeed = Integer.valueOf(prefs.getString(getString(R.string.preference_slide_speed), "125"));
 
         // Disable the undo and powerup buttons based on the undos/powerups remaining
         if(! multiplayerActive) {
@@ -215,35 +222,25 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 }
             });
 
-            if(game.getGameModeId() == GameModes.CUSTOM_MODE_ID) {
+            if (game.getGameModeId() == GameModes.CUSTOM_MODE_ID) {
                 getView().findViewById(R.id.high_score_textview).setVisibility(View.GONE);
                 getView().findViewById(R.id.turn_textview).setVisibility(View.VISIBLE);
-            }
-            else {
+            } else {
                 getView().findViewById(R.id.high_score_textview).setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.turn_textview).setVisibility(View.GONE);
             }
         }
-
-        // Load the settings for the tile speed and sensitivity
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        swipeSensitivity = Integer.valueOf(prefs.getString(getString(R.string.preference_swipe_sensitivity), "75"));
-        tileSlideSpeed = Integer.valueOf(prefs.getString(getString(R.string.preference_slide_speed), "125"));
-
         // Start the multiplayer aspects of the game if necessary
-        if(multiplayerActive) {
+        else {
             ((MultiplayerActivity) getActivity()).gameHasLoaded();
 
             // If the user chose to hide their identity do not show them their own identity
-            // This confirms the change to the user as they cannot see their opponents screen
+            // This confirms the change to the user as the opponent cannot see it either
             if(! prefs.getBoolean(getString(R.string.preference_hide_identity), false)) {
                 updatePlayerName();
                 updatePlayerPic();
             }
-            // Show the opponent's first name and profile picture.
-            // If the opponent hid their identity these methods do nothing
-            //updateOpponentName();
-            //updateOpponentPic();
+            // The opponent's first name and profile picture is shown after both players have loaded
         }
 
         dateStarted = new Date();
@@ -2033,25 +2030,31 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     /**
-     * Load the game from a file and update the game
+     * Load the game from a file and update the game.
+     *
+     * If multiplayer is active then the game instead becomes a new game with a blank 4x4 grid.
+     * When the countdown is complete game is replaced with the actual game
      */
     private void load() {
-
         File currentGameFile = new File(getActivity().getFilesDir(), getString(R.string.file_current_game));
         File gameStatsFile = new File(getActivity().getFilesDir(), getString(R.string.file_game_stats));
 
         try {
-            game = (Game) Save.load(currentGameFile);
             gameData = (GameData) Save.load(gameStatsFile);
+
+            if((getActivity() instanceof MultiplayerActivity)) {
+                game = new Game(4,4);
+                game.setGrid(new Grid(4,4));
+            }
+            else
+                game = (Game) Save.load(currentGameFile);
 
             if(game != null) {
                 if(game.getUseItemInventory()) {
                     game.setUndoLimit(gameData.getUndoInventory());
                     game.setPowerupLimit(gameData.getPowerupInventory());
                 }
-
-                if(! (getActivity() instanceof MultiplayerActivity))
-                    updateGame();
+                updateGame();
             }
 
         } catch (ClassNotFoundException e) {
@@ -2119,7 +2122,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * @param milliseconds
      */
     protected void createCountdown(final double milliseconds) {
-        game.setGrid(new Grid(4,4));
         updateGame();
 
         final Timer timer = new Timer();
