@@ -388,8 +388,14 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         sendMessage("" + SEND_REMATCH, true);
         if(opponentRequestedRematch)
             startRematch();
-        else
-            Toast.makeText(this, getString(R.string.rematch_button_pressed), Toast.LENGTH_LONG).show();
+        else {
+            if(multiplayerConnected) {
+                TextView activeAttacksTextView = (TextView) findViewById(R.id.active_attacks_textview);
+                activeAttacksTextView.setText(getText(R.string.rematch_button_pressed));
+                activeAttacksTextView.setVisibility(View.VISIBLE);
+                gameFragment.clearMultiplayerInventory();
+            }
+        }
     }
 
     private void startRematch() {

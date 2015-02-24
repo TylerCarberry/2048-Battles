@@ -2019,8 +2019,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         // Create a new game
         game = game.getOriginalGame();
-
-        // TODO: This line of code is causing multiple crashes but I do not know why
         game.finishedCreatingGame();
 
         // Activate speed or survival mode if necessary
@@ -2041,10 +2039,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * Save the game and game stats to a file
      */
     private void save() {
-
         File currentGameFile = new File(getActivity().getFilesDir(), getString(R.string.file_current_game));
         File gameStatsFile = new File(getActivity().getFilesDir(), getString(R.string.file_game_stats));
-
         File currentGameScreenshotFile = new File(getActivity().getFilesDir(), getString(R.string.file_screenshot));
 
         try {
@@ -2066,7 +2062,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
     /**
      * Load the game from a file and update the game.
-     *
      * If multiplayer is active then the game instead becomes a new game with a blank 4x4 grid.
      * When the countdown is complete game is replaced with the actual game
      */
@@ -2081,7 +2076,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 game = new Game(4,4);
                 game.setGrid(new Grid(4,4));
             }
-            else
+            else if(game == null || !gameLost)
                 game = (Game) Save.load(currentGameFile);
 
             if(game != null) {
@@ -2089,7 +2084,6 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                     game.setUndoLimit(gameData.getUndoInventory());
                     game.setPowerupLimit(gameData.getPowerupInventory());
                 }
-                updateGame();
             }
 
         } catch (ClassNotFoundException e) {
@@ -2100,6 +2094,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             game = new Game();
             gameData = new GameData();
         }
+        updateGame();
     }
 
     /**
