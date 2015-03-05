@@ -27,6 +27,7 @@
     <dimen name="questNameSize">30sp</dimen>
     <dimen name="questRewardSize">25sp</dimen>
     <dimen name="time_left_text_size">60sp</dimen>
+    <dimen name="create_custom_game_text_size">25sp</dimen>
 
 
 </resources>

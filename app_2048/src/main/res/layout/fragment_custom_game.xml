@@ -1,139 +1,182 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:layout_height="match_parent"
     android:background="@color/PrimaryBackground"
     tools:context="com.tytanapps.game2048.CustomGameActivity$PlaceholderFragment">
 
-    <TextView
-        android:id="@+id/grid_size_prompt"
-        android:text="@string/grid_size"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/custom_game_top"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/width_number_picker"
-        android:layout_alignParentTop="true"
-        android:textSize="25sp"
-        android:gravity="center_horizontal"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:background="@color/PrimaryBackground">
 
-    <TextView
-        android:id="@+id/grid_size_separator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="30sp"
-        android:text="x"
-        android:layout_below="@+id/grid_size_prompt"
-        android:layout_alignTop="@+id/height_number_picker"
-        android:layout_alignBottom="@+id/height_number_picker"
-        android:layout_toRightOf="@+id/height_number_picker" />
+        <TextView
+            android:id="@+id/grid_size_prompt"
+            android:text="@string/grid_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/width_number_picker"
+            android:layout_alignParentTop="true"
+            android:textSize="25sp"
+            android:gravity="center_horizontal"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
-    <Button
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/grid_size_separator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:text="x"
+            android:layout_below="@+id/grid_size_prompt"
+            android:layout_alignTop="@+id/height_number_picker"
+            android:layout_alignBottom="@+id/height_number_picker"
+            android:layout_toRightOf="@+id/height_number_picker" />
+
+        <NumberPicker
+            android:id="@+id/height_number_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:layout_below="@+id/grid_size_prompt"
+            android:layout_alignParentLeft="true"
+            android:descendantFocusability="blocksDescendants"/>
+
+        <NumberPicker
+            android:id="@+id/width_number_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:layout_below="@+id/grid_size_prompt"
+            android:layout_toRightOf="@+id/grid_size_separator"
+            android:layout_toEndOf="@+id/grid_size_separator"
+            android:descendantFocusability="blocksDescendants"/>
+
+        <TextView
+            android:id="@+id/game_mode_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/game_modes"
+            android:textSize="25sp"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/game_mode_prompt"
+            android:layout_alignLeft="@id/game_mode_prompt"
+            android:layout_alignRight="@id/game_mode_prompt"
+            android:gravity="center_horizontal">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <CheckBox
+                    android:id="@+id/xmode_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_x"
+                    android:layout_below="@id/game_mode_prompt"
+                    android:layout_alignParentRight="true" />
+
+                <CheckBox
+                    android:id="@+id/corner_mode_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_corner"
+                    android:layout_below="@id/xmode_checkbox"
+                    android:layout_alignParentRight="true" />
+
+                <CheckBox
+                    android:id="@+id/arcade_mode_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_arcade"
+                    android:layout_below="@+id/corner_mode_checkbox"
+                    android:layout_alignParentRight="true" />
+
+                <CheckBox
+                    android:id="@+id/speed_mode_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_speed"
+                    android:layout_below="@+id/arcade_mode_checkbox"
+                    android:layout_alignParentRight="true" />
+
+                <CheckBox
+                    android:id="@+id/survival_mode_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_survival"
+                    android:layout_below="@+id/speed_mode_checkbox"
+                    android:layout_alignParentRight="true" />
+
+                <CheckBox
+                    android:id="@+id/rush_mode_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_rush"
+                    android:layout_below="@+id/survival_mode_checkbox"
+                    android:layout_alignParentRight="true" />
+
+                <CheckBox
+                    android:id="@+id/ghost_mode_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_ghost"
+                    android:layout_below="@+id/rush_mode_checkbox"
+                    android:layout_alignParentRight="true" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/custom_game_bottom"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/create_game"
-        android:background="@drawable/tile_button_background"
-        android:padding="7dp"
-        android:id="@+id/create_game_button"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="onClick" />
+        android:layout_below="@+id/custom_game_top"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:background="@color/SecondaryBackground">
 
-    <NumberPicker
-        android:id="@+id/height_number_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:layout_below="@+id/grid_size_prompt"
-        android:layout_alignParentLeft="true"
-        android:descendantFocusability="blocksDescendants"/>
+        <Button
+            android:id="@+id/create_game_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tile_button_background"
+            android:text="@string/create_custom_game"
+            android:textSize="@dimen/create_custom_game_text_size"
+            android:padding="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:onClick="onClick" />
 
-    <TextView
-        android:id="@+id/game_mode_prompt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="@string/game_modes"
-        android:textSize="25sp"/>
+        <FrameLayout
+            android:id="@+id/game_preview_game_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/create_game_button"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin">
 
-    <CheckBox
-        android:id="@+id/xmode_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_x"
-        android:layout_below="@id/game_mode_prompt"
-        android:layout_alignParentRight="true" />
+        </FrameLayout>
 
-    <CheckBox
-        android:id="@+id/corner_mode_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_corner"
-        android:layout_below="@id/xmode_checkbox"
-        android:layout_alignParentRight="true" />
+    </RelativeLayout>
 
-    <CheckBox
-        android:id="@+id/arcade_mode_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_arcade"
-        android:layout_below="@+id/corner_mode_checkbox"
-        android:layout_alignParentRight="true" />
-
-    <CheckBox
-        android:id="@+id/speed_mode_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_speed"
-        android:layout_below="@+id/arcade_mode_checkbox"
-        android:layout_alignParentRight="true" />
-
-    <CheckBox
-        android:id="@+id/survival_mode_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_survival"
-        android:layout_below="@+id/speed_mode_checkbox"
-        android:layout_alignParentRight="true" />
-
-    <CheckBox
-        android:id="@+id/rush_mode_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_rush"
-        android:layout_below="@+id/survival_mode_checkbox"
-        android:layout_alignParentRight="true" />
-
-    <CheckBox
-        android:id="@+id/ghost_mode_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_ghost"
-        android:layout_below="@+id/rush_mode_checkbox"
-        android:layout_alignParentRight="true" />
-
-    <FrameLayout
-        android:id="@+id/game_preview_game_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/ghost_mode_checkbox"
-        android:layout_above="@+id/create_game_button"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin">
-
-    </FrameLayout>
-
-    <NumberPicker
-        android:id="@+id/width_number_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:layout_below="@+id/grid_size_prompt"
-        android:layout_toRightOf="@+id/grid_size_separator"
-        android:layout_toEndOf="@+id/grid_size_separator"
-        android:descendantFocusability="blocksDescendants"/>
 
 </RelativeLayout>

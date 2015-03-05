@@ -122,7 +122,7 @@
     <string name="title_activity_custom_game">CustomGameActivity</string>
     <string name="error_grid_small">The grid is too small</string>
     <string name="grid_size">Grid Size</string>
-    <string name="create_game">Create Game</string>
+    <string name="create_custom_game">Start</string>
     <string name="single_player">Single Player</string>
     <string name="multiplayer_quick_game">Quick Game</string>
     <string name="reset_game_dialog_title">Reset Game?</string>
