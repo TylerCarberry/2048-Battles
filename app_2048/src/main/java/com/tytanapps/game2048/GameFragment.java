@@ -1940,7 +1940,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                     gameData.decrementUndoInventory();
                 updateGame();
 
-                Games.Events.increment(this.getApiClient(), getString(R.string.event_undos_used), 1);
+                if(getApiClient().isConnected())
+                    Games.Events.increment(this.getApiClient(), getString(R.string.event_undos_used), 1);
             }
         }
     }
