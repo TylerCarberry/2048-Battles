@@ -319,6 +319,12 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
             return;
         }
 
+        if(multiplayerActive && game.causeGameToLose(direction)) {
+            animationInProgress = false;
+            shuffleGame();
+            return;
+        }
+
         // If the genie is active and the player is about to lose a dialog appears warning the user
         if(game.getGenieEnabled() && game.causeGameToLose(direction)) {
             animationInProgress = false;
@@ -1595,6 +1601,31 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     /**
+     * Remove the lowest tile from the board.
+     * Excluding X Tiles and Corner Tiles
+     */
+    private void removeLowestTile() {
+        //Toast.makeText(getActivity(), "Remove Lowest Tile", Toast.LENGTH_SHORT).show();
+
+        Grid grid = game.getGrid();
+        Location bestLoc = null;
+        int bestTile = 999999999;
+
+        for(Location loc : grid.toList()) {
+            int tileValue = grid.get(loc);
+            if(tileValue > 0 && tileValue < bestTile) {
+                bestLoc = loc;
+                bestTile = tileValue;
+            }
+        }
+
+        if(bestLoc != null) {
+            grid.set(bestLoc, 0);
+            updateGame();
+        }
+    }
+
+    /**
      * Shuffles the game board and animates the grid
      * The grid layout spins 360�, the tiles are shuffled, then it spins
      * back in the opposite direction
@@ -1637,6 +1668,10 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
                 game.shuffle();
                 gameData.incrementShufflesUsed(1);
                 gameData.incrementTotalMoves(1);
+
+                if(multiplayerActive && game.isGameLost())
+                    removeLowestTile();
+
                 updateGame();
             }
         });

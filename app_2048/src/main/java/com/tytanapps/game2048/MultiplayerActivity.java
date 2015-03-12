@@ -60,7 +60,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
      * Increment this number when a change is made to multiplayer that makes it
      * incompatible with previous versions
      **/
-    private final static int MULTIPLAYER_VERSION = 40;
+    private final static int MULTIPLAYER_VERSION = 41;
 
     // Request codes for the UIs that we show with startActivityForResult:
     final static int RC_SELECT_PLAYERS = 10000;
