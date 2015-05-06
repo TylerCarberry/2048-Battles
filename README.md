@@ -1,6 +1,6 @@
-![2048 logo 19](https://cloud.githubusercontent.com/assets/6628497/4520300/6df7cce6-4ce6-11e4-935a-e687fe85379d.png).
-![screenshot_2014-10-05-19-06-08](https://cloud.githubusercontent.com/assets/6628497/6073897/cc3ce618-ad82-11e4-9031-44aa4696337f.png).
-![screenshot_2014-10-05-19-26-29](https://cloud.githubusercontent.com/assets/6628497/6073904/dc2b1914-ad82-11e4-8617-7c13876c2af4.png)
+![2048 Battles Logo](https://cloud.githubusercontent.com/assets/6628497/4520300/6df7cce6-4ce6-11e4-935a-e687fe85379d.png).
+![Main Screen Screenshor](https://cloud.githubusercontent.com/assets/6628497/7486726/716bf914-f377-11e4-9627-434a3c9da39e.png).
+![Multiplayer](https://cloud.githubusercontent.com/assets/6628497/7486728/73e674ee-f377-11e4-9ed2-82e95362735f.png)
 
 
 
@@ -35,9 +35,9 @@ Crazy: A 5x5 grid with all other game modes enabled
 Survival: 15 seconds. Combine tiles for more time  
 Coming Soon: Zen Mode
 
-![screenshot_2014-10-05-19-06-59](https://cloud.githubusercontent.com/assets/6628497/6074006/35be40fe-ad84-11e4-926c-21e5a68127ca.png). 
-![screenshot_2014-10-05-19-07-15](https://cloud.githubusercontent.com/assets/6628497/6073923/255f7f76-ad83-11e4-8b25-1f16fbe07bdf.png). 
-![screenshot_2014-10-05-19-10-44](https://cloud.githubusercontent.com/assets/6628497/6073924/2a828f3e-ad83-11e4-8a66-fcffe944dd5c.png)
+![Custom Mode](https://cloud.githubusercontent.com/assets/6628497/7486729/756d17dc-f377-11e4-8abe-4178ccb827a5.png). 
+![Power Up](https://cloud.githubusercontent.com/assets/6628497/6073923/255f7f76-ad83-11e4-8b25-1f16fbe07bdf.png). 
+![Confirm Move](https://cloud.githubusercontent.com/assets/6628497/6073924/2a828f3e-ad83-11e4-8a66-fcffe944dd5c.png)
 
 
 
@@ -55,6 +55,6 @@ Quests
 Gifts: Send a powerup to your Google+ friend  
 Coming Soon: Cloud Save
 
-![screenshot_2014-10-05-19-06-23](https://cloud.githubusercontent.com/assets/6628497/6073952/8837fb3c-ad83-11e4-8b47-8d5e5893e561.png). 
-![screenshot_2014-10-05-19-06-33](https://cloud.githubusercontent.com/assets/6628497/6073954/8b4171c8-ad83-11e4-89d1-46b642c5e113.png). 
-![screenshot_2014-10-05-19-11-04](https://cloud.githubusercontent.com/assets/6628497/6073956/91153440-ad83-11e4-802f-431631f167d1.png)
+![Achievements](https://cloud.githubusercontent.com/assets/6628497/6073952/8837fb3c-ad83-11e4-8b47-8d5e5893e561.png). 
+![Quests](https://cloud.githubusercontent.com/assets/6628497/6073954/8b4171c8-ad83-11e4-89d1-46b642c5e113.png). 
+![Make Custom Game](https://cloud.githubusercontent.com/assets/6628497/7486727/729742da-f377-11e4-8df0-246ce723d227.png)
