@@ -36,8 +36,8 @@ Survival: 15 seconds. Combine tiles for more time
 Coming Soon: Zen Mode
 
 ![Custom Mode](https://cloud.githubusercontent.com/assets/6628497/7486729/756d17dc-f377-11e4-8abe-4178ccb827a5.png). 
-![Power Up](https://cloud.githubusercontent.com/assets/6628497/6073923/255f7f76-ad83-11e4-8b25-1f16fbe07bdf.png). 
-![Confirm Move](https://cloud.githubusercontent.com/assets/6628497/6073924/2a828f3e-ad83-11e4-8a66-fcffe944dd5c.png)
+![Power Up](https://cloud.githubusercontent.com/assets/6628497/7486888/b3934998-f37a-11e4-956d-0712a96874e6.png). 
+![Confirm Move](https://cloud.githubusercontent.com/assets/6628497/7486886/b041aae6-f37a-11e4-900a-24c3266cd8b1.png)
 
 
 
@@ -55,6 +55,6 @@ Quests
 Gifts: Send a powerup to your Google+ friend  
 Coming Soon: Cloud Save
 
-![Achievements](https://cloud.githubusercontent.com/assets/6628497/6073952/8837fb3c-ad83-11e4-8b47-8d5e5893e561.png). 
-![Quests](https://cloud.githubusercontent.com/assets/6628497/6073954/8b4171c8-ad83-11e4-89d1-46b642c5e113.png). 
+![Achievements](https://cloud.githubusercontent.com/assets/6628497/7486882/ada5b4f8-f37a-11e4-8ced-187b09d215a2.png). 
+![Quests](https://cloud.githubusercontent.com/assets/6628497/7486884/aed4bbbc-f37a-11e4-8704-2e2a1a5726ef.png). 
 ![Make Custom Game](https://cloud.githubusercontent.com/assets/6628497/7486727/729742da-f377-11e4-8df0-246ce723d227.png)
