@@ -8,6 +8,7 @@ lint-results-release-fatal.xml
 manifest-merger-release-report.txt
 app_2048/manifest-merger-release-report.txt
 
+app_2048/build/outputs/apk/app_2048-debug.apk
 app_2048/app_2048-release.apk
 
 app_2048/build
@@ -18,6 +19,7 @@ app_2048/manifest-merger-release-report.txt
 app_2048/src/main/res/values/ids.xml
 app_2048/src/main/res/xml/app_tracker.xml
 
+.idea/libraries
 .idea/workspace.xml
 .idea/dictionaries/Tyler.xml
 .idea/inspectionProfiles/profiles_settings.xml
