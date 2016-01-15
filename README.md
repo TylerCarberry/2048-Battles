@@ -58,3 +58,8 @@ Coming Soon: Cloud Save
 ![Achievements](https://cloud.githubusercontent.com/assets/6628497/7486882/ada5b4f8-f37a-11e4-8ced-187b09d215a2.png). 
 ![Quests](https://cloud.githubusercontent.com/assets/6628497/7486884/aed4bbbc-f37a-11e4-8704-2e2a1a5726ef.png). 
 ![Make Custom Game](https://cloud.githubusercontent.com/assets/6628497/7486727/729742da-f377-11e4-8df0-246ce723d227.png)
+
+## Modifying the code
+1. Copy [ids.xml](https://gist.github.com/TylerCarberry/e61d218acc41a67b628c) to app2048/src/main/res/values/ids.xml  
+2. Copy [app_tracker.xml](https://gist.github.com/TylerCarberry/79bbdafbaedbed79f106) to app2048/src/main/res/xml/app_tracker.xml  
+3. (Optional) Create a new game service on the Google Play Developer Console. Create new achievements, leaderboards, and events to match the ids. Copy your own Google Play Games ids to the previous two files. The app with function without it but you will not have access to Google Play Games, including multiplayer.
