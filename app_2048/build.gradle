@@ -15,6 +15,7 @@ android {
         applicationId 'com.tytanapps.game2048'
         minSdkVersion 14
         targetSdkVersion 21
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -29,10 +30,19 @@ android {
     }
     productFlavors {
     }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'LICENSE.txt'
+    }
 }
 
 dependencies {
     compile project(':baseGameUtils')
     compile 'com.android.support:support-v4:21.0.0'
     compile 'com.google.android.gms:play-services:5.0.89'
+
+    androidTestCompile 'com.android.support:support-annotations:23.1.0'
+    androidTestCompile 'com.android.support.test:runner:0.4.1'
+    androidTestCompile 'com.android.support.test:rules:0.4.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
 }
