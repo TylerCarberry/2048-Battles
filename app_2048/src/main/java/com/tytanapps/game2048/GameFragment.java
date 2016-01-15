@@ -1030,28 +1030,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
 
         final ImageView tile = new ImageView(getActivity());
 
-        int tileValue;
-        double rand = Math.random();
-        if(rand < 0.1)
-            tileValue = 2;
-        else if(rand < 0.2)
-            tileValue = 4;
-        else if(rand < 0.3)
-            tileValue = 8;
-        else if(rand < 0.4)
-            tileValue = 16;
-        else if(rand < 0.5)
-            tileValue = 32;
-        else if(rand < 0.6)
-            tileValue = 64;
-        else if(rand < 0.7)
-            tileValue = 128;
-        else if(rand < 0.8)
-            tileValue = 256;
-        else if(rand < 0.9)
-            tileValue = 512;
-        else
-            tileValue = 1024;
+        // Random power of 2 from 2 to 1024
+        int tileValue = (int) Math.pow(2, ((int) (10 * Math.random())) + 1);
 
         int tileSize = getResources().getDimensionPixelSize(R.dimen.main_activity_tile_size);
         tile.setImageDrawable(getTileIconDrawable(tileValue, tileSize));
