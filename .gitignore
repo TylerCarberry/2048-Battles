@@ -46,3 +46,11 @@ App_2048.iml
 app_2048/app_2048.iml
 
 baseGameUtils/baseGameUtils.iml
+
+local.properties
+
+.idea/vcs.xml
+
+.idea/scopes/scope_settings.xml
+
+.idea/runConfigurations.xml
