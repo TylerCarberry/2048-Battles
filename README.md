@@ -4,16 +4,11 @@
 
 
 
-2048 Battles By Tyler Carberry  
+# 2048 Battles [![Available on Google Play](https://cloud.githubusercontent.com/assets/6628497/12313130/db2133a6-ba32-11e5-883f-636fac12c0cb.png)](https://play.google.com/store/apps/details?id=com.tytanapps.game2048)  
 My version of 2048 based off the orginal 2048 by Gabriele Cirulli.  
 
 **Licensing:** Although this app is open source, you may **not** modify or distribute it outside of the [Github Terms of Service](https://help.github.com/articles/github-terms-of-service/). See the [Digital Millennium Copyright Act (DMCA)](http://www.copyright.gov/legislation/dmca.pdf) for more information. 
 
-
-# Download from [Google Play](https://play.google.com/store/apps/details?id=com.tytanapps.game2048)  
-Or click here to download the latest  [beta](https://github.com/tytan34/2048-for-Android/blob/master/app_2048/build/outputs/apk/app_2048-debug.apk?raw=true) or
-[stable](https://github.com/tytan34/2048-for-Android/blob/master/app_2048/app_2048-release.apk?raw=true
-) apk directly
 
 ### Real Time Multiplayer
 Challenge a random opponent to a quick battle.  
