@@ -19,7 +19,7 @@ test:
   
     # The files containing API keys are not tracked in git
     # Write them from environment variables
-    - echo $app_tracker > app_2048/src/main/res/xml/app_tracker.json
+    - echo $app_tracker > app_2048/src/main/res/xml/app_tracker.xml
     - echo $ids > app_2048/src/main/res/values/ids.xml
     
     # Update the avd
