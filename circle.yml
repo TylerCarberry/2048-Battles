@@ -19,8 +19,8 @@ test:
   
     # The files containing API keys are not tracked in git
     # Write them from environment variables
-    - echo $app_tracker > app/scr/main/res/xml/app_tracker.json
-    - echo $ids > app/src/main/res/values/ids.xml
+    - echo $app_tracker > app_2048/src/main/res/xml/app_tracker.json
+    - echo $ids > app_2048/src/main/res/values/ids.xml
     
     # Update the avd
     - echo y | android update sdk --no-ui --all --filter "addon-google_apis-google-21, sys-img-armeabi-v7a-addon-google_apis-google-21"
