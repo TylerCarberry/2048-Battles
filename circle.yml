@@ -22,7 +22,7 @@ test:
     - echo $app_tracker > app_2048/src/main/res/xml/app_tracker.xml
     - echo $ids > app_2048/src/main/res/values/ids.xml
     
-    - mkdir ~/Users/Tyler/Documents/
+    - mkdir Users/Tyler/Documents/
     - keytool -genkey -v -keystore ~/Users/Tyler/Documents/keystore_2048_debug -storepass android -alias androiddebugkey -keypass android -dname "CN=Android Debug,O=Android,C=US"
     
     # Update the avd
