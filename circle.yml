@@ -1,0 +1,53 @@
+general:
+  artifacts:
+    - app/build/outputs
+    - app/build/reports
+
+machine:
+  environment:
+    # Use a longer timeout to prevent timeout errors
+    # See https://code.google.com/p/android/issues/detail?id=189764
+    ADB_INSTALL_TIMEOUT: 6000
+    
+dependencies:
+  override:
+    - export TERM="dumb"
+    - if [ -e ./gradlew ]; then ./gradlew dependencies;else gradle dependencies;fi
+
+test:
+  override:
+  
+    # The files containing API keys are not tracked in git
+    # Write them from environment variables
+    - echo $app_tracker > app/scr/main/res/xml/app_tracker.json
+    - echo $ids > app/src/main/res/values/ids.xml
+    
+    # Update the avd
+    - echo y | android update sdk --no-ui --all --filter "addon-google_apis-google-21, sys-img-armeabi-v7a-addon-google_apis-google-21"
+    
+    # Create an avd using Android 21 with Google APIs
+    # The other versions of Android have an outdated version of Google Play Services, use Android API 21 (5.0 Lollipop)
+    # CircleCi can only run arm based avds, even though they are slower
+    - android create avd --force -n test -t "Google Inc.:Google APIs:21" --abi armeabi-v7a --tag google_apis
+    
+    # Start the emulator
+    - emulator -avd test -no-audio -no-window:
+        background: true
+        parallel: true
+    
+    # Wait for the emulator to have booted
+    - circle-android wait-for-boot
+    
+    # Keep waiting to make sure it has fully loaded
+    - sleep 120 # seconds
+    
+    # Remove the lockscreen
+    # This may not be needed, do it just in case
+    - adb shell input keyevent 82
+    
+    # Run all of the tests on the emulator
+    - ./gradlew connectedAndroidTest
+  
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/app/build/outputs/androidTest-results/connected/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
