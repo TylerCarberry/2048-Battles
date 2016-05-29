@@ -42,7 +42,7 @@ public class Game implements java.io.Serializable
     private Game originalGame;
 	
 	private int score = 0;
-	private int turnNumber = 1
+	private int turnNumber = 1;
 	
 	// If the game was quit
 	private boolean quitGame = false;
