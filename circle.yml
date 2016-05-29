@@ -1,7 +1,6 @@
 general:
   artifacts:
-    - app/build/outputs
-    - app/build/reports
+    - app_2048
 
 machine:
   environment:
