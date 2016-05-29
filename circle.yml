@@ -8,6 +8,10 @@ machine:
     # Use a longer timeout to prevent timeout errors
     # See https://code.google.com/p/android/issues/detail?id=189764
     ADB_INSTALL_TIMEOUT: 6000
+
+    # Limit memory usage to avoid the 4gb limit on CircleCi
+    # See https://circleci.com/docs/oom/#out-of-memory-errors-in-android-builds
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
     
 dependencies:
   pre:
