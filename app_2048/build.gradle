@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
-            storeFile file('/Users/Tyler/Documents/keystore_2048_debug')
+            storeFile file('../keystore_2048_debug')
             storePassword 'android'
         }
     }
