@@ -23,7 +23,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         debug {
-            signingConfig signingConfigs.config
+            Boolean ci = System.getenv("CI")
+            if(ci == null || !ci) {
+                println "Not running on CI"
+                signingConfig signingConfigs.config
+            }
             minifyEnabled false
             debuggable true
         }
