@@ -1,6 +1,6 @@
 general:
   artifacts:
-    - app_2048
+    - App_2048
 
 machine:
   environment:
