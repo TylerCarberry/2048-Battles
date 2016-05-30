@@ -1,6 +1,6 @@
 general:
   artifacts:
-    - App_2048
+    - 2048-Battles
 
 machine:
   environment:
