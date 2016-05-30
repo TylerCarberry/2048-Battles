@@ -83,7 +83,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mode_x"
-                    android:layout_below="@id/game_mode_prompt"
                     android:layout_alignParentRight="true" />
 
                 <CheckBox
@@ -91,7 +90,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mode_corner"
-                    android:layout_below="@id/xmode_checkbox"
                     android:layout_alignParentRight="true" />
 
                 <CheckBox
@@ -99,7 +97,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mode_arcade"
-                    android:layout_below="@+id/corner_mode_checkbox"
                     android:layout_alignParentRight="true" />
 
                 <CheckBox
@@ -107,7 +104,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mode_speed"
-                    android:layout_below="@+id/arcade_mode_checkbox"
                     android:layout_alignParentRight="true" />
 
                 <CheckBox
@@ -115,7 +111,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mode_survival"
-                    android:layout_below="@+id/speed_mode_checkbox"
                     android:layout_alignParentRight="true" />
 
                 <CheckBox
@@ -123,7 +118,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mode_rush"
-                    android:layout_below="@+id/survival_mode_checkbox"
                     android:layout_alignParentRight="true" />
 
                 <CheckBox
@@ -131,7 +125,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mode_ghost"
-                    android:layout_below="@+id/rush_mode_checkbox"
                     android:layout_alignParentRight="true" />
 
             </LinearLayout>

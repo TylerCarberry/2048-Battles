@@ -1,0 +1,37 @@
+general:
+  artifacts:
+    - 2048-Battles
+
+machine:
+  environment:
+    # Use a longer timeout to prevent timeout errors
+    # See https://code.google.com/p/android/issues/detail?id=189764
+    ADB_INSTALL_TIMEOUT: 6000
+
+    # Limit memory usage to avoid the 4gb limit on CircleCi
+    # See https://circleci.com/docs/oom/#out-of-memory-errors-in-android-builds
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+    
+dependencies:
+  pre:
+    # Install every Android sdk
+    - ( sleep 5 && while [ 1 ]; do sleep 1; echo y; done ) | android update sdk --no-ui --all
+  override:
+    - export TERM="dumb"
+    - if [ -e ./gradlew ]; then ./gradlew dependencies;else gradle dependencies;fi
+
+test:
+  override:
+    # The files containing API keys are not tracked in git
+    # Write them from environment variables
+    # - rm app_2048/build.gradle
+    # - echo $app_2048_gradle3 > app_2048/build.gradle
+    - echo $app_tracker > app_2048/src/main/res/xml/app_tracker.xml
+    - echo $ids > app_2048/src/main/res/values/ids.xml
+    
+    # Build the app
+    - ./gradlew build
+  
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/app/build/outputs/androidTest-results/connected/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;

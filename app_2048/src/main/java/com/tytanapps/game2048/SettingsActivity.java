@@ -120,7 +120,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     private void clearSavedPreferences() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.edit().clear().commit();
+        prefs.edit().clear().apply();
     }
 
     private void saveGameData(GameData gameData) {

@@ -37,7 +37,7 @@ public class GameData implements java.io.Serializable {
     private Map<Integer, Integer> highTiles;
 
     // Stores custom tile icons
-    private Map<Integer, List<Byte>> customTileIcon = new HashMap<Integer, List<Byte>>();
+    private Map<Integer, List<Byte>> customTileIcon = new HashMap<>();
 
     private int playGamesPendingMoves;
 

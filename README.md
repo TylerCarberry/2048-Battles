@@ -4,7 +4,9 @@
 
 
 
-# 2048 Battles [![Available on Google Play](https://cloud.githubusercontent.com/assets/6628497/12313130/db2133a6-ba32-11e5-883f-636fac12c0cb.png)](https://play.google.com/store/apps/details?id=com.tytanapps.game2048)  
+# 2048 Battles [![Circle CI](https://circleci.com/gh/TylerCarberry/2048-Battles.svg?style=svg)](https://circleci.com/gh/TylerCarberry/2048-Battles)
+
+[![Available on Google Play](https://cloud.githubusercontent.com/assets/6628497/12313130/db2133a6-ba32-11e5-883f-636fac12c0cb.png)](https://play.google.com/store/apps/details?id=com.tytanapps.game2048)  
 My version of 2048 based off the orginal 2048 by Gabriele Cirulli.  
 
 ### Real Time Multiplayer
