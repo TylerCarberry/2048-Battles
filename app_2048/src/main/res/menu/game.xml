@@ -1,17 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.app_2048.GameActivity" >
+    tools:context="com.example.app_2048.GameActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <item
         android:id="@+id/menu_item_share"
         android:actionProviderClass="android.widget.ShareActionProvider"
-        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom"
         android:title="@string/share"/>
     
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="200"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/action_settings"/>
 
 </menu>
