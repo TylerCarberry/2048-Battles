@@ -44,7 +44,7 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.tytanapps.game2048.DownloadImageTask;
-import com.tytanapps.game2048.GameFragment;
+import com.tytanapps.game2048.fragments.GameFragment;
 import com.tytanapps.game2048.GameModes;
 import com.tytanapps.game2048.R;
 

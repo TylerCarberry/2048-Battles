@@ -10,14 +10,14 @@
 
     <fragment
         android:id="@+id/main_fragment"
-        android:name="com.tytanapps.game2048.activities.MainActivity$PlaceholderFragment"
+        android:name="com.tytanapps.game2048.fragments.MainFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/adFragment" />
 
     <fragment
         android:id="@+id/adFragment"
-        android:name="com.tytanapps.game2048.activities.MainActivity$AdFragment"
+        android:name="com.tytanapps.game2048.fragments.AdFragmentMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />

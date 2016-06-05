@@ -1,4 +1,4 @@
-package com.tytanapps.game2048;
+package com.tytanapps.game2048.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -48,6 +48,14 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
+import com.tytanapps.game2048.Game;
+import com.tytanapps.game2048.GameData;
+import com.tytanapps.game2048.GameModes;
+import com.tytanapps.game2048.Grid;
+import com.tytanapps.game2048.Location;
+import com.tytanapps.game2048.MainApplication;
+import com.tytanapps.game2048.R;
+import com.tytanapps.game2048.Save;
 import com.tytanapps.game2048.activities.GameActivity;
 import com.tytanapps.game2048.activities.MainActivity;
 import com.tytanapps.game2048.activities.MultiplayerActivity;
