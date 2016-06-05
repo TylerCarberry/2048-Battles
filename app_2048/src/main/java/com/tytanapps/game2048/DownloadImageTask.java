@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.tytanapps.game2048.activities.MultiplayerActivity;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;

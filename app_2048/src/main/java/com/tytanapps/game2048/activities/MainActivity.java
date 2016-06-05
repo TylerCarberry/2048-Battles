@@ -1,4 +1,4 @@
-package com.tytanapps.game2048;
+package com.tytanapps.game2048.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -53,6 +53,13 @@ import com.google.android.gms.games.quest.Quests;
 import com.google.android.gms.games.request.GameRequest;
 import com.google.android.gms.games.request.Requests;
 import com.google.example.games.basegameutils.BaseGameActivity;
+import com.tytanapps.game2048.DownloadImageTask;
+import com.tytanapps.game2048.Game;
+import com.tytanapps.game2048.GameData;
+import com.tytanapps.game2048.GameModes;
+import com.tytanapps.game2048.MainApplication;
+import com.tytanapps.game2048.R;
+import com.tytanapps.game2048.Save;
 
 import java.io.File;
 import java.io.IOException;

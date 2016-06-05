@@ -8,7 +8,7 @@
     android:paddingBottom="0dp"
     android:clipChildren="false"
     android:clipToPadding="false"
-    tools:context="com.tytanapps.game2048.MainActivity$PlaceholderFragment">
+    tools:context=".activities.MainActivity$PlaceholderFragment">
 
     <RelativeLayout
         android:id="@+id/main_fragment_background"

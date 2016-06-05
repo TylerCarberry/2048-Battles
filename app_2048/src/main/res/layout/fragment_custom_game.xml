@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/PrimaryBackground"
-    tools:context="com.tytanapps.game2048.CustomGameActivity$PlaceholderFragment">
+    tools:context=".activities.CustomGameActivity$PlaceholderFragment">
 
     <RelativeLayout
         android:id="@+id/custom_game_top"

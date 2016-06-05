@@ -1,4 +1,4 @@
-package com.tytanapps.game2048;
+package com.tytanapps.game2048.activities;
 
 import android.app.Fragment;
 import android.content.Intent;
@@ -19,6 +19,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
+import com.tytanapps.game2048.Game;
+import com.tytanapps.game2048.GameModes;
+import com.tytanapps.game2048.R;
+import com.tytanapps.game2048.Save;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.tytanapps.game2048;
+package com.tytanapps.game2048.activities;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -10,6 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.tytanapps.game2048.GameData;
+import com.tytanapps.game2048.R;
+import com.tytanapps.game2048.Save;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +46,7 @@ public class StatsActivity extends Activity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if(id == R.id.action_settings) {
-			Intent showSettings = new Intent(this, com.tytanapps.game2048.SettingsActivity.class);
+			Intent showSettings = new Intent(this, SettingsActivity.class);
 			startActivity(showSettings);
 			return true;
 		}

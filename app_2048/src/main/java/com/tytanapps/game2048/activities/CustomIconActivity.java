@@ -1,4 +1,4 @@
-package com.tytanapps.game2048;
+package com.tytanapps.game2048.activities;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -20,6 +20,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.tytanapps.game2048.Game;
+import com.tytanapps.game2048.R;
 
 import java.io.File;
 import java.io.FileOutputStream;

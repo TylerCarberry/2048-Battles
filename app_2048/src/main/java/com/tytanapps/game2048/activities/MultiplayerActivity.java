@@ -1,4 +1,4 @@
-package com.tytanapps.game2048;
+package com.tytanapps.game2048.activities;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -43,6 +43,10 @@ import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.example.games.basegameutils.BaseGameActivity;
+import com.tytanapps.game2048.DownloadImageTask;
+import com.tytanapps.game2048.GameFragment;
+import com.tytanapps.game2048.GameModes;
+import com.tytanapps.game2048.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -274,7 +278,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         super.onActivityResult(requestCode, responseCode, intent);
     }
 
-    protected void createMultiplayerTimer(final int seconds) {
+    public void createMultiplayerTimer(final int seconds) {
         setGameStarted(true);
 
         ((TextView) findViewById(R.id.time_left_textview)).setText(""+seconds);
@@ -592,7 +596,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         translateY.start();
     }
 
-    protected void setImageView(final ImageView imageView, final Bitmap bitmap) {
+    public void setImageView(final ImageView imageView, final Bitmap bitmap) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -815,14 +819,14 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         }
     }
 
-    protected String getPlayerName() {
+    public String getPlayerName() {
         if(hideIdentity)
             return getString(R.string.player);
 
         return Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getName().getGivenName();
     }
 
-    protected Person getPlayer() {
+    public Person getPlayer() {
 
         if(hideIdentity)
             return null;
@@ -830,7 +834,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
         return Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
     }
 
-    protected void setImageViewBackground(ImageView imageView, String url) {
+    public void setImageViewBackground(ImageView imageView, String url) {
         imageView.setTag(url);
         new DownloadImageTask().execute(imageView);
     }
@@ -1103,7 +1107,7 @@ public class MultiplayerActivity extends BaseGameActivity implements GoogleApiCl
      * @param message The message to send
      * @param reliable Whether or not the sent message will be reliable
       */
-    protected void sendMessage(String message, boolean reliable) {
+    public void sendMessage(String message, boolean reliable) {
 
         if(mRoomId == null) {
             //Toast.makeText(this, "You are not in a game", Toast.LENGTH_SHORT).show();

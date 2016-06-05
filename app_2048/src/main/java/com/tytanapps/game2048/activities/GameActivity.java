@@ -1,4 +1,4 @@
-package com.tytanapps.game2048;
+package com.tytanapps.game2048.activities;
 
 import android.app.Fragment;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
+import com.tytanapps.game2048.R;
 
 public class GameActivity extends BaseGameActivity {
 	
@@ -66,7 +67,7 @@ public class GameActivity extends BaseGameActivity {
 
 		// When the settings menu item is pressed switch to SettingsActivity
 		if(id == R.id.action_settings) {
-			Intent showSettings = new Intent(this, com.tytanapps.game2048.SettingsActivity.class);
+			Intent showSettings = new Intent(this, SettingsActivity.class);
 			startActivity(showSettings);
 			return true;
 		}

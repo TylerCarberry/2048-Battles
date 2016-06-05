@@ -1,4 +1,4 @@
-package com.tytanapps.game2048;
+package com.tytanapps.game2048.activities;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -14,6 +14,10 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Toast;
+
+import com.tytanapps.game2048.GameData;
+import com.tytanapps.game2048.R;
+import com.tytanapps.game2048.Save;
 
 import java.io.File;
 import java.io.IOException;

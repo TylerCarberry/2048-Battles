@@ -5,7 +5,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.tytanapps.game2048.MainActivity;
+import com.tytanapps.game2048.activities.MainActivity;
 import com.tytanapps.game2048.R;
 
 import org.junit.Before;

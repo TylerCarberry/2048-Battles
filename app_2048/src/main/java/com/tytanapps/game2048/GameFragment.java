@@ -48,6 +48,9 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
+import com.tytanapps.game2048.activities.GameActivity;
+import com.tytanapps.game2048.activities.MainActivity;
+import com.tytanapps.game2048.activities.MultiplayerActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -1211,7 +1214,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
     }
 
-    protected void showPowerupDialog() {
+    public void showPowerupDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         if((!game.isGameLost()) || multiplayerActive) {
@@ -1610,7 +1613,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * The grid layout spins 360�, the tiles are shuffled, then it spins
      * back in the opposite direction
      */
-    protected void shuffleGame() {
+    public void shuffleGame() {
         // Save the game history before each move
         game.saveGameInHistory();
 
@@ -1665,7 +1668,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     /**
      * Freezes the game (can not move in a direction for a random amount of turns)
      */
-    protected void iceAttack() {
+    public void iceAttack() {
         // This attack cannot be stacked
         if(game.getActiveAttack() == Game.ICE_ATTACK || game.getAttackDuration() <= 0)
             game.ice();
@@ -1677,7 +1680,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     /**
      * Temporarily adds an X tile to the game for a limited amount of time
      */
-    protected void XTileAttack() {
+    public void XTileAttack() {
         // This attack cannot be stacked
         if(game.getActiveAttack() == Game.X_ATTACK || game.getAttackDuration() <= 0) {
             game.XTileAttack();
@@ -1702,7 +1705,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         }
     }
 
-    protected void ghostAttack() {
+    public void ghostAttack() {
         // This attack cannot be stacked
         if(game.getActiveAttack() == Game.GHOST_ATTACK || game.getAttackDuration() <= 0) {
             game.ghostAttack();
@@ -1903,7 +1906,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * Undo the game. Currently does not have any animations because it
      * would be difficult to track every tile separately
      */
-    protected void undo() {
+    public void undo() {
         final ImageButton undoButton = (ImageButton) getView().findViewById(R.id.undo_button);
 
         if(undoButton == null) {
@@ -2116,7 +2119,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     /**
      * Updates player_imageview with the active player's google profile picture
      */
-    protected void updatePlayerPic() {
+    public void updatePlayerPic() {
         ImageView playerPicture = (ImageView) getView().findViewById(R.id.player_imageview);
         ((MultiplayerActivity) getActivity()).setImageViewBackground(playerPicture, ((MultiplayerActivity) getActivity()).getPlayer().getImage().getUrl());
 
@@ -2125,7 +2128,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     /**
      * Updates opponent_imageview with the opponents google profile picture
      */
-    protected void updateOpponentPic() {
+    public void updateOpponentPic() {
         ImageView opponentPicture = (ImageView) getView().findViewById(R.id.opponent_imageview);
         ((MultiplayerActivity) getActivity()).setImageViewBackground(opponentPicture, ((MultiplayerActivity) getActivity()).getOpponentPicUrl());
     }
@@ -2133,7 +2136,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     /**
      * Updates player_name with the active player's first name
      */
-    protected void updatePlayerName() {
+    public void updatePlayerName() {
         ((TextView) getView().findViewById(R.id.player_name)).setText(((MultiplayerActivity) getActivity()).getPlayerName());
     }
 
@@ -2141,14 +2144,14 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * Updates opponent_name with the opponent's first name
      * If the opponent chose to hide their identity the textview does not change
      */
-    protected void updateOpponentName() {
+    public void updateOpponentName() {
         String opponentName = ((MultiplayerActivity) getActivity()).getOpponentName();
         if(opponentName != null)
             ((TextView) getView().findViewById(R.id.opponent_name)).setText(opponentName);
 
     }
 
-    protected void clearMultiplayerInventory() {
+    public void clearMultiplayerInventory() {
         ViewGroup bonusesLinearLayout = (ViewGroup) getView().findViewById(R.id.bonuses_linear_layout);
         bonusesLinearLayout.removeAllViews();
     }
@@ -2167,7 +2170,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * The countdown before the game statrs
      * @param milliseconds
      */
-    protected void createCountdown(final double milliseconds) {
+    public void createCountdown(final double milliseconds) {
         game.setGrid(new Grid(4,4));
         pendingMultiplayerAttacks.clear();
         updateGame();
@@ -2223,7 +2226,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
         return null;
     }
 
-    protected void requestBackup() {
+    public void requestBackup() {
         BackupManager bm = new BackupManager(getActivity());
         bm.dataChanged();
     }
@@ -2369,7 +2372,7 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
      * Precondition: The activity that this fragment is in extends from BaseGameActivity
      * @return the api client of the activity that it is in.
      */
-    protected GoogleApiClient getApiClient() {
+    public GoogleApiClient getApiClient() {
         if(getActivity().getClass().getSuperclass() == BaseGameActivity.class)
             return ((BaseGameActivity) getActivity()).getApiClient();
 

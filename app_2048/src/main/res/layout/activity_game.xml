@@ -3,7 +3,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".activities.MainActivity"
     tools:ignore="MergeRootFrame" >
 
     <fragment
@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/adFragment"
-        android:name="com.tytanapps.game2048.GameActivity$AdFragment"
+        android:name="com.tytanapps.game2048.activities.GameActivity$AdFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />
