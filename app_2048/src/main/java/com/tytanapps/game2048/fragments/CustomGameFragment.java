@@ -84,10 +84,4 @@ public class CustomGameFragment extends Fragment {
 
         return rootView;
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        //((CustomGameActivity)getActivity()).updateGamePreview();
-    }
 }

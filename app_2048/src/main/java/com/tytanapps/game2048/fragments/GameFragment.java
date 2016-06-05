@@ -2175,8 +2175,8 @@ public class GameFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     /**
-     * The countdown before the game statrs
-     * @param milliseconds
+     * The countdown before the game starts
+     * @param milliseconds The number of milliseconds until the game starts
      */
     public void createCountdown(final double milliseconds) {
         game.setGrid(new Grid(4,4));

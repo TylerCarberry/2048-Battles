@@ -99,22 +99,8 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
         // Give the user a bonus if a day has past since they last played
         addWelcomeBackBonus();
-
-        // Used to debug only
-        if(false) {
-            try {
-                incrementPowerupInventory(5);
-                incrementUndoInventory(5);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
         readGameData();
         updateInventoryTextView();
-
         animateFlyingTiles(-1, 300);
 
         super.onStart();
@@ -173,21 +159,13 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.welcome_back));
 
-        try {
-            if (Math.random() < 0.5) {
-                incrementPowerupInventory(1);
-                builder.setMessage(getString(R.string.daily_bonus_powerup));
-            }
-            else {
-                incrementUndoInventory(1);
-                builder.setMessage(getString(R.string.daily_bonus_undo));
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            Toast.makeText(this, getString(R.string.error_claim_bonus), Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, getString(R.string.error_claim_bonus), Toast.LENGTH_LONG).show();
+        if (Math.random() < 0.5) {
+            incrementPowerupInventory(1);
+            builder.setMessage(getString(R.string.daily_bonus_powerup));
+        }
+        else {
+            incrementUndoInventory(1);
+            builder.setMessage(getString(R.string.daily_bonus_undo));
         }
 
         // Show the message to the player
@@ -1155,30 +1133,18 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
             if(new String(request.getData()).equals("p")) {
                 message = String.format(getString(R.string.powerup_gift_received), senderName);
-                try {
-                    incrementPowerupInventory(1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                incrementPowerupInventory(1);
             }
             else {
 
                 message = String.format(getString(R.string.undo_gift_received), senderName);
-                try {
-                    incrementUndoInventory(1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                incrementUndoInventory(1);
             }
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
     }
 
-    private void incrementPowerupInventory(int amount) throws IOException, ClassNotFoundException {
+    private void incrementPowerupInventory(int amount) {
         if(gameData == null)
             readGameData();
         gameData.incrementPowerupInventory(amount);
@@ -1186,7 +1152,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
         updateInventoryTextView();
     }
 
-    private void incrementUndoInventory(int amount) throws IOException, ClassNotFoundException {
+    private void incrementUndoInventory(int amount) {
         if(gameData == null)
             readGameData();
         gameData.incrementUndoInventory(amount);
