@@ -8,7 +8,7 @@
     android:paddingBottom="0dp"
     android:clipChildren="false"
     android:clipToPadding="false"
-    tools:context=".activities.MainActivity$PlaceholderFragment">
+    tools:context=".fragments.MainFragment">
 
     <RelativeLayout
         android:id="@+id/main_fragment_background"
