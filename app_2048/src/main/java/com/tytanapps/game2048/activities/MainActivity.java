@@ -758,15 +758,16 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
     protected void showQuests() {
         // In the developer tutorial they use Quests.SELECT_ALL_QUESTS but that is not valid for me.
         // That may require an update but for now selecting all possibilities works the same way
-        int[] questParams = new int[8];
-        questParams[0] = Games.Quests.SELECT_ACCEPTED;
-        questParams[1] = Games.Quests.SELECT_OPEN;
-        questParams[2] = Games.Quests.SELECT_ENDING_SOON;
-        questParams[3] = Games.Quests.SELECT_UPCOMING;
-        questParams[4] = Games.Quests.SELECT_COMPLETED;
-        questParams[5] = Games.Quests.SELECT_COMPLETED_UNCLAIMED;
-        questParams[6] = Games.Quests.SELECT_FAILED;
-        questParams[7] = Games.Quests.SELECT_EXPIRED;
+        int[] questParams = {
+                Quests.SELECT_ACCEPTED,
+                Quests.SELECT_OPEN,
+                Quests.SELECT_ENDING_SOON,
+                Quests.SELECT_UPCOMING,
+                Quests.SELECT_COMPLETED,
+                Quests.SELECT_COMPLETED_UNCLAIMED
+            //  Quests.SELECT_FAILED,
+            //  Quests.SELECT_EXPIRED
+        };
 
         Intent questsIntent = Games.Quests.getQuestsIntent(getApiClient(), questParams);
         startActivityForResult(questsIntent, QUEST_CODE);
