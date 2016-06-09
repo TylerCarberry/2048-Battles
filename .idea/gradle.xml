@@ -13,13 +13,7 @@
             <option value="$PROJECT_DIR$/baseGameUtils" />
           </set>
         </option>
-        <option name="myModules">
-          <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app_2048" />
-            <option value="$PROJECT_DIR$/baseGameUtils" />
-          </set>
-        </option>
+        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>
