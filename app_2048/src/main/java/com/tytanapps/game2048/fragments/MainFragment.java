@@ -16,10 +16,26 @@ import android.widget.ImageView;
 import com.tytanapps.game2048.R;
 import com.tytanapps.game2048.activities.MainActivity;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainFragment extends Fragment {
+
+    private Unbinder unbinder;
+    @BindView(R.id.achievements_button) ImageButton achievementsButton;
+    @BindView(R.id.leaderboards_button) ImageButton leaderboardsButton;
+    @BindView(R.id.gifts_button) ImageButton giftsButton;
+    @BindView(R.id.quests_button) ImageButton questsButton;
+    @BindView(R.id.settings_button) ImageButton settingsButton;
+    @BindView(R.id.help_button) ImageButton helpButton;
+    @BindView(R.id.single_player_imagebutton) ImageButton singlePlayerButton;
+    @BindView(R.id.multiplayer_imagebutton) ImageButton multiplayerButton;
+    @BindView(R.id.share_button) ImageButton shareButton;
 
     public MainFragment() {
     }
@@ -28,68 +44,44 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-        ImageButton achievementsButton = (ImageButton) rootView.findViewById(R.id.achievements_button);
-        ImageButton leaderboardsButton = (ImageButton) rootView.findViewById(R.id.leaderboards_button);
-        ImageButton giftsButton = (ImageButton) rootView.findViewById(R.id.gifts_button);
-        ImageButton questsButton = (ImageButton) rootView.findViewById(R.id.quests_button);
-        ImageButton settingsButton = (ImageButton) rootView.findViewById(R.id.settings_button);
-        ImageButton helpButton = (ImageButton) rootView.findViewById(R.id.help_button);
-        ImageButton singlePlayerButton = (ImageButton) rootView.findViewById(R.id.single_player_imagebutton);
-        ImageButton multiplayerButton = (ImageButton) rootView.findViewById(R.id.multiplayer_imagebutton);
-        ImageButton shareButton = (ImageButton) rootView.findViewById(R.id.share_button);
+        unbinder = ButterKnife.bind(this, rootView);
 
         achievementsButton.setOnTouchListener(createOnTouchListener
-                (achievementsButton, R.drawable.games_achievements, R.drawable.games_achievements_pressed));
+                (R.drawable.games_achievements, R.drawable.games_achievements_pressed));
 
         leaderboardsButton.setOnTouchListener(createOnTouchListener
-                (leaderboardsButton, R.drawable.games_leaderboards, R.drawable.games_leaderboards_pressed));
+                (R.drawable.games_leaderboards, R.drawable.games_leaderboards_pressed));
 
         giftsButton.setOnTouchListener(createOnTouchListener
-                (giftsButton, R.drawable.games_gifts, R.drawable.games_gifts_pressed));
+                (R.drawable.games_gifts, R.drawable.games_gifts_pressed));
 
         questsButton.setOnTouchListener(createOnTouchListener
-                (questsButton, R.drawable.games_quests, R.drawable.games_quests_pressed));
+                (R.drawable.games_quests, R.drawable.games_quests_pressed));
 
         helpButton.setOnTouchListener(createOnTouchListener
-                (helpButton, R.drawable.help_button, R.drawable.help_button_pressed));
+                (R.drawable.help_button, R.drawable.help_button_pressed));
 
         singlePlayerButton.setOnTouchListener(createOnTouchListener
-                (singlePlayerButton, R.drawable.single_player_icon, R.drawable.single_player_icon_pressed));
+                (R.drawable.single_player_icon, R.drawable.single_player_icon_pressed));
 
         multiplayerButton.setOnTouchListener(createOnTouchListener
-                (multiplayerButton, R.drawable.multiplayer_icon, R.drawable.multiplayer_icon_pressed));
+                (R.drawable.multiplayer_icon, R.drawable.multiplayer_icon_pressed));
 
         settingsButton.setOnTouchListener(createOnTouchListener
-                (settingsButton, R.drawable.settings_button, R.drawable.settings_button_pressed));
+                (R.drawable.settings_button, R.drawable.settings_button_pressed));
 
         shareButton.setOnTouchListener(createOnTouchListener
-                (shareButton, R.drawable.share, R.drawable.share_white));
-
-        ImageView appLogo = (ImageView) rootView.findViewById(R.id.logo_imageview);
-        appLogo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(view.getRotation() % 360 == 0) {
-                    view.setRotation(0);
-                    Animator animator = ObjectAnimator.ofFloat(view, View.ROTATION, 360);
-                    animator.setDuration(1500);
-                    animator.start();
-                }
-            }
-        });
+                (R.drawable.share, R.drawable.share_white));
 
         animateSettingsButton(settingsButton);
 
-        View signInButton = rootView.findViewById(R.id.sign_in_button);
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity)getActivity()).signIn();
-            }
-        });
-
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     private void animateSettingsButton(ImageButton settingsButton) {
@@ -103,15 +95,16 @@ public class MainFragment extends Fragment {
         spinAnimation.start();
     }
 
-    private View.OnTouchListener createOnTouchListener(final ImageView view, final int defaultResource, final int pressedResource) {
+    private View.OnTouchListener createOnTouchListener(final int defaultResource, final int pressedResource) {
         View.OnTouchListener onTouchListener = new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean onTouch(View view, MotionEvent event) {
+                ImageView imageView = ((ImageView) view);
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    view.setImageResource(pressedResource);
+                    imageView.setImageResource(pressedResource);
                 }
                 else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    view.setImageResource(defaultResource);
+                    imageView.setImageResource(defaultResource);
 
                     if(event.getX() > 0 && event.getX() < view.getWidth() &&
                             event.getY() > 0 && event.getY() < view.getHeight())
@@ -122,5 +115,19 @@ public class MainFragment extends Fragment {
         };
 
         return onTouchListener;
+    }
+
+
+    @OnClick(R.id.logo_imageview) protected void spinView(View view) {
+        if(view.getRotation() % 360 == 0) {
+            view.setRotation(0);
+            Animator animator = ObjectAnimator.ofFloat(view, View.ROTATION, 360);
+            animator.setDuration(1500);
+            animator.start();
+        }
+    }
+
+    @OnClick(R.id.sign_in_button) protected void signIn() {
+        ((MainActivity)getActivity()).signIn();
     }
 }
