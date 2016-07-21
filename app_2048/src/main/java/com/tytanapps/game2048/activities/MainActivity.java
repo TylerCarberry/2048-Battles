@@ -174,7 +174,7 @@ public class MainActivity extends BaseGameActivity implements QuestUpdateListene
 
     public void setQuestButtonEmphasis(boolean enabled) {
         ImageButton questsButton = (ImageButton) findViewById(R.id.quests_button);
-        questsButton.setImageResource((enabled) ? R.drawable.games_quests_green : R.drawable.games_quests);
+        questsButton.setImageResource((enabled) ? R.drawable.games_quests_green : R.drawable.quests);
     }
 
     public void updateInventoryTextView() {

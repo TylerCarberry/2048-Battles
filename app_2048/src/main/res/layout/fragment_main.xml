@@ -45,7 +45,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:background="@drawable/settings_button"/>
+            android:background="@drawable/settings"/>
 
         <ImageButton
             android:id="@+id/help_button"
@@ -54,7 +54,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@id/settings_button"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:background="@drawable/help_button"/>
+            android:background="@drawable/help"/>
 
         <TextView
             android:id="@+id/inventory_textview"
@@ -143,7 +143,7 @@
                 android:id="@+id/single_player_imagebutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/single_player_icon"
+                android:background="@drawable/single_player"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
             <TextView
@@ -160,7 +160,7 @@
                 android:id="@+id/multiplayer_imagebutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/multiplayer_icon"
+                android:background="@drawable/multiplayer"
                 android:layout_alignTop="@+id/single_player_imagebutton"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:layout_toRightOf="@+id/single_player_imagebutton"
@@ -197,7 +197,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/games_achievements"
+            android:src="@drawable/achievements"
             android:background="@color/SecondaryBackground" />
 
         <ImageButton
@@ -205,7 +205,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/games_leaderboards"
+            android:src="@drawable/leaderboards"
             android:background="@color/SecondaryBackground" />
 
         <ImageButton
@@ -213,7 +213,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/games_gifts"
+            android:src="@drawable/gifts"
             android:background="@color/SecondaryBackground" />
 
         <ImageButton
@@ -221,7 +221,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/games_quests"
+            android:src="@drawable/quests"
             android:background="@color/SecondaryBackground" />
 
         <ImageButton
