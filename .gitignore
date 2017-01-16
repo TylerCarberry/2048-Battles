@@ -35,3 +35,5 @@ baseGameUtils/baseGameUtils.iml
 local.properties
 *.apk
 keystore_2048_debug
+
+.DS_Store
