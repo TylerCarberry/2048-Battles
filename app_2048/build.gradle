@@ -11,7 +11,7 @@ android {
         }
     }
     compileSdkVersion 24
-    buildToolsVersion '21.1.2'
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId 'com.tytanapps.game2048'
         minSdkVersion 14
