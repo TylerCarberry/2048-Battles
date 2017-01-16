@@ -136,7 +136,7 @@ public class Grid implements Cloneable, java.io.Serializable
 	 * 
 	 */
 	public List<Location> getLocationsInTraverseOrder(int direction) {
-		List<Location> los = toList();
+		List<Location> locs = toList();
 		if (direction == Location.RIGHT || direction == Location.DOWN)
 			Collections.reverse(locs);
 		
