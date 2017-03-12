@@ -25,4 +25,10 @@
         android:key="@string/preference_prompt_restart"
         android:defaultValue="false" />
 
+    <PreferenceScreen
+        android:title="Privacy Policy">
+        <intent android:action="android.intent.action.VIEW"
+                android:data="https://tylercarberry.me/2048-battles-privacy/" />
+    </PreferenceScreen>
+
 </PreferenceScreen>
